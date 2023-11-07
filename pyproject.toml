@@ -115,6 +115,7 @@ hf-utils = ["transformers"]
 metrics-diarization = ["pyannote-core", "pyannote-metrics"]
 metrics-text-classification = ["scikit-learn"]
 metrics-ner = ["seqeval","transformers","torch"]
+metrics-transcription = ["speechbrain"]
 pa-speaker-detector = ["pyannote-audio", "torch"]
 quick-umls = [
     "packaging",  # needed to check quickumls version

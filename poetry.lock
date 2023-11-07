@@ -7603,6 +7603,7 @@ hf-utils = ["transformers"]
 metrics-diarization = ["pyannote-core", "pyannote-metrics"]
 metrics-ner = ["seqeval", "torch", "torch", "transformers"]
 metrics-text-classification = ["scikit-learn"]
+metrics-transcription = ["speechbrain"]
 optional = ["PyRuSH", "feather-format", "packaging", "pandas", "pyannote-audio", "quickumls", "resampy", "sacremoses", "sentencepiece", "seqeval", "spacy", "speechbrain", "torch", "torch", "torchaudio", "torchaudio", "transformers", "unqlite", "webrtcvad"]
 pa-speaker-detector = ["pyannote-audio", "torch", "torch"]
 quick-umls = ["packaging", "quickumls", "unqlite"]
@@ -7618,4 +7619,4 @@ webrtc-voice-detector = ["webrtcvad"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8, <4.0"
-content-hash = "d275c602436153cfadb82e4173552d32ff52a735f70ef85b86542e93476dbaf9"
+content-hash = "432e2c20ea29a80e4c935276b8903f3a486daa6e57cfc75038c5a14631d8f8c4"
