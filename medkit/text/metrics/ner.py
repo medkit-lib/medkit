@@ -1,3 +1,8 @@
+"""
+This package needs extra-dependencies not installed as core dependencies of medkit.
+To install them, use `pip install medkit-lib[metrics-ner]`.
+"""
+
 __all__ = ["SeqEvalEvaluator", "SeqEvalMetricsComputer"]
 
 from typing import Any, Dict, List, Optional, Union
