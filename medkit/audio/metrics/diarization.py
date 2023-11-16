@@ -186,7 +186,7 @@ class DiarizationEvaluator:
                     " turn segment"
                 )
             if len(speaker_attrs) > 1:
-                logging.warning(
+                logger.warning(
                     f"Found several attributes with label '{self.speaker_label}',"
                     " ignoring all but first"
                 )

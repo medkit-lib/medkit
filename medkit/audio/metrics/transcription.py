@@ -108,8 +108,8 @@ class TranscriptionEvaluator:
             If True, punctuation in reference and predictions is removed before
             comparing (based on `string.punctuation`)
         replace_unicode:
-            If True, special unicode chars in reference and predictions are
-            replaced by their closest ASCII chars (when possible) before
+            If True, special unicode characters in reference and predictions are
+            replaced by their closest ASCII characters (when possible) before
             comparing
         """
 
@@ -200,7 +200,7 @@ class TranscriptionEvaluator:
                     " speech segment"
                 )
             if len(transcription_attrs) > 1:
-                logging.warning(
+                logger.warning(
                     f"Found several attributes with label '{self.speaker_label}',"
                     " ignoring all but first"
                 )
