@@ -108,3 +108,7 @@ dependencies that can be installed with
 
 For more details, refer to
 {mod}`medkit.audio.transcription.sb_transcriber`.
+
+# Metrics
+
+The module {mod}`medkit.audio.metrics` provides components to evaluate audio annotations.
