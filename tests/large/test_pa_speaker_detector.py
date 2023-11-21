@@ -44,8 +44,6 @@ def _get_segment():
     )
 
 
-# test will fail until issue is fixed upstream
-# cf https://github.com/pyannote/pyannote-audio/issues/1525
 @pytest.mark.xfail
 def test_basic():
     speaker_detector = PASpeakerDetector(

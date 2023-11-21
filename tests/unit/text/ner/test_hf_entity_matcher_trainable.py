@@ -144,7 +144,7 @@ def test_initialization_warnings(tmp_path, caplog):
 def test_save(tmp_path, matcher: HFEntityMatcherTrainable):
     output_path = tmp_path / "bert_output"
     matcher.save(output_path)
-    expected_files = ["config.json", "pytorch_model.bin", "tokenizer.json", "vocab.txt"]
+    expected_files = ["config.json", "model.safetensors", "tokenizer.json", "vocab.txt"]
     assert all(Path(output_path / filename).exists() for filename in expected_files)
     # test loading with the path
     matcher.load(output_path)
