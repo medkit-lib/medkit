@@ -47,7 +47,7 @@ def test_batch(batch_size):
     audios = []
     short_signal = _AUDIO.read()
     long_signal = np.concatenate((short_signal, short_signal), axis=1)
-    for i in range(10):
+    for i in range(batch_size):
         signal = short_signal if i % 2 else long_signal
         audio = MemoryAudioBuffer(signal, _AUDIO.sample_rate)
         audios.append(audio)
