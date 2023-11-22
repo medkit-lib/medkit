@@ -109,23 +109,6 @@ for attr in date_seg.attrs:
     print(f"{attr.label}={attr.value}")
 ```
 
-You may notice that the attributes created by the EDS-NLP components have been
-slightly transformed. For instance, `eds.hypothesis` creates identical
-`"hypothesis"` and `"hypothesis_"` attributes, as well as an optional
-`"hypothesis_cues"` attribute. When transforming these back to medkit, the
-redundant `"hypothesis_"` attribute is dropped, and `"hypothesis_cues"` is
-integrated as additional metadata of the `"hypothesis"` attribute (if present).
-{class}`~.EDSNLPDocPipeline` will perform this sort of transformation for many
-other EDS-NLP components.
-
-```{note}
-The transformations performed by {class}`~.EDSNLPDocPipeline` can be overriden
-or extended with the `medkit_attribute_factories` init parameter. For a list of
-all the default transformations, see
-{const}`~medkit.text.spacy.edsnlp.DEFAULT_ATTRIBUTE_FACTORIES` and corresponding
-functions in {mod}`medkit.text.spacy.edsnlp`.
-```
-
 Let's now examine more closely the `"date"` attribute:
 
 ```{code-cell} ipython3
@@ -153,6 +136,14 @@ Here are the supported EDS-NLP attributes values and the corresponding medkit cl
 - `AbsoluteDate` (created by `eds.dates`): {class}`medkit.text.ner.DateAttribute`
 - `RelativeDate` (created by `eds.dates`): {class}`medkit.text.ner.RelativeDateAttribute`
 - `Duration` (created by `eds.dates`): {class}`medkit.text.ner.DurationAttribute`
+
+```{note}
+The transformations performed by {class}`~.EDSNLPDocPipeline` can be overriden
+or extended with the `medkit_attribute_factories` init parameter. For a list of
+all the default transformations, see
+{const}`~medkit.text.spacy.edsnlp.DEFAULT_ATTRIBUTE_FACTORIES` and corresponding
+functions in {mod}`medkit.text.spacy.edsnlp`.
+```
 
 ## Running an EDL-NLP spaCy pipeline at the annotation level
 
