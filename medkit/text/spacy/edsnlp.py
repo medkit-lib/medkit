@@ -20,7 +20,7 @@ __all__ = [
 from typing import Callable, Dict, Optional, List
 
 from edsnlp.pipelines.ner.adicap.models import AdicapCode as EDSNLP_AdicapCode
-from edsnlp.pipelines.ner.scores.tnm.models import TNM as EDSNLP_TNM
+from edsnlp.pipelines.ner.tnm.model import TNM as EDSNLP_TNM
 from edsnlp.pipelines.misc.dates.models import (
     AbsoluteDate as EDSNLP_AbsoluteDate,
     RelativeDate as EDSNLP_RelativeDate,

@@ -1325,45 +1325,46 @@ tests = ["pytest", "pytest-mock"]
 
 [[package]]
 name = "edsnlp"
-version = "0.7.4"
-description = "A set of spaCy components to extract information from clinical notes written in French."
+version = "0.9.1"
+description = "A set of spaCy components to extract information from clinical notes written in French"
 optional = true
-python-versions = ">=3.7"
+python-versions = ">=3.7.1"
 files = [
-    {file = "edsnlp-0.7.4-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:6331b6497d3a28b52a592c6ee088053bf2deba8e9ed8829d7f2cbfe4ea941a41"},
-    {file = "edsnlp-0.7.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1ee1e103770c3667694162433a1586f0fd080a5c28fd5ad9da8b21f31b478b3d"},
-    {file = "edsnlp-0.7.4-cp310-cp310-win_amd64.whl", hash = "sha256:f2f9401cf4538117177f02690b2be4e1ebd980253108001f01708814854af53e"},
-    {file = "edsnlp-0.7.4-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:f81c86dc98ec51a1879e4f718037417c2ce8ebd4b5820196c2e75691783566a9"},
-    {file = "edsnlp-0.7.4-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f42b099ff9ce6e02b832e086bc9f9600324fcb81c08fb4db899f40ddf16cc0b2"},
-    {file = "edsnlp-0.7.4-cp37-cp37m-win_amd64.whl", hash = "sha256:5631918acdbf376c453808ea4f9c53a8a0f6f56930228e8b53213c9af956a748"},
-    {file = "edsnlp-0.7.4-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:14921faad5cd02e047118fec8539bfb34eb959aaceda1480bba7b56cc8e0bc15"},
-    {file = "edsnlp-0.7.4-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:92032246fdf81e80b0c758569812e8a0fa336c29c015b17feb060bd41fa89129"},
-    {file = "edsnlp-0.7.4-cp38-cp38-win_amd64.whl", hash = "sha256:704e7f75a2b99514d2b159545206cad80e0ac76b0876f0940c8a35657361accc"},
-    {file = "edsnlp-0.7.4-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:dbba70b3ad7a5853684cfbf7d70f509a9eda5ad66fa2e6c8336d978c584a8611"},
-    {file = "edsnlp-0.7.4-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:69ef2e0950bbe397dc89b32e353bc733d80cbb7981152394a2645a39700cd11e"},
-    {file = "edsnlp-0.7.4-cp39-cp39-win_amd64.whl", hash = "sha256:05277323208666208a2027f88d0b507b08f3d8df27e4e41ac24de50765dfd096"},
-    {file = "edsnlp-0.7.4.tar.gz", hash = "sha256:37dd6b049bd5042a79a466286860bd4aed3790e6c1cced6607c42c8e77f3f5f1"},
+    {file = "edsnlp-0.9.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:914004d687d8e000b7bb81ce58124c5b716b6875a2dfce1e56eea006eef29d3b"},
+    {file = "edsnlp-0.9.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:65e0a2296a0d7091dd8f931d6ca8d7b00f5295f0d994d293688e2973c202f75e"},
+    {file = "edsnlp-0.9.1-cp310-cp310-win_amd64.whl", hash = "sha256:6417e3b47da4a70b51975ebaafc01067f910fe0a9c8149ad2bded54e77c4d2a5"},
+    {file = "edsnlp-0.9.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:48f09f809a0e806200fefd52e648914a73219b2c14606ecb369923be49062515"},
+    {file = "edsnlp-0.9.1-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:436ba88ac635e7a311f06d13c408a97bfe0b5a05cd00119aa0d1c94b1938bf72"},
+    {file = "edsnlp-0.9.1-cp37-cp37m-win_amd64.whl", hash = "sha256:393cced15b96a106e6d57d9625c69f312fe46c6f0b73ed9e580dd722fff88efe"},
+    {file = "edsnlp-0.9.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:60f1efde52971bbd765459fa3201a609239f50086cdb58d70ae36fdf62272ebc"},
+    {file = "edsnlp-0.9.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6f1bd66e5e3b627ec1cb8ef1477e02e13e3632157db2f6e971803d9fdcebeb03"},
+    {file = "edsnlp-0.9.1-cp38-cp38-win_amd64.whl", hash = "sha256:ad08a5b705c1408f4d0e10edcd28325bc3ef51c6992c8bbdab93902c4ce26334"},
+    {file = "edsnlp-0.9.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:a375c296bd30ea231ae10cb17a64d11f97072ce5719654ac56d40ac1294dab54"},
+    {file = "edsnlp-0.9.1-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bb703d4dbea041df426068c8837ffb031ddaaef8503ca9cec2f249467b9bfbf7"},
+    {file = "edsnlp-0.9.1-cp39-cp39-win_amd64.whl", hash = "sha256:8694dc531cee77dde820545eaa9803b622be89c90b8a9dd025f23d9318c9cd01"},
+    {file = "edsnlp-0.9.1.tar.gz", hash = "sha256:c0c5dccca57c91415bc28f59d904dec05ea8a030acd8f8e0cfe15c9a83e5d03e"},
 ]
 
 [package.dependencies]
 decorator = "*"
 loguru = "*"
-numpy = ">=1.15.0"
-pandas = "*"
-pendulum = "*"
-pydantic = ">=1.8.2,<2.0.0"
+numpy = {version = ">=1.15.0", markers = "python_version >= \"3.8\""}
+pandas = {version = ">=1.4.0,<2.0.0", markers = "python_version >= \"3.8\""}
+pendulum = ">=2.1.2"
+pydantic = ">=1.10.2,<2.0.0"
 pysimstring = ">=1.2.1"
-regex = "<=2022.3.2"
+regex = "*"
 rich = ">=12.0.0"
 scikit-learn = ">=1.0.0"
-spacy = ">=3.1"
-thinc = ">=8.0.14"
+spacy = ">=3.1,<4.0.0"
+thinc = ">=8.1.10"
 tqdm = "*"
-umls-downloader = "*"
+typing-extensions = {version = ">=4.0.0,<4.6.0", markers = "python_version >= \"3.8\""}
+umls-downloader = ">=0.1.1"
 
 [package.extras]
-demo = ["streamlit (>=1.2)"]
-distributed = ["pyspark"]
+dev = ["astunparse", "black (>=22.3.0,<23.0.0)", "fastapi", "flake8 (==3.9.2)", "koalas (>=1.8.1)", "mike (>=1.1.2,<1.2.0)", "mkdocs (>=1.5.2,<1.6.0)", "mkdocs-charts-plugin (==0.0.8)", "mkdocs-img2fig-plugin (==0.9.3)", "mkdocs-material (>=9.2.0,<9.3.0)", "mkdocs-minify-plugin", "mkdocs-section-index (==0.3.4)", "mkdocstrings (>=0.20,<1.0)", "mkdocstrings-python (>=1.1,<2.0)", "pathspec (>=0.11.1)", "pre-commit (>=2.0.0)", "pre-commit (>=2.21.0)", "pybtex (>=0.24.0,<0.25.0)", "pyspark", "pytest (>=7.1.0,<8.0.0)", "pytest-cov (>=3.0.0,<4.0.0)", "pytest-html (>=3.1.1,<4.0.0)", "torch (>=1.0.0)"]
+setup = ["mlconjug3 (<3.9.0)", "typer"]
 
 [[package]]
 name = "einops"
@@ -7859,4 +7860,4 @@ webrtc-voice-detector = ["webrtcvad"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8, <4.0"
-content-hash = "8106e6b38b40cbc976941bdadc6db51711b5254063c042461d996e23dfc2470b"
+content-hash = "d17874046fe973282a012459f5ff0f0e9495812e1da1745d4c284735463bc0fc"

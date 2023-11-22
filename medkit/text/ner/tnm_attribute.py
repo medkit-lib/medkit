@@ -9,7 +9,7 @@ import dataclasses
 from typing import Any, ClassVar, Dict, Optional
 from typing_extensions import Self
 
-from edsnlp.pipelines.ner.scores.tnm.models import (
+from edsnlp.pipelines.ner.tnm.model import (
     TNM,
     Prefix,
     Tumour,

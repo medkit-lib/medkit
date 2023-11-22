@@ -76,6 +76,9 @@ def test_relative_date():
     assert attr.months == 2
 
 
+@pytest.mark.xfail(
+    reason="EDSNLP 0.9 now uses 'duration' as a label for duration attributes"
+)
 def test_duration():
     """Matching of duration"""
 

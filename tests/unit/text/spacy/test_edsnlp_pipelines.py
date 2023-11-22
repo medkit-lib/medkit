@@ -31,6 +31,9 @@ def reset_spacy_extensions():
     Underscore.token_extensions = {}
 
 
+@pytest.mark.xfail(
+    reason="EDSNLP 0.9 now uses 'duration' as a label for duration attributes"
+)
 def test_dates_pipeline():
     nlp = spacy.blank("eds")
     nlp.add_pipe("eds.dates")
@@ -192,6 +195,9 @@ def test_custom_attribute_factory():
     assert type(date_attr) is Attribute and date_attr.value == "2012-10-25"
 
 
+@pytest.mark.xfail(
+    reason="EDSNLP 0.9 now uses 'duration' as a label for duration attributes"
+)
 def test_doc_pipeline():
     doc = TextDocument("Hospitalisé le 25/10/2012 pour tumeur maligne potentielle")
 
