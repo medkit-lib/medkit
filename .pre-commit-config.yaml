@@ -1,26 +1,21 @@
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
+# pre-commit <https://pre-commit.com>
+
 repos:
-  - repo: https://github.com/ambv/black
-    rev: 22.8.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-toml
+      - id: check-yaml
+
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: '22.8.0'
     hooks:
       - id: black
-        alias: black-check
-        name: black-check
-        language_version: python3.8
-        args: [--check, medkit, tests]
-        verbose: true
-      - id: black
-        alias: black-format
-        name: black-format
-        language_version: python3.8
-        args: [medkit, tests]
-        verbose: true
-        stages:
-          - manual
+
   - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
+    rev: '5.0.4'
     hooks:
       - id: flake8
-        args: [medkit, tests]
-        verbose: true
+
+default_language_version:
+  python: python3.11
