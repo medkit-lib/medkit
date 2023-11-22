@@ -103,7 +103,10 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
             seconds=value.second,
         )
     else:
-        raise ValueError(f"Unexpected value type: {type(value)}")
+        raise ValueError(
+            f"Unexpected value type: {type(value)} for spaCy attribute with label"
+            f" '{spacy_label}'"
+        )
 
 
 def build_value_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
@@ -162,7 +165,10 @@ def build_value_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
             label=spacy_label, value=value.value, metadata={"unit": value.unit}
         )
     else:
-        raise ValueError(f"Unexpected value type: {type(value)}")
+        raise ValueError(
+            f"Unexpected value type: {type(value)} for spaCy attribute with label"
+            f" '{spacy_label}'"
+        )
 
 
 def build_score_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
