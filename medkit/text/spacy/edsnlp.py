@@ -11,8 +11,6 @@ __all__ = [
     "build_adicap_attribute",
     "build_tnm_attribute",
     "build_measurement_attribute",
-    "build_context_attribute",
-    "build_history_attribute",
     "DEFAULT_ATTRIBUTE_FACTORIES",
 ]
 
@@ -225,59 +223,6 @@ def build_measurement_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attr
     )
 
 
-def build_context_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
-    """
-    Build a medkit attribute from an EDS-NLP context/qualifying attribute, adding the
-    cues as metadata
-
-    Parameters
-    ----------
-    spacy_span
-        Spacy span having a context/qualifying attribute
-    spacy_label
-        Label of the attribute on `spacy_spacy`. Ex: "negation", "hypothesis", etc
-
-    Returns
-    -------
-    Attribute
-        Medkit attribute with optional "cues" metadata
-    """
-
-    value = spacy_span._.get(spacy_label)
-    cues = spacy_span._.get(f"{spacy_label}_cues")
-    metadata = {"cues": [c.text for c in cues]} if cues else None
-    return Attribute(label=spacy_label, value=value, metadata=metadata)
-
-
-def build_history_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
-    """
-    Build a medkit attribute from an EDS-NLP "history" attribute, adding the cues as
-    metadata
-
-    Parameters
-    ----------
-    spacy_span
-        Spacy span having a "history" attribute
-    spacy_label
-        Must be "history"
-
-    Returns
-    -------
-    Attribute
-        Medkit attribute corresponding to the spacy attribute
-    """
-
-    value = spacy_span._.get(spacy_label)
-    history_cues = spacy_span._.get("history_cues")
-    recent_cues = spacy_span._.get("recent_cues")
-    metadata = {}
-    if history_cues is not None:
-        metadata["history_cues"] = [c.text for c in history_cues]
-    if recent_cues is not None:
-        metadata["recent_cues"] = [c.text for c in recent_cues]
-    return Attribute(label="history", value=value, metadata=metadata)
-
-
 DEFAULT_ATTRIBUTE_FACTORIES = {
     # from eds.adicap
     "adicap": build_adicap_attribute,
@@ -293,16 +238,6 @@ DEFAULT_ATTRIBUTE_FACTORIES = {
     "size": build_measurement_attribute,
     "bmi": build_measurement_attribute,
     "volume": build_measurement_attribute,
-    # from eds.family
-    "family": build_context_attribute,
-    # from eds.hypothesis
-    "hypothesis": build_context_attribute,
-    # from eds.negation
-    "negation": build_context_attribute,
-    # from eds.reported_speech
-    "reported_speech": build_context_attribute,
-    # from eds.history
-    "history": build_history_attribute,
 }
 """Pre-defined attribute factories to handle EDS-NLP attributes"""
 
@@ -325,7 +260,8 @@ _ATTR_LABELS_TO_IGNORE = {
     "score_value",
     # could be in metadata of score attrs but not worth the trouble
     "score_method",
-    # context/qualifying attributes with deprecated aliases and cues included in metadata
+    # context/qualifying attributes with deprecated aliases
+    # cues could be included in metadata but not worth the trouble
     "family_",
     "family_cues",
     "history_",
