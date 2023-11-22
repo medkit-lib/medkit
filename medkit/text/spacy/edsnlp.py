@@ -7,6 +7,9 @@ __all__ = [
     "EDSNLPPipeline",
     "EDSNLPDocPipeline",
     "build_date_attribute",
+    "build_adicap_attribute",
+    "build_tnm_attribute",
+    "build_measurement_attribute",
     "build_value_attribute",
     "build_score_attribute",
     "build_context_attribute",
@@ -110,6 +113,97 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
         )
 
 
+def build_adicap_attribute(
+    spacy_span: SpacySpan, spacy_label: str
+) -> ADICAPNormAttribute:
+    """
+    Build a medkit ADICAP normalization attribute from an EDS-NLP attribute with
+    an ADICAP object as value.
+
+    Parameters
+    ----------
+    spacy_span
+        Spacy span having an ADICAP object as value
+    spacy_label
+        Label of the attribute on `spacy_spacy`. Ex: "adicap"
+
+    Returns
+    -------
+    ADICAPNormAttribute
+        Medkit ADICAP normalization attribute
+    """
+
+    value = spacy_span._.get(spacy_label)
+    assert isinstance(value, EDSNLP_AdicapCode)
+    return ADICAPNormAttribute(
+        code=value.code,
+        sampling_mode=value.sampling_mode,
+        technic=value.technic,
+        organ=value.organ,
+        pathology=value.pathology,
+        pathology_type=value.pathology_type,
+        behaviour_type=value.behaviour_type,
+    )
+
+
+def build_tnm_attribute(spacy_span: SpacySpan, spacy_label: str) -> TNMAttribute:
+    """
+    Build a medkit TNM attribute from an EDS-NLP attribute with a TNM object as
+    value.
+
+    Parameters
+    ----------
+    spacy_span
+        Spacy span having a TNM object as value
+    spacy_label
+        Label of the attribute on `spacy_spacy`. Ex: "tnm"
+
+    Returns
+    -------
+    TNMAttribute
+        Medkit TNM attribute
+    """
+
+    value = spacy_span._.get(spacy_label)
+    assert isinstance(value, EDSNLP_TNM)
+    return TNMAttribute(
+        prefix=value.prefix,
+        tumour=value.tumour,
+        tumour_specification=value.tumour_specification,
+        node=value.node,
+        node_specification=value.node_specification,
+        node_suffix=value.node_suffix,
+        metastasis=value.metastasis,
+        resection_completeness=value.resection_completeness,
+        version=value.version,
+        version_year=value.version_year,
+    )
+
+
+def build_measurement_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
+    """
+    Build a medkit attribute from an EDS-NLP attribute with a measurement object
+    as value.
+
+    Parameters
+    ----------
+    spacy_span
+        Spacy span having a measurement object as value
+    spacy_label
+        Label of the attribute on `spacy_spacy`. Ex: "size", "weight", "bmi"
+
+    Returns
+    -------
+    Attribute
+        Medkit attribute with normalized measurement value and "unit" metadata
+    """
+    value = spacy_span._.get(spacy_label)
+    assert isinstance(value, EDSNLP_SimpleMeasurement)
+    return Attribute(
+        label=spacy_label, value=value.value, metadata={"unit": value.unit}
+    )
+
+
 def build_value_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
     """
     Build a medkit attribute from an EDS-NLP "value" attribute with a custom object as value:
@@ -139,32 +233,11 @@ def build_value_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
 
     value = spacy_span._.get(spacy_label)
     if isinstance(value, EDSNLP_AdicapCode):
-        return ADICAPNormAttribute(
-            code=value.code,
-            sampling_mode=value.sampling_mode,
-            technic=value.technic,
-            organ=value.organ,
-            pathology=value.pathology,
-            pathology_type=value.pathology_type,
-            behaviour_type=value.behaviour_type,
-        )
+        return build_adicap_attribute(spacy_span, spacy_label)
     elif isinstance(value, EDSNLP_TNM):
-        return TNMAttribute(
-            prefix=value.prefix,
-            tumour=value.tumour,
-            tumour_specification=value.tumour_specification,
-            node=value.node,
-            node_specification=value.node_specification,
-            node_suffix=value.node_suffix,
-            metastasis=value.metastasis,
-            resection_completeness=value.resection_completeness,
-            version=value.version,
-            version_year=value.version_year,
-        )
+        return build_tnm_attribute(spacy_span, spacy_label)
     elif isinstance(value, EDSNLP_SimpleMeasurement):
-        return Attribute(
-            label=spacy_label, value=value.value, metadata={"unit": value.unit}
-        )
+        return build_measurement_attribute(spacy_span, spacy_label)
     else:
         raise ValueError(
             f"Unexpected value type: {type(value)} for spaCy attribute with label"
