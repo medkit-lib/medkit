@@ -45,7 +45,8 @@ from medkit.text.spacy import SpacyPipeline, SpacyDocPipeline
 
 def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
     """
-    Build a medkit date attribute from an EDS-NLP attribute with a date object as value.
+    Build a medkit date attribute from an EDS-NLP attribute with a date object
+    as value.
 
     Parameters
     ----------
@@ -213,7 +214,7 @@ def build_context_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribut
     Returns
     -------
     Attribute
-        Medkit attribute corresponding to the spacy attribute
+        Medkit attribute with optional "cues" metadata
     """
 
     value = spacy_span._.get(spacy_label)
