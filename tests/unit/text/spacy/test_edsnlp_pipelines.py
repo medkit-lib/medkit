@@ -31,9 +31,6 @@ def reset_spacy_extensions():
     Underscore.token_extensions = {}
 
 
-@pytest.mark.xfail(
-    reason="EDSNLP 0.9 now uses 'duration' as a label for duration attributes"
-)
 def test_dates_pipeline():
     nlp = spacy.blank("eds")
     nlp.add_pipe("eds.dates")
@@ -79,7 +76,7 @@ def test_dates_pipeline():
     date_seg = anns[0]
     assert date_seg.text == "pendant 2 mois"
 
-    date_attrs = date_seg.attrs.get(label="date")
+    date_attrs = date_seg.attrs.get(label="duration")
     assert len(date_attrs) == 1
     date_attr = date_attrs[0]
     assert isinstance(date_attr, DurationAttribute)
@@ -196,7 +193,11 @@ def test_custom_attribute_factory():
 
 
 @pytest.mark.xfail(
-    reason="EDSNLP 0.9 now uses 'duration' as a label for duration attributes"
+    reason=(
+        "When additional pipes are added, dates attributes also have redundant"
+        " attributes with 'value' as label and they are not properly handled by the"
+        " build_value_attribute factory"
+    )
 )
 def test_doc_pipeline():
     doc = TextDocument("Hospitalisé le 25/10/2012 pour tumeur maligne potentielle")

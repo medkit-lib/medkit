@@ -7,6 +7,7 @@ __all__ = [
     "EDSNLPPipeline",
     "EDSNLPDocPipeline",
     "build_date_attribute",
+    "build_duration_attribute",
     "build_adicap_attribute",
     "build_tnm_attribute",
     "build_measurement_attribute",
@@ -61,10 +62,9 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
     Returns
     -------
     Attribute
-        :class:`~medkit.text.ner.DateAttribute`,
-        :class:`~medkit.text.ner.RelativeDateAttribute` or
-        :class:`~medkit.text.ner.DurationAttribute` instance, depending on the
-        EDS-NLP attribute
+        :class:`~medkit.text.ner.DateAttribute` or
+        :class:`~medkit.text.ner.RelativeDateAttribute` instance, depending on
+        the EDS-NLP attribute
     """
 
     value = spacy_span._.get(spacy_label)
@@ -95,22 +95,45 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
             minutes=value.minute,
             seconds=value.second,
         )
-    elif isinstance(value, EDSNLP_Duration):
-        return DurationAttribute(
-            label=spacy_label,
-            years=value.year,
-            months=value.month,
-            weeks=value.week,
-            days=value.day,
-            hours=value.hour,
-            minutes=value.minute,
-            seconds=value.second,
-        )
     else:
         raise ValueError(
             f"Unexpected value type: {type(value)} for spaCy attribute with label"
             f" '{spacy_label}'"
         )
+
+
+def build_duration_attribute(
+    spacy_span: SpacySpan, spacy_label: str
+) -> DurationAttribute:
+    """
+    Build a medkit duration attribute from an EDS-NLP attribute with a duration
+    object as value.
+
+    Parameters
+    ----------
+    spacy_span
+        Spacy span having an ESD-NLP date attribute
+    spacy_label
+        Label of the date attribute on `spacy_spacy`. Ex: "duration"
+
+    Returns
+    -------
+    DurationAttribute
+        Medkit duration attribute
+    """
+
+    value = spacy_span._.get(spacy_label)
+    assert isinstance(value, EDSNLP_Duration)
+    return DurationAttribute(
+        label=spacy_label,
+        years=value.year,
+        months=value.month,
+        weeks=value.week,
+        days=value.day,
+        hours=value.hour,
+        minutes=value.minute,
+        seconds=value.second,
+    )
 
 
 def build_adicap_attribute(
@@ -331,6 +354,7 @@ DEFAULT_ATTRIBUTE_FACTORIES = {
     "value": build_value_attribute,
     # from eds.dates
     "date": build_date_attribute,
+    "duration": build_duration_attribute,
     # from eds.consultation_dates
     "consultation_date": build_date_attribute,
     # from eds.score and some subclasses

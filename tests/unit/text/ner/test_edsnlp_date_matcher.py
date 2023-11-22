@@ -76,9 +76,6 @@ def test_relative_date():
     assert attr.months == 2
 
 
-@pytest.mark.xfail(
-    reason="EDSNLP 0.9 now uses 'duration' as a label for duration attributes"
-)
 def test_duration():
     """Matching of duration"""
 
@@ -90,7 +87,7 @@ def test_duration():
     entity = entities[0]
     assert entity.text == "pendant 2 mois"
 
-    attrs = entity.attrs.get(label="date")
+    attrs = entity.attrs.get(label="duration")
     assert len(attrs) == 1
     attr = attrs[0]
     assert isinstance(attr, DurationAttribute)
