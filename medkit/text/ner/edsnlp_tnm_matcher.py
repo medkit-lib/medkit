@@ -57,7 +57,7 @@ class EDSNLPTNMMatcher(NEROperation):
         self.attrs_to_copy = attrs_to_copy
 
         self._edsnlp = spacy.blank("eds")
-        self._edsnlp.add_pipe("eds.TNM")
+        self._edsnlp.add_pipe("eds.tnm")
 
     def run(self, segments: List[Segment]) -> List[Entity]:
         """Find and return TNM entities for all `segments`

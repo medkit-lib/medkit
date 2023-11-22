@@ -111,7 +111,7 @@ def test_tnm_pipeline():
     seg = _get_segment("TNM: pTx N1 M1")
 
     nlp = spacy.blank("eds")
-    nlp.add_pipe("eds.TNM")
+    nlp.add_pipe("eds.tnm")
     edsnlp_pipeline = EDSNLPPipeline(nlp)
     anns = edsnlp_pipeline.run([seg])
 

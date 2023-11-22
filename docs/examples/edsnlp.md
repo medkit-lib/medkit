@@ -149,7 +149,7 @@ attributes are automatically converted to a corresponding
 
 Here are the supported EDS-NLP attributes values and the corresponding medkit classes:
 - `AdicapCode` (created by `eds.adicap`): {class}`medkit.text.ner.ADICAPNormAttribute`
-- `TNM` (created by `eds.TNM`): {class}`medkit.text.ner.tnm_attribute.TNMAttribute`
+- `TNM` (created by `eds.tnm`): {class}`medkit.text.ner.tnm_attribute.TNMAttribute`
 - `AbsoluteDate` (created by `eds.dates`): {class}`medkit.text.ner.DateAttribute`
 - `RelativeDate` (created by `eds.dates`): {class}`medkit.text.ner.RelativeDateAttribute`
 - `Duration` (created by `eds.dates`): {class}`medkit.text.ner.DurationAttribute`
