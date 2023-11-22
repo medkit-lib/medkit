@@ -11,7 +11,6 @@ __all__ = [
     "build_adicap_attribute",
     "build_tnm_attribute",
     "build_measurement_attribute",
-    "build_score_attribute",
     "build_context_attribute",
     "build_history_attribute",
     "DEFAULT_ATTRIBUTE_FACTORIES",
@@ -226,31 +225,6 @@ def build_measurement_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attr
     )
 
 
-def build_score_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
-    """
-    Build a medkit attribute from an EDS-NLP "score_name" and corresponding
-    "score_value" attribute.
-
-    Parameters
-    ----------
-    spacy_span
-        Spacy span having `spacy_label`attribute and optional "score_method"
-        attribute
-    spacy_label
-        Label of the attribute on `spacy_spacy`. Ex: "charlson", "emergency_ccmu"
-
-    Returns
-    -------
-    Attribute
-        Medkit attribute optional "score_method" metadata
-    """
-
-    value = spacy_span._.get(spacy_label)
-    method = spacy_span._.get("score_method")
-    metadata = {"method": method} if method is not None else None
-    return Attribute(label=spacy_label, value=value, metadata=metadata)
-
-
 def build_context_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
     """
     Build a medkit attribute from an EDS-NLP context/qualifying attribute, adding the
@@ -293,8 +267,7 @@ def build_history_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribut
         Medkit attribute corresponding to the spacy attribute
     """
 
-    assert spacy_label == "history"
-    value = spacy_span._.history
+    value = spacy_span._.get(spacy_label)
     history_cues = spacy_span._.get("history_cues")
     recent_cues = spacy_span._.get("recent_cues")
     metadata = {}
@@ -315,12 +288,6 @@ DEFAULT_ATTRIBUTE_FACTORIES = {
     "duration": build_duration_attribute,
     # from eds.consultation_dates
     "consultation_date": build_date_attribute,
-    # from score pipes
-    "eds.charlson": build_score_attribute,
-    "eds.emergency_ccmu": build_score_attribute,
-    "eds.emergency_gemsa": build_score_attribute,
-    "eds.emergency_priority": build_score_attribute,
-    "eds.sofa": build_score_attribute,
     # from eds.measurements
     "weight": build_measurement_attribute,
     "size": build_measurement_attribute,
@@ -356,7 +323,7 @@ _ATTR_LABELS_TO_IGNORE = {
     "ents_reason",
     # redundant with score attr with more specific label
     "score_value",
-    # added to metadata of score attr
+    # could be in metadata of score attrs but not worth the trouble
     "score_method",
     # context/qualifying attributes with deprecated aliases and cues included in metadata
     "family_",
