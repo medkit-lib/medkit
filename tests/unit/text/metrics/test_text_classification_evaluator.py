@@ -1,9 +1,11 @@
 import pytest
+
 from numpy.testing import assert_almost_equal
 
 from medkit.core import Attribute
 from medkit.core.text import TextDocument
-from medkit.text.metrics.classification import TextClassificationEvaluator
+
+classification = pytest.importorskip("medkit.text.metrics.classification")
 
 _TXT_1 = "Compte de rendu"
 _TXT_2 = "Report d'urgences"
@@ -20,7 +22,7 @@ def true_documents():
 
 @pytest.fixture()
 def evaluator():
-    return TextClassificationEvaluator(attr_label=_LABEL_ATTR)
+    return classification.TextClassificationEvaluator(attr_label=_LABEL_ATTR)
 
 
 _PREDICTED_VALUES_BY_CASE = {
@@ -82,7 +84,7 @@ TEST_DATA = [
     ],
 )
 def test_classification_report(
-    evaluator: TextClassificationEvaluator,
+    evaluator,
     true_documents,
     predicted_docs,
     expected_metrics,
@@ -98,9 +100,7 @@ def test_classification_report(
         assert_almost_equal(metrics[metric_key], value, decimal=2)
 
 
-def test_classification_report_by_attr_value(
-    evaluator: TextClassificationEvaluator, true_documents
-):
+def test_classification_report_by_attr_value(evaluator, true_documents):
     predicted_docs = _PREDICTED_VALUES_BY_CASE["one_missing"]
     metrics = evaluator.compute_classification_report(
         true_docs=true_documents,
@@ -147,7 +147,7 @@ TEST_DATA_CK = [
     ],
 )
 def test_cohen_kappa(
-    evaluator: TextClassificationEvaluator,
+    evaluator,
     true_documents,
     predicted_docs,
     expected_metrics,
@@ -184,7 +184,7 @@ TEST_DATA_KA = [
     ],
 )
 def test_krippendorff_alpha(
-    evaluator: TextClassificationEvaluator,
+    evaluator,
     true_documents,
     predicted_docs,
     expected_metrics,
@@ -195,9 +195,7 @@ def test_krippendorff_alpha(
         assert_almost_equal(metrics[metric_key], value, decimal=2)
 
 
-def test_assertions_krippendorff(
-    evaluator: TextClassificationEvaluator, true_documents
-):
+def test_assertions_krippendorff(evaluator, true_documents):
     # test number of annotators
     with pytest.raises(ValueError, match="'docs_annotators' should contain .*"):
         evaluator.compute_krippendorff_alpha([true_documents])
@@ -209,11 +207,11 @@ def test_assertions_krippendorff(
 def test_assertions_docs(true_documents):
     # test number of annotators
     with pytest.raises(ValueError, match="No attribute with label .*"):
-        evaluator = TextClassificationEvaluator(attr_label="other")
+        evaluator = classification.TextClassificationEvaluator(attr_label="other")
         evaluator._extract_attr_values(true_documents)
 
     doc_test = true_documents[0]
     doc_test.attrs.add(Attribute(label="other", value=[0, 1, 2]))
     with pytest.raises(ValueError, match="The type of the attr value .*"):
-        evaluator = TextClassificationEvaluator(attr_label="other")
+        evaluator = classification.TextClassificationEvaluator(attr_label="other")
         evaluator._extract_attr_values([doc_test])
