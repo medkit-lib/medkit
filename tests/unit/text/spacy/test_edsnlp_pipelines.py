@@ -192,13 +192,6 @@ def test_custom_attribute_factory():
     assert type(date_attr) is Attribute and date_attr.value == "2012-10-25"
 
 
-@pytest.mark.xfail(
-    reason=(
-        "When additional pipes are added, dates attributes also have redundant"
-        " attributes with 'value' as label and they are not properly handled by the"
-        " build_value_attribute factory"
-    )
-)
 def test_doc_pipeline():
     doc = TextDocument("Hospitalisé le 25/10/2012 pour tumeur maligne potentielle")
 

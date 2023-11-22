@@ -11,7 +11,6 @@ __all__ = [
     "build_adicap_attribute",
     "build_tnm_attribute",
     "build_measurement_attribute",
-    "build_value_attribute",
     "build_score_attribute",
     "build_context_attribute",
     "build_history_attribute",
@@ -227,47 +226,6 @@ def build_measurement_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attr
     )
 
 
-def build_value_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
-    """
-    Build a medkit attribute from an EDS-NLP "value" attribute with a custom object as value:
-
-    - if the value is an EDS-NLP `Adipcap` object, a
-      :class:`~medkit.text.ner.ADICAPNormAttribute` instance is returned;
-    - if the value is an EDS-NLP `TNN` object, a
-      :class:`~medkit.text.ner.tnm_attribute.TNMAttribute` instance is returned;
-    - if the value is an EDS-NLP `SimpleMeasurement` object, a
-      :class:`~medkit.core.Attribute` instance is returned.
-
-
-    Otherwise an error is raised.
-
-    Parameters
-    ----------
-    spacy_span
-        Spacy span having an attribute custom object as value
-    spacy_label
-        Label of the attribute on `spacy_spacy`. Ex: "value"
-
-    Returns
-    -------
-    Attribute
-        Medkit attribute corresponding to the spacy attribute value
-    """
-
-    value = spacy_span._.get(spacy_label)
-    if isinstance(value, EDSNLP_AdicapCode):
-        return build_adicap_attribute(spacy_span, spacy_label)
-    elif isinstance(value, EDSNLP_TNM):
-        return build_tnm_attribute(spacy_span, spacy_label)
-    elif isinstance(value, EDSNLP_SimpleMeasurement):
-        return build_measurement_attribute(spacy_span, spacy_label)
-    else:
-        raise ValueError(
-            f"Unexpected value type: {type(value)} for spaCy attribute with label"
-            f" '{spacy_label}'"
-        )
-
-
 def build_score_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
     """
     Build a medkit attribute from an EDS-NLP "score_name" and corresponding
@@ -276,23 +234,21 @@ def build_score_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
     Parameters
     ----------
     spacy_span
-        Spacy span having "score_name" and "score_value" attributes
+        Spacy span having `spacy_label`attribute and optional "score_method"
+        attribute
     spacy_label
-        Must be "score_name"
+        Label of the attribute on `spacy_spacy`. Ex: "charlson", "emergency_ccmu"
 
     Returns
     -------
     Attribute
-        Medkit attribute with "score_name" value as label and "score_value" value as
-        value
+        Medkit attribute optional "score_method" metadata
     """
 
-    assert spacy_label == "score_name"
-    label = spacy_span._.score_name
-    value = spacy_span._.score_value
+    value = spacy_span._.get(spacy_label)
     method = spacy_span._.get("score_method")
     metadata = {"method": method} if method is not None else None
-    return Attribute(label=label, value=value, metadata=metadata)
+    return Attribute(label=spacy_label, value=value, metadata=metadata)
 
 
 def build_context_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
@@ -350,15 +306,26 @@ def build_history_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribut
 
 
 DEFAULT_ATTRIBUTE_FACTORIES = {
-    # created by several components
-    "value": build_value_attribute,
+    # from eds.adicap
+    "adicap": build_adicap_attribute,
+    # from eds.tnm
+    "tnm": build_tnm_attribute,
     # from eds.dates
     "date": build_date_attribute,
     "duration": build_duration_attribute,
     # from eds.consultation_dates
     "consultation_date": build_date_attribute,
-    # from eds.score and some subclasses
-    "score_name": build_score_attribute,
+    # from score pipes
+    "eds.charlson": build_score_attribute,
+    "eds.emergency_ccmu": build_score_attribute,
+    "eds.emergency_gemsa": build_score_attribute,
+    "eds.emergency_priority": build_score_attribute,
+    "eds.sofa": build_score_attribute,
+    # from eds.measurements
+    "weight": build_measurement_attribute,
+    "size": build_measurement_attribute,
+    "bmi": build_measurement_attribute,
+    "volume": build_measurement_attribute,
     # from eds.family
     "family": build_context_attribute,
     # from eds.hypothesis
@@ -373,6 +340,9 @@ DEFAULT_ATTRIBUTE_FACTORIES = {
 """Pre-defined attribute factories to handle EDS-NLP attributes"""
 
 _ATTR_LABELS_TO_IGNORE = {
+    # seems to always have an identical attr with a more specific label
+    # since EDSNLP 0.9
+    "value",
     # text after spaCy pre-preprocessing
     "normalized_variant",
     # should be in metadata of entities matched by eds.contextual-matcher but we don't support that
@@ -384,11 +354,9 @@ _ATTR_LABELS_TO_IGNORE = {
     "period"
     # ignored because each entity matched by eds.reason will also have its own is_reason attribute
     "ents_reason",
-    # redundant with value attr
-    "adicap",
-    # will be set as value of score_name attr
+    # redundant with score attr with more specific label
     "score_value",
-    # added to metadata of score_name attr
+    # added to metadata of score attr
     "score_method",
     # context/qualifying attributes with deprecated aliases and cues included in metadata
     "family_",

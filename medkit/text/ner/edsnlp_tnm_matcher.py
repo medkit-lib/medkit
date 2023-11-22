@@ -95,7 +95,7 @@ class EDSNLPTNMMatcher(NEROperation):
 
             # create attribute storing normalized TNM values
             # (only TNM attributes should be found)
-            attr = build_tnm_attribute(spacy_span=spacy_span, spacy_label="value")
+            attr = build_tnm_attribute(spacy_span=spacy_span, spacy_label="tnm")
             assert isinstance(attr, TNMAttribute)
 
             # create entity
