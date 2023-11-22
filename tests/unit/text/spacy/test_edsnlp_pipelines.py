@@ -151,6 +151,25 @@ def test_family_pipeline():
     assert len(family_attrs_2) == 1 and family_attrs_2[0].value is True
 
 
+def test_negation_pipeline():
+    seg = _get_segment("Le scanner ne détecte aucune fracture.")
+
+    nlp = spacy.blank("eds")
+    nlp.add_pipe("eds.sentences")
+    # Dummy matcher (we need an entity to attach negation attributes to)
+    nlp.add_pipe("eds.matcher", config=dict(terms=dict(fracture="fracture")))
+    nlp.add_pipe("eds.negation")
+    edsnlp_pipeline = EDSNLPPipeline(nlp)
+    anns = edsnlp_pipeline.run([seg])
+
+    assert len(anns) == 1
+    entity = anns[0]
+    negation_attrs = entity.attrs.get(label="negation")
+    assert len(negation_attrs) == 1
+    negation_attr = negation_attrs[0]
+    assert negation_attr.value is True
+
+
 def test_custom_attribute_factory():
     """
     Use a custom attribute factory overriding one of the default attribute
