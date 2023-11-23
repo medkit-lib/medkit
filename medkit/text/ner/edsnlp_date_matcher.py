@@ -104,12 +104,11 @@ class EDSNLPDateMatcher(NEROperation):
             [(spacy_span.start_char, spacy_span.end_char)],
         )
         # create attribute storing normalized date or duration values
-        if is_duration:
-            attr = build_duration_attribute(
-                spacy_span=spacy_span, spacy_label="duration"
-            )
-        else:
-            attr = build_date_attribute(spacy_span=spacy_span, spacy_label="date")
+        attr = (
+            build_duration_attribute(spacy_span=spacy_span, spacy_label="duration")
+            if is_duration
+            else build_date_attribute(spacy_span=spacy_span, spacy_label="date")
+        )
         # create entity
         entity = Entity(label=self.output_label, spans=spans, text=text, attrs=[attr])
 
