@@ -229,7 +229,7 @@ def test_labels_remapping(document):
     )
     assert metrics == expected_metrics
 
-    # remap all entities to unique label
+    # remap all entities (predicted and reference) to unique label
     evaluator = SeqEvalEvaluator(
         labels_remapping={
             "CORP": "ent",
