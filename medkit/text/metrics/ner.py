@@ -83,6 +83,7 @@ class SeqEvalEvaluator:
         return_metrics_by_label: bool = True,
         average: Literal["macro", "weighted"] = "macro",
         tokenizer: Optional[Any] = None,
+        labels_remapping: Optional[Dict[str, str]] = None,
     ):
         """
         Parameters
@@ -96,15 +97,20 @@ class SeqEvalEvaluator:
             Type of average to be performed in metrics.
             - `macro`, unweighted mean (default)
             - `weighted`, weighted average by support (number of true instances by label)
-
         tokenizer:
             Optional Fast Tokenizer to convert text into tokens.
             If not provided, the text is tokenized by character.
+        labels_remapping:
+            Optional remapping of labels, useful when there is a mismatch
+            between the predicted labels and the reference labels to evaluate
+            against. If a label (of a reference of predicted entity) is found in
+            this dict, the corresponding value will be used as label instead.
         """
         self.tokenizer = tokenizer
         self.tagging_scheme = tagging_scheme
         self.return_metrics_by_label = return_metrics_by_label
         self.average = average
+        self.labels_remapping = labels_remapping
 
     def compute(
         self, documents: List[TextDocument], predicted_entities: List[List[Entity]]
@@ -160,6 +166,8 @@ class SeqEvalEvaluator:
         tags = ["O"] * len(text)
         for ent in entities:
             label = ent.label
+            if self.labels_remapping:
+                label = self.labels_remapping.get(label, label)
             ent_spans = span_utils.normalize_spans(ent.spans)
             # skip if all spans were ModifiedSpans and we are
             # not able to refer back to text
