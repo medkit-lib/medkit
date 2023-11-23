@@ -166,11 +166,21 @@ priority = "primary"
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
 build-backend = "poetry_dynamic_versioning.backend"
 
-
 [tool.black]
 line-length = 88
 preview = true
 extend-exclude = ".venv"
+
+[tool.flake8]
+max-line-length = 88
+select = ["C", "E", "F", "W", "B", "B950"]
+extend-ignore = ["E203", "E402", "E501", "W503"]
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "docs",
+]
 
 [tool.poetry-dynamic-versioning]
 enable = true
