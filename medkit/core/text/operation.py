@@ -7,6 +7,7 @@ __all__ = [
 ]
 
 import abc
+from collections.abc import Iterable
 from enum import IntEnum
 from typing import Any, Callable, Dict, List, Optional
 
@@ -158,7 +159,8 @@ class _CustomTextOperation(Operation):
         all_output_data = []
         for input_data in all_input_data:
             output_data = self._function(input_data, **self._kwargs)
-            if type(output_data) == list:
+            is_iterable = isinstance(output_data, Iterable)
+            if is_iterable:
                 all_output_data.extend(output_data)
             else:
                 all_output_data.append(output_data)
@@ -166,7 +168,7 @@ class _CustomTextOperation(Operation):
                 function_type == CustomTextOpType.CREATE_ONE_TO_N
                 and self._prov_tracer is not None
             ):
-                if type(output_data) == list:
+                if is_iterable:
                     for data in output_data:
                         self._prov_tracer.add_prov(
                             data_item=data,
