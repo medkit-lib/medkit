@@ -76,7 +76,7 @@ def test_dates_pipeline():
     date_seg = anns[0]
     assert date_seg.text == "pendant 2 mois"
 
-    date_attrs = date_seg.attrs.get(label="date")
+    date_attrs = date_seg.attrs.get(label="duration")
     assert len(date_attrs) == 1
     date_attr = date_attrs[0]
     assert isinstance(date_attr, DurationAttribute)
@@ -111,7 +111,7 @@ def test_tnm_pipeline():
     seg = _get_segment("TNM: pTx N1 M1")
 
     nlp = spacy.blank("eds")
-    nlp.add_pipe("eds.TNM")
+    nlp.add_pipe("eds.tnm")
     edsnlp_pipeline = EDSNLPPipeline(nlp)
     anns = edsnlp_pipeline.run([seg])
 
@@ -149,6 +149,25 @@ def test_family_pipeline():
     assert entity_2.text == "cancer"
     family_attrs_2 = entity_2.attrs.get(label="family")
     assert len(family_attrs_2) == 1 and family_attrs_2[0].value is True
+
+
+def test_negation_pipeline():
+    seg = _get_segment("Le scanner ne détecte aucune fracture.")
+
+    nlp = spacy.blank("eds")
+    nlp.add_pipe("eds.sentences")
+    # Dummy matcher (we need an entity to attach negation attributes to)
+    nlp.add_pipe("eds.matcher", config=dict(terms=dict(fracture="fracture")))
+    nlp.add_pipe("eds.negation")
+    edsnlp_pipeline = EDSNLPPipeline(nlp)
+    anns = edsnlp_pipeline.run([seg])
+
+    assert len(anns) == 1
+    entity = anns[0]
+    negation_attrs = entity.attrs.get(label="negation")
+    assert len(negation_attrs) == 1
+    negation_attr = negation_attrs[0]
+    assert negation_attr.value is True
 
 
 def test_custom_attribute_factory():

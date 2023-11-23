@@ -12,7 +12,7 @@ import spacy
 from medkit.core.text.operation import NEROperation
 from medkit.core.text import Segment, Entity
 from medkit.core.text import span_utils
-from medkit.text.spacy.edsnlp import build_value_attribute
+from medkit.text.spacy.edsnlp import build_tnm_attribute
 from medkit.text.ner.tnm_attribute import TNMAttribute
 
 
@@ -57,7 +57,7 @@ class EDSNLPTNMMatcher(NEROperation):
         self.attrs_to_copy = attrs_to_copy
 
         self._edsnlp = spacy.blank("eds")
-        self._edsnlp.add_pipe("eds.TNM")
+        self._edsnlp.add_pipe("eds.tnm")
 
     def run(self, segments: List[Segment]) -> List[Entity]:
         """Find and return TNM entities for all `segments`
@@ -95,7 +95,7 @@ class EDSNLPTNMMatcher(NEROperation):
 
             # create attribute storing normalized TNM values
             # (only TNM attributes should be found)
-            attr = build_value_attribute(spacy_span=spacy_span, spacy_label="value")
+            attr = build_tnm_attribute(spacy_span=spacy_span, spacy_label="tnm")
             assert isinstance(attr, TNMAttribute)
 
             # create entity

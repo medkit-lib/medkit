@@ -40,7 +40,7 @@ wheel = "*"
 iamsystem = ">=0.3"
 
 # optional
-edsnlp = {version = "^0.7", optional = true}
+edsnlp = {version = "^0.9", optional = true}
 feather-format = {version = "^0.4", optional = true}
 packaging = {version = "*", optional = true}
 pandas = [

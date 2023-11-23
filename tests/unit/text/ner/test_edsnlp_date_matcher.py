@@ -87,7 +87,7 @@ def test_duration():
     entity = entities[0]
     assert entity.text == "pendant 2 mois"
 
-    attrs = entity.attrs.get(label="date")
+    attrs = entity.attrs.get(label="duration")
     assert len(attrs) == 1
     attr = attrs[0]
     assert isinstance(attr, DurationAttribute)

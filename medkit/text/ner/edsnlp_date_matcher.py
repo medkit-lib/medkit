@@ -12,7 +12,7 @@ import spacy
 from medkit.core.text.operation import NEROperation
 from medkit.core.text import Segment, Entity
 from medkit.core.text import span_utils
-from medkit.text.spacy.edsnlp import build_date_attribute
+from medkit.text.spacy.edsnlp import build_date_attribute, build_duration_attribute
 
 
 class EDSNLPDateMatcher(NEROperation):
@@ -27,8 +27,8 @@ class EDSNLPDateMatcher(NEROperation):
 
     For each date that is found, an entity will be created with an attribute
     attached to it containing normalized values of the date components. The
-    attribute label will always be "date", and the class of the attribute will
-    be either class :class:`~medkit.text.ner.DateAttribute`,
+    attribute label will be either "date" or "duration", and the class of the
+    attribute will be either class :class:`~medkit.text.ner.DateAttribute`,
     :class:`~medkit.text.ner.RelativeDateAttribute` or
     :class:`~medkit.text.ner.DurationAttribute`.
     """
@@ -44,7 +44,7 @@ class EDSNLPDateMatcher(NEROperation):
         ----------
         output_label:
             Label to use for date entities created (the label of the
-            attributes will always be "date")
+            attributes will always be "date" or "duration")
         attrs_to_copy:
             Labels of the attributes that should be copied from the input segment
             to the created date entity. Useful for propagating context attributes
@@ -92,37 +92,42 @@ class EDSNLPDateMatcher(NEROperation):
 
     def _find_dates_in_segment(self, segment, spacy_doc) -> Iterator[Entity]:
         for spacy_span in spacy_doc.spans["dates"]:
-            # convert span span start/end to medkit spans relative to doc
-            text, spans = span_utils.extract(
-                segment.text,
-                segment.spans,
-                [(spacy_span.start_char, spacy_span.end_char)],
+            yield self._build_entity(segment, spacy_span, is_duration=False)
+        for spacy_span in spacy_doc.spans["durations"]:
+            yield self._build_entity(segment, spacy_span, is_duration=True)
+
+    def _build_entity(self, segment, spacy_span, is_duration) -> Entity:
+        # convert span span start/end to medkit spans relative to doc
+        text, spans = span_utils.extract(
+            segment.text,
+            segment.spans,
+            [(spacy_span.start_char, spacy_span.end_char)],
+        )
+        # create attribute storing normalized date or duration values
+        attr = (
+            build_duration_attribute(spacy_span=spacy_span, spacy_label="duration")
+            if is_duration
+            else build_date_attribute(spacy_span=spacy_span, spacy_label="date")
+        )
+        # create entity
+        entity = Entity(label=self.output_label, spans=spans, text=text, attrs=[attr])
+
+        # handle provenance
+        if self._prov_tracer is not None:
+            self._prov_tracer.add_prov(
+                entity, self.description, source_data_items=[segment]
             )
-            # create attribute storing normalized date values
-            attr = build_date_attribute(spacy_span=spacy_span, spacy_label="date")
-            # create entity
-            entity = Entity(
-                label=self.output_label, spans=spans, text=text, attrs=[attr]
+            self._prov_tracer.add_prov(
+                attr, self.description, source_data_items=[segment]
             )
 
-            # handle provenance
-            if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    entity, self.description, source_data_items=[segment]
-                )
-                self._prov_tracer.add_prov(
-                    attr, self.description, source_data_items=[segment]
-                )
+        # copy attrs from source segment to date entity
+        for label in self.attrs_to_copy:
+            for attr in segment.attrs.get(label=label):
+                copied_attr = attr.copy()
+                entity.attrs.add(copied_attr)
+                # handle provenance
+                if self._prov_tracer is not None:
+                    self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
-            # copy attrs from source segment to date entity
-            for label in self.attrs_to_copy:
-                for attr in segment.attrs.get(label=label):
-                    copied_attr = attr.copy()
-                    entity.attrs.add(copied_attr)
-                    # handle provenance
-                    if self._prov_tracer is not None:
-                        self._prov_tracer.add_prov(
-                            copied_attr, self.description, [attr]
-                        )
-
-            yield entity
+        return entity
