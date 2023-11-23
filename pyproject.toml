@@ -168,7 +168,7 @@ build-backend = "poetry_dynamic_versioning.backend"
 
 [tool.black]
 line-length = 88
-preview = true
+target-version = ["py38"]
 extend-exclude = ".venv"
 
 [tool.flake8]
