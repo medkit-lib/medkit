@@ -1,5 +1,6 @@
 __all__ = [
     "context",
+    "metrics",
     "ner",
     "postprocessing",
     "preprocessing",

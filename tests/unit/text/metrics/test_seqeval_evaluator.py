@@ -202,3 +202,44 @@ def test_modified_spans():
         "support": 1,
         "accuracy": 0.7,
     }
+
+
+def test_labels_remapping(document):
+    # identical to reference entities but with abbreviated labels
+    predicted_entities = [
+        Entity(label="CORP", spans=[Span(start=0, end=6)], text="medkit"),
+        Entity(label="LANG", spans=[Span(start=12, end=18)], text="python"),
+    ]
+
+    expected_metrics = {
+        "macro_precision": 1.0,
+        "macro_recall": 1.0,
+        "macro_f1-score": 1.0,
+        "support": 2,
+        "accuracy": 1.0,
+    }
+
+    # remap only predicted entities
+    evaluator = SeqEvalEvaluator(
+        labels_remapping={"CORP": "corporation", "LANG": "language"},
+        return_metrics_by_label=False,
+    )
+    metrics = evaluator.compute(
+        documents=[document], predicted_entities=[predicted_entities]
+    )
+    assert metrics == expected_metrics
+
+    # remap all entities (predicted and reference) to unique label
+    evaluator = SeqEvalEvaluator(
+        labels_remapping={
+            "CORP": "ent",
+            "LANG": "ent",
+            "corporation": "ent",
+            "language": "ent",
+        },
+        return_metrics_by_label=False,
+    )
+    metrics = evaluator.compute(
+        documents=[document], predicted_entities=[predicted_entities]
+    )
+    assert metrics == expected_metrics
