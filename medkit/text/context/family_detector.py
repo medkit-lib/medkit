@@ -135,14 +135,16 @@ class FamilyDetector(ContextOperation):
             for rule in self.rules
         ]
         self._exclusion_patterns = [
-            re.compile(
-                "|".join(
-                    f"(?:{r})" for r in rule.exclusion_regexps
-                ),  # join all exclusions in one pattern
-                flags=0 if rule.case_sensitive else re.IGNORECASE,
+            (
+                re.compile(
+                    "|".join(
+                        f"(?:{r})" for r in rule.exclusion_regexps
+                    ),  # join all exclusions in one pattern
+                    flags=0 if rule.case_sensitive else re.IGNORECASE,
+                )
+                if rule.exclusion_regexps
+                else None
             )
-            if rule.exclusion_regexps
-            else None
             for rule in self.rules
         ]
         self._has_non_unicode_sensitive_rule = any(

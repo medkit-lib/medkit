@@ -61,8 +61,7 @@ def test_basic(tmp_path):
     assert f'"{entity.uid}" [label="word: sentence"];\n' in dot_text
     assert (
         f'"{sentence_segment.uid}" -> "{syntagma_segment.uid}"'
-        ' [label="SyntagmaTokenizer"];\n'
-        in dot_text
+        ' [label="SyntagmaTokenizer"];\n' in dot_text
     )
     assert (
         f'"{syntagma_segment.uid}" -> "{entity.uid}" [label="EntityMatcher"];\n'
@@ -93,8 +92,7 @@ def test_custom_format(tmp_path):
     # operations are formatted differently
     assert (
         f'"{sentence_segment.uid}" -> "{syntagma_segment.uid}"'
-        ' [label="Operation: SyntagmaTokenizer"];\n'
-        in dot_text
+        ' [label="Operation: SyntagmaTokenizer"];\n' in dot_text
     )
 
 
@@ -114,8 +112,7 @@ def test_attrs(tmp_path):
     attr = entity.attrs.get()[0]
     assert (
         f'"{entity.uid}" -> "{attr.uid}" [style=dashed, color=grey,'
-        ' label="attr", fontcolor=grey];\n'
-        in dot_text
+        ' label="attr", fontcolor=grey];\n' in dot_text
     )
 
 
@@ -150,8 +147,7 @@ def test_sub_prov(tmp_path):
     # must have a dot entry for inner operations in sub provenance
     assert (
         f'"{sentence_segment.uid}" -> "{syntagma_segment.uid}"'
-        ' [label="SyntagmaTokenizer"];\n'
-        in dot_text_full
+        ' [label="SyntagmaTokenizer"];\n' in dot_text_full
     )
     assert (
         f'"{syntagma_segment.uid}" -> "{entity.uid}" [label="EntityMatcher"];\n'

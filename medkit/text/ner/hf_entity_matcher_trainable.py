@@ -2,6 +2,7 @@
 This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[hf-entity-matcher]`.
 """
+
 __all__ = ["HFEntityMatcherTrainable"]
 import logging
 from pathlib import Path

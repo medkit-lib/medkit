@@ -11,15 +11,15 @@ __all__ = [
 #: Rules for ligatures
 LIGATURE_RULES = [
     ("\u00c6", "AE"),
-    ("\u00E6", "ae"),
+    ("\u00e6", "ae"),
     ("\u0152", "OE"),
     ("\u0153", "oe"),
 ]
 #: Rules for fraction characters
 FRACTION_RULES = [
-    ("\u00BC", "1/4"),
-    ("\u00BD", "1/2"),
-    ("\u00BE", "3/4"),
+    ("\u00bc", "1/4"),
+    ("\u00bd", "1/2"),
+    ("\u00be", "3/4"),
     ("\u2150", "1/7"),
     ("\u2151", "1/9"),
     ("\u2152", "1/10"),
@@ -30,16 +30,16 @@ FRACTION_RULES = [
     ("\u2157", "3/5"),
     ("\u2158", "4/5"),
     ("\u2159", "1/6"),
-    ("\u215A", "5/6"),
-    ("\u215B", "1/8"),
-    ("\u215C", "3/8"),
-    ("\u215D", "5/8"),
-    ("\u215E", "7/8"),
+    ("\u215a", "5/6"),
+    ("\u215b", "1/8"),
+    ("\u215c", "3/8"),
+    ("\u215d", "5/8"),
+    ("\u215e", "7/8"),
     ("\u2189", "0/3"),
 ]
 #: Rules for non-standard spaces
 SPACE_RULES = [
-    ("\u00A0", " "),
+    ("\u00a0", " "),
     ("\u1680", " "),
     ("\u2002", " "),
     ("\u2003", " "),
@@ -49,20 +49,20 @@ SPACE_RULES = [
     ("\u2007", " "),
     ("\u2008", " "),
     ("\u2009", " "),
-    ("\u200A", " "),
-    ("\u200B", " "),
-    ("\u202F", " "),
-    ("\u205F", " "),
+    ("\u200a", " "),
+    ("\u200b", " "),
+    ("\u202f", " "),
+    ("\u205f", " "),
     ("\u2420", " "),
     ("\u3000", " "),
-    ("\u303F", " "),
-    ("\uFEFF", " "),
+    ("\u303f", " "),
+    ("\ufeff", " "),
 ]
 
 #: Rules for sign chars
 SIGN_RULES = [
-    ("\u00A9", ""),  # copyright
-    ("\u00AE", ""),  # registered
+    ("\u00a9", ""),  # copyright
+    ("\u00ae", ""),  # registered
     ("\u2122", ""),  # trade
 ]
 
@@ -70,31 +70,31 @@ SIGN_RULES = [
 DOT_RULES = [
     # horizontal ellipsis
     ("\u2026", "..."),
-    ("\u22EF", "..."),
+    ("\u22ef", "..."),
 ]
 
 #: RegexpReplacer quotation marks: replace double and single quotation marks
 QUOTATION_RULES = [
     ("»", '"'),  # normalize double quotation marks
     ("«", '"'),  # replace double quotation marks
-    ("\u201C", '"'),
-    ("\u201D", '"'),
-    ("\u201E", '"'),
-    ("\u201F", '"'),
+    ("\u201c", '"'),
+    ("\u201d", '"'),
+    ("\u201e", '"'),
+    ("\u201f", '"'),
     ("\u2039", '"'),
-    ("\u203A", '"'),
-    ("\u02F5", '"'),
-    ("\u02F6", '"'),
-    ("\u02DD", '"'),
-    ("\uFF02", '"'),
-    ("\u201A", ""),  # single low quotation (remove)
+    ("\u203a", '"'),
+    ("\u02f5", '"'),
+    ("\u02f6", '"'),
+    ("\u02dd", '"'),
+    ("\uff02", '"'),
+    ("\u201a", ""),  # single low quotation (remove)
     ("\u2018", "'"),  # left side single quotation
     ("\u2019", "'"),  # right side single quotation
-    ("\u201B", "'"),  # single high reverse quotation
-    ("\u02CA", "'"),  # grave accent
+    ("\u201b", "'"),  # single high reverse quotation
+    ("\u02ca", "'"),  # grave accent
     ("\u0060", "'"),
-    ("\u02CB", "'"),  # acute accent
-    ("\u00B4", "'"),
+    ("\u02cb", "'"),  # acute accent
+    ("\u00b4", "'"),
 ]
 
 #: All pre-defined rules for CharReplacer

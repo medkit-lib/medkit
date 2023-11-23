@@ -187,11 +187,14 @@ class RegexpMatcher(NEROperation):
             for rule in self.rules
         ]
         self._exclusion_patterns = [
-            re.compile(
-                rule.exclusion_regexp, flags=0 if rule.case_sensitive else re.IGNORECASE
+            (
+                re.compile(
+                    rule.exclusion_regexp,
+                    flags=0 if rule.case_sensitive else re.IGNORECASE,
+                )
+                if rule.exclusion_regexp is not None
+                else None
             )
-            if rule.exclusion_regexp is not None
-            else None
             for rule in self.rules
         ]
         self._has_non_unicode_sensitive_rule = any(

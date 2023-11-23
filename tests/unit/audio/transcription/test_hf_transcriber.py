@@ -68,8 +68,7 @@ def test_basic():
 
 
 def test_no_formatting():
-    """No reformatting of transcribed text (raw text as returned by transformers pipeline)
-    """
+    """No reformatting of transcribed text (raw text as returned by transformers pipeline)"""
     transcriber = HFTranscriber(
         model="mock-model",
         output_label="transcribed_text",

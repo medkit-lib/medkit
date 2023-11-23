@@ -48,7 +48,7 @@ def test_mt_samples_without_pipeline(caplog):
         (r"(?<=[0-9]\s)°", " degrés"),
         (r"(?<=[0-9])°", " degrés"),
         ("\u00c6", "AE"),  # ascii
-        ("\u00E6", "ae"),  # ascii
+        ("\u00e6", "ae"),  # ascii
         ("\u0152", "OE"),  # ascii
         ("\u0153", "oe"),  # ascii
         (r"«|»", '"'),
@@ -97,7 +97,7 @@ def test_mt_samples_with_doc_pipeline():
         (r"(?<=[0-9]\s)°", " degrés"),
         (r"(?<=[0-9])°", " degrés"),
         ("\u00c6", "AE"),  # ascii
-        ("\u00E6", "ae"),  # ascii
+        ("\u00e6", "ae"),  # ascii
         ("\u0152", "OE"),  # ascii
         ("\u0153", "oe"),  # ascii
         (r"«|»", '"'),

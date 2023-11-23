@@ -109,8 +109,7 @@ class _AttributeAdder:
 
 
 def test_single_step():
-    """Minimalist doc pipeline with only one step, retrieving input annotations from doc
-    """
+    """Minimalist doc pipeline with only one step, retrieving input annotations from doc"""
     uppercaser = _Uppercaser(output_label="uppercased_sentence")
     step = PipelineStep(
         operation=uppercaser,
@@ -345,8 +344,7 @@ def test_labels_for_input_key_different_order():
 
 
 def test_no_labels_for_input_key():
-    """DocPipeline defaulting to raw_segment for the unique input_key of the underlying pipeline
-    """
+    """DocPipeline defaulting to raw_segment for the unique input_key of the underlying pipeline"""
     uppercaser = _Uppercaser(output_label="uppercased_full_text")
     step = PipelineStep(
         operation=uppercaser,

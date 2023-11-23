@@ -257,8 +257,7 @@ def test_no_text_after_parenthesis():
 
     text, spans = clean_parentheses_eds(text, spans)
     assert (
-        text
-        == "Les bilans réalisés ; biologique, métabolique "
+        text == "Les bilans réalisés ; biologique, métabolique "
         "en particulier à la recherche de GAMT et X fragile."
     )
     assert spans == [
@@ -299,8 +298,7 @@ def test_point_between_characters():
     spans = [Span(0, 86)]
     text, spans = replace_point_before_keywords(text, spans, keywords=["pour", "avec"])
     assert (
-        text
-        == "We found a point before the keyword: pour  and before avec, we should"
+        text == "We found a point before the keyword: pour  and before avec, we should"
         " remove them."
     )
     assert spans == [

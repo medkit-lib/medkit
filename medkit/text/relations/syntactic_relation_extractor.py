@@ -3,7 +3,6 @@ This module needs extra-dependencies not installed as core dependencies of medki
 To install them, use `pip install medkit-lib[syntactic-relation-extractor]`.
 """
 
-
 __all__ = ["SyntacticRelationExtractor"]
 import logging
 from pathlib import Path
