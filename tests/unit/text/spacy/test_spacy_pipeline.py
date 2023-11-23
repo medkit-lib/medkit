@@ -14,8 +14,7 @@ from medkit.text.spacy import SpacyPipeline
     retokenizes=False,
 )
 def _custom_component(spacy_doc: Doc) -> Doc:
-    """Mock spacy component, this component adds two entities including 'has_numbers' as extension
-    """
+    """Mock spacy component, this component adds two entities including 'has_numbers' as extension"""
     # set an attribute in spacy
     if not SpacySpan.has_extension("has_numbers"):
         SpacySpan.set_extension("has_numbers", default=None)

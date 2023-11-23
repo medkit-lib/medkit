@@ -156,8 +156,7 @@ def test_case_sensitive():
 
 
 def test_unicode_sensitive():
-    """Rule term and entity in text have different non-ascii chars, but are matched anyway
-    """
+    """Rule term and entity in text have different non-ascii chars, but are matched anyway"""
     sentence = _get_sentence_segment()
     sentence.text = sentence.text.replace("diabète", "dïabete")
 

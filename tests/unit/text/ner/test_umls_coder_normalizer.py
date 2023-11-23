@@ -94,8 +94,7 @@ def _get_entities(nb_entities):
 
 
 def test_threshold(embeddings_cache_dir):
-    """Threshold should leave some entities without normalization attributes when similarity is low
-    """
+    """Threshold should leave some entities without normalization attributes when similarity is low"""
 
     # 1st entity with small typo
     entity_1 = _get_entity(label="disease", text="type 1 diabets")
@@ -207,8 +206,7 @@ def test_nb_umls_embeddings_chunks(embeddings_cache_dir):
 
 
 def test_inconsistent_params(module_tmp_dir):
-    """Use UMLS embeddings dir containing embeddings pre-computed with different params
-    """
+    """Use UMLS embeddings dir containing embeddings pre-computed with different params"""
 
     embeddings_cache_dir = module_tmp_dir / "umls_coder_cache_cls"
     # first, generate embeddings with "cls" method in umls_embeddings_dir

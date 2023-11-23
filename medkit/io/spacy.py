@@ -3,7 +3,6 @@ This module needs extra-dependencies not installed as core dependencies of medki
 To install them, use `pip install medkit-lib[spacy]`.
 """
 
-
 __all__ = ["SpacyInputConverter", "SpacyOutputConverter"]
 
 from typing import List, Optional
@@ -20,8 +19,7 @@ from medkit.text.spacy.spacy_utils import (
 
 
 class SpacyInputConverter:
-    """Class in charge of converting spacy documents into a collection of TextDocuments.
-    """
+    """Class in charge of converting spacy documents into a collection of TextDocuments."""
 
     def __init__(
         self,

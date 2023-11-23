@@ -15,8 +15,7 @@ class DummyTextCatConfig:
 
 
 class DummyTextCat(nn.Module):
-    """Construct a dummy model for text classification using a embedding bag architecture
-    """
+    """Construct a dummy model for text classification using a embedding bag architecture"""
 
     def __init__(self, config: DummyTextCatConfig):
         super().__init__()

@@ -10,8 +10,7 @@ _EPS = 1e-12  # epsilon value to avoid zero-div
 
 
 class PowerNormalizer(PreprocessingOperation):
-    """Normalization operation setting the RMS power of each audio signal to a target value.
-    """
+    """Normalization operation setting the RMS power of each audio signal to a target value."""
 
     def __init__(
         self,

@@ -1,4 +1,5 @@
 """Metrics to assess inter-annotator agreement"""
+
 __all__ = ["krippendorff_alpha"]
 from typing import List, Union
 import numpy as np
