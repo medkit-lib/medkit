@@ -27,6 +27,10 @@ class _MockedPASegment(NamedTuple):
     start: float
     end: float
 
+    @property
+    def duration(self) -> float:
+        return self.end - self.start
+
 
 class _MockedPAAnnotation:
     def __init__(self, segments, labels):

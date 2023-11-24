@@ -55,6 +55,7 @@ class PASpeakerDetector(SegmentationOperation):
         min_nb_speakers: Optional[int] = None,
         max_nb_speakers: Optional[int] = None,
         clustering: Literal["AgglomerativeClustering"] = "AgglomerativeClustering",
+        min_duration: float = 0.1,
         device: int = -1,
         segmentation_batch_size: int = 1,
         embedding_batch_size: int = 1,
@@ -86,6 +87,9 @@ class PASpeakerDetector(SegmentationOperation):
             Maximum number of speakers expected to be found.
         clustering:
             Clustering method to use.
+        min_duration:
+            Minimum duration of speech segments, in seconds (short segments will
+            be discarded).
         device:
             Device to use for pytorch models. Follows the Hugging Face
             convention (`-1` for cpu and device number for gpu, for instance `0`
@@ -110,6 +114,7 @@ class PASpeakerDetector(SegmentationOperation):
         self.output_label = output_label
         self.min_nb_speakers = min_nb_speakers
         self.max_nb_speakers = max_nb_speakers
+        self.min_duration = min_duration
 
         torch_device = torch.device("cpu" if device < 0 else f"cuda:{device}")
         self._pipeline = SpeakerDiarization(
@@ -157,6 +162,8 @@ class PASpeakerDetector(SegmentationOperation):
         )
 
         for turn, _, speaker in diarization.itertracks(yield_label=True):
+            if turn.duration < self.min_duration:
+                continue
             # trim original audio to turn start/end points
             turn_audio = audio.trim_duration(turn.start, turn.end)
 
