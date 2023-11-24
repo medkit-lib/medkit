@@ -44,7 +44,6 @@ def _get_segment():
     )
 
 
-@pytest.mark.xfail
 def test_basic():
     speaker_detector = PASpeakerDetector(
         segmentation_model=_SEGMENTATION_MODEL,
