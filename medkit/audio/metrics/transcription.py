@@ -196,12 +196,12 @@ class TranscriptionEvaluator:
 
             if not transcription_attrs:
                 raise ValueError(
-                    f"Attribute with label '{self.speaker_label}' not found on"
+                    f"Attribute with label '{self.transcription_label}' not found on"
                     " speech segment"
                 )
             if len(transcription_attrs) > 1:
                 logger.warning(
-                    f"Found several attributes with label '{self.speaker_label}',"
+                    f"Found several attributes with label '{self.transcription_label}',"
                     " ignoring all but first"
                 )
             transcription = transcription_attrs[0].value
