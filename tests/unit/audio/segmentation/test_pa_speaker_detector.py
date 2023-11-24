@@ -46,14 +46,12 @@ class _MockedPAAnnotation:
 
 # mock of SpeakerDiarization class used by PASpeakerDetector
 class _MockedPipeline:
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self):
+        self.segmentation_batch_size = 1
+        self.embedding_batch_size = 1
 
     def to(self, device):
         return self
-
-    def instantiate(self, params):
-        pass
 
     def apply(self, file, **kwargs):
         # return hard coded results (always split in half)
@@ -72,6 +70,10 @@ def _mocked_pipeline(module_mocker):
         "medkit.audio.segmentation.pa_speaker_detector.SpeakerDiarization",
         _MockedPipeline,
     )
+    module_mocker.patch(
+        "medkit.audio.segmentation.pa_speaker_detector.Pipeline.from_pretrained",
+        lambda *args, **kwargs: _MockedPipeline(),
+    )
 
 
 def _get_segment(duration):
@@ -89,10 +91,7 @@ def test_basic():
     """Basic behavior"""
 
     speaker_detector = PASpeakerDetector(
-        segmentation_model="mock-segmentation-model",
-        embedding_model="mock-segmentation-model",
-        clustering="MockClusteringMethod",
-        pipeline_params={},
+        model="mock-pipeline",
         output_label=_OUTPUT_LABEL,
         min_nb_speakers=2,
         max_nb_speakers=2,
@@ -139,10 +138,7 @@ def test_basic():
 def test_multiple():
     """Several segments passed as input"""
     speaker_detector = PASpeakerDetector(
-        segmentation_model="mock-segmentation-model",
-        embedding_model="mock-segmentation-model",
-        clustering="MockClusteringMethod",
-        pipeline_params={},
+        model="mock-pipeline",
         output_label=_OUTPUT_LABEL,
         min_nb_speakers=2,
         max_nb_speakers=2,
@@ -198,10 +194,7 @@ def test_prov():
     """Generated provenance nodes"""
 
     speaker_detector = PASpeakerDetector(
-        segmentation_model="mock-segmentation-model",
-        embedding_model="mock-segmentation-model",
-        clustering="MockClusteringMethod",
-        pipeline_params={},
+        model="mock-pipeline",
         output_label=_OUTPUT_LABEL,
         min_nb_speakers=2,
         max_nb_speakers=2,
