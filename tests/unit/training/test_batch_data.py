@@ -36,7 +36,7 @@ def test_dict_properties():
 @pytest.mark.skipif(not TEST_CUDA, reason="cuda is not available")
 def test_to_device():
     cpu = torch.device("cpu")
-    gpu = torch.device("gpu")
+    gpu = torch.device("cuda:0")
     data = BatchData(
         inputs=["hello", "world"], outputs=[torch.tensor(0), torch.tensor(1)]
     )
