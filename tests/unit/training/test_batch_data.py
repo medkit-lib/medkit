@@ -37,9 +37,7 @@ def test_dict_properties():
 def test_to_device():
     cpu = torch.device("cpu")
     gpu = torch.device("cuda:0")
-    data = BatchData(
-        inputs=["hello", "world"], outputs=[torch.tensor(0), torch.tensor(1)]
-    )
+    data = BatchData(inputs=["hello", "world"], outputs=torch.tensor([0, 1]))
     new_data = data.to_device(gpu)
     for tensor_cpu, tensor_gpu in zip(data["outputs"], new_data["outputs"]):
         assert tensor_cpu.device == cpu
