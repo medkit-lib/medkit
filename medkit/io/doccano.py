@@ -482,7 +482,6 @@ class DoccanoInputConverter:
         self, doc_line: Dict[str, Any]
     ) -> TextDocument:
         """Parse a dictionary and return a TextDocument with an attribute.
-        The attribute will be in its raw segment.
 
         Parameters
         ----------
@@ -510,9 +509,7 @@ class DoccanoInputConverter:
             self._prov_tracer.add_prov(attr, self.description, source_data_items=[])
 
         doc = TextDocument(text=doccano_doc.text, metadata=doccano_doc.metadata)
-        # FIXME: related to issue #39
-        # the attribute is added to the 'raw_segment', as doc attributes are not supported
-        doc.raw_segment.attrs.add(attr)
+        doc.attrs.add(attr)
         return doc
 
 
