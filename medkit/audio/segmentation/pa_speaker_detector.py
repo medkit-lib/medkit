@@ -6,8 +6,7 @@ To install them, use `pip install medkit-lib[pa-speaker-detector]`.
 __all__ = ["PASpeakerDetector"]
 
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Union
-from typing_extensions import Literal
+from typing import Iterator, List, Optional, Union
 
 # When pyannote and spacy are both installed, a conflict might occur between the
 # ujson library used by pandas (a pyannote dependency) and the ujson library used
@@ -18,6 +17,7 @@ from typing_extensions import Literal
 # we import pandas manually first.
 # So as a workaround, we always import pandas before importing something from pyannote
 import pandas  # noqa: F401
+from pyannote.audio import Pipeline
 from pyannote.audio.pipelines import SpeakerDiarization
 import torch
 
@@ -48,13 +48,11 @@ class PASpeakerDetector(SegmentationOperation):
 
     def __init__(
         self,
-        segmentation_model: Union[str, Path],
-        embedding_model: Union[str, Path],
+        model: Union[str, Path],
         output_label: str,
-        pipeline_params: Optional[Dict] = None,
         min_nb_speakers: Optional[int] = None,
         max_nb_speakers: Optional[int] = None,
-        clustering: Literal["AgglomerativeClustering"] = "AgglomerativeClustering",
+        min_duration: float = 0.1,
         device: int = -1,
         segmentation_batch_size: int = 1,
         embedding_batch_size: int = 1,
@@ -64,28 +62,19 @@ class PASpeakerDetector(SegmentationOperation):
         """
         Parameters
         ----------
-        segmentation_model:
-            Name (on the HuggingFace models hub) or path of the `PyanNet`
-            segmentation model. When a path, should point to the .bin file
-            containing the model.
-        embedding_model:
-            Name (on the HuggingFace models hub) or path to the embedding model.
-            When a path to a speechbrain model, should point to the directory containing
-            the model weights and hyperparameters.
+        model:
+            Name (on the HuggingFace models hub) or path of a pretrained
+            pipeline. When a path, should point to the .yaml file containing the
+            pipeline configuration.
         output_label:
             Label of generated turn segments.
-        pipeline_params:
-            Dictionary of segmentation and clustering parameters. The dictionary
-            can hold a "segmentation" key and a "clustering" key pointing to
-            sub dictionaries. Refer to the pyannote documentation for the
-            supported parameters segmentation and clustering parameters
-            (clustering parameters depend on the clustering method used).
         min_nb_speakers:
             Minimum number of speakers expected to be found.
         max_nb_speakers:
             Maximum number of speakers expected to be found.
-        clustering:
-            Clustering method to use.
+        min_duration:
+            Minimum duration of speech segments, in seconds (short segments will
+            be discarded).
         device:
             Device to use for pytorch models. Follows the Hugging Face
             convention (`-1` for cpu and device number for gpu, for instance `0`
@@ -110,18 +99,20 @@ class PASpeakerDetector(SegmentationOperation):
         self.output_label = output_label
         self.min_nb_speakers = min_nb_speakers
         self.max_nb_speakers = max_nb_speakers
+        self.min_duration = min_duration
 
         torch_device = torch.device("cpu" if device < 0 else f"cuda:{device}")
-        self._pipeline = SpeakerDiarization(
-            segmentation=str(segmentation_model),
-            embedding=str(embedding_model),
-            clustering=clustering,
-            embedding_exclude_overlap=True,
-            segmentation_batch_size=segmentation_batch_size,
-            embedding_batch_size=embedding_batch_size,
-            use_auth_token=hf_auth_token,
-        ).to(torch_device)
-        self._pipeline.instantiate(pipeline_params)
+        self._pipeline = Pipeline.from_pretrained(model, use_auth_token=hf_auth_token)
+        if self._pipeline is None:
+            raise Exception(f"Could not instantiate pretrained pipeline with '{model}'")
+        if not isinstance(self._pipeline, SpeakerDiarization):
+            raise Exception(
+                f"'{model}' does not correspond to a SpeakerDiarization pipeline. Got"
+                f" object of type {type(self._pipeline)}"
+            )
+        self._pipeline.to(torch_device)
+        self._pipeline.segmentation_batch_size = segmentation_batch_size
+        self._pipeline.embedding_batch_size = embedding_batch_size
 
     def run(self, segments: List[Segment]) -> List[Segment]:
         """Return all turn segments detected for all input `segments`.
@@ -157,6 +148,8 @@ class PASpeakerDetector(SegmentationOperation):
         )
 
         for turn, _, speaker in diarization.itertracks(yield_label=True):
+            if turn.duration < self.min_duration:
+                continue
             # trim original audio to turn start/end points
             turn_audio = audio.trim_duration(turn.start, turn.end)
 

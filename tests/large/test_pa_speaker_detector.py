@@ -13,24 +13,7 @@ from medkit.audio.segmentation.pa_speaker_detector import (
     PASpeakerDetector,
 )  # noqa: E402
 
-# model weights provided by pyannote and speechbrain on huggingface hub
-_TEST_DATA_DIR = Path(__file__).parent.parent / "large_data"
-_SEGMENTATION_MODEL = _TEST_DATA_DIR / "pyannote" / "segmentation" / "pytorch_model.bin"
-_EMBEDDING_MODEL = _TEST_DATA_DIR / "speechbrain" / "spkrec-ecapa-voxceleb"
-# simple params that will work with our test file
-_CLUSTERING = "AgglomerativeClustering"
-_PIPELINE_PARAMS = {
-    "segmentation": {
-        "min_duration_off": 0.0,
-    },
-    "clustering": {
-        "method": "centroid",
-        "min_cluster_size": 12,
-        "threshold": 0.7,
-    },
-}
-
-
+_PIPELINE_MODEL = Path(__file__).parent / "diar_pipeline_config.yaml"
 _AUDIO = FileAudioBuffer("tests/data/audio/dialog_long.ogg")
 _SPEAKER_CHANGE_TIME = 4.0
 _MARGIN = 1.0
@@ -44,14 +27,10 @@ def _get_segment():
     )
 
 
-@pytest.mark.xfail
 def test_basic():
     speaker_detector = PASpeakerDetector(
-        segmentation_model=_SEGMENTATION_MODEL,
-        embedding_model=_EMBEDDING_MODEL,
-        clustering=_CLUSTERING,
+        model=_PIPELINE_MODEL,
         output_label="turn",
-        pipeline_params=_PIPELINE_PARAMS,
         min_nb_speakers=2,
         max_nb_speakers=2,
     )
