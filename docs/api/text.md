@@ -90,6 +90,8 @@ coder normalizer
     - Translation operation relying on [HuggingFace transformers](https://huggingface.co/docs/transformers/) models
 *   - {mod}`AttributeDuplicator<medkit.text.postprocessing.attribute_duplicator>`
     - Propagation of attributes based on annotation spans
+*   - {mod}`DocumentSplitter<medkit.text.postprocessing.document_splitter>`
+    - A component to divide text documents using its segments as a reference
 :::
 
 ## Pre-processing modules
@@ -554,6 +556,12 @@ For the moment, you can use this module to:
 - duplicate attributes bewteen segments. For example, you can duplicate an attribute from a sentence to its entities.
 
 - filter overlapping entities: useful when creating named entity reconigtion (NER) datasets
+- create mini-documents from a {class}`~.core.text.TextDocument`. 
+  
+
+```{admonition} Examples
+Creating mini-documents from sections: [document splitter](../examples/text_segmentation/document.md)
+```
 
 :::{note}
 For more details about public API, refer to {mod}`~.text.postprocessing`.

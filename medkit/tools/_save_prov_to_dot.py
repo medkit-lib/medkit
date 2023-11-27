@@ -11,7 +11,7 @@ from medkit.core import (
     IdentifiableDataItemWithAttrs,
     Attribute,
 )
-from medkit.core.text import Segment
+from medkit.core.text import Segment, TextDocument
 
 
 def save_prov_to_dot(
@@ -63,6 +63,7 @@ def save_prov_to_dot(
 _DEFAULT_DATA_ITEMS_FORMATTERS = {
     Segment: lambda s: f"{s.label}: {s.text}",
     Attribute: lambda a: f"{a.label}: {a.value}",
+    TextDocument: lambda d: f"doc_text:{d.text}",
 }
 
 

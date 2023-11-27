@@ -50,6 +50,19 @@ def test_compute_nested_segments(doc):
     assert nested[1][1][0].uid == "target_1"
 
 
+def test_compute_nested_segments_target_no_fully_contained(doc):
+    # align syntagme with entities
+    # sytagme_0 goes from 0:37, target goes from 35:40
+    # so, target should not be a nested segment
+    source = [doc.anns.get_by_id("syntagme_0")]
+    target = [_extract_segment(doc.raw_segment, [(35, 40)], "disease", uid="target_x")]
+
+    nested = compute_nested_segments(source_segments=source, target_segments=target)
+    assert len(nested) == 1
+    assert len(nested[0][1]) == 0
+    assert nested[0][0].uid == "syntagme_0"
+
+
 def test__create_segments_tree(doc):
     targets = doc.anns.get(label="disease")
     tree = _create_segments_tree(target_segments=targets)
