@@ -1,0 +1,24 @@
+version: 2
+
+# Adapted from:
+# - <https://docs.readthedocs.io/en/stable/build-customization.html#install-dependencies-with-poetry>
+# - <https://docs.readthedocs.io/en/stable/faq.html#how-can-i-deploy-jupyter-book-projects-on-read-the-docs>
+build:
+  os: ubuntu-22.04
+  apt_packages:
+    - graphviz
+    - libsndfile1
+  tools:
+    python: "3.11"
+  jobs:
+    post_create_environment:
+      - pip install poetry
+      - poetry config --local virtualenvs.create false
+    post_install:
+      - poetry install --all-extras --with docs
+    pre_build:
+      - jupyter-book config sphinx docs/
+
+sphinx:
+  builder: html
+  fail_on_warning: true
