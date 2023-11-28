@@ -482,7 +482,6 @@ class DoccanoInputConverter:
         self, doc_line: Dict[str, Any]
     ) -> TextDocument:
         """Parse a dictionary and return a TextDocument with an attribute.
-        The attribute will be in its raw segment.
 
         Parameters
         ----------
@@ -510,9 +509,7 @@ class DoccanoInputConverter:
             self._prov_tracer.add_prov(attr, self.description, source_data_items=[])
 
         doc = TextDocument(text=doccano_doc.text, metadata=doccano_doc.metadata)
-        # FIXME: related to issue #39
-        # the attribute is added to the 'raw_segment', as doc attributes are not supported
-        doc.raw_segment.attrs.add(attr)
+        doc.attrs.add(attr)
         return doc
 
 
@@ -686,7 +683,7 @@ class DoccanoOutputConverter:
         Parameters
         ----------
         medkit_doc:
-            Document to convert, it may contain entities and relations
+            Document to convert, it may contain entities
 
         Returns
         -------
@@ -721,13 +718,12 @@ class DoccanoOutputConverter:
         self, medkit_doc: TextDocument
     ) -> Dict[str, Any]:
         """Convert a TextDocument to a doc_line compatible with
-        the doccano text classification task. The attribute to add as a label
-        should be in its raw segment.
+        the doccano text classification task.
 
         Parameters
         ----------
-        doc_line:
-            Dictionary with doccano annotation.
+        medkit_doc:
+            Document to convert, it may contain at least one attribute to convert.
 
         Returns
         -------
@@ -735,7 +731,7 @@ class DoccanoOutputConverter:
             Dictionary with doccano annotation. It may contain
             text ans its label (a category(str))
         """
-        attributes = medkit_doc.raw_segment.attrs.get(label=self.attr_label)
+        attributes = medkit_doc.attrs.get(label=self.attr_label)
 
         if not attributes:
             raise KeyError(

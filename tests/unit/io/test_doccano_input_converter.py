@@ -73,9 +73,8 @@ def test_text_classification_converter(tmp_path):
     assert len(document.anns.relations) == 0
     assert document.metadata == {}
 
-    segment = document.raw_segment
     expected_label = converter.attr_label
-    attrs = segment.attrs.get(label=expected_label)
+    attrs = document.attrs.get(label=expected_label)
     assert len(attrs) == 1
     assert attrs[0].value == "header"
 
@@ -123,7 +122,7 @@ def test_prov(tmp_path, task, check_prov_entity):
     docs = converter.load_from_directory_zip(dir_path=f"{tmp_path}/{task.value}")
 
     doc = docs[0]
-    ann = doc.anns.entities[0] if check_prov_entity else doc.raw_segment.attrs.get()[0]
+    ann = doc.anns.entities[0] if check_prov_entity else doc.attrs.get()[0]
     prov = prov_tracer.get_prov(ann.uid)
     assert prov.data_item == ann
     assert prov.op_desc == converter.description

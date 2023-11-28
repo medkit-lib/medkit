@@ -47,7 +47,7 @@ def _get_doc_by_task(task: DoccanoTask):
 
     elif task == DoccanoTask.TEXT_CLASSIFICATION:
         attr = Attribute(label="category", value="header")
-        doc.raw_segment.attrs.add(attr)
+        doc.attrs.add(attr)
 
     # only RELATION EXTRACTION has metadata
     if task == DoccanoTask.RELATION_EXTRACTION:
