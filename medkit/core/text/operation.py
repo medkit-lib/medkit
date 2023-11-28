@@ -51,22 +51,14 @@ class SegmentationOperation(Operation):
 
 
 class CustomTextOpType(IntEnum):
-    """
-    Enum class listing all supported function types for creating custom text operations
-
-    Attributes
-    ----------
-    CREATE_ONE_TO_N
-        Takes 1 data item, Return N new data items
-    EXTRACT_ONE_TO_N
-        Takes 1 data item, Return N existing data items
-    FILTER
-        Takes 1 data item, Returns True/False
-    """
+    """Supported function types for creating custom text operations."""
 
     CREATE_ONE_TO_N = 1
+    """Take 1 data item, return N new data items."""
     EXTRACT_ONE_TO_N = 2
+    """Take 1 data item, return N existing data items"""
     FILTER = 3
+    """Take 1 data item, return True or False."""
 
 
 class _CustomTextOperation(Operation):
