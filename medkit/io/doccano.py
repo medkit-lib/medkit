@@ -683,7 +683,7 @@ class DoccanoOutputConverter:
         Parameters
         ----------
         medkit_doc:
-            Document to convert, it may contain entities and relations
+            Document to convert, it may contain entities
 
         Returns
         -------
@@ -718,13 +718,12 @@ class DoccanoOutputConverter:
         self, medkit_doc: TextDocument
     ) -> Dict[str, Any]:
         """Convert a TextDocument to a doc_line compatible with
-        the doccano text classification task. The attribute to add as a label
-        should be in its raw segment.
+        the doccano text classification task.
 
         Parameters
         ----------
-        doc_line:
-            Dictionary with doccano annotation.
+        medkit_doc:
+            Document to convert, it may contain at least one attribute to convert.
 
         Returns
         -------
@@ -732,7 +731,7 @@ class DoccanoOutputConverter:
             Dictionary with doccano annotation. It may contain
             text ans its label (a category(str))
         """
-        attributes = medkit_doc.raw_segment.attrs.get(label=self.attr_label)
+        attributes = medkit_doc.attrs.get(label=self.attr_label)
 
         if not attributes:
             raise KeyError(
