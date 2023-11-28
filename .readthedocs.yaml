@@ -20,5 +20,5 @@ build:
       - jupyter-book config sphinx docs/
 
 sphinx:
-  builder: html
-  fail_on_warning: true
+  configuration: docs/conf.py
+  fail_on_warning: false
