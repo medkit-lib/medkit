@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "medkit-lib"
-version = "0.11.0"
+version = "0.12.0"
 description = "A Python library for a learning health system"
 readme = "README.md"
 repository = "https://gitlab.inria.fr/heka/medkit/"
