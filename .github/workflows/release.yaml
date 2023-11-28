@@ -1,0 +1,25 @@
+name: release
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: read
+
+# Adapted from <https://docs.pypi.org/trusted-publishers/using-a-publisher/>
+jobs:
+  pypi:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+      - name: build
+        run: pipx run build
+      - name: publish
+        uses: pypa/gh-action-pypi-publish@release/v1
