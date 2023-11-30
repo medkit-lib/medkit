@@ -17,8 +17,8 @@ To install medkit :
 # Install medkit with required dependencies
 python -m pip install 'medkit-lib'
 
-# Install medkit with extra optional dependencies
-python -m pip install 'medkit-lib[optional]'
+# Install medkit with all extra dependencies
+python -m pip install 'medkit-lib[all]'
 ```
 
 :::{note}
@@ -29,7 +29,7 @@ Here is an example with conda:
 ```
 conda create -n medkit-tuto python=3.8
 conda activate medkit-tuto
-pip install 'medkit-lib[optional]'
+pip install 'medkit-lib[all]'
 ```
 
 ## Install a development version
