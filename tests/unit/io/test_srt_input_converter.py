@@ -1,16 +1,18 @@
 from pathlib import Path
 
+import pytest
+
 from medkit.core import ProvTracer
 from medkit.core.audio import FileAudioBuffer
-from medkit.io import SRTInputConverter
 
+srt = pytest.importorskip("medkit.io.srt")
 
 _SRT_DIR = Path("tests/data/srt")
 _AUDIO_DIR = Path("tests/data/audio")
 
 
 def test_basic():
-    converter = SRTInputConverter()
+    converter = srt.SRTInputConverter()
     docs = converter.load(_SRT_DIR, _AUDIO_DIR, audio_ext=".ogg")
     assert len(docs) == 1
     doc = docs[0]
@@ -39,7 +41,7 @@ def test_basic():
 
 def test_prov():
     prov_tracer = ProvTracer()
-    converter = SRTInputConverter()
+    converter = srt.SRTInputConverter()
     converter.set_prov_tracer(prov_tracer)
 
     docs = converter.load(_SRT_DIR, _AUDIO_DIR, audio_ext=".ogg")

@@ -8,11 +8,7 @@ __all__ = [
     "medkit_json",
     "RTTMInputConverter",
     "RTTMOutputConverter",
-    "SRTInputConverter",
-    "SRTOutputConverter",
 ]
-
-from medkit.core.utils import modules_are_available
 
 from .brat import BratInputConverter, BratOutputConverter
 from .doccano import (
@@ -23,7 +19,17 @@ from .doccano import (
 )
 from . import medkit_json
 from .rttm import RTTMInputConverter, RTTMOutputConverter
-from .srt import SRTInputConverter, SRTOutputConverter
 
-if modules_are_available(["spacy"]):
-    __all__.append("spacy")
+try:
+    from .spacy import SpacyInputConverter, SpacyOutputConverter  # noqa: F401
+
+    __all__.extend(["SpacyInputConverter", "SpacyOutputConverter"])
+except ImportError:
+    pass
+
+try:
+    from .srt import SRTInputConverter, SRTOutputConverter  # noqa: F401
+
+    __all__.extend(["SRTInputConverter", "SRTOutputConverter"])
+except ImportError:
+    pass
