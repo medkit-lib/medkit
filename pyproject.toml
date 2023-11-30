@@ -102,6 +102,30 @@ syntactic-relation-extractor = ["spacy"]
 training = ["torch"]
 umls-coder-normalizer = ["feather-format", "pandas", "torch", "transformers"]
 webrtc-voice-detector = ["webrtcvad"]
+all = [
+    "edsnlp",
+    "feather-format",
+    "packaging",
+    "pandas",
+    "PyRuSH",
+    "pyannote-core",
+    "pyannote-metrics",
+    "pyannote-audio",
+    "quickumls",
+    "resampy",
+    "sacremoses",
+    "sentencepiece",
+    "seqeval",
+    "spacy",
+    "speechbrain",
+    "torch",
+    "torchaudio",
+    "transformers",
+    "unqlite",
+    "webrtcvad",
+    "pysrt",
+    "scikit-learn",
+]
 
 [[tool.poetry.source]]
 name = "PyPI"

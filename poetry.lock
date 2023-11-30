@@ -7836,6 +7836,7 @@ docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.link
 testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-ignore-flaky", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
 
 [extras]
+all = ["PyRuSH", "edsnlp", "feather-format", "packaging", "pandas", "pyannote-audio", "pyannote-core", "pyannote-metrics", "pysrt", "quickumls", "resampy", "sacremoses", "scikit-learn", "sentencepiece", "seqeval", "spacy", "speechbrain", "torch", "torchaudio", "transformers", "unqlite", "webrtcvad"]
 edsnlp = ["edsnlp"]
 hf-entity-matcher = ["torch", "transformers"]
 hf-transcriber = ["torchaudio", "transformers"]
@@ -7860,4 +7861,4 @@ webrtc-voice-detector = ["webrtcvad"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8, <4.0"
-content-hash = "4b43245caaa5a20f8b6225973adeaae6baa58d4a3d6c39838192a9ac74e171e2"
+content-hash = "fc1ef6a2338d47104a1b8c935241731f352c38c20d908cd3bfe294552121b775"
