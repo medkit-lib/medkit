@@ -1,9 +1,11 @@
 from pathlib import Path
 
+import pytest
+
 from medkit.core import Attribute
 from medkit.core.audio import AudioDocument, Segment, Span, FileAudioBuffer
-from medkit.io import SRTOutputConverter
 
+srt = pytest.importorskip("medkit.io.srt")
 
 _AUDIO_FILE = Path("tests/data/audio/dialog.ogg")
 _EXPECTED_SRT_FILE = Path("tests/data/srt/dialog.srt")
@@ -56,7 +58,7 @@ def test_basic(tmp_path: Path):
     doc = _get_doc()
     srt_dir = tmp_path / "srt"
 
-    converter = SRTOutputConverter()
+    converter = srt.SRTOutputConverter()
     converter.save([doc], srt_dir, doc_names=["dialog"])
 
     srt_file = srt_dir / "dialog.srt"
