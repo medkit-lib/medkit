@@ -1,3 +1,8 @@
+"""
+This module needs extra-dependencies not installed as core dependencies of medkit.
+To install them, use `pip install medkit-lib[srt-io-convert]`.
+"""
+
 __all__ = ["SRTInputConverter", "SRTOutputConverter"]
 
 import logging
