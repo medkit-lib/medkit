@@ -7852,7 +7852,7 @@ resampler = ["resampy"]
 rush-sentence-tokenizer = ["PyRuSH"]
 sb-transcriber = ["speechbrain", "torch", "transformers"]
 spacy = ["spacy"]
-srt = ["pysrt"]
+srt-io-converter = ["pysrt"]
 syntactic-relation-extractor = ["spacy"]
 training = ["torch"]
 umls-coder-normalizer = ["feather-format", "pandas", "torch", "transformers"]
@@ -7861,4 +7861,4 @@ webrtc-voice-detector = ["webrtcvad"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8, <4.0"
-content-hash = "fc1ef6a2338d47104a1b8c935241731f352c38c20d908cd3bfe294552121b775"
+content-hash = "2dc0f51f17c7dc0348a7d286fb02a0a4f5e6d96aab29f016654ee32a6cddfd2c"
