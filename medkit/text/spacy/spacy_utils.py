@@ -280,7 +280,7 @@ def build_spacy_doc_from_medkit_segment(
     # include annotations in the Doc object
     # define custom attributes in spacy from selected annotations
     if attrs is None:
-        # include all atributes
+        # include all attributes
         attrs = set(attr.label for ann in annotations for attr in ann.attrs)
     _define_attrs_extensions(attrs)
 
@@ -371,7 +371,7 @@ def _get_defined_spacy_attrs(include_medkit_attrs: bool = False) -> List[str]:
     Parameters
     ----------
     include_medkit_attrs:
-        If True, medkit attrs (attrs transfered from medkit) are included
+        If True, medkit attrs (attrs transferred from medkit) are included
 
     Returns
     -------

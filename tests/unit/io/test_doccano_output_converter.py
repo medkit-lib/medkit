@@ -104,7 +104,7 @@ def test_save_segments(tmp_path):
 def test_warnings(tmp_path, caplog):
     with caplog.at_level(logging.WARNING, logger="medkit.io.doccano"):
         # get only ORG entities and created_in relations
-        # target of the relation is mising
+        # target of the relation is missing
         task = DoccanoTask.RELATION_EXTRACTION
         converter = DoccanoOutputConverter(task=task, anns_labels=["ORG", "created_in"])
         medkit_docs = [_get_doc_by_task(task)]

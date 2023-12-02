@@ -15,7 +15,7 @@ class ADICAPNormAttribute(EntityNormAttribute):
     Attribute describing tissue sample using the ADICAP (Association pour le
     Développement de l'Informatique en Cytologie et Anatomo-Pathologie) coding.
 
-    Cf https://smt.esante.gouv.fr/wp-json/ans/terminologies/document?terminologyId=terminologie-adicap&fileName=cgts_sem_adicap_fiche-detaillee.pdf for a complete description of the coding.
+    See <https://smt.esante.gouv.fr/wp-json/ans/terminologies/document?terminologyId=terminologie-adicap&fileName=cgts_sem_adicap_fiche-detaillee.pdf> for a complete description of the coding.
 
     This class is replicating EDS-NLP's `Adicap` class, making it a medkit
     `Attribute`.

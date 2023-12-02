@@ -65,7 +65,10 @@ def test_multiple_items_with_sources():
 
 
 def test_intermediate_operation():
-    """Input items passed to an intermediate operation, then intermediate items passed to another operatio"""
+    """
+    Input items passed to an intermediate operation,
+    then intermediate items passed to another operation.
+    """
     tracer = ProvTracer()
     # generate 2 items and prefix them twice with 2 different operations
     generator = Generator(tracer)
@@ -93,7 +96,7 @@ def test_intermediate_operation():
         assert prefixed_prov_1.op_desc == prefixer_1.description
         # 1st prefixed item was derived from input item
         assert prefixed_prov_1.source_data_items == [input_item]
-        # 1st prefixed item was used to derive 2st prefixed item
+        # 1st prefixed item was used to derive 2nd prefixed item
         assert prefixed_prov_1.derived_data_items == [prefixed_item_2]
 
         prefixed_prov_2 = tracer.get_prov(prefixed_item_2.uid)

@@ -286,7 +286,7 @@ class _Aligner:
             target_texts
         ), "Must have same number of source and target texts"
 
-        aligments = []
+        alignments = []
         source_text_batches_iter = medkit.core.utils.batch_list(
             source_texts, self._batch_size
         )
@@ -296,8 +296,8 @@ class _Aligner:
         for source_text_batch, target_text_batch in zip(
             source_text_batches_iter, target_text_batches_iter
         ):
-            aligments += self._align_batch(source_text_batch, target_text_batch)
-        return aligments
+            alignments += self._align_batch(source_text_batch, target_text_batch)
+        return alignments
 
     def _align_batch(self, source_texts, target_texts):
         # preprocess

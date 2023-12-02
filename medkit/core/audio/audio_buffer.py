@@ -238,7 +238,7 @@ class FileAudioBuffer(AudioBuffer):
 
 
 class MemoryAudioBuffer(AudioBuffer):
-    """Audio buffer giving acces to signals stored in memory
+    """Audio buffer giving access to signals stored in memory
     (to use when reading/writing a modified audio signal)."""
 
     def __init__(self, signal: np.ndarray, sample_rate: int):

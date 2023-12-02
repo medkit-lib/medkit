@@ -121,9 +121,9 @@ def _replace_in_spans(spans, ranges, replacement_lengths):
     while span_index < len(spans) or range_index < len(ranges):
         # iterate to next range if current range has been fully handled
         if range_index < len(ranges) and range_end <= span_start:
-            # we have encountered all spans overlaping with the range to replace,
-            # and we have stored the overlaping parts in replaced_spans.
-            # create new ModifiedSpan referrencing all the replaced_spans
+            # we have encountered all spans overlapping with the range to replace,
+            # and we have stored the overlapping parts in replaced_spans.
+            # create new ModifiedSpan referencing all the replaced_spans
             # and add it to output
             # (expect if replacement_length is 0, in which case the spans were
             # just removed)
@@ -211,7 +211,7 @@ def _replace_in_spans(spans, ranges, replacement_lengths):
                 span = ModifiedSpan(
                     length=length_after_range, replaced_spans=span.replaced_spans
                 )
-        # update span_start to point to the begining of the remainder
+        # update span_start to point to the beginning of the remainder
         span_start = span_end - length_after_range
 
     return output_spans

@@ -159,7 +159,7 @@ def test_attribute_conf_file():
     attr_conf = AttributeConf(from_entity=True, type="severity", value="low")
     conf_file.add_attribute_type(attr_conf)
 
-    # finally a brat relation has an attribure 'severity' value 'inter'
+    # finally a brat relation has an attribute 'severity' value 'inter'
     attr_conf = AttributeConf(from_entity=False, type="severity", value="inter")
     conf_file.add_attribute_type(attr_conf)
 

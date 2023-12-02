@@ -138,7 +138,7 @@ Here are the supported EDS-NLP attributes values and the corresponding medkit cl
 - `Duration` (created by `eds.dates`): {class}`medkit.text.ner.DurationAttribute`
 
 ```{note}
-The transformations performed by {class}`~.EDSNLPDocPipeline` can be overriden
+The transformations performed by {class}`~.EDSNLPDocPipeline` can be overridden
 or extended with the `medkit_attribute_factories` init parameter. For a list of
 all the default transformations, see
 {const}`~medkit.text.spacy.edsnlp.DEFAULT_ATTRIBUTE_FACTORIES` and corresponding
