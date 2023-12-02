@@ -14,12 +14,12 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 import numpy as np
 import torch
 import yaml
-from medkit.training.trainer_config import TrainerConfig
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader, Dataset
 
-from medkit.training.trainable_component import TrainableComponent
 from medkit.training.callbacks import DefaultPrinterCallback, TrainerCallback
+from medkit.training.trainable_component import TrainableComponent
+from medkit.training.trainer_config import TrainerConfig
 from medkit.training.utils import BatchData, MetricsComputer
 
 # checkpoint constants

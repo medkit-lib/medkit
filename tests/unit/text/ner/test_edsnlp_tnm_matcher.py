@@ -6,8 +6,8 @@ from spacy.tokens.underscore import Underscore
 
 from medkit.core import Attribute, ProvTracer
 from medkit.core.text import Segment, Span
-from medkit.text.ner.tnm_attribute import TNMAttribute
 from medkit.text.ner.edsnlp_tnm_matcher import EDSNLPTNMMatcher
+from medkit.text.ner.tnm_attribute import TNMAttribute
 
 
 # EDSNLP uses spacy which might add new extensions globally

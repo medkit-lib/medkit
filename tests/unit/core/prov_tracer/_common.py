@@ -1,6 +1,6 @@
 __all__ = ["TextItem", "get_text_items", "Generator", "Prefixer", "Splitter", "Merger"]
 
-from medkit.core import generate_id, OperationDescription
+from medkit.core import OperationDescription, generate_id
 
 
 class TextItem:

@@ -1,6 +1,7 @@
 __all__ = ["Store", "GlobalStore"]
 
 from typing import Dict, Optional, Union
+
 from typing_extensions import Protocol, runtime_checkable
 
 from medkit.core.data_item import IdentifiableDataItem

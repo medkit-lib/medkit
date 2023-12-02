@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from medkit.core import Attribute
-from medkit.core.audio import AudioDocument, Segment, Span, FileAudioBuffer
+from medkit.core.audio import AudioDocument, FileAudioBuffer, Segment, Span
 
 srt = pytest.importorskip("medkit.io.srt")
 

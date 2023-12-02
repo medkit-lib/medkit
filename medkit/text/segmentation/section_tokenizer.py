@@ -5,15 +5,14 @@ __all__ = ["SectionModificationRule", "SectionTokenizer"]
 import dataclasses
 import pathlib
 from typing import Dict, Iterable, List, Optional, Tuple
-from typing_extensions import Literal
-import yaml
 
+import yaml
 from flashtext import KeywordProcessor
+from typing_extensions import Literal
 
 from medkit.core import Attribute
 from medkit.core.text import Segment, SegmentationOperation, span_utils
 from medkit.core.text.utils import lstrip, rstrip
-
 
 _PATH_TO_DEFAULT_RULES = (
     pathlib.Path(__file__).parent / "default_section_definition.yml"

@@ -1,43 +1,42 @@
 __all__ = ["BratInputConverter", "BratOutputConverter"]
-import re
 import logging
+import re
 from pathlib import Path
-from typing import Any, List, Optional, Tuple, Union, Dict
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from smart_open import open
+
 import medkit.io._brat_utils as brat_utils
-from medkit.io._brat_utils import (
-    BratAnnConfiguration,
-    BratAttribute,
-    BratNote,
-    BratEntity,
-    BratRelation,
-    RelationConf,
-    AttributeConf,
-)
 from medkit.core import (
     Attribute,
     InputConverter,
+    OperationDescription,
     OutputConverter,
     ProvTracer,
     generate_id,
-    OperationDescription,
 )
 from medkit.core.text import (
-    TextAnnotation,
     Entity,
+    ModifiedSpan,
     Relation,
     Segment,
     Span,
-    ModifiedSpan,
+    TextAnnotation,
     TextDocument,
     UMLSNormAttribute,
     span_utils,
     utils,
 )
-
+from medkit.io._brat_utils import (
+    AttributeConf,
+    BratAnnConfiguration,
+    BratAttribute,
+    BratEntity,
+    BratNote,
+    BratRelation,
+    RelationConf,
+)
 from medkit.io._common import get_anns_by_type
-
 
 TEXT_EXT = ".txt"
 ANN_EXT = ".ann"

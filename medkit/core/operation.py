@@ -3,7 +3,6 @@ from __future__ import annotations
 __all__ = ["Operation", "DocOperation"]
 
 import abc
-
 from typing import List
 
 from medkit.core.document import Document

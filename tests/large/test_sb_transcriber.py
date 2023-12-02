@@ -6,14 +6,13 @@ pytest.importorskip(modname="speechbrain", reason="speechbrain is not installed"
 
 import numpy as np  # noqa: E402
 
-from medkit.core.audio import (
-    Segment,
-    Span,
+from medkit.audio.transcription.sb_transcriber import SBTranscriber  # noqa: E402
+from medkit.core.audio import (  # noqa: E402
     FileAudioBuffer,
     MemoryAudioBuffer,
-)  # noqa: E402
-from medkit.audio.transcription.sb_transcriber import SBTranscriber  # noqa: E402
-
+    Segment,
+    Span,
+)
 
 _MODEL = "speechbrain/asr-wav2vec2-commonvoice-en"
 _AUDIO = FileAudioBuffer("tests/data/audio/voice.ogg")

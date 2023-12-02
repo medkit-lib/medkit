@@ -2,13 +2,13 @@ from __future__ import annotations
 
 __all__ = ["ProvTracer", "Prov"]
 
-import dataclasses
 import collections
+import dataclasses
 from typing import List, Optional
 
+from medkit.core._prov_graph import ProvGraph, ProvNode
 from medkit.core.data_item import IdentifiableDataItem
 from medkit.core.operation_desc import OperationDescription
-from medkit.core._prov_graph import ProvGraph, ProvNode
 from medkit.core.prov_store import ProvStore, create_prov_store
 
 

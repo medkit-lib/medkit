@@ -5,9 +5,9 @@ __all__ = [
 ]
 
 from typing import Dict, List
-from typing_extensions import Literal
 
 from transformers.tokenization_utils_fast import EncodingFast
+from typing_extensions import Literal
 
 from medkit.core.text import Entity, span_utils
 

@@ -1,13 +1,12 @@
 import pytest
 
-from medkit.tools.e3c_corpus import (
-    convert_data_collection_to_medkit,
-    load_data_collection,
-    convert_data_annotation_to_medkit,
-    load_data_annotation,
-)
 from medkit.io.medkit_json import load_text_documents
-
+from medkit.tools.e3c_corpus import (
+    convert_data_annotation_to_medkit,
+    convert_data_collection_to_medkit,
+    load_data_annotation,
+    load_data_collection,
+)
 from tests.data_utils import PATH_E3C_CORPUS_FILES
 
 

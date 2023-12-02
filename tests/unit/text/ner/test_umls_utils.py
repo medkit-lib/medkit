@@ -4,12 +4,11 @@ import pytest
 
 from medkit.text.ner.umls_utils import (
     UMLSEntry,
-    load_umls_entries,
-    preprocess_term_to_match,
-    preprocess_acronym,
     guess_umls_version,
+    load_umls_entries,
+    preprocess_acronym,
+    preprocess_term_to_match,
 )
-
 
 _PATH_TO_MR_CONSO_FILE = Path(__file__).parent / "sample_umls_data/2021AB/MRCONSO.RRF"
 

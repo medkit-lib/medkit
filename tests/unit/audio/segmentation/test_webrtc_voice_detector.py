@@ -8,11 +8,11 @@ from pathlib import Path  # noqa: E402
 import numpy as np  # noqa: E402
 import soundfile as sf  # noqa: E402
 
-from medkit.core import ProvTracer  # noqa: E402
-from medkit.core.audio import MemoryAudioBuffer, Segment, Span  # noqa: E402
 from medkit.audio.segmentation.webrtc_voice_detector import (  # noqa: E402
     WebRTCVoiceDetector,
 )
+from medkit.core import ProvTracer  # noqa: E402
+from medkit.core.audio import MemoryAudioBuffer, Segment, Span  # noqa: E402
 from tests.audio_utils import generate_silence, signals_are_equal  # noqa: E402
 
 _PATH_TO_VOICE_FILE = Path("tests/data/audio/voice.ogg")

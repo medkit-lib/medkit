@@ -5,16 +5,16 @@ pytest.importorskip(modname="spacy", reason="spacy is not installed")
 from spacy import displacy
 
 from medkit.core.text import (
-    Segment,
     Entity,
-    Span,
-    ModifiedSpan,
-    TextDocument,
     EntityNormAttribute,
+    ModifiedSpan,
+    Segment,
+    Span,
+    TextDocument,
 )
 from medkit.text.spacy.displacy_utils import (
-    medkit_doc_to_displacy,
     entities_to_displacy,
+    medkit_doc_to_displacy,
 )
 
 _TEXT = "The patient has asthma and a diabetes of type 1."

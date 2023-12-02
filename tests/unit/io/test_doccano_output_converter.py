@@ -3,10 +3,10 @@ import json
 import logging
 
 import pytest
-from medkit.core import Attribute
-from medkit.core.text import TextDocument, Entity, Relation, Segment, Span
-from medkit.io import DoccanoTask, DoccanoOutputConverter
 
+from medkit.core import Attribute
+from medkit.core.text import Entity, Relation, Segment, Span, TextDocument
+from medkit.io import DoccanoOutputConverter, DoccanoTask
 from tests.data_utils import PATH_DOCCANO_FILES
 
 _METADATA = {"custom_metadata": "custom", "doc_id": 1234}

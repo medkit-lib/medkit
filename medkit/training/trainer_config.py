@@ -3,7 +3,7 @@ from __future__ import annotations
 __all__ = ["TrainerConfig"]
 
 from dataclasses import dataclass, fields
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 
 @dataclass

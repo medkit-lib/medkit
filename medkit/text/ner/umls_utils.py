@@ -9,14 +9,14 @@ __all__ = [
 ]
 
 
-from collections import defaultdict
 import dataclasses
+import re
+from collections import defaultdict
 from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Union
-from tqdm import tqdm
-import re
 
 import unidecode
+from tqdm import tqdm
 
 SEMGROUP_LABELS = {
     "ACTI": "activity",

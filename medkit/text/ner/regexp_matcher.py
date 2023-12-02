@@ -9,18 +9,18 @@ __all__ = [
 
 import dataclasses
 import logging
-from pathlib import Path
 import re
+from pathlib import Path
 from typing import Any, Iterator, List, Optional, Union
-from typing_extensions import TypedDict
 
 import yaml
+from typing_extensions import TypedDict
 
 from medkit.core.text import (
     Entity,
+    EntityNormAttribute,
     NEROperation,
     Segment,
-    EntityNormAttribute,
     UMLSNormAttribute,
     span_utils,
 )

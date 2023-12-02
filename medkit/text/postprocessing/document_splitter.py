@@ -1,6 +1,7 @@
 __all__ = ["DocumentSplitter"]
 # functions to create minidocs from segments
 from typing import List, Optional
+
 from medkit.core import Attribute, Operation
 from medkit.core.text import (
     Entity,
@@ -8,8 +9,8 @@ from medkit.core.text import (
     Relation,
     Segment,
     Span,
-    TextDocument,
     TextAnnotation,
+    TextDocument,
     span_utils,
 )
 from medkit.text.postprocessing.alignment_utils import compute_nested_segments

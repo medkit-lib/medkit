@@ -4,7 +4,9 @@ __all__ = ["Attribute"]
 
 import dataclasses
 from typing import Any, Dict, Optional
+
 from typing_extensions import Self
+
 from medkit.core import dict_conv
 from medkit.core.id import generate_id
 

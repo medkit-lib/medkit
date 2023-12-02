@@ -1,5 +1,5 @@
 from medkit.core import ProvTracer
-from medkit.core.text import Span, ModifiedSpan, UMLSNormAttribute
+from medkit.core.text import ModifiedSpan, Span, UMLSNormAttribute
 from medkit.io.brat import BratInputConverter
 
 

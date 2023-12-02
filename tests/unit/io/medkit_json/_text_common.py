@@ -10,9 +10,9 @@ __all__ = [
 ]
 
 from pathlib import Path
-from medkit.core import Attribute
-from medkit.core.text import TextDocument, Segment, Entity, Span
 
+from medkit.core import Attribute
+from medkit.core.text import Entity, Segment, Span, TextDocument
 
 DOC_JSON_FILE = Path("tests/data/medkit_json/text_doc.json")
 DOCS_JSONL_FILE = Path("tests/data/medkit_json/text_docs.jsonl")

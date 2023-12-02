@@ -13,16 +13,8 @@ from spacy.tokens.underscore import Underscore
 from spacy.util import filter_spans
 
 from medkit.core import Attribute
-from medkit.core.text import (
-    Entity,
-    Segment,
-    TextDocument,
-    AnySpan,
-    Span,
-    span_utils,
-)
+from medkit.core.text import AnySpan, Entity, Segment, Span, TextDocument, span_utils
 from medkit.io._common import get_anns_by_type
-
 
 _ATTR_MEDKIT_ID = "medkit_id"
 

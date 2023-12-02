@@ -2,8 +2,8 @@ __all__ = ["ADICAPNormAttribute"]
 
 import dataclasses
 from typing import Any, Dict, Optional
-from typing_extensions import Self
 
+from typing_extensions import Self
 
 from medkit.core import dict_conv
 from medkit.core.text import EntityNormAttribute

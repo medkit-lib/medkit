@@ -3,14 +3,14 @@ import pytest
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 
 from transformers import BertTokenizerFast  # noqa: E402
+
 from medkit.core.text import Entity, Span, TextDocument  # noqa: E402
-from medkit.text.ner.hf_tokenization_utils import (
-    transform_entities_to_tags,
+from medkit.text.ner.hf_tokenization_utils import (  # noqa: E402
+    SPECIAL_TAG_ID_HF,
     align_and_map_tokens_with_tags,
     convert_labels_to_tags,
-    SPECIAL_TAG_ID_HF,
-)  # noqa: E402
-
+    transform_entities_to_tags,
+)
 from tests.data_utils import get_path_hf_dummy_vocab  # noqa: E402
 
 

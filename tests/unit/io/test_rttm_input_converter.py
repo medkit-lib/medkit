@@ -4,7 +4,6 @@ from medkit.core import ProvTracer
 from medkit.core.audio import FileAudioBuffer
 from medkit.io import RTTMInputConverter
 
-
 _RRTM_DIR = Path("tests/data/rttm")
 _AUDIO_DIR = Path("tests/data/audio")
 

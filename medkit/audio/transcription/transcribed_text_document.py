@@ -4,18 +4,16 @@ __all__ = ["TranscribedTextDocument"]
 
 import dataclasses
 from typing import Any, Dict, List, Optional, Sequence
+
 from typing_extensions import Self
 
-from medkit.core import dict_conv, Attribute
+from medkit.core import Attribute, dict_conv
 from medkit.core.audio import Span as AudioSpan
-from medkit.core.text import (
-    TextDocument,
-    Span as TextSpan,
-    AnySpan as AnyTextSpan,
-    TextAnnotation,
-    Segment as TextSegment,
-    span_utils as text_span_utils,
-)
+from medkit.core.text import AnySpan as AnyTextSpan
+from medkit.core.text import Segment as TextSegment
+from medkit.core.text import Span as TextSpan
+from medkit.core.text import TextAnnotation, TextDocument
+from medkit.core.text import span_utils as text_span_utils
 
 
 @dataclasses.dataclass(init=False)

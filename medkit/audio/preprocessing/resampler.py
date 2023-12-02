@@ -9,7 +9,7 @@ from typing import List, Optional
 
 import resampy
 
-from medkit.core.audio import PreprocessingOperation, Segment, MemoryAudioBuffer
+from medkit.core.audio import MemoryAudioBuffer, PreprocessingOperation, Segment
 
 
 class Resampler(PreprocessingOperation):

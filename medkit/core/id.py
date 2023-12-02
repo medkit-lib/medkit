@@ -1,7 +1,7 @@
 __all__ = ["generate_id", "generate_deterministic_id"]
 
-import uuid
 import random
+import uuid
 
 
 def generate_id() -> str:

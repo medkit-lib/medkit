@@ -4,6 +4,7 @@ __all__ = ["EntityNormAttribute"]
 
 import dataclasses
 from typing import Any, ClassVar, Dict, Optional
+
 from typing_extensions import Self
 
 from medkit.core import dict_conv

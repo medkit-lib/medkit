@@ -1,10 +1,5 @@
-from medkit.core import (
-    generate_id,
-    ProvTracer,
-    OperationDescription,
-    Attribute,
-)
-from medkit.core.text import Segment, Entity, Span
+from medkit.core import Attribute, OperationDescription, ProvTracer, generate_id
+from medkit.core.text import Entity, Segment, Span
 from medkit.tools import save_prov_to_dot
 
 

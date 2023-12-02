@@ -6,7 +6,6 @@ pytest.importorskip(modname="transformers", reason="transformers is not installe
 from medkit.core.text import Segment, Span  # noqa: E402
 from medkit.text.ner.hf_entity_matcher import HFEntityMatcher  # noqa: E402
 
-
 _MODEL = "samrawal/bert-base-uncased_clinical-ner"
 _MODEL_NO_VALID = "Helsinki-NLP/opus-mt-en-es"
 

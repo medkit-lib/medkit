@@ -1,16 +1,16 @@
-from medkit.core.text import Span, ModifiedSpan
+from medkit.core.text import ModifiedSpan, Span
 from medkit.core.text.utils import (
     _replace_big_parentheses,
     _replace_small_parentheses,
-    clean_newline_character,
     clean_multiple_whitespaces_in_sentence,
+    clean_newline_character,
     clean_parentheses_eds,
-    replace_newline_inside_sentence,
     replace_multiple_newline_after_sentence,
+    replace_newline_inside_sentence,
     replace_point_after_keywords,
-    replace_point_in_uppercase,
-    replace_point_in_numbers,
     replace_point_before_keywords,
+    replace_point_in_numbers,
+    replace_point_in_uppercase,
 )
 
 

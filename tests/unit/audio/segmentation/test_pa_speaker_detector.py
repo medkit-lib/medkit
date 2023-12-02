@@ -9,14 +9,12 @@ pytest.importorskip(modname="pyannote.audio", reason="pyannote.audio is not inst
 import math  # noqa: E402
 from typing import NamedTuple  # noqa: E402
 
+from medkit.audio.segmentation.pa_speaker_detector import (  # noqa: E402
+    PASpeakerDetector,
+)
 from medkit.core import ProvTracer  # noqa: E402
 from medkit.core.audio import MemoryAudioBuffer, Segment, Span  # noqa: E402
-from medkit.audio.segmentation.pa_speaker_detector import (
-    PASpeakerDetector,
-)  # noqa: E402
-
 from tests.audio_utils import generate_sin_signal, signals_are_equal  # noqa: E402
-
 
 _SAMPLE_RATE = 16000
 _OUTPUT_LABEL = "turn"

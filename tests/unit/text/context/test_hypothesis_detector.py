@@ -1,16 +1,15 @@
-import pytest
-
 from pathlib import Path
+
+import pytest
 
 from medkit.core import ProvTracer
 from medkit.core.text import Segment, Span
 from medkit.text.context.hypothesis_detector import (
-    HypothesisDetector,
-    HypothesisDetectorRule,
     _PATH_TO_DEFAULT_RULES,
     _PATH_TO_DEFAULT_VERBS,
+    HypothesisDetector,
+    HypothesisDetectorRule,
 )
-
 
 _PATH_TO_VERBS = Path(__file__).parent / "hypothesis_verbs.yml"
 _OUTPUT_LABEL = "hypothesis"

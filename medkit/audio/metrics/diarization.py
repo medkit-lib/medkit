@@ -18,11 +18,9 @@ from typing import Sequence
 # we import pandas manually first.
 # So as a workaround, we always import pandas before importing something from pyannote
 import pandas  # noqa: F401
-from pyannote.core.annotation import (
-    Annotation as PAAnnotation,
-    Segment as PASegment,
-    Timeline as PATimeline,
-)
+from pyannote.core.annotation import Annotation as PAAnnotation
+from pyannote.core.annotation import Segment as PASegment
+from pyannote.core.annotation import Timeline as PATimeline
 from pyannote.metrics.diarization import GreedyDiarizationErrorRate
 
 from medkit.core.audio import AudioDocument, Segment

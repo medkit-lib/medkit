@@ -10,9 +10,9 @@ from typing import List, Optional, Union
 
 import speechbrain as sb
 
-from medkit.core import Operation, Attribute
-from medkit.core.audio import AudioBuffer, Segment
 import medkit.core.utils
+from medkit.core import Attribute, Operation
+from medkit.core.audio import AudioBuffer, Segment
 
 
 class SBTranscriber(Operation):

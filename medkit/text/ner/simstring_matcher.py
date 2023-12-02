@@ -3,20 +3,19 @@ from __future__ import annotations
 __all__ = ["SimstringMatcher", "SimstringMatcherRule", "SimstringMatcherNormalization"]
 
 import dataclasses
-from pathlib import Path
 import tempfile
+from pathlib import Path
 from typing import Any, Dict, List, Optional
-from typing_extensions import Literal
 
 import yaml
+from typing_extensions import Literal
 
 from medkit.text.ner._base_simstring_matcher import (
     BaseSimstringMatcher,
-    BaseSimstringMatcherRule,
     BaseSimstringMatcherNormalization,
+    BaseSimstringMatcherRule,
     build_simstring_matcher_databases,
 )
-
 
 _RULES_DB_FILENAME = "rules.db"
 _SIMSTRING_DB_FILENAME = "simstring"

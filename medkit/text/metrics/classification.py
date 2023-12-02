@@ -6,9 +6,9 @@ To install them, use `pip install medkit-lib[metrics-text-classification]`.
 __all__ = ["TextClassificationEvaluator"]
 import logging
 from typing import Dict, List, Union
-from typing_extensions import Literal
 
 from sklearn.metrics import classification_report, cohen_kappa_score
+from typing_extensions import Literal
 
 from medkit.core.text import TextDocument
 from medkit.text.metrics.irr_utils import krippendorff_alpha

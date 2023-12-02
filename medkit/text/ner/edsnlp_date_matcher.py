@@ -9,9 +9,8 @@ from typing import Iterator, List, Optional
 
 import spacy
 
+from medkit.core.text import Entity, Segment, span_utils
 from medkit.core.text.operation import NEROperation
-from medkit.core.text import Segment, Entity
-from medkit.core.text import span_utils
 from medkit.text.spacy.edsnlp import build_date_attribute, build_duration_attribute
 
 

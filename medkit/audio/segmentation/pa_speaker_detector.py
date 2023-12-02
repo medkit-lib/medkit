@@ -17,12 +17,12 @@ from typing import Iterator, List, Optional, Union
 # we import pandas manually first.
 # So as a workaround, we always import pandas before importing something from pyannote
 import pandas  # noqa: F401
+import torch
 from pyannote.audio import Pipeline
 from pyannote.audio.pipelines import SpeakerDiarization
-import torch
 
 from medkit.core import Attribute
-from medkit.core.audio import SegmentationOperation, Segment, Span
+from medkit.core.audio import Segment, SegmentationOperation, Span
 
 
 class PASpeakerDetector(SegmentationOperation):

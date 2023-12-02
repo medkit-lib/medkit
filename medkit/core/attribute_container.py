@@ -1,10 +1,10 @@
 __all__ = ["AttributeContainer"]
 
 import typing
-from typing import Dict, List, Optional, Union, Iterator
+from typing import Dict, Iterator, List, Optional, Union
 
 from medkit.core.attribute import Attribute
-from medkit.core.store import Store, GlobalStore
+from medkit.core.store import GlobalStore, Store
 
 
 class AttributeContainer:

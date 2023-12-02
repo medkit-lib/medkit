@@ -10,14 +10,14 @@ __all__ = [
     "RTTMOutputConverter",
 ]
 
+from . import medkit_json
 from .brat import BratInputConverter, BratOutputConverter
 from .doccano import (
-    DoccanoInputConverter,
-    DoccanoTask,
     DoccanoClientConfig,
+    DoccanoInputConverter,
     DoccanoOutputConverter,
+    DoccanoTask,
 )
-from . import medkit_json
 from .rttm import RTTMInputConverter, RTTMOutputConverter
 
 try:

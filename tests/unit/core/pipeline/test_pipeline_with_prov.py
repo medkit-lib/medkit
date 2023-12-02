@@ -1,4 +1,4 @@
-from medkit.core import generate_id, OperationDescription
+from medkit.core import OperationDescription, generate_id
 from medkit.core.pipeline import Pipeline, PipelineStep
 from medkit.core.prov_tracer import ProvTracer
 

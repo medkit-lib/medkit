@@ -6,7 +6,6 @@ from typing import List, Optional, Tuple
 
 from medkit.core.operation import Operation
 from medkit.core.text import Segment, span_utils
-
 from medkit.text.preprocessing.char_rules import ALL_CHAR_RULES
 
 

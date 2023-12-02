@@ -3,12 +3,12 @@ __all__ = ["DuplicateFinder", "DuplicationAttribute"]
 import dataclasses
 import re
 from typing import Any, ClassVar, Dict, List, Optional
-from typing_extensions import Literal, Self
 
 import duptextfinder  # type: ignore
+from typing_extensions import Literal, Self
 
-from medkit.core import Collection, Attribute, Operation, dict_conv
-from medkit.core.text import TextDocument, Segment, AnySpan, span_utils
+from medkit.core import Attribute, Collection, Operation, dict_conv
+from medkit.core.text import AnySpan, Segment, TextDocument, span_utils
 
 
 @dataclasses.dataclass

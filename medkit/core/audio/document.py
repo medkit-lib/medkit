@@ -6,19 +6,20 @@ import dataclasses
 import os
 from pathlib import Path
 from typing import Any, ClassVar, Dict, List, Optional, Sequence
+
 from typing_extensions import Self
 
-from medkit.core import dict_conv, Attribute, AttributeContainer
+from medkit.core import Attribute, AttributeContainer, dict_conv
 from medkit.core.audio.annotation import Segment
 from medkit.core.audio.annotation_container import AudioAnnotationContainer
-from medkit.core.audio.span import Span
 from medkit.core.audio.audio_buffer import (
     AudioBuffer,
     FileAudioBuffer,
     MemoryAudioBuffer,
     PlaceholderAudioBuffer,
 )
-from medkit.core.id import generate_id, generate_deterministic_id
+from medkit.core.audio.span import Span
+from medkit.core.id import generate_deterministic_id, generate_id
 
 
 @dataclasses.dataclass(init=False)

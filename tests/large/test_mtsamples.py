@@ -5,10 +5,10 @@ from pathlib import Path
 from medkit.core.doc_pipeline import DocPipeline
 from medkit.core.pipeline import Pipeline, PipelineStep
 from medkit.core.text import TextDocument
+from medkit.text.context import NegationDetector
+from medkit.text.ner import RegexpMatcher
 from medkit.text.preprocessing import RegexpReplacer
 from medkit.text.segmentation import SentenceTokenizer
-from medkit.text.ner import RegexpMatcher
-from medkit.text.context import NegationDetector
 
 _PATH_TO_MTSAMPLES = Path(__file__).parent / ".." / "data" / "mtsamples"
 

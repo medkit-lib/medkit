@@ -1,8 +1,9 @@
 __all__ = ["SpacyPipeline"]
-from typing import Dict, Callable, List, Optional
+from typing import Callable, Dict, List, Optional
 
 from spacy import Language
-from spacy.tokens import Doc, Span as SpacySpan
+from spacy.tokens import Doc
+from spacy.tokens import Span as SpacySpan
 
 from medkit.core import Attribute
 from medkit.core.operation import Operation

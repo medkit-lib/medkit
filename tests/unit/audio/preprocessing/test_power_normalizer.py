@@ -4,9 +4,8 @@ import numpy as np
 
 from medkit.audio.preprocessing.power_normalizer import PowerNormalizer
 from medkit.core import ProvTracer
-from medkit.core.audio import Segment, Span, MemoryAudioBuffer
+from medkit.core.audio import MemoryAudioBuffer, Segment, Span
 from tests.audio_utils import generate_sin_signal
-
 
 _SAMPLE_RATE = 4000
 _OUTPUT_LABEL = "normalized"

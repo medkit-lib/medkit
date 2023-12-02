@@ -6,15 +6,15 @@ import dataclasses
 import logging
 from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Sequence, Set, Union
-from typing_extensions import Literal
 
 import yaml
+from typing_extensions import Literal
 
 from medkit.text.ner import umls_utils
 from medkit.text.ner._base_simstring_matcher import (
     BaseSimstringMatcher,
-    BaseSimstringMatcherRule,
     BaseSimstringMatcherNormalization,
+    BaseSimstringMatcherRule,
     build_simstring_matcher_databases,
 )
 

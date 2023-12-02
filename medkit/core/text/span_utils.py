@@ -13,7 +13,7 @@ __all__ = [
 
 from typing import List, Tuple
 
-from medkit.core.text.span import Span, ModifiedSpan, AnySpan
+from medkit.core.text.span import AnySpan, ModifiedSpan, Span
 
 
 def _spans_have_same_length_as_text(text, spans):

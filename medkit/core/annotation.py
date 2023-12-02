@@ -1,6 +1,7 @@
 __all__ = ["Annotation", "AnnotationType"]
 
 from typing import Set, TypeVar
+
 from typing_extensions import Protocol, runtime_checkable
 
 from medkit.core.attribute_container import AttributeContainer

@@ -3,11 +3,12 @@ import pytest
 pytest.importorskip(modname="spacy", reason="spacy is not installed")
 
 import spacy.cli  # noqa: E402
+
 from medkit.core.prov_tracer import ProvTracer  # noqa: E402
-from medkit.text.relations.syntactic_relation_extractor import (
+from medkit.core.text import Entity, Relation, Span, TextDocument  # noqa: E402
+from medkit.text.relations.syntactic_relation_extractor import (  # noqa: E402
     SyntacticRelationExtractor,
-)  # noqa: E402
-from medkit.core.text import TextDocument, Entity, Span, Relation  # noqa: E402
+)
 
 
 @pytest.fixture(scope="module", autouse=True)

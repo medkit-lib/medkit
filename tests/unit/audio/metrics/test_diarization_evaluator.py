@@ -6,12 +6,12 @@ pytest.importorskip(
 )
 pytest.importorskip(modname="pyannote.audio", reason="pyannote.audio is not installed")
 
-from medkit.core import Attribute
-from medkit.core.audio import AudioDocument, Segment, Span, MemoryAudioBuffer
 from medkit.audio.metrics.diarization import (
     DiarizationEvaluator,
     DiarizationEvaluatorResult,
 )
+from medkit.core import Attribute
+from medkit.core.audio import AudioDocument, MemoryAudioBuffer, Segment, Span
 from tests.audio_utils import generate_silence
 
 # dummy 6.0 seconds audio signal

@@ -1,6 +1,7 @@
-from pathlib import Path
-import pytest
 import logging
+from pathlib import Path
+
+import pytest
 
 torch = pytest.importorskip(modname="torch", reason="torch is not installed")
 transformers = pytest.importorskip(
@@ -8,9 +9,9 @@ transformers = pytest.importorskip(
 )
 
 from medkit.core.text import Entity, Span, TextDocument  # noqa: E402
-from medkit.text.ner.hf_entity_matcher_trainable import (
+from medkit.text.ner.hf_entity_matcher_trainable import (  # noqa: E402
     HFEntityMatcherTrainable,
-)  # noqa: E402
+)
 from medkit.training.utils import BatchData  # noqa: E402
 from tests.data_utils import get_path_hf_dummy_vocab  # noqa: E402
 

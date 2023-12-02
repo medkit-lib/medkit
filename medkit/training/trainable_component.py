@@ -4,9 +4,9 @@ __all__ = ["TrainableComponent"]
 
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
-from typing_extensions import Protocol, runtime_checkable
 
 import torch
+from typing_extensions import Protocol, runtime_checkable
 
 from medkit.training.utils import BatchData
 

@@ -6,7 +6,7 @@ pytest.importorskip(modname="transformers", reason="transformers is not installe
 
 from transformers import BertTokenizerFast  # noqa: E402
 
-from medkit.core.text import Entity, TextDocument, Span, ModifiedSpan  # noqa: E402
+from medkit.core.text import Entity, ModifiedSpan, Span, TextDocument  # noqa: E402
 from medkit.text.metrics.ner import SeqEvalEvaluator  # noqa: E402
 from tests.data_utils import get_path_hf_dummy_vocab  # noqa: E402
 

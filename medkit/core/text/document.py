@@ -6,14 +6,15 @@ import dataclasses
 import os
 from pathlib import Path
 from typing import Any, ClassVar, Dict, List, Optional, Sequence
+
 from typing_extensions import Self
 
-from medkit.core import dict_conv, Attribute, AttributeContainer
-from medkit.core.id import generate_id, generate_deterministic_id
-from medkit.core.text.annotation import TextAnnotation, Segment
+from medkit.core import Attribute, AttributeContainer, dict_conv
+from medkit.core.id import generate_deterministic_id, generate_id
+from medkit.core.text import span_utils
+from medkit.core.text.annotation import Segment, TextAnnotation
 from medkit.core.text.annotation_container import TextAnnotationContainer
 from medkit.core.text.span import Span
-from medkit.core.text import span_utils
 
 
 @dataclasses.dataclass(init=False)

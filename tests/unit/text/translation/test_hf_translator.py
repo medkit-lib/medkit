@@ -3,10 +3,9 @@ import pytest
 pytest.importorskip(modname="torch", reason="torch is not installed")
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 
-from medkit.core.text import Segment, Span, ModifiedSpan, span_utils  # noqa: E402
+from medkit.core.text import ModifiedSpan, Segment, Span, span_utils  # noqa: E402
 from medkit.text.ner import RegexpMatcher, RegexpMatcherRule  # noqa: E402
 from medkit.text.translation.hf_translator import HFTranslator, _Aligner  # noqa: E402
-
 
 _TEXT_FR = "Je souffre d'insuffisance cardiaque depuis 10 ans."
 _TEXT_EN = "I've been suffering from heart failure for 10 years."

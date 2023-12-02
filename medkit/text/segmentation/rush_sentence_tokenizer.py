@@ -7,14 +7,13 @@ from __future__ import annotations
 
 __all__ = ["RushSentenceTokenizer"]
 
-from pathlib import Path
 import re
+from pathlib import Path
 from typing import Iterator, List, Optional, Union
 
 from PyRuSH import RuSH
 
 from medkit.core.text import Segment, SegmentationOperation, span_utils
-
 
 _PATH_TO_DEFAULT_RULES = (
     Path(__file__).parent / "rush_sentence_tokenizer_default_rules.tsv"

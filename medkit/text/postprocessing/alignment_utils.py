@@ -1,5 +1,6 @@
 __all__ = ["compute_nested_segments"]
-from typing import Tuple, List
+from typing import List, Tuple
+
 from intervaltree import IntervalTree
 
 from medkit.core.text import Segment, span_utils

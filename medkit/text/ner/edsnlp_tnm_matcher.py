@@ -9,11 +9,10 @@ from typing import Iterator, List, Optional
 
 import spacy
 
+from medkit.core.text import Entity, Segment, span_utils
 from medkit.core.text.operation import NEROperation
-from medkit.core.text import Segment, Entity
-from medkit.core.text import span_utils
-from medkit.text.spacy.edsnlp import build_tnm_attribute
 from medkit.text.ner.tnm_attribute import TNMAttribute
+from medkit.text.spacy.edsnlp import build_tnm_attribute
 
 
 class EDSNLPTNMMatcher(NEROperation):

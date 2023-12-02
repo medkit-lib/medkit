@@ -2,7 +2,7 @@ __all__ = ["medkit_doc_to_displacy", "entities_to_displacy"]
 
 from typing import Any, Callable, Dict, List, Optional
 
-from medkit.core.text import TextDocument, Entity, span_utils
+from medkit.core.text import Entity, TextDocument, span_utils
 
 
 def medkit_doc_to_displacy(

@@ -2,9 +2,8 @@ import numpy as np
 
 from medkit.audio.preprocessing.downmixer import Downmixer
 from medkit.core import ProvTracer
-from medkit.core.audio import Segment, Span, MemoryAudioBuffer
+from medkit.core.audio import MemoryAudioBuffer, Segment, Span
 from tests.audio_utils import generate_dc_signal, signals_are_equal
-
 
 _SAMPLE_RATE = 4000
 _OUTPUT_LABEL = "downmixed"

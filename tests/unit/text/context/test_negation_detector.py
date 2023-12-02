@@ -1,14 +1,14 @@
 import logging
+
 import pytest
 
 from medkit.core import ProvTracer
 from medkit.core.text import Segment, Span
 from medkit.text.context.negation_detector import (
+    _PATH_TO_DEFAULT_RULES,
     NegationDetector,
     NegationDetectorRule,
-    _PATH_TO_DEFAULT_RULES,
 )
-
 
 _OUTPUT_LABEL = "negation"
 

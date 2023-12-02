@@ -1,13 +1,8 @@
-from medkit.audio.transcription.doc_transcriber import (
-    DocTranscriber,
-)
-from medkit.core import Operation, Attribute, ProvTracer
-from medkit.core.audio import (
-    AudioDocument,
-    Segment as AudioSegment,
-    Span as AudioSpan,
-    MemoryAudioBuffer,
-)
+from medkit.audio.transcription.doc_transcriber import DocTranscriber
+from medkit.core import Attribute, Operation, ProvTracer
+from medkit.core.audio import AudioDocument, MemoryAudioBuffer
+from medkit.core.audio import Segment as AudioSegment
+from medkit.core.audio import Span as AudioSpan
 from medkit.core.text import Span as TextSpan
 from tests.audio_utils import generate_silence
 

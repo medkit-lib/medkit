@@ -9,8 +9,8 @@ __all__ = [
 ]
 
 from typing import Any, Dict, Optional, Type
-from typing_extensions import Protocol, Self, runtime_checkable
 
+from typing_extensions import Protocol, Self, runtime_checkable
 
 _CLASS_NAME_KEY: str = "_class_name"
 

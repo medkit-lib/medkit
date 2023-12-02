@@ -4,12 +4,12 @@ __all__ = ["FamilyDetector", "FamilyDetectorRule", "FamilyMetadata"]
 
 import dataclasses
 import logging
-from pathlib import Path
 import re
+from pathlib import Path
 from typing import List, Optional, Union
-from typing_extensions import TypedDict
 
 import yaml
+from typing_extensions import TypedDict
 
 from medkit.core import Attribute
 from medkit.core.text import ContextOperation, Segment

@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import numpy as np
 
-from medkit.core.audio import PreprocessingOperation, Segment, MemoryAudioBuffer
+from medkit.core.audio import MemoryAudioBuffer, PreprocessingOperation, Segment
 
 _EPS = 1e-12  # epsilon value to avoid zero-div
 

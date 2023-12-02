@@ -7,15 +7,8 @@ __all__ = [
 ]
 
 import dataclasses
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Union,
-    cast,
-)
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
+
 from typing_extensions import Protocol, runtime_checkable
 
 from medkit.core.annotation import Annotation

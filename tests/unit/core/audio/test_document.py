@@ -1,9 +1,9 @@
-import pytest
-
 from pathlib import Path
 
+import pytest
+
 from medkit.core import generate_id
-from medkit.core.audio import Segment, Span, MemoryAudioBuffer, FileAudioBuffer
+from medkit.core.audio import FileAudioBuffer, MemoryAudioBuffer, Segment, Span
 from medkit.core.audio.document import AudioDocument
 from tests.audio_utils import generate_silence
 

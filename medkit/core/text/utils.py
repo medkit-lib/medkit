@@ -17,8 +17,8 @@ __all__ = [
 import re
 from typing import List, Tuple, Union
 
-from medkit.core.text.span import AnySpan
 import medkit.core.text.span_utils as span_utils
+from medkit.core.text.span import AnySpan
 
 # Some strings for character classification
 _NUMERIC_CHARS = "0-9"

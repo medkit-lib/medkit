@@ -7,11 +7,9 @@ pytest.importorskip(modname="speechbrain", reason="speechbrain is not installed"
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
 
+from medkit.audio.transcription.sb_transcriber import SBTranscriber  # noqa: E402
 from medkit.core import ProvTracer  # noqa: E402
-from medkit.core.audio import Segment, Span, MemoryAudioBuffer  # noqa: E402
-from medkit.audio.transcription.sb_transcriber import (
-    SBTranscriber,
-)  # noqa: E402
+from medkit.core.audio import MemoryAudioBuffer, Segment, Span  # noqa: E402
 
 _MOCK_MODEL_NAME = "mock-model"
 _SAMPLE_RATE = 16000

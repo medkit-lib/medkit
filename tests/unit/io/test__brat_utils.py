@@ -3,16 +3,16 @@ import pathlib
 import pytest
 
 from medkit.io._brat_utils import (
-    BratEntity,
-    BratAttribute,
-    BratRelation,
-    BratAnnConfiguration,
     AttributeConf,
+    BratAnnConfiguration,
+    BratAttribute,
+    BratEntity,
+    BratRelation,
     RelationConf,
-    _parse_entity,
-    _parse_relation,
     _parse_attribute,
+    _parse_entity,
     _parse_note,
+    _parse_relation,
     parse_file,
 )
 

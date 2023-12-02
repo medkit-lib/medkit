@@ -8,12 +8,12 @@ from typing import Any, Dict, List, Optional, Set
 from medkit.core import dict_conv
 from medkit.core.attribute import Attribute
 from medkit.core.attribute_container import AttributeContainer
-from medkit.core.audio.span import Span
 from medkit.core.audio.audio_buffer import (
     AudioBuffer,
     MemoryAudioBuffer,
     PlaceholderAudioBuffer,
 )
+from medkit.core.audio.span import Span
 from medkit.core.id import generate_id
 
 

@@ -4,7 +4,6 @@ from medkit.core import Collection
 from medkit.core.audio import AudioDocument, FileAudioBuffer
 from medkit.core.text import TextDocument
 
-
 _AUDIO_FILE = Path("tests/data/audio/voice.ogg")
 
 

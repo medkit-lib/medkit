@@ -5,11 +5,10 @@ import pytest
 from medkit.core import ProvTracer
 from medkit.core.text import Segment, Span
 from medkit.text.context.family_detector import (
+    _PATH_TO_DEFAULT_RULES,
     FamilyDetector,
     FamilyDetectorRule,
-    _PATH_TO_DEFAULT_RULES,
 )
-
 
 _OUTPUT_LABEL = "family"
 

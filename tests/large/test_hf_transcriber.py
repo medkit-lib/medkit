@@ -5,14 +5,13 @@ pytest.importorskip(modname="transformers", reason="transformers is not installe
 
 import numpy as np  # noqa: E402
 
-from medkit.core.audio import (
-    Segment,
-    Span,
+from medkit.audio.transcription.hf_transcriber import HFTranscriber  # noqa: E402
+from medkit.core.audio import (  # noqa: E402
     FileAudioBuffer,
     MemoryAudioBuffer,
-)  # noqa: E402
-from medkit.audio.transcription.hf_transcriber import HFTranscriber  # noqa: E402
-
+    Segment,
+    Span,
+)
 
 _MODEL = "facebook/s2t-large-librispeech-asr"
 _AUDIO = FileAudioBuffer("tests/data/audio/voice.ogg")
