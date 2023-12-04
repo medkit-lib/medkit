@@ -11,7 +11,7 @@ from typing import List, Optional, Union
 import transformers
 from transformers import AutomaticSpeechRecognitionPipeline
 
-from medkit.core import Operation, Attribute
+from medkit.core import Attribute, Operation
 from medkit.core.audio import AudioBuffer, Segment
 
 

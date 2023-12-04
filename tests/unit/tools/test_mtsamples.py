@@ -1,5 +1,5 @@
-from medkit.tools.mtsamples import load_mtsamples, convert_mtsamples_to_medkit
 from medkit.io.medkit_json import load_text_documents
+from medkit.tools.mtsamples import convert_mtsamples_to_medkit, load_mtsamples
 
 
 def test_convert_mtsamples_to_medkit(tmpdir):

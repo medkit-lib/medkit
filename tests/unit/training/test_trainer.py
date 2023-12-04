@@ -2,12 +2,12 @@ import pytest
 
 torch = pytest.importorskip(modname="torch", reason="torch is not installed")
 
-from medkit.training import TrainerConfig, Trainer  # noqa: E402
+from medkit.training import Trainer, TrainerConfig  # noqa: E402
 
-from .dummy_context_component.dummy_corpus import DUMMY_DATASETS  # noqa: E402
-from .dummy_context_component.dummy_component import (
+from .dummy_context_component.dummy_component import (  # noqa: E402
     MockTrainableComponent,
-)  # noqa: E402
+)
+from .dummy_context_component.dummy_corpus import DUMMY_DATASETS  # noqa: E402
 
 
 class DummyMetricsComputer:

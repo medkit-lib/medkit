@@ -7,13 +7,12 @@ __all__ = ["WebRTCVoiceDetector"]
 
 import collections
 from typing import Iterator, List, Optional
-from typing_extensions import Literal
 
 import numpy as np
 import webrtcvad
+from typing_extensions import Literal
 
-from medkit.core.audio import SegmentationOperation, Segment, Span
-
+from medkit.core.audio import Segment, SegmentationOperation, Span
 
 _SUPPORTED_SAMPLE_RATES = {8000, 16000, 32000, 48000}
 

@@ -1,14 +1,14 @@
 import pytest
-from medkit.core.text import ModifiedSpan, Span
-from medkit.core.text import Segment
+
+from medkit.core.text import ModifiedSpan, Segment, Span
 from medkit.text.preprocessing import (
-    CharReplacer,
-    LIGATURE_RULES,
     DOT_RULES,
-    SIGN_RULES,
-    QUOTATION_RULES,
     FRACTION_RULES,
+    LIGATURE_RULES,
+    QUOTATION_RULES,
+    SIGN_RULES,
     SPACE_RULES,
+    CharReplacer,
 )
 
 

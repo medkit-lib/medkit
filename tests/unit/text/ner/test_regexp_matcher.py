@@ -1,13 +1,14 @@
 import logging
+
 import pytest
 
 from medkit.core import Attribute, ProvTracer
-from medkit.core.text import Segment, Span, EntityNormAttribute, UMLSNormAttribute
+from medkit.core.text import EntityNormAttribute, Segment, Span, UMLSNormAttribute
 from medkit.text.ner.regexp_matcher import (
-    RegexpMatcher,
-    RegexpMatcherRule,
-    RegexpMatcherNormalization,
     _PATH_TO_DEFAULT_RULES,
+    RegexpMatcher,
+    RegexpMatcherNormalization,
+    RegexpMatcherRule,
 )
 
 _TEXT = "The patient has asthma and type 1 diabetes."

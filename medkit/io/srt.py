@@ -12,15 +12,14 @@ from typing import List, Optional, Union
 import pysrt
 
 from medkit.core import (
-    generate_id,
-    InputConverter,
-    OutputConverter,
-    OperationDescription,
-    ProvTracer,
     Attribute,
+    InputConverter,
+    OperationDescription,
+    OutputConverter,
+    ProvTracer,
+    generate_id,
 )
-
-from medkit.core.audio import AudioDocument, Segment, Span, FileAudioBuffer
+from medkit.core.audio import AudioDocument, FileAudioBuffer, Segment, Span
 
 logger = logging.getLogger(__name__)
 

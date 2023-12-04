@@ -1,8 +1,8 @@
 import pytest
 
 from medkit.core.text.annotation import Entity
-from medkit.core.text.span import Span, ModifiedSpan
 from medkit.core.text.entity_norm_attribute import EntityNormAttribute
+from medkit.core.text.span import ModifiedSpan, Span
 
 
 def test_spans_for_segment():

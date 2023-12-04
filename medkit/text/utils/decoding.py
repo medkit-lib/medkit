@@ -1,6 +1,7 @@
 __all__ = ["get_ascii_from_unicode"]
 
 import logging
+
 import unidecode
 
 

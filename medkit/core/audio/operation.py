@@ -3,8 +3,8 @@ __all__ = ["PreprocessingOperation", "SegmentationOperation"]
 import abc
 from typing import List
 
-from medkit.core.operation import Operation
 from medkit.core.audio.annotation import Segment
+from medkit.core.operation import Operation
 
 
 class PreprocessingOperation(Operation):

@@ -10,9 +10,9 @@ __all__ = [
 ]
 
 from pathlib import Path
-from medkit.core import Attribute
-from medkit.core.audio import AudioDocument, Segment, Span, FileAudioBuffer
 
+from medkit.core import Attribute
+from medkit.core.audio import AudioDocument, FileAudioBuffer, Segment, Span
 
 DOC_JSON_FILE = Path("tests/data/medkit_json/audio_doc.json")
 DOCS_JSONL_FILE = Path("tests/data/medkit_json/audio_docs.jsonl")

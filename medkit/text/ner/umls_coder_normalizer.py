@@ -5,25 +5,24 @@ To install them, use `pip install medkit-lib[umls-coder-normalizer]`.
 
 __all__ = ["UMLSCoderNormalizer"]
 
-from typing import Any, Dict, List, NamedTuple, Optional, Tuple, Union
-from typing_extensions import Literal
 from pathlib import Path
+from typing import Any, Dict, List, NamedTuple, Optional, Tuple, Union
 
 import pandas as pd
 import torch
 import transformers
-from transformers import PreTrainedModel, PreTrainedTokenizer, FeatureExtractionPipeline
 import yaml
+from transformers import FeatureExtractionPipeline, PreTrainedModel, PreTrainedTokenizer
+from typing_extensions import Literal
 
+import medkit.core.utils
 from medkit.core import Operation
 from medkit.core.text import Entity, UMLSNormAttribute
-import medkit.core.utils
 from medkit.text.ner.umls_utils import (
+    guess_umls_version,
     load_umls_entries,
     preprocess_term_to_match,
-    guess_umls_version,
 )
-
 
 _PARAMS_FILENAME = "params.yml"
 _TERMS_FILENAME = "terms.feather"

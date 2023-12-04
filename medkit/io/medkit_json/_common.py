@@ -8,7 +8,6 @@ __all__ = [
 import enum
 from typing import Any, Dict
 
-
 MEDKIT_JSON_VERSION = "0.2"
 
 

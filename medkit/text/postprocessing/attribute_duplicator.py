@@ -1,9 +1,9 @@
 __all__ = ["AttributeDuplicator"]
 
 from typing import List, Optional
+
 from medkit.core import Attribute, Operation
 from medkit.core.text import Segment
-
 from medkit.text.postprocessing import alignment_utils
 
 

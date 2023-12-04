@@ -6,13 +6,13 @@ To install them, use `pip install medkit-lib[hf-entity-matcher]`.
 __all__ = ["HFEntityMatcher"]
 from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Union
-from typing_extensions import Literal
 
 import transformers
 from transformers import TokenClassificationPipeline
+from typing_extensions import Literal
 
 from medkit.core import Attribute
-from medkit.core.text import NEROperation, Segment, span_utils, Entity
+from medkit.core.text import Entity, NEROperation, Segment, span_utils
 from medkit.text.ner.hf_entity_matcher_trainable import HFEntityMatcherTrainable
 from medkit.tools import hf_utils
 

@@ -1,5 +1,5 @@
 from medkit.core import Collection, ProvTracer
-from medkit.core.text import TextDocument, Span
+from medkit.core.text import Span, TextDocument
 from medkit.text.preprocessing import DuplicateFinder, DuplicationAttribute
 
 LINES = [

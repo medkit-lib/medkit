@@ -10,7 +10,6 @@ from medkit.core import ProvTracer
 from medkit.core.text import Entity, Span, UMLSNormAttribute
 from medkit.text.ner.umls_coder_normalizer import UMLSCoderNormalizer
 
-
 _PATH_TO_MR_CONSO_FILE = Path(__file__).parent / "sample_umls_data/2021AB/MRCONSO.RRF"
 _LANGUAGE = "ENG"
 _MODEL = "GanjinZero/UMLSBert_ENG"

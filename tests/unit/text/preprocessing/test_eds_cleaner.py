@@ -1,7 +1,7 @@
 import pytest
-from medkit.core.prov_tracer import ProvTracer
 
-from medkit.core.text import Span, ModifiedSpan, Segment
+from medkit.core.prov_tracer import ProvTracer
+from medkit.core.text import ModifiedSpan, Segment, Span
 from medkit.text.preprocessing.eds_cleaner import EDSCleaner
 
 TEST_DEFAULT_CONFIG = [

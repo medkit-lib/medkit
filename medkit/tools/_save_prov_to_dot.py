@@ -1,15 +1,15 @@
 __all__ = ["save_prov_to_dot"]
 
 from pathlib import Path
-from typing import Any, Callable, Dict, TextIO, Optional, Type, Union
+from typing import Any, Callable, Dict, Optional, TextIO, Type, Union
 
 from medkit.core import (
-    OperationDescription,
-    ProvTracer,
-    Prov,
+    Attribute,
     IdentifiableDataItem,
     IdentifiableDataItemWithAttrs,
-    Attribute,
+    OperationDescription,
+    Prov,
+    ProvTracer,
 )
 from medkit.core.text import Segment, TextDocument
 

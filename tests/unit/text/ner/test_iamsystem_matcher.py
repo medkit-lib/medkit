@@ -1,6 +1,8 @@
-from iamsystem import Matcher, Entity as Term  # noqa: E402
+from iamsystem import Entity as Term  # noqa: E402
+from iamsystem import Matcher
+
 from medkit.core import Attribute  # noqa: E402
-from medkit.core.text import Segment, Span, ModifiedSpan  # noqa: E402
+from medkit.core.text import ModifiedSpan, Segment, Span  # noqa: E402
 from medkit.text.ner import IAMSystemMatcher  # noqa: E402
 from medkit.text.ner.iamsystem_matcher import MedkitKeyword  # noqa: E402
 

@@ -1,10 +1,10 @@
-import pytest
-
 from pathlib import Path
 
+import pytest
+
 from medkit.core import Attribute, generate_id
-from medkit.core.text.document import TextDocument
 from medkit.core.text.annotation import Entity, Relation, Segment
+from medkit.core.text.document import TextDocument
 from medkit.core.text.span import Span
 from tests.data_utils import get_text_document
 

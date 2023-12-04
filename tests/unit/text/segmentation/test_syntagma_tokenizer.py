@@ -3,8 +3,8 @@ import pytest
 from medkit.core import ProvTracer
 from medkit.core.text import Segment, Span
 from medkit.text.segmentation.syntagma_tokenizer import (
-    SyntagmaTokenizer,
     _PATH_TO_DEFAULT_RULES,
+    SyntagmaTokenizer,
 )
 
 _TEXT = (

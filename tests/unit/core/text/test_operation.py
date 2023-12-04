@@ -1,6 +1,6 @@
-import pytest
-
 from typing import List
+
+import pytest
 
 from medkit.core import ProvTracer
 from medkit.core.text import Segment, Span, TextAnnotation, TextDocument

@@ -10,10 +10,10 @@ __all__ = [
 import abc
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
-from typing_extensions import Self
 
 import numpy as np
 import soundfile as sf
+from typing_extensions import Self
 
 from medkit.core import dict_conv
 

@@ -1,5 +1,6 @@
-import pytest
 import re
+
+import pytest
 
 pytest.importorskip(modname="torch", reason="torch is not installed")
 pytest.importorskip(modname="transformers", reason="transformers is not installed")

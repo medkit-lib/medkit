@@ -1,14 +1,13 @@
 import pytest
 
 from medkit.core import ProvTracer
-from medkit.core.text import Segment, Span, ModifiedSpan
+from medkit.core.text import ModifiedSpan, Segment, Span
 
 pytest.importorskip(modname="PyRuSH", reason="PyRuSH is not installed")
 
 from medkit.text.segmentation.rush_sentence_tokenizer import (  # noqa: E402
     RushSentenceTokenizer,
 )
-
 
 TEST_CONFIG = [
     (

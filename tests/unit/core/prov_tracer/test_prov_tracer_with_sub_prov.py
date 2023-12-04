@@ -1,11 +1,10 @@
-from medkit.core import generate_id, OperationDescription
+from medkit.core import OperationDescription, generate_id
 from medkit.core.prov_tracer import ProvTracer
-
 from tests.unit.core.prov_tracer._common import (
-    get_text_items,
+    Merger,
     Prefixer,
     Splitter,
-    Merger,
+    get_text_items,
 )
 
 

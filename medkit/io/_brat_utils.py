@@ -1,6 +1,5 @@
 import logging
-from collections import defaultdict, Counter
-
+from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, NamedTuple, Set, Tuple, Union

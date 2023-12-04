@@ -6,15 +6,14 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from medkit.core import (
-    generate_id,
     Attribute,
     InputConverter,
-    OutputConverter,
     OperationDescription,
+    OutputConverter,
     ProvTracer,
+    generate_id,
 )
 from medkit.core.audio import AudioDocument, FileAudioBuffer, Segment, Span
-
 
 logger = logging.getLogger(__name__)
 

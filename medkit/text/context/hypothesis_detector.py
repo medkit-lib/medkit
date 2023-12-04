@@ -9,12 +9,12 @@ __all__ = [
 
 import dataclasses
 import logging
-from pathlib import Path
 import re
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
-from typing_extensions import Literal, TypedDict
 
 import yaml
+from typing_extensions import Literal, TypedDict
 
 from medkit.core import Attribute
 from medkit.core.text import ContextOperation, Segment

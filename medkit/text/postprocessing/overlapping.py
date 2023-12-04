@@ -1,6 +1,7 @@
 __all__ = ["filter_overlapping_entities"]
 
 from typing import List
+
 from medkit.core.text import Entity, span_utils
 
 

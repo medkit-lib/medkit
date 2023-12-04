@@ -42,16 +42,16 @@ from .conversion import InputConverter, OutputConverter
 from .data_item import IdentifiableDataItem, IdentifiableDataItemWithAttrs
 from .doc_pipeline import DocPipeline
 from .document import Document
-from .id import generate_id, generate_deterministic_id
-from .operation import Operation, DocOperation
+from .id import generate_deterministic_id, generate_id
+from .operation import DocOperation, Operation
 from .operation_desc import OperationDescription
 from .pipeline import (
-    Pipeline,
-    PipelineStep,
-    PipelineCompatibleOperation,
     DescribableOperation,
+    Pipeline,
+    PipelineCompatibleOperation,
+    PipelineStep,
     ProvCompatibleOperation,
 )
-from .prov_tracer import ProvTracer, Prov
-from .store import Store, GlobalStore
 from .prov_store import ProvStore, create_prov_store
+from .prov_tracer import Prov, ProvTracer
+from .store import GlobalStore, Store

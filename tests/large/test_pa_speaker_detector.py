@@ -8,10 +8,10 @@ pytest.importorskip(modname="pyannote.audio", reason="pyannote.audio is not inst
 
 from pathlib import Path  # noqa: E402
 
-from medkit.core.audio import FileAudioBuffer, Segment, Span  # noqa: E402
-from medkit.audio.segmentation.pa_speaker_detector import (
+from medkit.audio.segmentation.pa_speaker_detector import (  # noqa: E402
     PASpeakerDetector,
-)  # noqa: E402
+)
+from medkit.core.audio import FileAudioBuffer, Segment, Span  # noqa: E402
 
 _PIPELINE_MODEL = Path(__file__).parent / "diar_pipeline_config.yaml"
 _AUDIO = FileAudioBuffer("tests/data/audio/dialog_long.ogg")

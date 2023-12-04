@@ -13,11 +13,11 @@ from typing import Dict, Iterator, List, Optional, Tuple, Union
 
 import torch
 import transformers
-from transformers import TranslationPipeline, BertModel, BertTokenizerFast
+from transformers import BertModel, BertTokenizerFast, TranslationPipeline
 
-from medkit.core import Operation
-from medkit.core.text import Segment, ModifiedSpan, span_utils
 import medkit.core.utils
+from medkit.core import Operation
+from medkit.core.text import ModifiedSpan, Segment, span_utils
 
 
 class HFTranslator(Operation):

@@ -1,20 +1,20 @@
 import pytest
 
-from medkit.core.text.span import Span, ModifiedSpan
+from medkit.core.text.span import ModifiedSpan, Span
 from medkit.core.text.span_utils import (
-    replace,
-    remove,
-    extract,
-    insert,
-    move,
-    _replace_in_spans,
-    _remove_in_spans,
     _extract_in_spans,
     _insert_in_spans,
     _move_in_spans,
-    normalize_spans,
-    concatenate,
+    _remove_in_spans,
+    _replace_in_spans,
     clean_up_gaps_in_normalized_spans,
+    concatenate,
+    extract,
+    insert,
+    move,
+    normalize_spans,
+    remove,
+    replace,
 )
 
 

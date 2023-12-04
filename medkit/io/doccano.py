@@ -12,13 +12,13 @@ import logging
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
-from typing_extensions import Self
 from zipfile import ZipFile
 
-from medkit.core import Attribute, OperationDescription, ProvTracer
-from medkit.core.id import generate_id, generate_deterministic_id
-from medkit.core.text import Entity, Relation, Span, TextDocument, span_utils
+from typing_extensions import Self
 
+from medkit.core import Attribute, OperationDescription, ProvTracer
+from medkit.core.id import generate_deterministic_id, generate_id
+from medkit.core.text import Entity, Relation, Span, TextDocument, span_utils
 from medkit.io._common import get_anns_by_type
 
 logger = logging.getLogger(__name__)

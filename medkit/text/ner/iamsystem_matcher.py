@@ -4,16 +4,19 @@ __all__ = ["IAMSystemMatcher", "MedkitKeyword"]
 
 from typing import Any, Callable, List, Optional, Sequence
 
-from iamsystem import (
-    Matcher as IS_Matcher,
-    Annotation as IS_Annotation,
-    IEntity as IS_IEntity,
-    IKeyword as IS_IKeyword,
-)
-from typing_extensions import runtime_checkable, Protocol
+from iamsystem import Annotation as IS_Annotation
+from iamsystem import IEntity as IS_IEntity
+from iamsystem import IKeyword as IS_IKeyword
+from iamsystem import Matcher as IS_Matcher
+from typing_extensions import Protocol, runtime_checkable
 
-from medkit.core.text import Entity, EntityNormAttribute, NEROperation, Segment
-from medkit.core.text import span_utils
+from medkit.core.text import (
+    Entity,
+    EntityNormAttribute,
+    NEROperation,
+    Segment,
+    span_utils,
+)
 
 
 @runtime_checkable

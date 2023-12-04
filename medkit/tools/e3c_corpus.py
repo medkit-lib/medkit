@@ -29,16 +29,14 @@ __all__ = [
 
 import json
 import logging
-from xml.etree import ElementTree
-
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterator, Optional, List, Union
+from typing import Dict, Iterator, List, Optional, Union
+from xml.etree import ElementTree
 
 from medkit.core import generate_deterministic_id
 from medkit.core.text import Entity, Segment, Span, TextDocument, UMLSNormAttribute
 from medkit.io.medkit_json import save_text_documents
-
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,4 @@
-from medkit.core import generate_id
-from medkit.core import AnnotationContainer
+from medkit.core import AnnotationContainer, generate_id
 
 
 class _MockAnnotation:

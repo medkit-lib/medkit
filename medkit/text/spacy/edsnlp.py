@@ -14,19 +14,17 @@ __all__ = [
     "DEFAULT_ATTRIBUTE_FACTORIES",
 ]
 
-from typing import Callable, Dict, Optional, List
+from typing import Callable, Dict, List, Optional
 
-from edsnlp.pipelines.ner.adicap.models import AdicapCode as EDSNLP_AdicapCode
-from edsnlp.pipelines.ner.tnm.model import TNM as EDSNLP_TNM
-from edsnlp.pipelines.misc.dates.models import (
-    AbsoluteDate as EDSNLP_AbsoluteDate,
-    RelativeDate as EDSNLP_RelativeDate,
-    Duration as EDSNLP_Duration,
-    Direction as EDSNLP_Direction,
-)
+from edsnlp.pipelines.misc.dates.models import AbsoluteDate as EDSNLP_AbsoluteDate
+from edsnlp.pipelines.misc.dates.models import Direction as EDSNLP_Direction
+from edsnlp.pipelines.misc.dates.models import Duration as EDSNLP_Duration
+from edsnlp.pipelines.misc.dates.models import RelativeDate as EDSNLP_RelativeDate
 from edsnlp.pipelines.misc.measurements.measurements import (
     SimpleMeasurement as EDSNLP_SimpleMeasurement,
 )
+from edsnlp.pipelines.ner.adicap.models import AdicapCode as EDSNLP_AdicapCode
+from edsnlp.pipelines.ner.tnm.model import TNM as EDSNLP_TNM
 from spacy import Language
 from spacy.tokens import Span as SpacySpan
 from spacy.tokens.underscore import Underscore
@@ -35,12 +33,12 @@ from medkit.core import Attribute
 from medkit.text.ner import (
     ADICAPNormAttribute,
     DateAttribute,
+    DurationAttribute,
     RelativeDateAttribute,
     RelativeDateDirection,
-    DurationAttribute,
 )
 from medkit.text.ner.tnm_attribute import TNMAttribute
-from medkit.text.spacy import SpacyPipeline, SpacyDocPipeline
+from medkit.text.spacy import SpacyDocPipeline, SpacyPipeline
 
 
 def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:

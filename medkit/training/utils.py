@@ -3,9 +3,9 @@ from __future__ import annotations
 __all__ = ["BatchData", "MetricsComputer"]
 
 from typing import Any, Dict, List, Union
-from typing_extensions import Protocol, runtime_checkable
 
 import torch
+from typing_extensions import Protocol, runtime_checkable
 
 
 class BatchData(dict):

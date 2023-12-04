@@ -1,6 +1,6 @@
 import pytest
 
-from medkit.core.store import _DictStore, GlobalStore
+from medkit.core.store import GlobalStore, _DictStore
 
 
 class SubStore(_DictStore):

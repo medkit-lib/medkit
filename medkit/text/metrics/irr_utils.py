@@ -2,6 +2,7 @@
 
 __all__ = ["krippendorff_alpha"]
 from typing import List, Union
+
 import numpy as np
 
 

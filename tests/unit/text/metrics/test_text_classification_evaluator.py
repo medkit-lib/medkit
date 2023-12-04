@@ -1,5 +1,4 @@
 import pytest
-
 from numpy.testing import assert_almost_equal
 
 from medkit.core import Attribute

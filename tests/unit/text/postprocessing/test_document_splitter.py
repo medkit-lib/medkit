@@ -1,7 +1,7 @@
 import pytest
 
 from medkit.core import Attribute, ProvTracer
-from medkit.core.text import Entity, ModifiedSpan, Segment, Span, TextDocument, Relation
+from medkit.core.text import Entity, ModifiedSpan, Relation, Segment, Span, TextDocument
 from medkit.text.postprocessing.document_splitter import DocumentSplitter
 
 

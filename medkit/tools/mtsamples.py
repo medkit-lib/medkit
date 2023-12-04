@@ -22,9 +22,9 @@ import json
 import urllib.request
 from pathlib import Path
 from typing import List, Optional, Union
+
 from medkit.core.text import TextDocument
 from medkit.io.medkit_json import save_text_documents
-
 
 _REPO_URL: str = "https://raw.githubusercontent.com/aneuraz/mtsamplesFR/master/data/"
 _MTSAMPLES_FILE: str = "mtsamples.csv"

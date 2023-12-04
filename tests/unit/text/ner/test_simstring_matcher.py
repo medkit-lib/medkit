@@ -10,16 +10,15 @@ import pytest
 
 from medkit.core import Attribute, ProvTracer
 from medkit.core.text import Segment, Span, UMLSNormAttribute
-from medkit.text.ner.simstring_matcher import (
-    SimstringMatcher,
-    SimstringMatcherRule,
-    SimstringMatcherNormalization,
-)
 from medkit.text.ner._base_simstring_matcher import (
     _build_candidate_ranges_with_regexp,
     _build_candidate_ranges_with_spacy,
 )
-
+from medkit.text.ner.simstring_matcher import (
+    SimstringMatcher,
+    SimstringMatcherNormalization,
+    SimstringMatcherRule,
+)
 
 _TEXT = "Le patient souffre de diabète et d'asthme."
 

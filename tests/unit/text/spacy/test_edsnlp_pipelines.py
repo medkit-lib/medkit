@@ -7,16 +7,16 @@ _ = pytest.importorskip(modname="edsnlp", reason="edsnlp is not installed")
 from spacy.tokens.underscore import Underscore
 
 from medkit.core import Attribute
-from medkit.core.text import TextDocument, Entity, Segment, Span
+from medkit.core.text import Entity, Segment, Span, TextDocument
 from medkit.text.ner import (
+    ADICAPNormAttribute,
     DateAttribute,
+    DurationAttribute,
     RelativeDateAttribute,
     RelativeDateDirection,
-    DurationAttribute,
-    ADICAPNormAttribute,
 )
 from medkit.text.ner.tnm_attribute import TNMAttribute
-from medkit.text.spacy.edsnlp import EDSNLPPipeline, EDSNLPDocPipeline
+from medkit.text.spacy.edsnlp import EDSNLPDocPipeline, EDSNLPPipeline
 
 
 def _get_segment(text):

@@ -9,6 +9,7 @@ __all__ = [
 import abc
 import dataclasses
 from typing import Any, Dict, List
+
 from typing_extensions import Self
 
 from medkit.core import dict_conv

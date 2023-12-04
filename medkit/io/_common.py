@@ -1,6 +1,7 @@
 import logging
 from typing import Dict, List, Optional
-from medkit.core.text import TextDocument, Segment, Entity, Relation, TextAnnotation
+
+from medkit.core.text import Entity, Relation, Segment, TextAnnotation, TextDocument
 
 logger = logging.getLogger(__name__)
 

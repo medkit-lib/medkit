@@ -1,9 +1,8 @@
 from pathlib import Path
 
 from medkit.core import Attribute
-from medkit.core.audio import AudioDocument, Segment, Span, FileAudioBuffer
+from medkit.core.audio import AudioDocument, FileAudioBuffer, Segment, Span
 from medkit.io import RTTMOutputConverter
-
 
 _AUDIO_FILE = Path("tests/data/audio/dialog.ogg")
 _EXPECTED_RTTM_FILE = Path("tests/data/rttm/dialog.rttm")

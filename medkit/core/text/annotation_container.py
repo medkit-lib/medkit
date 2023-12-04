@@ -4,7 +4,7 @@ import typing
 from typing import Dict, List, Optional
 
 from medkit.core.annotation_container import AnnotationContainer
-from medkit.core.text.annotation import TextAnnotation, Segment, Entity, Relation
+from medkit.core.text.annotation import Entity, Relation, Segment, TextAnnotation
 
 
 class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):

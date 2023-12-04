@@ -6,12 +6,12 @@ To install them, use `pip install medkit-lib[metrics-ner]`.
 __all__ = ["SeqEvalEvaluator", "SeqEvalMetricsComputer"]
 
 from typing import Any, Dict, List, Optional, Union
-from typing_extensions import Literal
 
 from seqeval.metrics import accuracy_score, classification_report
 from seqeval.scheme import BILOU, IOB2
+from typing_extensions import Literal
 
-from medkit.core.text import TextDocument, Entity, span_utils
+from medkit.core.text import Entity, TextDocument, span_utils
 from medkit.text.ner import hf_tokenization_utils
 from medkit.training.utils import BatchData
 

@@ -1,10 +1,10 @@
 __all__ = ["AnnotationContainer"]
 
 import typing
-from typing import Dict, Iterator, Generic, List, Optional, Union
+from typing import Dict, Generic, Iterator, List, Optional, Union
 
 from medkit.core.annotation import AnnotationType
-from medkit.core.store import Store, GlobalStore
+from medkit.core.store import GlobalStore, Store
 
 
 class AnnotationContainer(Generic[AnnotationType]):

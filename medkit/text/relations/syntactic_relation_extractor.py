@@ -9,7 +9,8 @@ from pathlib import Path
 from typing import Dict, List, Optional, Union
 
 import spacy
-from spacy.tokens import Doc, Span as SpacySpan
+from spacy.tokens import Doc
+from spacy.tokens import Span as SpacySpan
 
 from medkit.core.operation import DocOperation
 from medkit.core.text import Relation, TextDocument

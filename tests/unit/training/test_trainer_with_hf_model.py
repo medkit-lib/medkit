@@ -2,16 +2,15 @@ import shutil
 
 import pytest
 
-
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 pytest.importorskip(modname="torch", reason="torch is not installed")
 
 import transformers  # noqa: E402
 
-from medkit.core.text import Entity, TextDocument, Span  # noqa: E402
+from medkit.core.text import Entity, Span, TextDocument  # noqa: E402
 from medkit.text.ner.hf_entity_matcher import HFEntityMatcher  # noqa: E402
-from medkit.training import Trainer, TrainerConfig  # noqa: E402
 from medkit.tools import modules_are_available
+from medkit.training import Trainer, TrainerConfig  # noqa: E402
 
 _TOKENIZER_MAX_LENGTH = 24
 _MODEL_NER_CLINICAL = "samrawal/bert-base-uncased_clinical-ner"

@@ -5,7 +5,7 @@ from typing import Callable, Dict, List, Optional
 from spacy import Language
 from spacy.tokens import Span as SpacySpan
 
-from medkit.core import DocOperation, Attribute
+from medkit.core import Attribute, DocOperation
 from medkit.core.text import TextDocument
 from medkit.text.spacy import spacy_utils
 

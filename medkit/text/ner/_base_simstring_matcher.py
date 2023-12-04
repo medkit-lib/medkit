@@ -9,13 +9,13 @@ __all__ = [
 
 import dataclasses
 import math
-from pathlib import Path
 import re
-from typing import Any, Iterable, Iterator, List, Optional, Tuple, Union
-from typing_extensions import Literal
 import shelve
+from pathlib import Path
+from typing import Any, Iterable, Iterator, List, Optional, Tuple, Union
 
 from pysimstring import simstring
+from typing_extensions import Literal
 from unidecode import unidecode
 
 try:
@@ -26,9 +26,9 @@ except ImportError:
 
 from medkit.core.text import (
     Entity,
+    EntityNormAttribute,
     NEROperation,
     Segment,
-    EntityNormAttribute,
     UMLSNormAttribute,
     span_utils,
 )

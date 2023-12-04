@@ -10,6 +10,7 @@ __all__ = [
 import dataclasses
 from enum import Enum
 from typing import Any, Dict, Optional
+
 from typing_extensions import Self
 
 from medkit.core import Attribute, dict_conv

@@ -3,8 +3,9 @@ import pytest
 spacy = pytest.importorskip(modname="spacy", reason="spacy is not installed")
 
 from spacy.tokens import Doc  # noqa: E402
+
 from medkit.core import Attribute  # noqa: E402
-from medkit.core.text import Span, Entity, Segment, TextDocument  # noqa: E402
+from medkit.core.text import Entity, Segment, Span, TextDocument  # noqa: E402
 from medkit.io.spacy import SpacyOutputConverter  # noqa: E402
 
 

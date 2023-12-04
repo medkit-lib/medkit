@@ -6,7 +6,6 @@ import pytest
 from medkit.core.prov_tracer import ProvTracer
 from medkit.core.text.span import Span
 from medkit.io import DoccanoInputConverter, DoccanoTask
-
 from tests.data_utils import PATH_DOCCANO_FILES
 
 

@@ -8,9 +8,9 @@ from medkit.core import Attribute, ProvTracer
 from medkit.core.text import Segment, Span
 from medkit.text.ner import (
     DateAttribute,
+    DurationAttribute,
     RelativeDateAttribute,
     RelativeDateDirection,
-    DurationAttribute,
 )
 from medkit.text.ner.edsnlp_date_matcher import EDSNLPDateMatcher
 

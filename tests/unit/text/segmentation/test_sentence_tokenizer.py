@@ -4,7 +4,6 @@ from medkit.core import ProvTracer
 from medkit.core.text import Segment, Span
 from medkit.text.segmentation import SentenceTokenizer
 
-
 _TEXT = (
     "Sentence testing the dot. We are testing the carriage return\rthis is the"
     " newline\n Test interrogation ? Now, testing semicolon;Exclamation! Several"

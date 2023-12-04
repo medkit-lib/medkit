@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from medkit.core import (
-    generate_id,
     AnnotationContainer,
     Attribute,
     AttributeContainer,
     Pipeline,
     PipelineStep,
+    generate_id,
 )
 from medkit.core.doc_pipeline import DocPipeline
 

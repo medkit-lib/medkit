@@ -1,26 +1,27 @@
 from pathlib import Path
+
 import pytest
 
 from medkit.core import Attribute
 from medkit.core.text import (
     Entity,
+    EntityNormAttribute,
+    ModifiedSpan,
     Relation,
     Segment,
     Span,
-    ModifiedSpan,
     TextDocument,
-    EntityNormAttribute,
     UMLSNormAttribute,
 )
 from medkit.io._brat_utils import (
-    BratAttribute,
-    BratNote,
-    BratEntity,
-    BratRelation,
     BratAnnConfiguration,
+    BratAttribute,
+    BratEntity,
+    BratNote,
+    BratRelation,
 )
-from medkit.io.brat import BratOutputConverter
 from medkit.io._common import get_anns_by_type
+from medkit.io.brat import BratOutputConverter
 
 
 def _get_medkit_doc():

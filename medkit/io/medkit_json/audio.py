@@ -8,13 +8,12 @@ __all__ = [
 ]
 
 import json
+import warnings
 from pathlib import Path
 from typing import Iterable, Iterator, Optional, Union
-import warnings
 
 from medkit.core.audio import AudioDocument, Segment
 from medkit.io.medkit_json._common import ContentType, build_header, check_header
-
 
 _DOC_ANNS_SUFFIX = "_anns.jsonl"
 

@@ -1,8 +1,9 @@
 __all__ = ["DucklingMatcher"]
 
-import requests
-from typing import Iterator, List, Optional
 import warnings
+from typing import Iterator, List, Optional
+
+import requests
 
 from medkit.core import Attribute
 from medkit.core.text import Entity, NEROperation, Segment, span_utils

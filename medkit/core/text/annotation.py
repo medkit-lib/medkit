@@ -4,14 +4,8 @@ __all__ = ["TextAnnotation", "Segment", "Entity", "Relation"]
 
 import abc
 import dataclasses
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Set,
-    Type,
-)
+from typing import Any, Dict, List, Optional, Set, Type
+
 from typing_extensions import Self
 
 from medkit.core import dict_conv

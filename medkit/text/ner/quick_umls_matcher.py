@@ -6,13 +6,13 @@ To install them, use `pip install medkit-lib[quick-umls-matcher]`.
 __all__ = ["QuickUMLSMatcher"]
 
 from pathlib import Path
-from packaging.version import parse as parse_version
 from typing import Dict, Iterator, List, NamedTuple, Optional, Union
-from typing_extensions import Literal
 
 import quickumls.about
 import quickumls.constants
+from packaging.version import parse as parse_version
 from quickumls import QuickUMLS
+from typing_extensions import Literal
 
 from medkit.core.text import (
     Entity,

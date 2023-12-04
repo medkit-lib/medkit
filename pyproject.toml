@@ -140,6 +140,9 @@ line-length = 88
 target-version = ["py38"]
 extend-exclude = ".venv"
 
+[tool.isort]
+profile = "black"
+
 [tool.flake8]
 max-line-length = 88
 select = ["C", "E", "F", "W", "B", "B950"]

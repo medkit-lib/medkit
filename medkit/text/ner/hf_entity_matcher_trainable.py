@@ -7,10 +7,10 @@ __all__ = ["HFEntityMatcherTrainable"]
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
-from typing_extensions import Literal
 
 import torch
 import transformers
+from typing_extensions import Literal
 
 from medkit.core.text import Entity, TextDocument
 from medkit.text.ner import hf_tokenization_utils

@@ -4,6 +4,7 @@ __all__ = ["UMLSNormAttribute"]
 
 import dataclasses
 from typing import Any, Dict, List, Optional
+
 from typing_extensions import Self
 
 from medkit.core import dict_conv

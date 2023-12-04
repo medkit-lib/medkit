@@ -2,12 +2,12 @@ import pytest
 
 pytest.importorskip(modname="speechbrain", reason="speechbrain is not installed")
 
-from medkit.core import Attribute
-from medkit.core.audio import AudioDocument, Segment, Span, MemoryAudioBuffer
 from medkit.audio.metrics.transcription import (
     TranscriptionEvaluator,
     TranscriptionEvaluatorResult,
 )
+from medkit.core import Attribute
+from medkit.core.audio import AudioDocument, MemoryAudioBuffer, Segment, Span
 from tests.audio_utils import generate_silence
 
 # dummy 4.0 seconds audio signal
