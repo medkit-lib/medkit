@@ -64,7 +64,7 @@ def test_mt_samples_without_pipeline(caplog):
 
     # annotate each doc
     nb_tot_anns = 0
-    for index, doc in enumerate(docs):
+    for doc in docs:
         anns = [doc.raw_segment]
         anns = regexp_replacer.run(anns)
         anns = sentence_tokenizer.run(anns)

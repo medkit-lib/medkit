@@ -217,7 +217,7 @@ class HFEntityMatcherTrainable:
             PreTrained with labels: {sorted(config.label2id.keys())}, new labels
             {sorted(label_to_id.keys())}. Ignoring the model labels as result."""
             )
-            config.label2id = {label: idx for label, idx in label_to_id.items()}
+            config.label2id = dict(label_to_id.items())
             config.id2label = {idx: label for label, idx in label_to_id.items()}
 
         return config

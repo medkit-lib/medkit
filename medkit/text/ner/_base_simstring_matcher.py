@@ -621,7 +621,7 @@ def _get_similarity_score(text_1, text_2, similarity_name, ngram_size=3):
 
     def _make_ngrams(text, ngram_size):
         n = len(text) if len(text) < ngram_size else ngram_size
-        return set(text[i : i + n] for i in range(len(text) - n + 1))
+        return {text[i : i + n] for i in range(len(text) - n + 1)}
 
     ngrams_1 = _make_ngrams(text_1, ngram_size)
     ngrams_2 = _make_ngrams(text_2, ngram_size)

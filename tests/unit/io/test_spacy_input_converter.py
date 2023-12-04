@@ -103,7 +103,7 @@ def test_input_converter_attribute_transfer(
     # to test transferring attributes by name, the fake component adds another
     # attribute in the DATE entity
     for e in doc.ents:
-        e._.set("nb_tokens_in", len([token for token in e]))
+        e._.set("nb_tokens_in", len(list(e)))
         if e.label_ == "DATE":
             e._.set("is_selected_ent", True)
 
@@ -146,7 +146,7 @@ def test_input_converter_medkit_attribute_transfer_all_anns(nlp_spacy):
     # simulates a component spacy that adds two attributes to all entities
     # and one attribute to sentences spans
     for e in doc.ents:
-        e._.set("nb_tokens_in", len([token for token in e]))
+        e._.set("nb_tokens_in", len(list(e)))
         # to test transfer of medkit attributes, we add a medkit attribute manually
         # each medkit attr is transferred into spacy as two extensions
         # label_mock_attr_medkit and label_mock_attr_medkit_medkit_id

@@ -154,7 +154,8 @@ def save_audio_document(
 
     if not split_anns and anns_output_file is not None:
         warnings.warn(
-            "anns_output_file provided but split_anns is False so it will not be used"
+            "anns_output_file provided but split_anns is False so it will not be used",
+            stacklevel=2,
         )
 
     data = build_header(content_type=ContentType.AUDIO_DOCUMENT)

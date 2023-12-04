@@ -110,7 +110,7 @@ class DocumentSplitter(Operation):
             # Iterate over all segments and corresponding nested entities
             for segment, nested_entities in segment_and_entities:
                 # filter relations in nested entities
-                entities_uid = set(ent.uid for ent in nested_entities)
+                entities_uid = {ent.uid for ent in nested_entities}
                 nested_relations = [
                     relation
                     for relation in relations

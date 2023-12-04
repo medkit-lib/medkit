@@ -224,8 +224,8 @@ class BratInputConverter(InputConverter):
             except Exception as err:
                 raise ValueError(
                     "Impossible to create an entity from"
-                    f" '{ann_file.name}':{brat_entity.uid}. Reason: %s" % err
-                )
+                    f" '{ann_file.name}':{brat_entity.uid}."
+                ) from err
 
             anns_by_brat_id[brat_entity.uid] = entity
             if self._prov_tracer is not None:

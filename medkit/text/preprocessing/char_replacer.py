@@ -46,7 +46,7 @@ class CharReplacer(Operation):
         self.output_label = output_label
         if rules is None:
             rules = ALL_CHAR_RULES
-        self.rules = {key: value for (key, value) in rules}
+        self.rules = dict(rules)
 
         assert not any(
             len(key) != 1 for key in self.rules.keys()

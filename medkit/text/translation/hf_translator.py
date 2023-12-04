@@ -143,7 +143,7 @@ class HFTranslator(Operation):
             Translated segments (with spans referring to words in original text, for translated
             words that have been aligned to original words)
         """
-        return [s for s in self._translate_segments(segments)]
+        return list(self._translate_segments(segments))
 
     def _translate_segments(self, segments: List[Segment]) -> Iterator[Segment]:
         original_texts = [s.text for s in segments]

@@ -230,7 +230,7 @@ def build_spacy_doc_from_medkit_doc(
 def build_spacy_doc_from_medkit_segment(
     nlp: Language,
     segment: Segment,
-    annotations: List[Segment] = [],
+    annotations: Optional[List[Segment]] = None,
     attrs: Optional[List[str]] = None,
     include_medkit_info: bool = True,
 ) -> Doc:
@@ -266,14 +266,15 @@ def build_spacy_doc_from_medkit_segment(
     if include_medkit_info:
         doc._.set(_ATTR_MEDKIT_ID, segment.uid)
 
-    if annotations == []:
+    annotations = annotations or []
+    if not annotations:
         return doc
 
     # include annotations in the Doc object
     # define custom attributes in spacy from selected annotations
     if attrs is None:
         # include all attributes
-        attrs = set(attr.label for ann in annotations for attr in ann.attrs)
+        attrs = {attr.label for ann in annotations for attr in ann.attrs}
     _define_attrs_extensions(attrs)
 
     entities = []
@@ -329,7 +330,8 @@ def _add_entities_in_spacy_doc(
     if discarded_str:
         warnings.warn(
             f"Spacy does not allow entity overlapping, these entities ({discarded_str})"
-            "  were discarded"
+            "  were discarded",
+            stacklevel=2,
         )
 
 
@@ -422,7 +424,8 @@ def _get_span_boundaries(spans: List[AnySpan]) -> Tuple[int, int]:
         # for compatibility, get a continuous span from the list
         warnings.warn(
             f"These spans {spans} are discontinuous, they were converted"
-            f" into its expanded version, from {start} to {end}."
+            f" into its expanded version, from {start} to {end}.",
+            stacklevel=2,
         )
 
     return (start, end)

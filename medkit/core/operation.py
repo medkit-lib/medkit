@@ -71,7 +71,7 @@ class Operation(abc.ABC):
         """Contains all the operation init parameters."""
         return self._description
 
-    def check_sanity(self) -> bool:
+    def check_sanity(self) -> bool:  # noqa: B027
         # TODO: add some checks
         pass
 
