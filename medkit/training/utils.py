@@ -13,7 +13,7 @@ class BatchData(dict):
 
     def __getitem__(self, index: int) -> Dict[str, Union[List[Any], torch.Tensor]]:
         if isinstance(index, str):
-            inner_dict = {key: values for (key, values) in self.items()}
+            inner_dict = dict(self.items())
             return inner_dict[index]
         return {key: values[index] for key, values in self.items()}
 

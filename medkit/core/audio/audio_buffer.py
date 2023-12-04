@@ -228,7 +228,7 @@ class FileAudioBuffer(AudioBuffer):
         )
 
     def __eq__(self, other: object) -> bool:
-        if not type(other) is self.__class__:
+        if type(other) is not self.__class__:
             return False
         return (
             self.path == other.path
@@ -285,7 +285,7 @@ class MemoryAudioBuffer(AudioBuffer):
         raise NotImplementedError("MemoryBuffer can't be instantiated from dict")
 
     def __eq__(self, other: object) -> bool:
-        if not type(other) is self.__class__:
+        if type(other) is not self.__class__:
             return False
         return np.array_equal(self._signal, other._signal)
 
@@ -338,7 +338,7 @@ class PlaceholderAudioBuffer(AudioBuffer):
         )
 
     def __eq__(self, other: object) -> bool:
-        if not type(other) is self.__class__:
+        if type(other) is not self.__class__:
             return False
         return (
             self.sample_rate == other.sample_rate

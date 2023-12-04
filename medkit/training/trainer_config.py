@@ -60,8 +60,8 @@ class TrainerConfig:
     minimize_checkpoint_metric: bool = True
 
     def to_dict(self) -> Dict[str, Any]:
-        return dict(
-            (field.name, getattr(self, field.name))
+        return {
+            field.name: getattr(self, field.name)
             for field in fields(self)
             if field.name != "output_dir"
-        )
+        }

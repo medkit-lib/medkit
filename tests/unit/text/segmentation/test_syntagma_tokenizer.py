@@ -146,13 +146,13 @@ def test_tokenizer_behavior():
     )
 
     syntagmas = syntagma_tokenizer.run([segment])
-    assert any([syntagma.text.startswith("pour qu") for syntagma in syntagmas])
-    assert any([syntagma.text.startswith("lorsqu") for syntagma in syntagmas])
-    assert any([syntagma.text.startswith("parce que") for syntagma in syntagmas])
-    assert any([syntagma.text.startswith("bien qu") for syntagma in syntagmas])
-    assert any([syntagma.text.startswith("et qu") for syntagma in syntagmas])
-    assert any([syntagma.text.startswith("alors qu") for syntagma in syntagmas])
-    assert not all([syntagma.text.startswith("quatre jours") for syntagma in syntagmas])
+    assert any(syntagma.text.startswith("pour qu") for syntagma in syntagmas)
+    assert any(syntagma.text.startswith("lorsqu") for syntagma in syntagmas)
+    assert any(syntagma.text.startswith("parce que") for syntagma in syntagmas)
+    assert any(syntagma.text.startswith("bien qu") for syntagma in syntagmas)
+    assert any(syntagma.text.startswith("et qu") for syntagma in syntagmas)
+    assert any(syntagma.text.startswith("alors qu") for syntagma in syntagmas)
+    assert not all(syntagma.text.startswith("quatre jours") for syntagma in syntagmas)
 
     # use cases with '.'
 

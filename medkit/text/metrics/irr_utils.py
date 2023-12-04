@@ -147,7 +147,9 @@ def krippendorff_alpha(all_annotators_data: List[List[Union[None, str, int]]]) -
     ), "Number of labels should be the same for all annotators"
 
     all_annotators_data = np.asarray(all_annotators_data)
-    labels_set = np.array(list(set(all_annotators_data.flatten()) - set([None])))
+    labels_set = np.asarray(
+        list({x for x in all_annotators_data.flatten() if x is not None})
+    )
     assert len(labels_set) > 1, "There must be more than one label in annotators data"
 
     values_count = _get_values_by_unit_matrix(all_annotators_data, labels_set)

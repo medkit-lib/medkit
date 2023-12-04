@@ -110,7 +110,9 @@ class DucklingMatcher(NEROperation):
         matches = api_result.json()
         for match in matches:
             if self.dims is not None and match["dim"] not in self.dims:
-                warnings.warn("Dims are not properly filtered by duckling API call")
+                warnings.warn(
+                    "Dims are not properly filtered by duckling API call", stacklevel=2
+                )
                 continue
 
             text, spans = span_utils.extract(

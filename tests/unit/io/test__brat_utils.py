@@ -232,11 +232,11 @@ def test_attribute_entity_conf_file_top_values(
 
     # add values into the config
     # the value 'normal' appears 10 times, 'low' 5 times, and 'other' and 'other_V' once
-    for i in range(10):
+    for _ in range(10):
         attr_conf = AttributeConf(from_entity=True, type="severity", value="normal")
         conf_file.add_attribute_type(attr_conf)
 
-    for i in range(5):
+    for _ in range(5):
         attr_conf = AttributeConf(from_entity=True, type="severity", value="low")
         conf_file.add_attribute_type(attr_conf)
 

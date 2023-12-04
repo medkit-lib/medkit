@@ -366,7 +366,7 @@ class RegexpMatcher(NEROperation):
                     "Some rules have ids and other do not. Please provide either ids"
                     " for all rules or no ids at all"
                 )
-            if len(set(r.id for r in rules)) != len(rules):
+            if len({r.id for r in rules}) != len(rules):
                 raise ValueError(
                     "Some rules have the same id, each rule must have a unique id"
                 )

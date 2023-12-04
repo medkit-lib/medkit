@@ -207,7 +207,7 @@ class RTTMInputConverter(InputConverter):
     def _load_rows(rttm_file: Path):
         with open(rttm_file) as fp:
             csv_reader = csv.DictReader(fp, fieldnames=_RTTM_FIELDS, delimiter=" ")
-            rows = [r for r in csv_reader]
+            rows = list(csv_reader)
 
         file_id = rows[0]["file_id"]
         if not all(r["file_id"] == file_id for r in rows):

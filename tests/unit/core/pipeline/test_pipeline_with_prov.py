@@ -343,7 +343,7 @@ def test_nested_pipeline():
 
     # check innermost sub provenance
     sub_tracer = sub_tracer.get_sub_prov_tracer(sub_pipeline.uid)
-    for output_seg, sentence_seg in zip(output_segs, sentence_segs):
+    for output_seg, _ in zip(output_segs, sentence_segs):
         # prov for result of prefixer inside sub pipeline
         prov = sub_tracer.get_prov(output_seg.uid)
         assert prov.op_desc == prefixer_1.description

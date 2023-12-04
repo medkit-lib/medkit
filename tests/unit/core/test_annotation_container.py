@@ -27,7 +27,7 @@ def test_basic():
     anns.add(ann_1)
     ann_2 = _MockAnnotation("topic", "Cancer")
     anns.add(ann_2)
-    ann_3 = _MockAnnotation("topic", "Chemotherapy", keys=set(["entities"]))
+    ann_3 = _MockAnnotation("topic", "Chemotherapy", keys={"entities"})
     anns.add(ann_3)
 
     assert anns.get() == [ann_1, ann_2, ann_3]

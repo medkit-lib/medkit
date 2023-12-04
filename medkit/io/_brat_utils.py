@@ -440,7 +440,7 @@ def _parse_entity(entity_id: str, entity_content: str) -> BratEntity:
             spans.append((start, end))
         return BratEntity(entity_id.strip(), tag.strip(), spans, text.strip())
     except Exception as err:
-        raise ValueError("Impossible to parse entity. Reason : %s" % err)
+        raise ValueError("Impossible to parse entity.") from err
 
 
 def _parse_relation(relation_id: str, relation_content: str) -> BratRelation:
@@ -469,7 +469,7 @@ def _parse_relation(relation_id: str, relation_content: str) -> BratRelation:
         subj = subj.replace("Arg1:", "")
         obj = obj.replace("Arg2:", "")
     except Exception as err:
-        raise ValueError("Impossible to parse the relation. Reason : %s" % err)
+        raise ValueError("Impossible to parse the relation.") from err
 
     if subj.startswith("E") or obj.startswith("E"):
         raise ValueError(

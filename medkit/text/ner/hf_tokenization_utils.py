@@ -153,7 +153,7 @@ def transform_entities_to_tags(
             if token_id is not None:
                 tokens_entity.add(token_id)
 
-        tokens_entity = sorted(list(tokens_entity))
+        tokens_entity = sorted(tokens_entity)
 
         if not tokens_entity:
             continue
