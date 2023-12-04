@@ -80,7 +80,7 @@ def test_medkit_to_spacy_doc_without_anns(nlp_spacy):
     # spacy doc was created and has the same ID as raw_ann
     _assert_spacy_doc(spacy_doc, raw_segment)
     assert spacy_doc.text == medkit_doc.text
-    # no ents were transfered
+    # no ents were transferred
     assert spacy_doc.ents == ()
 
     # test without medkit info

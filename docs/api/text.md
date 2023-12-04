@@ -553,7 +553,7 @@ Medkit provides some modules to facilitate post-processing operations.
 
 For the moment, you can use this module to:
 - align source and target {class}`~.core.text.Segment`s from the same {class}`~.core.text.TextDocument`
-- duplicate attributes bewteen segments. For example, you can duplicate an attribute from a sentence to its entities.
+- duplicate attributes between segments. For example, you can duplicate an attribute from a sentence to its entities.
 
 - filter overlapping entities: useful when creating named entity reconigtion (NER) datasets
 - create mini-documents from a {class}`~.core.text.TextDocument`. 
@@ -581,7 +581,7 @@ For more details about public APIs, refer to {mod}`~.text.metrics`
 
 Medkit provides {class}`~.metrics.classification.TextClassificationEvaluator`, an evaluator for document attributes. You can compute the following metrics depending on your use-case:
 
-### Classification repport
+### Classification report
 -  `compute_classification_report`: To compare a list of reference and predicted documents. This method uses [sklearn](https://scikit-learn.org/stable/index.html) as backend to compute precision, recall, and F1-score.
 
 ### Inter-rated agreement

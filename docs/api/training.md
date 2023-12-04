@@ -18,13 +18,13 @@ A component can implement the {class}`~.training.TrainableComponent` protocol to
 
 The following table explains who makes the calls and where they make them:  
 
-| Who                | Where             | A TrainableComponent                                                                                     |
-| ------------------ | ----------------- | -------------------------------------------------------------------------------------------------------- |
-| TrainableComponent | Initialization    | **load** : load/initialize modules to be trained                                                         |
-| Trainer            | Initialization    | **create_optimizer** : define an optimizer for the training/evalution loop                               |
-|                    | Data loading      | **preproces**: transform medkit anns to input data <br>**collate**: creates a BatchData using input data |
-|                    | Forward step      | **forward**: call internal model, return loss and model output                                           |
-|                    | Saving checkpoint | **save**: save trained modules                                                                           |
+| Who                | Where             | A TrainableComponent                                                                                      |
+|--------------------|-------------------|-----------------------------------------------------------------------------------------------------------|
+| TrainableComponent | Initialization    | **load** : load/initialize modules to be trained                                                          |
+| Trainer            | Initialization    | **create_optimizer** : define an optimizer for the training / evaluation loop                             |
+|                    | Data loading      | **preprocess**: transform medkit anns to input data <br>**collate**: creates a BatchData using input data |
+|                    | Forward step      | **forward**: call internal model, return loss and model output                                            |
+|                    | Saving checkpoint | **save**: save trained modules                                                                            |
 
 ### A trainable component to detect entities
 

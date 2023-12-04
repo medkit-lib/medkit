@@ -210,12 +210,12 @@ def align_and_map_tokens_with_tags(
     >>> print(text_encoding.tokens)
     ['[CLS]', 'med',##kit', '[SEP]']
 
-    Maping all tags to tags_ids
+    Mapping all tags to tags_ids
 
     >>> tags_ids = align_and_map_tokens_with_tags(text_encoding, tags,tag_to_id)
     >>> assert tags_ids == [-100, 1, 2, -100]
 
-    Maping only first tag in tokens
+    Mapping only first tag in tokens
 
     >>> tags_ids = align_and_map_tokens_with_tags(text_encoding, tags, tag_to_id,False)
     >>> assert tags_ids == [-100, 1, -100, -100]

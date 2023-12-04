@@ -145,7 +145,7 @@ def test_batch(input_size, batch_size):
 
 def test_ranges_sorting():
     """
-    Alignment ranges are properly sorted even with model outputing non-monotonic
+    Alignment ranges are properly sorted even with model outputting non-monotonic
     token alignment
     """
     aligner = _Aligner(model="aneuraz/awesome-align-with-co")

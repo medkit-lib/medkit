@@ -70,7 +70,7 @@ def test_raw_segment():
     raw_seg = doc_with_raw_audio.raw_segment
     assert raw_seg.audio == audio
 
-    # also available trough get() and get_by_id()
+    # also available through get() and get_by_id()
     assert doc_with_raw_audio.anns.get(label=AudioDocument.RAW_LABEL) == [raw_seg]
     assert doc_with_raw_audio.anns.get_by_id(raw_seg.uid) == raw_seg
     # but not included in full annotations list

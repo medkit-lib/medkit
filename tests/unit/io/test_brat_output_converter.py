@@ -211,7 +211,7 @@ def test_annotation_conf_file():
     )
     config_file = BratAnnConfiguration()
 
-    # simulate expected annotations relations + entitites
+    # simulate expected annotations relations + entities
     annotations = get_anns_by_type(medkit_doc, anns_labels=None)
     _ = brat_converter._convert_medkit_anns_to_brat(
         segments=annotations["entities"],
@@ -452,7 +452,7 @@ def test_convert_cuis_to_notes(tmp_path: Path):
     entity_1.attrs.add(UMLSNormAttribute(cui="C0004096", umls_version="2021AB"))
     doc.anns.add(entity_1)
 
-    # 2st entity with multiple norm attributes
+    # 2nd entity with multiple norm attributes
     entity_2 = Entity(label="maladie", text="asthme", spans=[Span(21, 27)])
     entity_2.attrs.add(UMLSNormAttribute(cui="C2631234", umls_version="2021AB"))
     entity_2.attrs.add(UMLSNormAttribute(cui="C2631237", umls_version="2021AB"))

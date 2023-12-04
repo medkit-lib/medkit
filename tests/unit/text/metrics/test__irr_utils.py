@@ -14,7 +14,7 @@ def test_krippendorff_alpha():
     assert_almost_equal(alpha, 0.095, decimal=3)
     assert alpha == krippendorff_alpha([annotator2, annotator1])
 
-    # nominal data, two annotators, no mising data
+    # nominal data, two annotators, no missing data
     annotator1 = ["a", "a", "b", "b", "d", "c", "c", "c", "e", "d", "d", "a"]
     annotator2 = ["b", "a", "b", "b", "b", "c", "c", "c", "e", "d", "d", "d"]
     alpha = krippendorff_alpha([annotator1, annotator2])

@@ -183,7 +183,7 @@ this case, determined by the rule that was used to match it).
 
 ## Detecting negation
 
-So far we have detected several entities with `"problem"` or `"treatement"`
+So far we have detected several entities with `"problem"` or `"treatment"`
 labels in our document. We might be tempted to use them directly to build a list
 of problems that the patient faces and treatments that were given, but if we
 look at how these entities are used in the document, we will see that some of
