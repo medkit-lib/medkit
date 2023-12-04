@@ -135,24 +135,24 @@ priority = "primary"
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
 build-backend = "poetry_dynamic_versioning.backend"
 
-[tool.black]
+[tool.ruff]
 line-length = 88
-target-version = ["py38"]
-extend-exclude = ".venv"
+indent-width = 4
+target-version = "py38"
+src = ["medkit", "tests"]
 
-[tool.isort]
-profile = "black"
+[tool.ruff.lint]
+select = ["B", "C", "E", "F", "I001", "W"]
+ignore = ["E203", "C408", "C901", "E402", "E501"]
 
-[tool.flake8]
-max-line-length = 88
-select = ["C", "E", "F", "W", "B", "B950"]
-extend-ignore = ["E203", "E402", "E501", "W503"]
-exclude = [
-    ".git",
-    ".venv",
-    "__pycache__",
-    "docs",
-]
+[tool.ruff.lint.isort]
+known-first-party = ["medkit"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
 
 [tool.poetry-dynamic-versioning]
 enable = true
