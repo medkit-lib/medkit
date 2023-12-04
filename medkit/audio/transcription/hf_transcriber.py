@@ -29,6 +29,7 @@ class HFTranscriber(Operation):
         self,
         model: str = "facebook/s2t-large-librispeech-asr",
         output_label: str = "transcribed_text",
+        language: Optional[str] = None,
         add_trailing_dot: bool = True,
         capitalize: bool = True,
         device: int = -1,
@@ -47,6 +48,9 @@ class HFTranscriber(Operation):
         output_label:
             Label of the attribute containing the transcribed text that will be
             attached to the input segments
+        language:
+            Optional output language to be forced on the model (useful for some
+            multilingual models such as Whisper)
         add_trailing_dot:
             If `True`, a dot will be added at the end of each transcription text.
         capitalize:
@@ -101,6 +105,13 @@ class HFTranscriber(Operation):
             token=hf_auth_token,
             model_kwargs={"cache_dir": cache_dir},
         )
+
+        if language is not None:
+            self._pipeline.model.config.forced_decoder_ids = (
+                self._pipeline.tokenizer.get_decoder_prompt_ids(
+                    language=language, task="transcribe"
+                )
+            )
 
     def run(self, segments: List[Segment]):
         """
