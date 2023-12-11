@@ -14,9 +14,9 @@ import shelve
 from pathlib import Path
 from typing import Any, Iterable, Iterator, List, Optional, Tuple, Union
 
+from anyascii import anyascii
 from pysimstring import simstring
 from typing_extensions import Literal
-from unidecode import unidecode
 
 try:
     import spacy
@@ -302,7 +302,7 @@ class BaseSimstringMatcher(NEROperation):
             # simstring matching is always performed on lowercased ASCII-only text,
             # then for potential matches we will recompute the similarity
             # taking into account the actual rule parameters
-            candidate_text_processed = unidecode(candidate_text.lower())
+            candidate_text_processed = anyascii(candidate_text.lower())
             matched_terms = self._simstring_db_reader.retrieve(candidate_text_processed)
 
             for matched_term in matched_terms:
@@ -328,8 +328,8 @@ class BaseSimstringMatcher(NEROperation):
                         candidate_text = candidate_text.lower()
                         rule_term = rule_term.lower()
                     elif not rule.unicode_sensitive:
-                        candidate_text = unidecode(candidate_text)
-                        rule_term = unidecode(rule_term)
+                        candidate_text = anyascii(candidate_text)
+                        rule_term = anyascii(rule_term)
 
                     # ignore blacklisted terms
                     if rule_term in self.blacklist:
@@ -443,7 +443,7 @@ def build_simstring_matcher_databases(
         term_to_match = rule.term
 
         # apply preprocessing
-        term_to_match = unidecode(term_to_match.lower())
+        term_to_match = anyascii(term_to_match.lower())
 
         # add to simstring db
         simstring_db_writer.insert(term_to_match)

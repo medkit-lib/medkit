@@ -2,7 +2,7 @@ __all__ = ["get_ascii_from_unicode"]
 
 import logging
 
-import unidecode
+from anyascii import anyascii
 
 
 def get_ascii_from_unicode(text: str, keep_length: bool = True, logger=None) -> str:
@@ -25,7 +25,7 @@ def get_ascii_from_unicode(text: str, keep_length: bool = True, logger=None) -> 
     """
     if logger is None:
         logger = logging.getLogger(__name__)
-    output = unidecode.unidecode(text)
+    output = anyascii(text)
 
     # Verify that text length is conserved
     if keep_length and len(output) != len(text):
@@ -33,7 +33,7 @@ def get_ascii_from_unicode(text: str, keep_length: bool = True, logger=None) -> 
         output = ""
         special_chars = set()
         for c in text:
-            cprim = unidecode.unidecode(c)
+            cprim = anyascii(c)
             if len(cprim) == 1:
                 output += cprim
             else:
