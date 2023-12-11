@@ -15,7 +15,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, Iterator, List, Optional, Union
 
-import unidecode
+from anyascii import anyascii
 from tqdm import tqdm
 
 SEMGROUP_LABELS = {
@@ -255,7 +255,7 @@ def preprocess_term_to_match(
     if lowercase:
         term = term.lower()
     if normalize_unicode:
-        term = unidecode.unidecode(term)
+        term = anyascii(term)
 
     term = " " + term + " "
     if clean_nos:
@@ -303,7 +303,7 @@ def preprocess_acronym(term: str) -> Optional[str]:
 
     # try to rebuild acronym from expanded form:
     # replace special characters with ASCII
-    expanded = unidecode.unidecode(expanded)
+    expanded = anyascii(expanded)
     # keep only uppercase chars
     acronym_candidate = "".join(c for c in expanded if c.isupper())
     # if it doesn't match the part before the parenthesis

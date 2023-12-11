@@ -153,6 +153,17 @@ files = [
 ]
 
 [[package]]
+name = "anyascii"
+version = "0.3.2"
+description = "Unicode to ASCII transliteration"
+optional = false
+python-versions = ">=3.3"
+files = [
+    {file = "anyascii-0.3.2-py3-none-any.whl", hash = "sha256:3b3beef6fc43d9036d3b0529050b0c48bfad8bc960e9e562d7223cfb94fe45d4"},
+    {file = "anyascii-0.3.2.tar.gz", hash = "sha256:9d5d32ef844fe225b8bc7cba7f950534fae4da27a9bf3a6bea2cb0ea46ce4730"},
+]
+
+[[package]]
 name = "anyio"
 version = "4.0.0"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
@@ -7861,4 +7872,4 @@ webrtc-voice-detector = ["webrtcvad"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8, <4.0"
-content-hash = "2dc0f51f17c7dc0348a7d286fb02a0a4f5e6d96aab29f016654ee32a6cddfd2c"
+content-hash = "495fc0565da731cf2ae0e7ee05dd166460d130fdb4f02e5fa5f77377f21ded42"
