@@ -29,7 +29,10 @@ parts:
       - file: examples/text_segmentation/syntagma
       - file: examples/text_segmentation/document
   - file: examples/brat_io
-  - file: examples/spacy_io
+  - file: examples/spacy/index
+    sections:
+      - file: examples/spacy/spacy_io
+      - file: examples/spacy/spacy_pipeline
   - file: examples/custom_text_operation
   - file: examples/edsnlp
   - file: examples/iamsystem
