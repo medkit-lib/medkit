@@ -82,7 +82,7 @@ These dependencies may be installed with `pip install medkit-lib[spacy]`
 :::
 
 :::{seealso}
-You may refer to this [example](../examples/spacy_io.md) for more information.
+You may refer to this [example](../examples/spacy/index.md) for more information.
 :::
 
 For more details, refer to {mod}`medkit.io.spacy`.
