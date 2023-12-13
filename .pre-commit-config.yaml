@@ -19,5 +19,11 @@ repos:
     hooks:
       - id: poetry-check
 
+  - repo: https://github.com/FHPythonUtils/LicenseCheck
+    rev: '2023.5.2'
+    hooks:
+      - id: licensecheck
+        stages: [ manual ]
+
 default_language_version:
   python: python3
