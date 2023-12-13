@@ -1,3 +1,17 @@
+---
+jupytext:
+  formats: md:myst
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.14.4
+kernelspec:
+  display_name: Python 3 (ipykernel)
+  language: python
+  name: python3
+---
+    
 # Make your own module
 
 Here is a tutorial for developing your own operation module.
@@ -157,4 +171,70 @@ class MyTokenizer(SegmentationOperation):
         # Returns new segments
         return (new_segment1, new_segment2)
 ```
-``
+
+## 5. Example: a days-of-week entity matcher
+
+To illustrate what we have seen in a more concrete manner, here is a fictional
+"days of the week" matcher that takes text segments as input a return entities
+for week days:
+
+```{code-cell} ipython3
+import re
+from medkit.core import Operation
+from medkit.core.text import Entity, span_utils
+
+# The operation must inherit from medkit.core.Operation
+class DayMatcher(Operation):
+
+    def __init__(
+        self,
+        # All configuration parameters must be passed at init
+        output_label,
+        lang="fr",
+        # The operation must accept an optional unique uid
+        uid=None,
+    ):
+        # Call parent with all init params
+        # (they will included in the operation description accessible at self.description)
+        super().__init__(lang=lang, uid=uid)
+
+        self.output_label = output_label
+        if lang == "fr":
+            self.days = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"]
+        else:
+            self.days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    
+    # The run() method takes input data an return newly created data.
+    # Here it receives a list of Segment object and return a list of Entity objects.
+    def run(self, segments):
+        entities = []
+        for segment in segments:
+            for day in self.days:
+                for match in re.finditer(day, segment.text, flags=re.I):
+                    start, end = match.span()
+                    # Manipulation of text must be done through
+                    # span_utils helper functions to properly maintain
+                    # spans relative to the original raw text of the document
+                    day_text, day_spans = span_utils.extract(
+                        text=segment.text,
+                        spans=segment.spans,
+                        ranges=[(start, end)]
+                    )
+                    entity = Entity(label=self.output_label, text=day_text, spans=day_spans)
+                    entities.append(entity)
+
+                    # Register provenance of the entity we created if provenance
+                    # tracing is on
+                    if self._prov_tracer is not None:
+                        self._prov_tracer.add_prov(
+                            data_item=entity,
+                            # self.description is implemented by the base Operation class
+                            op_desc=self.description,
+                            source_data_items=[segment]
+                        )
+
+        return entities
+```
+
+Note than since this is a entity matcher, adding support for `attrs_to_copy`
+would be nice (cf [Context detection](context_detection.md)).
