@@ -344,5 +344,7 @@ rule-based, but there are many more available in medkit, including model-based
 NER operations. You can learn about them in the [API reference](../api/text.md).
 
 That's a good first overview of what you can do with medkit! To dive in further,
-you might be interested in [how to encapsulate all these operations in a
-pipeline](pipeline.md).
+you might take a look at an overview of the [various entity matching methods
+available in medkit](entity_matching.md), [context
+detection](context_detection.md), or [how to encapsulate all these operations in
+a pipeline](pipeline.md).

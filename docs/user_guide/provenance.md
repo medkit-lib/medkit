@@ -364,7 +364,7 @@ You can see dotted arrow showing which attribute relates to which annotation.
 While this is not strictly speaking provenance information, it is displayed
 nonetheless to avoid any confusion, especially in the case where attributes
 created by one operation are afterwards copied to new annotations (cf
-`attrs_to_copy` as explained in the [First steps tutorial](first_steps.md#detecting-negation)).
+`attrs_to_copy` as explained in the [First steps tutorial](first_steps.html#detecting-negation)).
 
 Expanding one more level of sub-provenance gives us the following graph:
 

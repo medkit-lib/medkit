@@ -24,7 +24,6 @@ from pyannote.audio.pipelines import SpeakerDiarization
 from medkit.core import Attribute
 from medkit.core.audio import Segment, SegmentationOperation, Span
 
-
 # margin (in seconds) by which a turn segment
 # may overrun the input segment due to imprecision
 _DURATION_MARGIN = 0.1
