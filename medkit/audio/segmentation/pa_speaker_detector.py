@@ -25,6 +25,11 @@ from medkit.core import Attribute
 from medkit.core.audio import Segment, SegmentationOperation, Span
 
 
+# margin (in seconds) by which a turn segment
+# may overrun the input segment due to imprecision
+_DURATION_MARGIN = 0.1
+
+
 class PASpeakerDetector(SegmentationOperation):
     """Speaker diarization operation relying on `pyannote.audio`
 
@@ -150,12 +155,16 @@ class PASpeakerDetector(SegmentationOperation):
         for turn, _, speaker in diarization.itertracks(yield_label=True):
             if turn.duration < self.min_duration:
                 continue
+
             # trim original audio to turn start/end points
-            turn_audio = audio.trim_duration(turn.start, turn.end)
+            # (allow pyannote's turn to be slighty over the total input duration)
+            assert turn.end < audio.duration + _DURATION_MARGIN
+            turn_end = min(turn.end, audio.duration)
+            turn_audio = audio.trim_duration(turn.start, turn_end)
 
             turn_span = Span(
                 start=segment.span.start + turn.start,
-                end=segment.span.start + turn.end,
+                end=segment.span.start + turn_end,
             )
             speaker_attr = Attribute(label="speaker", value=speaker)
             turn_segment = Segment(

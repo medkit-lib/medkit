@@ -24,7 +24,7 @@ def _get_doc():
     turn_seg_1 = Segment(
         label="speech",
         audio=_FULL_AUDIO.trim_duration(start_time=0.0, end_time=2.0),
-        span=Span(start=0.0, end=4.0),
+        span=Span(start=0.0, end=2.0),
         attrs=[Attribute(label="transcription", value="Bonjour ça va bien ?")],
     )
     doc.anns.add(turn_seg_1)
@@ -32,7 +32,7 @@ def _get_doc():
     turn_seg_2 = Segment(
         label="speech",
         audio=_FULL_AUDIO.trim_duration(start_time=2.0, end_time=4.0),
-        span=Span(5.0, 6.0),
+        span=Span(2.0, 4.0),
         attrs=[Attribute(label="transcription", value="Ça va et vous ?")],
     )
     doc.anns.add(turn_seg_2)
@@ -45,7 +45,7 @@ _TEST_DATA = {
     "identical": (
         [
             {"start": 0.0, "end": 2.0, "transcription": "Bonjour ça va bien ?"},
-            {"start": 2.0, "end": 4.0, "transcription": "Ça va et vous ?"},
+            {"start": 3.0, "end": 4.0, "transcription": "Ça va et vous ?"},
         ],
         {},
         TranscriptionEvaluatorResult(
@@ -65,7 +65,7 @@ _TEST_DATA = {
     "errors": (
         [
             {"start": 0.0, "end": 2.0, "transcription": "Bonjour ça va ?"},
-            {"start": 2.0, "end": 4.0, "transcription": "Bien et vous ?"},
+            {"start": 3.0, "end": 4.0, "transcription": "Bien et vous ?"},
         ],
         {},
         TranscriptionEvaluatorResult(

@@ -15,9 +15,11 @@ _SPAN_OFFSET = 10.0
 
 
 def _get_segment(signal, sample_rate):
-    duration = signal.shape[1] * sample_rate
+    duration = signal.shape[1] / sample_rate
     audio = MemoryAudioBuffer(signal=signal, sample_rate=sample_rate)
-    return Segment(label="raw", span=Span(_SPAN_OFFSET, duration), audio=audio)
+    return Segment(
+        label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + duration), audio=audio
+    )
 
 
 def _check_resampled_segment(resampled_seg, original_seg):

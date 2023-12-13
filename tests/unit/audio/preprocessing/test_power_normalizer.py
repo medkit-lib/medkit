@@ -14,9 +14,11 @@ _TOLERANCE = 1e-7
 
 
 def _get_segment(signal):
-    duration = signal.shape[1] * _SAMPLE_RATE
+    duration = signal.shape[1] / _SAMPLE_RATE
     audio = MemoryAudioBuffer(signal=signal, sample_rate=_SAMPLE_RATE)
-    return Segment(label="raw", span=Span(_SPAN_OFFSET, duration), audio=audio)
+    return Segment(
+        label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + duration), audio=audio
+    )
 
 
 def _check_normalized_segment(normalized_seg, original_seg):
