@@ -27,6 +27,13 @@ def test__parse_entity():
     assert entity.text == "Lisinopril"
 
 
+def test__parse_entity_leading_space():
+    brat_entity = "T1	medication 36  46	 Lisinopril\t"
+    entity_id, entity_content = brat_entity.split("\t", maxsplit=1)
+    entity = _parse_entity(entity_id, entity_content)
+    assert entity.text == " Lisinopril"
+
+
 def test__parse__entity_discontinued_span():
     brat_entity = "T6	vitamin 251 260;263 264	vitamins D"
     entity_id, entity_content = brat_entity.split("\t", maxsplit=1)
