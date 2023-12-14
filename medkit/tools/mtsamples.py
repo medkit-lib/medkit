@@ -74,7 +74,7 @@ def load_mtsamples(
         if translated:
             mtsamples = json.load(f)
         else:
-            mtsamples = csv.DictReader(f)
+            mtsamples = list(csv.DictReader(f))
 
         if nb_max is not None:
             mtsamples = mtsamples[:nb_max]
