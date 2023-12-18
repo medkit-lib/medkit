@@ -165,10 +165,9 @@ line-ending = "auto"
 [tool.licensecheck]
 using = "poetry"
 
-[tool.poetry-dynamic-versioning]
-enable = true
-vcs = "git"
-dirty = true
-pattern = "(?P<base>\\d+(\\.\\d+)*)"
-latest-tag = true
-style = "semver"
+[tool.commitizen]
+name = "cz_pydata"
+version_provider = "poetry"
+update_changelog_on_bump = true
+bump_message = "REL: Release version $new_version"
+changelog_start_rev = "0.12.0"
