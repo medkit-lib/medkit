@@ -50,6 +50,8 @@ iamsystem = ">=0.3"
 # optional
 edsnlp = {version = "^0.9", optional = true}
 feather-format = {version = "^0.4", optional = true}
+huggingface-hub = {version = "*", optional = true}
+nlstruct = {version =">=0.2", optional = true}
 packaging = {version = "*", optional = true}
 pandas = {version = "^1.4", optional = true}
 PyRuSH = {version = "^1.0", optional = true}
@@ -99,6 +101,7 @@ metrics-diarization = ["pyannote-core", "pyannote-metrics"]
 metrics-text-classification = ["scikit-learn"]
 metrics-ner = ["seqeval","transformers","torch"]
 metrics-transcription = ["speechbrain"]
+nlstruct = ["nlstruct","torch","huggingface-hub"]
 pa-speaker-detector = ["pyannote-audio", "torch"]
 quick-umls = ["packaging", "quickumls", "unqlite"]
 resampler = ["resampy"]
@@ -113,6 +116,8 @@ webrtc-voice-detector = ["webrtcvad"]
 all = [
     "edsnlp",
     "feather-format",
+    "huggingface-hub",
+    "nlstruct",
     "packaging",
     "pandas",
     "PyRuSH",
