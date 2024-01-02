@@ -55,3 +55,6 @@ if modules_are_available(["pandas", "torch", "transformers"]):
 
 if modules_are_available(["edsnlp"]):
     __all__ += ["tnm_attribute"]
+
+if modules_are_available(["nlstruct", "torch", "huggingface_hub"]):
+    __all__ += ["nlstruct_entity_matcher"]

@@ -45,6 +45,7 @@ sphinx:
     autodoc_member_order: 'bysource'
     autodoc_mock_imports:
       - edsnlp
+      - nlstruct
       - pandas
       - pyannote
       - pyannote.audio
