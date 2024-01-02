@@ -16,7 +16,7 @@ trim_trailing_whitespace = false
 [*.py]
 max_line_length = 88
 
-[*.{yaml,yml}]
+[*.{toml,yaml,yml}]
 indent_size = 2
 
 [Makefile]

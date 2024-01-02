@@ -18,17 +18,17 @@ jobs:
   unit:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, macos-latest ]
         python-version: [ '3.8', '3.9', '3.10', '3.11' ]
     steps:
       - uses: actions/checkout@v4
-      - uses: snok/install-poetry@v1
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: poetry
-      - name: Install dependencies
-        run: poetry install --with dev
-      - name: Run the test suite
-        run: poetry run pytest --cov --cov-config=pyproject.toml tests/unit
+          cache: pip
+      - name: Install Hatch
+        run: pipx install hatch
+      - name: Run tests
+        run: hatch run +py=${{ matrix.python-version }} cov

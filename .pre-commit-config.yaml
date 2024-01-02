@@ -14,11 +14,6 @@ repos:
         args: [ --fix ]
       - id: ruff-format
 
-  - repo: https://github.com/python-poetry/poetry
-    rev: '1.7.1'
-    hooks:
-      - id: poetry-check
-
   - repo: https://github.com/FHPythonUtils/LicenseCheck
     rev: '2023.5.2'
     hooks:
