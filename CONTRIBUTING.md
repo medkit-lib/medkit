@@ -45,7 +45,7 @@ To format the codebase consistently and enforce PEP8 compliance, we use [black](
 
 Running the command `black <path/to/file.py>` will auto-format the file. Running `flake8 <path/to/file.py>` will display potential infractions to PEP8. Editors such as [vscode](https://code.visualstudio.com/) can be configured to do this automatically when editing or saving a file.
 
-Note that every time a pull request is opened or updated, `black` and `flake8` will automatically be run on the codebase and will prevent it from being merged if an error is detected.
+Note that every time a pull request is opened or updated, `pre-commit` will be run on the codebase and will prevent it from being merged if an error is detected.
 
 As `flake8` may cause dependencies conflicts (importlib-metadata) with
 other libraries (e.g., sphinx), we use the linter tools in a separated
