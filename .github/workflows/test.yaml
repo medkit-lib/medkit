@@ -23,12 +23,9 @@ jobs:
         python-version: [ '3.8', '3.9', '3.10', '3.11' ]
     steps:
       - uses: actions/checkout@v4
-      - uses: snok/install-poetry@v1
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: poetry
-      - name: Install dependencies
-        run: poetry install --with dev
+          cache: pip
       - name: Run the test suite
-        run: poetry run pytest --cov --cov-config=pyproject.toml tests/unit
+        run: pipx run hatch run cov
