@@ -302,15 +302,14 @@ for entity in entities:
 ```
 
 The document and its entities can then be exported to supported external formats
-(cf {class}`~medkit.io.brat.BratOutputConverter`), or serialized in the medkit
-format. This is not yet supported but will be in a later version. For now, there
-is an undocumented `TextDocument.to_dict()` method that will convert a document
-and its annotations to a json-serializable dict:
+(cf {class}`~medkit.io.brat.BratOutputConverter` and
+{class}`~medkit.io.doccano.DoccanoOutputConverter`), or serialized in the
+{mod}`~medkit.io.medkit_json` format:
 
 ```{code-cell} ipython3
-:tags: [scroll-output]
+from medkit.io import medkit_json
 
-doc.to_dict()
+medkit_json.save_text_document(doc, "doc_1.json")
 ```
 
 ## Visualizing entities with displacy

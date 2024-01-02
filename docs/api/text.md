@@ -68,6 +68,8 @@ coder normalizer
     - TNM (Tumour/Node/Metastasis) matching based on [EDS-NLP](https://aphp.github.io/edsnlp/)
 *   - {mod}`UMLSCoderNormalizer<medkit.text.ner.umls_coder_normalizer>`
     - Normalization of pre-existing entities to [UMLS](https://www.nlm.nih.gov/research/umls/) CUIs relying on a [CODER model](https://github.com/GanjinZero/CODER)
+*   - {mod}`NLStructEntityMatcher<medkit.text.ner.nlstruct_entity_matcher>`
+    - Entity matcher relying on [NLStruct](https://github.com/percevalw/nlstruct) models.
 :::
 
 **spaCy:**
@@ -498,6 +500,29 @@ the handling of UMLS information.
 :::{note}
 For more details, refer to {mod}`~umls_norm_attribute`.
 :::
+
+### NLStruct Entity Matcher
+
+Medkit provides an entity matcher for pretrained nlstruct models, these models can detect nested entities.
+
+:::{important}
+{class}`~.nlstruct_entity_matcher.NLStructEntityMatcher` needs additional dependencies that can
+be installed with `pip install medkit-lib[nlstruct]`
+:::
+
+You can load directly a model from a local dir or from the HuggingFace hub.
+
+```python
+from medkit.core.text import Segment, Span
+from medkit.text.ner.nlstruct_entity_matcher import NLStructEntityMatcher
+
+text="Je lui prescris du lorazepam."
+segment = Segment(text=text,spans=[Span(0,len(text))],label="test")
+
+# define the matcher using a french model
+entity_matcher = NLStructEntityMatcher(model_name_or_dirpath="NesrineBannour/CAS-privacy-preserving-model")
+entities = entity_matcher.run([segment])
+```
 
 (api:text:spacy)=
 ## Spacy modules

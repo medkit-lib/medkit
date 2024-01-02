@@ -40,6 +40,9 @@ parts:
   - file: examples/iamsystem
   - file: examples/finetuning_hf_model
   - file: examples/detecting_text_duplicates
+  - file: examples/audio_transcription
+  - file: examples/audio_dataset_metrics
+  - file: examples/ontotox
 - caption: API reference
   maxdepth: 2
   chapters:
