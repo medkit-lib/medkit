@@ -40,7 +40,7 @@ classifiers = [
 ]
 dependencies = [
   "anyascii",
-  "duptextfinder",
+  "duptextfinder>=0.3.0",
   "flashtext>=2.7",
   "iamsystem>=0.3",
   "intervaltree",
