@@ -1,7 +1,7 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: ""
+title: medkit documentation
 author: HeKA Research Team
 copyright: 2022-2024
 logo: img/medkit_logo.png
