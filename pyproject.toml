@@ -191,7 +191,12 @@ cov = [
 ]
 
 [tool.hatch.envs.docs]
-features = ["all"]
+features = [
+  "metrics-ner",
+  "nlstruct",
+  "srt-io-converter",
+  "webrtc-voice-detector",
+]
 dependencies = [
   "jupyter-book==0.13.*",
   "matplotlib",
