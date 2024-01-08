@@ -6,7 +6,7 @@ build:
     - graphviz
     - libsndfile1
   tools:
-    python: '3.11'
+    python: '3.10'
   commands:
     - pip install hatch
     - hatch run docs:build $READTHEDOCS_OUTPUT/html

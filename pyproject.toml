@@ -191,12 +191,6 @@ cov = [
 ]
 
 [tool.hatch.envs.docs]
-features = [
-  "metrics-ner",
-  "nlstruct",
-  "srt-io-converter",
-  "webrtc-voice-detector",
-]
 dependencies = [
   "jupyter-book==0.13.*",
   "matplotlib",
@@ -207,6 +201,13 @@ dependencies = [
   "sphinx-autobuild",
   "sphinx-toolbox",
 ]
+features = [
+  "metrics-ner",
+  "nlstruct",
+  "srt-io-converter",
+  "webrtc-voice-detector",
+]
+python = "3.10"
 
 [tool.hatch.envs.docs.scripts]
 config = "jupyter-book config sphinx docs/"
