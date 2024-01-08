@@ -15,7 +15,7 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/FHPythonUtils/LicenseCheck
-    rev: '2023.5.2'
+    rev: '2024'
     hooks:
       - id: licensecheck
         stages: [ manual ]
