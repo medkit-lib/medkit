@@ -250,7 +250,10 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 [tool.licensecheck]
-using = "poetry"
+using = "PEP631"
+ignore_packages = [
+  "pysimstring",  # BSD-3-Clause
+]
 
 [tool.commitizen]
 name = "cz_pydata"
