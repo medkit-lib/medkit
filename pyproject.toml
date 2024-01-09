@@ -159,6 +159,15 @@ all = [
     umls-coder-normalizer,\
     webrtc-voice-detector]""",
 ]
+docs = [
+  "jupyter-book==0.15.*",
+  "matplotlib",
+  "pandas>=1.4",
+  "spacy>=3.4",
+  "sphinx-autobuild",
+  "sphinx-toolbox",
+  "sphinxcontrib-mermaid",
+]
 
 [project.urls]
 Documentation = "https://medkit.readthedocs.io"
@@ -191,16 +200,8 @@ cov = [
 ]
 
 [tool.hatch.envs.docs]
-dependencies = [
-  "jupyter-book==0.15.*",
-  "matplotlib",
-  "pandas>=1.4",
-  "spacy>=3.4",
-  "sphinx-autobuild",
-  "sphinx-toolbox",
-  "sphinxcontrib-mermaid",
-]
 features = [
+  "docs",
   "metrics-ner",
   "nlstruct",
   "srt-io-converter",
