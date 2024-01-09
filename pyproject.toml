@@ -192,14 +192,13 @@ cov = [
 
 [tool.hatch.envs.docs]
 dependencies = [
-  "jupyter-book==0.13.*",
+  "jupyter-book==0.15.*",
   "matplotlib",
   "pandas>=1.4",
   "spacy>=3.4",
-  "sphinx>=4.3.3",
-  "sphinxcontrib-mermaid>=0.8",
   "sphinx-autobuild",
   "sphinx-toolbox",
+  "sphinxcontrib-mermaid",
 ]
 features = [
   "metrics-ner",
