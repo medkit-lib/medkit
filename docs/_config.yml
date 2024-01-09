@@ -61,7 +61,7 @@ sphinx:
       - transformers
       - webrtcvad
     autosummary_ignore_module_all: False
-    execution_show_tb: True
+    nb_execution_show_tb: True
     # napoleon extension config
     napoleon_use_ivar: True
     napoleon_use_param: True
