@@ -51,9 +51,7 @@ def test_single_rule():
 
 
 def test_multiple_rules():
-    syntagmas = _get_syntagma_segments(
-        ["If patient has covid", "Assuming patient has covid"]
-    )
+    syntagmas = _get_syntagma_segments(["If patient has covid", "Assuming patient has covid"])
 
     rule_1 = HypothesisDetectorRule(id="id_if", regexp=r"\bif\b")
     rule_2 = HypothesisDetectorRule(id="id_assuming", regexp=r"\bassuming\b")
@@ -72,9 +70,7 @@ def test_multiple_rules():
 
 
 def test_multiple_rules_no_id():
-    syntagmas = _get_syntagma_segments(
-        ["If patient has covid", "Assuming patient has covid"]
-    )
+    syntagmas = _get_syntagma_segments(["If patient has covid", "Assuming patient has covid"])
     rule_1 = HypothesisDetectorRule(regexp=r"\bif\b")
     rule_2 = HypothesisDetectorRule(regexp=r"\bassuming\b")
     detector = HypothesisDetector(output_label=_OUTPUT_LABEL, rules=[rule_1, rule_2])
@@ -88,13 +84,9 @@ def test_multiple_rules_no_id():
 
 
 def test_exclusions():
-    syntagmas = _get_syntagma_segments(
-        ["If patient has covid", "Even if patient has covid"]
-    )
+    syntagmas = _get_syntagma_segments(["If patient has covid", "Even if patient has covid"])
 
-    rule = HypothesisDetectorRule(
-        regexp=r"\bif\b", exclusion_regexps=[r"\beven\s*\bif"]
-    )
+    rule = HypothesisDetectorRule(regexp=r"\bif\b", exclusion_regexps=[r"\beven\s*\bif"])
     detector = HypothesisDetector(output_label=_OUTPUT_LABEL, rules=[rule])
     detector.run(syntagmas)
 
@@ -108,14 +100,10 @@ def test_exclusions():
 
 
 def test_max_length():
-    syntagmas = _get_syntagma_segments(
-        ["If patient has covid", "If patient has covid then he will be treated"]
-    )
+    syntagmas = _get_syntagma_segments(["If patient has covid", "If patient has covid then he will be treated"])
 
     rule = HypothesisDetectorRule(regexp=r"\bif\b")
-    detector = HypothesisDetector(
-        output_label=_OUTPUT_LABEL, rules=[rule], max_length=30
-    )
+    detector = HypothesisDetector(output_label=_OUTPUT_LABEL, rules=[rule], max_length=30)
     detector.run(syntagmas)
 
     # 1st syntagma is hypothesis
@@ -242,17 +230,13 @@ def test_default_rules_and_verbs():
         assert attr.label == "hypothesis"
 
         if is_hypothesis:
-            assert (
-                attr.value is True
-            ), f"Syntagma '{syntagma.text}' should have been detected as hypothesis"
+            assert attr.value is True, f"Syntagma '{syntagma.text}' should have been detected as hypothesis"
             if rule_id is not None:
                 assert attr.metadata["rule_id"] == rule_id
             else:
                 assert attr.metadata["matched_verb"] == matched_verb
         else:
-            assert (
-                attr.value is False
-            ), f"Syntagma '{syntagma.text}' shouldn't have been detected as hypothesis"
+            assert attr.value is False, f"Syntagma '{syntagma.text}' shouldn't have been detected as hypothesis"
             assert not attr.metadata
 
 
@@ -269,11 +253,7 @@ def test_load_save_rules(tmpdir):
 
 def test_rules_and_verbs_file_encoding_error():
     with pytest.raises(UnicodeError):
-        HypothesisDetector.load_rules(
-            path_to_rules=_PATH_TO_DEFAULT_RULES, encoding="utf-16"
-        )
+        HypothesisDetector.load_rules(path_to_rules=_PATH_TO_DEFAULT_RULES, encoding="utf-16")
 
     with pytest.raises(UnicodeError):
-        HypothesisDetector.load_verbs(
-            path_to_verbs=_PATH_TO_DEFAULT_VERBS, encoding="utf-32"
-        )
+        HypothesisDetector.load_verbs(path_to_verbs=_PATH_TO_DEFAULT_VERBS, encoding="utf-32")

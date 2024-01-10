@@ -25,9 +25,7 @@ def _get_syntagma_segments(syntagma_texts):
 
 
 def test_single_rule():
-    syntagmas = _get_syntagma_segments(
-        ["Father died of cancer", "Patient died of cancer"]
-    )
+    syntagmas = _get_syntagma_segments(["Father died of cancer", "Patient died of cancer"])
 
     rule = FamilyDetectorRule(id="id_fam_father", regexp=r"\bfather\b")
     detector = FamilyDetector(output_label=_OUTPUT_LABEL, rules=[rule])
@@ -50,9 +48,7 @@ def test_single_rule():
 
 
 def test_multiple_rules():
-    syntagmas = _get_syntagma_segments(
-        ["Father died of cancer", "Mother died of cancer"]
-    )
+    syntagmas = _get_syntagma_segments(["Father died of cancer", "Mother died of cancer"])
     rule_1 = FamilyDetectorRule(id="id_fam_father", regexp=r"\bfather\b")
     rule_2 = FamilyDetectorRule(id="id_fam_mother", regexp=r"\bmother\b")
     detector = FamilyDetector(output_label=_OUTPUT_LABEL, rules=[rule_1, rule_2])
@@ -70,9 +66,7 @@ def test_multiple_rules():
 
 
 def test_multiple_rules_no_id():
-    syntagmas = _get_syntagma_segments(
-        ["Father died of cancer", "Mother died of cancer"]
-    )
+    syntagmas = _get_syntagma_segments(["Father died of cancer", "Mother died of cancer"])
     rule_1 = FamilyDetectorRule(regexp=r"\bfather\b")
     rule_2 = FamilyDetectorRule(regexp=r"\bmother\b")
     detector = FamilyDetector(output_label=_OUTPUT_LABEL, rules=[rule_1, rule_2])
@@ -93,9 +87,7 @@ def test_exclusions():
         ]
     )
 
-    rule = FamilyDetectorRule(
-        regexp=r"\bfamily\b", exclusion_regexps=[r"\bwith\s+the\s+family"]
-    )
+    rule = FamilyDetectorRule(regexp=r"\bfamily\b", exclusion_regexps=[r"\bwith\s+the\s+family"])
     detector = FamilyDetector(output_label=_OUTPUT_LABEL, rules=[rule])
     detector.run(syntagmas)
 
@@ -109,9 +101,7 @@ def test_exclusions():
 
 
 def test_case_sensitive_on_off():
-    syntagmas = _get_syntagma_segments(
-        ["Father died of cancer", "father died of cancer"]
-    )
+    syntagmas = _get_syntagma_segments(["Father died of cancer", "father died of cancer"])
 
     rule = FamilyDetectorRule(regexp=r"\bfather\b", case_sensitive=False)
     detector = FamilyDetector(output_label=_OUTPUT_LABEL, rules=[rule])
@@ -125,9 +115,7 @@ def test_case_sensitive_on_off():
 
 
 def test_case_sensitive_on():
-    syntagmas = _get_syntagma_segments(
-        ["Father died of cancer", "father died of cancer"]
-    )
+    syntagmas = _get_syntagma_segments(["Father died of cancer", "father died of cancer"])
 
     rule = FamilyDetectorRule(regexp=r"\bfather\b", case_sensitive=True)
     detector = FamilyDetector(output_label=_OUTPUT_LABEL, rules=[rule])
@@ -141,9 +129,7 @@ def test_case_sensitive_on():
 
 
 def test_unicode_sensitive_off(caplog):
-    syntagmas = _get_syntagma_segments(
-        ["Pere decede d'un cancer", "Père décédé d'un cancer"]
-    )
+    syntagmas = _get_syntagma_segments(["Pere decede d'un cancer", "Père décédé d'un cancer"])
 
     rule = FamilyDetectorRule(regexp=r"\bpere\b", unicode_sensitive=False)
     detector = FamilyDetector(output_label=_OUTPUT_LABEL, rules=[rule])
@@ -162,9 +148,7 @@ def test_unicode_sensitive_off(caplog):
 
 
 def test_unicode_sensitive_on():
-    syntagmas = _get_syntagma_segments(
-        ["Pere decede d'un cancer", "Père décédé d'un cancer"]
-    )
+    syntagmas = _get_syntagma_segments(["Pere decede d'un cancer", "Père décédé d'un cancer"])
 
     rule = FamilyDetectorRule(regexp=r"\bpère\b", unicode_sensitive=True)
     detector = FamilyDetector(output_label=_OUTPUT_LABEL, rules=[rule])
@@ -249,13 +233,9 @@ def test_default_rules():
         attr = syntagma.attrs.get(label=_OUTPUT_LABEL)[0]
 
         if is_family_ref:
-            assert (
-                attr.value is True
-            ), f"Syntagma '{syntagma.text}' should have been detected as family"
+            assert attr.value is True, f"Syntagma '{syntagma.text}' should have been detected as family"
         else:
-            assert (
-                attr.value is False
-            ), f"Syntagma '{syntagma.text}' shouldn't have been detected as family"
+            assert attr.value is False, f"Syntagma '{syntagma.text}' shouldn't have been detected as family"
 
 
 def test_load_save_rules(tmpdir):
@@ -271,6 +251,4 @@ def test_load_save_rules(tmpdir):
 
 def test_rules_file_encoding_error():
     with pytest.raises(UnicodeError):
-        FamilyDetector.load_rules(
-            path_to_rules=_PATH_TO_DEFAULT_RULES, encoding="utf-16"
-        )
+        FamilyDetector.load_rules(path_to_rules=_PATH_TO_DEFAULT_RULES, encoding="utf-16")

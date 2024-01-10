@@ -62,9 +62,7 @@ class AttributeContainer:
         if label is None:
             return list(iter(self))
         else:
-            return [
-                self.get_by_id(uid) for uid in self._attr_ids_by_label.get(label, [])
-            ]
+            return [self.get_by_id(uid) for uid in self._attr_ids_by_label.get(label, [])]
 
     def add(self, attr: Attribute):
         """

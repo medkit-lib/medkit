@@ -186,9 +186,7 @@ class UMLSCoderNormalizer(Operation):
 
         # preload all pre-computed UMLS embeddings if nb_umls_embeddings_chunks not set
         if self.nb_umls_embeddings_chunks is None:
-            umls_embeddings_files = sorted(
-                self.embeddings_cache_dir.glob(f"*{_UMLS_EMBEDDINGS_FILE_EXT}")
-            )
+            umls_embeddings_files = sorted(self.embeddings_cache_dir.glob(f"*{_UMLS_EMBEDDINGS_FILE_EXT}"))
             self._umls_embeddings = self._load_umls_embeddings(umls_embeddings_files)
         else:
             self._umls_embeddings = None
@@ -217,14 +215,10 @@ class UMLSCoderNormalizer(Operation):
         all_match_indices, all_match_scores = self._find_best_matches(entities)
 
         # add normalization attributes to each entity
-        for entity, match_indices, match_scores in zip(
-            entities, all_match_indices, all_match_scores
-        ):
+        for entity, match_indices, match_scores in zip(entities, all_match_indices, all_match_scores):
             self._normalize_entity(entity, match_indices, match_scores)
 
-    def _find_best_matches(
-        self, entities: List[Entity]
-    ) -> Tuple[List[List[int]], List[List[float]]]:
+    def _find_best_matches(self, entities: List[Entity]) -> Tuple[List[List[int]], List[List[float]]]:
         entity_terms = [entity.text for entity in entities]
         entity_embeddings = self._pipeline(entity_terms)
         entity_embeddings = torch.cat(entity_embeddings, dim=0)
@@ -232,25 +226,17 @@ class UMLSCoderNormalizer(Operation):
         if self.nb_umls_embeddings_chunks is not None:
             # compute similarities for each batch of pre-computed umls embeddings
             all_similarities = []
-            umls_embeddings_files = sorted(
-                self.embeddings_cache_dir.glob(f"*{_UMLS_EMBEDDINGS_FILE_EXT}")
-            )
-            for files in medkit.core.utils.batch_list(
-                umls_embeddings_files, self.nb_umls_embeddings_chunks
-            ):
+            umls_embeddings_files = sorted(self.embeddings_cache_dir.glob(f"*{_UMLS_EMBEDDINGS_FILE_EXT}"))
+            for files in medkit.core.utils.batch_list(umls_embeddings_files, self.nb_umls_embeddings_chunks):
                 umls_embeddings = self._load_umls_embeddings(files)
-                all_similarities.append(
-                    torch.matmul(entity_embeddings, umls_embeddings.T)
-                )
+                all_similarities.append(torch.matmul(entity_embeddings, umls_embeddings.T))
             similarities = torch.cat(all_similarities, dim=1)
         else:
             # compute similarity on all pre-loaded pre-computed umls embeddings
             assert self._umls_embeddings is not None
             similarities = torch.matmul(entity_embeddings, self._umls_embeddings.T)
 
-        all_matches_scores, all_matches_indices = torch.topk(
-            similarities, k=self.max_nb_matches
-        )
+        all_matches_scores, all_matches_indices = torch.topk(similarities, k=self.max_nb_matches)
         # round scores to avoid floating point precision errors and get
         # 1.0 for exact matches instead of values slightly above or below
         all_matches_scores = torch.round(all_matches_scores, decimals=4)
@@ -258,14 +244,10 @@ class UMLSCoderNormalizer(Operation):
 
     def _load_umls_embeddings(self, files: List[Path]) -> torch.Tensor:
         torch_device = "cpu" if self.device < 0 else f"cuda:{self.device}"
-        umls_embeddings = torch.cat(
-            [torch.load(file, map_location=torch_device) for file in files]
-        )
+        umls_embeddings = torch.cat([torch.load(file, map_location=torch_device) for file in files])
         return umls_embeddings
 
-    def _normalize_entity(
-        self, entity: Entity, match_indices: List[int], match_scores: List[float]
-    ):
+    def _normalize_entity(self, entity: Entity, match_indices: List[int], match_scores: List[float]):
         for match_index, match_score in zip(match_indices, match_scores):
             if self.threshold is not None and match_score < self.threshold:
                 continue
@@ -280,9 +262,7 @@ class UMLSCoderNormalizer(Operation):
             entity.attrs.add(norm_attr)
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    norm_attr, self.description, source_data_items=[entity]
-                )
+                self._prov_tracer.add_prov(norm_attr, self.description, source_data_items=[entity])
 
     def _build_umls_embeddings(self, show_progress=True):
         # build description of computation params
@@ -321,10 +301,7 @@ class UMLSCoderNormalizer(Operation):
         self.embeddings_cache_dir.mkdir(exist_ok=True)
 
         # remove all previous embedding files for safety
-        [
-            f.unlink()
-            for f in self.embeddings_cache_dir.glob(f"*{_UMLS_EMBEDDINGS_FILE_EXT}")
-        ]
+        [f.unlink() for f in self.embeddings_cache_dir.glob(f"*{_UMLS_EMBEDDINGS_FILE_EXT}")]
 
         # get iterator to all UMLS entries
         entries_iter = load_umls_entries(
@@ -337,9 +314,7 @@ class UMLSCoderNormalizer(Operation):
         # iterate over chunks of umls entries
         if show_progress:
             print("Loading UMLS entries and computing embeddings...")
-        for i, chunk_entries in enumerate(
-            medkit.core.utils.batch_iter(entries_iter, _UMLS_EMBEDDINGS_CHUNK_SIZE)
-        ):
+        for i, chunk_entries in enumerate(medkit.core.utils.batch_iter(entries_iter, _UMLS_EMBEDDINGS_CHUNK_SIZE)):
             # get preprocess version of each term for matching
             terms_to_match = [
                 preprocess_term_to_match(
@@ -363,20 +338,14 @@ class UMLSCoderNormalizer(Operation):
             entries_by_term_to_match.update(chunk_entries_by_term_to_match)
 
             # compute embedding for each term
-            chunk_embeddings_iter = self._pipeline(
-                term_to_match for term_to_match in chunk_entries_by_term_to_match
-            )
+            chunk_embeddings_iter = self._pipeline(term_to_match for term_to_match in chunk_entries_by_term_to_match)
             chunk_embeddings = torch.cat(list(chunk_embeddings_iter), dim=0)
-            chunk_embeddings_file = (
-                self.embeddings_cache_dir / f"{i:010d}{_UMLS_EMBEDDINGS_FILE_EXT}"
-            )
+            chunk_embeddings_file = self.embeddings_cache_dir / f"{i:010d}{_UMLS_EMBEDDINGS_FILE_EXT}"
             # save chunk embeddings
             torch.save(chunk_embeddings, chunk_embeddings_file)
 
         # store entries in feather file (faster than csv and yaml)
-        entries_df = pd.DataFrame.from_records(
-            [e.to_dict() for e in entries_by_term_to_match.values()]
-        )
+        entries_df = pd.DataFrame.from_records([e.to_dict() for e in entries_by_term_to_match.values()])
         terms_file = self.embeddings_cache_dir / _TERMS_FILENAME
         if show_progress:
             print("Writing UMLS terms... ", end="")

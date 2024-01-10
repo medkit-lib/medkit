@@ -88,9 +88,7 @@ def test_create_text_operation_filter(init_data):
         function_type=CustomTextOpType.FILTER,
     )
     assert filter.description.name == "keep_hello_segment"
-    assert (
-        filter.description.config.get("function_type") == CustomTextOpType.FILTER.name
-    )
+    assert filter.description.config.get("function_type") == CustomTextOpType.FILTER.name
 
     res: List[Segment] = filter.run(anns)
     assert len(res) == 1

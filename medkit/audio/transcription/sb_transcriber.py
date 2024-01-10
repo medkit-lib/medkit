@@ -90,15 +90,9 @@ class SBTranscriber(Operation):
         self.batch_size = batch_size
         self._torch_device = "cpu" if self.device < 0 else f"cuda:{self.device}"
 
-        asr_class = (
-            sb.pretrained.EncoderDecoderASR
-            if needs_decoder
-            else sb.pretrained.EncoderASR
-        )
+        asr_class = sb.pretrained.EncoderDecoderASR if needs_decoder else sb.pretrained.EncoderASR
 
-        self._asr = asr_class.from_hparams(
-            source=model, savedir=cache_dir, run_opts={"device": self._torch_device}
-        )
+        self._asr = asr_class.from_hparams(source=model, savedir=cache_dir, run_opts={"device": self._torch_device})
 
         self._sample_rate = self._asr.audio_normalizer.sample_rate
 
@@ -135,14 +129,10 @@ class SBTranscriber(Operation):
 
         # group audios in batch of same length with padding
         for batched_audios in medkit.core.utils.batch_list(audios, self.batch_size):
-            padded_batch = sb.dataio.batch.PaddedBatch(
-                [{"wav": a.read().reshape((-1,))} for a in batched_audios]
-            )
+            padded_batch = sb.dataio.batch.PaddedBatch([{"wav": a.read().reshape((-1,))} for a in batched_audios])
             padded_batch.to(self._torch_device)
 
-            batch_texts, _ = self._asr.transcribe_batch(
-                padded_batch.wav.data, padded_batch.wav.lengths
-            )
+            batch_texts, _ = self._asr.transcribe_batch(padded_batch.wav.data, padded_batch.wav.lengths)
             texts += batch_texts
 
         if self.capitalize:

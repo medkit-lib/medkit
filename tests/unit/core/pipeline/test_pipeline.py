@@ -120,9 +120,7 @@ def test_single_step():
         output_keys=["UPPERCASE"],
     )
 
-    pipeline = Pipeline(
-        steps=[step], input_keys=["SENTENCE"], output_keys=["UPPERCASE"]
-    )
+    pipeline = Pipeline(steps=[step], input_keys=["SENTENCE"], output_keys=["UPPERCASE"])
 
     sentence_segs = _get_sentence_segments()
     uppercased_segs = pipeline.run(sentence_segs)
@@ -146,9 +144,7 @@ def test_multiple_steps():
         output_keys=["PREFIX"],
     )
 
-    pipeline = Pipeline(
-        steps=[step_1, step_2], input_keys=["SENTENCE"], output_keys=["PREFIX"]
-    )
+    pipeline = Pipeline(steps=[step_1, step_2], input_keys=["SENTENCE"], output_keys=["PREFIX"])
 
     sentence_segs = _get_sentence_segments()
     prefixed_uppercased_segs = pipeline.run(sentence_segs)
@@ -298,9 +294,7 @@ def test_step_with_multiple_inputs():
         output_keys=["MERGE"],
     )
 
-    pipeline = Pipeline(
-        steps=[step_1, step_2, step_3], input_keys=["SENTENCE"], output_keys=["MERGE"]
-    )
+    pipeline = Pipeline(steps=[step_1, step_2, step_3], input_keys=["SENTENCE"], output_keys=["MERGE"])
 
     sentence_segs = _get_sentence_segments()
     merged_segs = pipeline.run(sentence_segs)
@@ -347,9 +341,7 @@ def test_step_with_different_output_length():
         output_keys=["UPPERCASE"],
     )
 
-    pipeline = Pipeline(
-        steps=[step_1, step_2], input_keys=["SENTENCE"], output_keys=["UPPERCASE"]
-    )
+    pipeline = Pipeline(steps=[step_1, step_2], input_keys=["SENTENCE"], output_keys=["UPPERCASE"])
 
     sentence_segs = _get_sentence_segments()
     entities = pipeline.run(sentence_segs)
@@ -374,9 +366,7 @@ def test_nested_pipeline():
         output_keys=["PREFIX"],
     )
 
-    sub_pipeline = Pipeline(
-        steps=[sub_step_1, sub_step_2], input_keys=["SENTENCE"], output_keys=["PREFIX"]
-    )
+    sub_pipeline = Pipeline(steps=[sub_step_1, sub_step_2], input_keys=["SENTENCE"], output_keys=["PREFIX"])
 
     # build main pipeline
     prefix_2 = "Hello! "
@@ -418,15 +408,11 @@ def test_sanity_check():
     ]
 
     # valid pipeline should not raise
-    pipeline_1 = Pipeline(
-        steps=steps_1, input_keys=["SENTENCE"], output_keys=["PREFIX"]
-    )
+    pipeline_1 = Pipeline(steps=steps_1, input_keys=["SENTENCE"], output_keys=["PREFIX"])
     pipeline_1.check_sanity()
 
     # pipeline input key not corresponding to any step input key
-    pipeline_2 = Pipeline(
-        steps=steps_1, input_keys=["WRONG_KEY"], output_keys=["PREFIX"]
-    )
+    pipeline_2 = Pipeline(steps=steps_1, input_keys=["WRONG_KEY"], output_keys=["PREFIX"])
     with pytest.raises(
         Exception,
         match="Pipeline input key WRONG_KEY does not correspond to any step input key",
@@ -434,14 +420,10 @@ def test_sanity_check():
         pipeline_2.check_sanity()
 
     # pipeline output key not corresponding to any step input key
-    pipeline_3 = Pipeline(
-        steps=steps_1, input_keys=["SENTENCE"], output_keys=["WRONG_KEY"]
-    )
+    pipeline_3 = Pipeline(steps=steps_1, input_keys=["SENTENCE"], output_keys=["WRONG_KEY"])
     with pytest.raises(
         Exception,
-        match=(
-            "Pipeline output key WRONG_KEY does not correspond to any step output key"
-        ),
+        match=("Pipeline output key WRONG_KEY does not correspond to any step output key"),
     ):
         pipeline_3.check_sanity()
 
@@ -450,26 +432,17 @@ def test_sanity_check():
         PipelineStep(uppercaser, input_keys=["SENTENCE"], output_keys=["UPPERCASE"]),
         PipelineStep(prefixer, input_keys=["WRONG_KEY"], output_keys=["PREFIX"]),
     ]
-    pipeline_4 = Pipeline(
-        steps=steps_2, input_keys=["SENTENCE"], output_keys=["PREFIX"]
-    )
+    pipeline_4 = Pipeline(steps=steps_2, input_keys=["SENTENCE"], output_keys=["PREFIX"])
     with pytest.raises(
         Exception,
-        match=(
-            "Step input key WRONG_KEY does not correspond to any step output key nor"
-            " any pipeline input key"
-        ),
+        match=("Step input key WRONG_KEY does not correspond to any step output key nor" " any pipeline input key"),
     ):
         pipeline_4.check_sanity()
 
     # step input key not available yet
     steps_3 = list(reversed(steps_1))
-    pipeline_5 = Pipeline(
-        steps=steps_3, input_keys=["SENTENCE"], output_keys=["PREFIX"]
-    )
-    with pytest.raises(
-        Exception, match="Step input key UPPERCASE is not available yet at this step"
-    ):
+    pipeline_5 = Pipeline(steps=steps_3, input_keys=["SENTENCE"], output_keys=["PREFIX"])
+    with pytest.raises(Exception, match="Step input key UPPERCASE is not available yet at this step"):
         pipeline_5.check_sanity()
 
 
@@ -482,15 +455,11 @@ def test_input_aggregation():
         aggregate_input_keys=True,
     )
 
-    pipeline = Pipeline(
-        steps=[step], input_keys=["SENTENCE_1", "SENTENCE_2"], output_keys=["UPPERCASE"]
-    )
+    pipeline = Pipeline(steps=[step], input_keys=["SENTENCE_1", "SENTENCE_2"], output_keys=["UPPERCASE"])
 
     sentence_segs_1 = _get_sentence_segments()
     sentence_segs_2 = _get_sentence_segments()
     uppercased_segs = pipeline.run(sentence_segs_1, sentence_segs_2)
 
     # operation was properly called to generate new data item
-    assert [a.text.upper() for a in sentence_segs_1 + sentence_segs_2] == [
-        a.text for a in uppercased_segs
-    ]
+    assert [a.text.upper() for a in sentence_segs_1 + sentence_segs_2] == [a.text for a in uppercased_segs]

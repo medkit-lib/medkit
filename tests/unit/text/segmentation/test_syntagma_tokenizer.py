@@ -20,17 +20,11 @@ TEST_CONFIG = [
         [
             {
                 "spans": [Span(start=1, end=72)],
-                "text": (
-                    "Elle avait été améliorée par l'intervention pratiquée par le"
-                    " chirurgien"
-                ),
+                "text": ("Elle avait été améliorée par l'intervention pratiquée par le" " chirurgien"),
             },
             {
                 "spans": [Span(start=73, end=156)],
-                "text": (
-                    "mais présentait des petites douleurs résiduelles sur la face"
-                    " interne du genou droit"
-                ),
+                "text": ("mais présentait des petites douleurs résiduelles sur la face" " interne du genou droit"),
             },
         ],
     ),
@@ -95,9 +89,7 @@ def test_prov():
 
 def test_syntagma_def_file_encoding_error():
     with pytest.raises(UnicodeError):
-        SyntagmaTokenizer.load_syntagma_definition(
-            filepath=_PATH_TO_DEFAULT_RULES, encoding="utf-16"
-        )
+        SyntagmaTokenizer.load_syntagma_definition(filepath=_PATH_TO_DEFAULT_RULES, encoding="utf-16")
 
 
 def test_syntagma_def_file(tmp_path):
@@ -113,13 +105,9 @@ def test_syntagma_def_file(tmp_path):
         r"(?<= )donc\s+(?=\w)",
         # Separateur: donc (précédé d'un espace et suivi d'un espace et mot
     )
-    SyntagmaTokenizer.save_syntagma_definition(
-        syntagma_seps=separators, filepath=filepath, encoding="utf-8"
-    )
+    SyntagmaTokenizer.save_syntagma_definition(syntagma_seps=separators, filepath=filepath, encoding="utf-8")
 
-    loaded_seps = SyntagmaTokenizer.load_syntagma_definition(
-        filepath=filepath, encoding="utf-8"
-    )
+    loaded_seps = SyntagmaTokenizer.load_syntagma_definition(filepath=filepath, encoding="utf-8")
     assert loaded_seps == separators
 
 
@@ -157,13 +145,9 @@ def test_tokenizer_behavior():
     # use cases with '.'
 
     segment = _get_segment_from_text(
-        "Repos à domicile. Absence de fièvre, frissons, hallucinations ou sueurs"
-        " nocturnes"
+        "Repos à domicile. Absence de fièvre, frissons, hallucinations ou sueurs" " nocturnes"
     )
 
     syntagmas = syntagma_tokenizer.run([segment])
     assert syntagmas[0].text == "Repos à domicile."
-    assert (
-        syntagmas[1].text
-        == "Absence de fièvre, frissons, hallucinations ou sueurs nocturnes"
-    )
+    assert syntagmas[1].text == "Absence de fièvre, frissons, hallucinations ou sueurs nocturnes"

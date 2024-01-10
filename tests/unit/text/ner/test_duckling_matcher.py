@@ -11,9 +11,7 @@ _TIME_VALUE = {
     "grain": "day",
     "type": "value",
     "value": "2001-01-02T00:00:00.000-08:00",
-    "values": [
-        {"grain": "day", "type": "value", "value": "2001-01-02T00:00:00.000-08:00"}
-    ],
+    "values": [{"grain": "day", "type": "value", "value": "2001-01-02T00:00:00.000-08:00"}],
 }
 
 _DURATION_VALUE = {

@@ -90,9 +90,7 @@ def test_raw_segment():
     # manually adding annotation with reserved label RAW_LABEL is forbidden
     doc = TextDocument(text=text)
     seg = Segment(label=TextDocument.RAW_LABEL, spans=[Span(0, len(text))], text=text)
-    with pytest.raises(
-        RuntimeError, match=r"Cannot add annotation with reserved label .*"
-    ):
+    with pytest.raises(RuntimeError, match=r"Cannot add annotation with reserved label .*"):
         doc.anns.add(seg)
 
 

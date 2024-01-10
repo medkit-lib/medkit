@@ -64,9 +64,7 @@ class TranscribedTextDocument(TextDocument):
         self.audio_doc_id = audio_doc_id
         self.text_spans_to_audio_spans = text_spans_to_audio_spans
 
-    def get_containing_audio_spans(
-        self, text_ann_spans: List[AnyTextSpan]
-    ) -> List[AudioSpan]:
+    def get_containing_audio_spans(self, text_ann_spans: List[AnyTextSpan]) -> List[AudioSpan]:
         """Return the audio spans used to transcribe the text referenced by a text
         annotation.
 

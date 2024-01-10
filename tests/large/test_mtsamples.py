@@ -68,14 +68,10 @@ def test_mt_samples_without_pipeline(caplog):
         anns = [doc.raw_segment]
         anns = regexp_replacer.run(anns)
         anns = sentence_tokenizer.run(anns)
-        with caplog.at_level(
-            logging.WARNING, logger="medkit.text.context.negation_detector"
-        ):
+        with caplog.at_level(logging.WARNING, logger="medkit.text.context.negation_detector"):
             negation_detector.run(anns)
             assert len(caplog.messages) == 0
-        with caplog.at_level(
-            logging.WARNING, logger="medkit.text.context.regexp_matcher"
-        ):
+        with caplog.at_level(logging.WARNING, logger="medkit.text.context.regexp_matcher"):
             anns = regexp_matcher.run(anns)
             assert len(caplog.messages) == 0
 

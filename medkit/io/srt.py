@@ -140,9 +140,7 @@ class SRTInputConverter(InputConverter):
 
         return docs
 
-    def load_doc(
-        self, srt_file: Union[str, Path], audio_file: Union[str, Path]
-    ) -> AudioDocument:
+    def load_doc(self, srt_file: Union[str, Path], audio_file: Union[str, Path]) -> AudioDocument:
         """Load a single .srt file into an
         :class:`~medkit.core.audio.document.AudioDocument` containing
         turn segments with transcription attributes.
@@ -172,9 +170,7 @@ class SRTInputConverter(InputConverter):
 
         return doc
 
-    def load_segments(
-        self, srt_file: Union[str, Path], audio_file: Union[str, Path]
-    ) -> List[Segment]:
+    def load_segments(self, srt_file: Union[str, Path], audio_file: Union[str, Path]) -> List[Segment]:
         """Load a .srt file and return a list of
         :class:`~medkit.core.audio.annotation.Segment` objects corresponding to
         turns, with transcription attributes.
@@ -201,27 +197,19 @@ class SRTInputConverter(InputConverter):
         segments = [self._build_segment(srt_item, full_audio) for srt_item in srt_items]
         return segments
 
-    def _build_segment(
-        self, srt_item: pysrt.SubRipItem, full_audio: FileAudioBuffer
-    ) -> Segment:
+    def _build_segment(self, srt_item: pysrt.SubRipItem, full_audio: FileAudioBuffer) -> Segment:
         # milliseconds to seconds
         start = srt_item.start.ordinal / 1000
         end = srt_item.end.ordinal / 1000
 
         audio = full_audio.trim_duration(start, end)
-        segment = Segment(
-            label=self.turn_segment_label, span=Span(start, end), audio=audio
-        )
-        transcription_attr = Attribute(
-            label=self.transcription_attr_label, value=srt_item.text
-        )
+        segment = Segment(label=self.turn_segment_label, span=Span(start, end), audio=audio)
+        transcription_attr = Attribute(label=self.transcription_attr_label, value=srt_item.text)
         segment.attrs.add(transcription_attr)
 
         if self._prov_tracer is not None:
             self._prov_tracer.add_prov(segment, self.description, source_data_items=[])
-            self._prov_tracer.add_prov(
-                transcription_attr, self.description, source_data_items=[]
-            )
+            self._prov_tracer.add_prov(transcription_attr, self.description, source_data_items=[])
 
         return segment
 
@@ -280,9 +268,7 @@ class SRTOutputConverter(OutputConverter):
 
         if doc_names is not None:
             if len(doc_names) != len(docs):
-                raise ValueError(
-                    "doc_names must have the same length as docs when provided"
-                )
+                raise ValueError("doc_names must have the same length as docs when provided")
         else:
             doc_names = [doc.uid for doc in docs]
 
@@ -327,9 +313,7 @@ class SRTOutputConverter(OutputConverter):
         srt_items = pysrt.SubRipFile(path=str(srt_file))
 
         for i, segment in enumerate(segments):
-            transcription_attr = segment.attrs.get(label=self.transcription_attr_label)[
-                0
-            ]
+            transcription_attr = segment.attrs.get(label=self.transcription_attr_label)[0]
             srt_item = pysrt.SubRipItem(
                 index=i,
                 start=pysrt.SubRipTime(seconds=segment.span.start),

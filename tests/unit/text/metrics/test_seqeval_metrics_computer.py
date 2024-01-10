@@ -26,9 +26,7 @@ def input_batch():
     # labels only in the first token
     input_batch = BatchData(
         {
-            "input_ids": torch.tensor(
-                [[101, 19960, 23615, 2003, 1037, 18750, 3075, 102]]
-            ),
+            "input_ids": torch.tensor([[101, 19960, 23615, 2003, 1037, 18750, 3075, 102]]),
             "attention_masks": torch.tensor([[1, 1, 1, 1, 1, 1, 1, 1]]),
             "labels": torch.tensor([[-100, 1, -100, 0, 0, 3, 0, -100]]),
             "ref_labels_tags": [["B-corporation", "O", "O", "B-language", "O"]],
@@ -117,9 +115,7 @@ def test_seqeval_metrics_computer_bio(
     )
 
     # prepare batch for the metric
-    prepared_data = metrics_computer.prepare_batch(
-        input_batch=input_batch, model_output=model_output
-    )
+    prepared_data = metrics_computer.prepare_batch(input_batch=input_batch, model_output=model_output)
     assert prepared_data["y_true"] == input_batch["ref_labels_tags"]
     assert prepared_data["y_pred"] == expected_tags
 
@@ -149,9 +145,7 @@ def test_seqeval_metrics_with_entities(input_batch, id_to_label_bio):
     )
 
     # prepare batch for the metric
-    prepared_data = metrics_computer.prepare_batch(
-        input_batch=input_batch, model_output=model_output
-    )
+    prepared_data = metrics_computer.prepare_batch(input_batch=input_batch, model_output=model_output)
 
     expected_tags = [["B-corporation", "O", "I-corporation", "B-language", "O"]]
     assert prepared_data["y_true"] == input_batch["ref_labels_tags"]
@@ -216,14 +210,10 @@ def test_seqeval_metrics_bilou():
 
     # testing perfect match
     expected_tags = [["B-corporation", "L-corporation"]]
-    model_output = _mock_model_output(
-        nb_labels=nb_labels, nb_tokens=nb_tokens, predicted_labels_ids=[0, 1, 3, 0]
-    )
+    model_output = _mock_model_output(nb_labels=nb_labels, nb_tokens=nb_tokens, predicted_labels_ids=[0, 1, 3, 0])
 
     # prepare batch for the metric
-    prepared_data = metrics_computer.prepare_batch(
-        input_batch=input_batch, model_output=model_output
-    )
+    prepared_data = metrics_computer.prepare_batch(input_batch=input_batch, model_output=model_output)
 
     assert prepared_data["y_true"] == input_batch["ref_labels_tags"]
     assert prepared_data["y_pred"] == expected_tags
@@ -234,14 +224,10 @@ def test_seqeval_metrics_bilou():
 
     # testing one missing, bilou is strict match
     expected_tags = [["B-corporation", "I-corporation"]]
-    model_output = _mock_model_output(
-        nb_labels=nb_labels, nb_tokens=nb_tokens, predicted_labels_ids=[0, 1, 2, 0]
-    )
+    model_output = _mock_model_output(nb_labels=nb_labels, nb_tokens=nb_tokens, predicted_labels_ids=[0, 1, 2, 0])
 
     # prepare batch for the metric
-    prepared_data = metrics_computer.prepare_batch(
-        input_batch=input_batch, model_output=model_output
-    )
+    prepared_data = metrics_computer.prepare_batch(input_batch=input_batch, model_output=model_output)
 
     assert prepared_data["y_true"] == input_batch["ref_labels_tags"]
     assert prepared_data["y_pred"] == expected_tags

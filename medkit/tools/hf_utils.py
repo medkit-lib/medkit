@@ -11,9 +11,7 @@ from typing import Optional, Union
 import transformers
 
 
-def check_model_for_task_HF(
-    model: Union[str, Path], task: str, hf_auth_token: Optional[str] = None
-) -> bool:
+def check_model_for_task_HF(model: Union[str, Path], task: str, hf_auth_token: Optional[str] = None) -> bool:
     """Check compatibility of a model with a task HuggingFace.
     The model could be in the HuggingFace hub or in local files.
 

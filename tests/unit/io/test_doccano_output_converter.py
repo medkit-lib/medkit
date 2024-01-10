@@ -37,9 +37,7 @@ def _get_doc_by_task(task: DoccanoTask):
             Entity(label="ORG", spans=[Span(0, 6)], text="medkit", uid="e0"),
             Entity(label="DATE", spans=[Span(22, 26)], text="2022", uid="e1"),
             Relation(label="created_in", source_id="e0", target_id="e1", uid="r0"),
-            Segment(
-                label="sentence", text="medkit was created in 2022", spans=[Span(0, 26)]
-            ),
+            Segment(label="sentence", text="medkit was created in 2022", spans=[Span(0, 26)]),
         ]
 
         for ann in medkit_anns:
@@ -71,9 +69,7 @@ def _load_json_file(filepath):
 )
 def test_save_by_task_with_metadat(tmp_path, task):
     medkit_docs = [_get_doc_by_task(task)]
-    converter = DoccanoOutputConverter(
-        task=task, attr_label="category", include_metadata=True
-    )
+    converter = DoccanoOutputConverter(task=task, attr_label="category", include_metadata=True)
 
     output_file = tmp_path / f"{task.value}.jsonl"
     converter.save(medkit_docs, output_file=output_file)
@@ -133,9 +129,7 @@ def test_warnings(tmp_path, caplog):
 )
 def test_save_by_task_without_metadata(tmp_path, task):
     medkit_docs = [_get_doc_by_task(task)]
-    converter = DoccanoOutputConverter(
-        task=task, attr_label="category", include_metadata=False
-    )
+    converter = DoccanoOutputConverter(task=task, attr_label="category", include_metadata=False)
 
     output_file = tmp_path / f"{task.value}.jsonl"
     converter.save(medkit_docs, output_file=output_file)

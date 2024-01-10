@@ -45,9 +45,7 @@ class EDSNLPTNMMatcher(NEROperation):
             Identifier of the matcher
         """
 
-        super().__init__(
-            output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid
-        )
+        super().__init__(output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid)
 
         if attrs_to_copy is None:
             attrs_to_copy = []
@@ -98,18 +96,12 @@ class EDSNLPTNMMatcher(NEROperation):
             assert isinstance(attr, TNMAttribute)
 
             # create entity
-            entity = Entity(
-                label=self.output_label, spans=spans, text=text, attrs=[attr]
-            )
+            entity = Entity(label=self.output_label, spans=spans, text=text, attrs=[attr])
 
             # handle provenance
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    entity, self.description, source_data_items=[segment]
-                )
-                self._prov_tracer.add_prov(
-                    attr, self.description, source_data_items=[segment]
-                )
+                self._prov_tracer.add_prov(entity, self.description, source_data_items=[segment])
+                self._prov_tracer.add_prov(attr, self.description, source_data_items=[segment])
 
             # copy attrs from source segment to TNM entity
             for label in self.attrs_to_copy:
@@ -118,8 +110,6 @@ class EDSNLPTNMMatcher(NEROperation):
                     entity.attrs.add(copied_attr)
                     # handle provenance
                     if self._prov_tracer is not None:
-                        self._prov_tracer.add_prov(
-                            copied_attr, self.description, [attr]
-                        )
+                        self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
             yield entity

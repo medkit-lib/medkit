@@ -71,9 +71,7 @@ def test_trainer_with_metrics(
 TEST_SCHEDULER = [
     (None, "loss"),
     (
-        lambda optimizer: torch.optim.lr_scheduler.StepLR(
-            optimizer, step_size=1, gamma=0.1
-        ),
+        lambda optimizer: torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.1),
         "loss",
     ),
     (
@@ -119,7 +117,5 @@ def test_trainer_with_lr_scheduler(tmp_path, lr_scheduler_builder, metric_to_tra
         trainer.train()
 
     else:
-        with pytest.raises(
-            ValueError, match="Learning scheduler needs an eval metric to update .*"
-        ):
+        with pytest.raises(ValueError, match="Learning scheduler needs an eval metric to update .*"):
             trainer.train()

@@ -89,17 +89,10 @@ class _DotWriter:
         if current_sub_prov_depth == 0:
             self._fp.write("digraph {\n\n")
 
-        write_sub_prov = (
-            self._max_sub_prov_depth is None
-            or current_sub_prov_depth < self._max_sub_prov_depth
-        )
+        write_sub_prov = self._max_sub_prov_depth is None or current_sub_prov_depth < self._max_sub_prov_depth
 
         for prov in tracer.get_provs():
-            if (
-                not write_sub_prov
-                or prov.op_desc is None
-                or not tracer.has_sub_prov_tracer(prov.op_desc.uid)
-            ):
+            if not write_sub_prov or prov.op_desc is None or not tracer.has_sub_prov_tracer(prov.op_desc.uid):
                 self._write_prov(prov)
 
         if write_sub_prov:
@@ -116,27 +109,18 @@ class _DotWriter:
         self._fp.write(f'"{data_item.uid}" [label="{data_item_label}"];\n')
 
         if prov.op_desc is not None:
-            op_label = (
-                self._op_formatter(prov.op_desc)
-                if self._op_formatter is not None
-                else prov.op_desc.name
-            )
+            op_label = self._op_formatter(prov.op_desc) if self._op_formatter is not None else prov.op_desc.name
             op_label = self._escape_quotes(op_label)
         else:
             op_label = "Unknown"
         for source_data_item in prov.source_data_items:
-            self._fp.write(
-                f'"{source_data_item.uid}" -> "{data_item.uid}" [label="{op_label}"];\n'
-            )
+            self._fp.write(f'"{source_data_item.uid}" -> "{data_item.uid}" [label="{op_label}"];\n')
         self._fp.write("\n\n")
 
-        if self._show_attr_links and isinstance(
-            data_item, IdentifiableDataItemWithAttrs
-        ):
+        if self._show_attr_links and isinstance(data_item, IdentifiableDataItemWithAttrs):
             for attr in data_item.attrs:
                 self._fp.write(
-                    f'"{data_item.uid}" -> "{attr.uid}" [style=dashed, color=grey,'
-                    ' label="attr", fontcolor=grey];\n'
+                    f'"{data_item.uid}" -> "{attr.uid}" [style=dashed, color=grey,' ' label="attr", fontcolor=grey];\n'
                 )
 
     def _format_data_item(self, data_item: IdentifiableDataItem):
@@ -147,10 +131,7 @@ class _DotWriter:
             for type, formatter in formatters.items():
                 if isinstance(data_item, type):
                     return formatter(data_item)
-        raise ValueError(
-            f"Found no formatter for data item with type {type(data_item)}, please"
-            " provide one"
-        )
+        raise ValueError(f"Found no formatter for data item with type {type(data_item)}, please" " provide one")
 
     @staticmethod
     def _escape_quotes(text):

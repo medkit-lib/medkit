@@ -32,9 +32,7 @@ def test_krippendorff_alpha():
     assert alpha == krippendorff_alpha([D, A, C, B])
 
     # testing exceptions
-    with pytest.raises(
-        AssertionError, match="Number of labels should be the same for all .*"
-    ):
+    with pytest.raises(AssertionError, match="Number of labels should be the same for all .*"):
         krippendorff_alpha([[1, 2, 1], [1, 2, 1] * 2])
 
     with pytest.raises(AssertionError, match="There must be more than one .*"):

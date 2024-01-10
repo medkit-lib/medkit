@@ -144,9 +144,7 @@ class RTTMInputConverter(InputConverter):
 
         return docs
 
-    def load_doc(
-        self, rttm_file: Union[str, Path], audio_file: Union[str, Path]
-    ) -> AudioDocument:
+    def load_doc(self, rttm_file: Union[str, Path], audio_file: Union[str, Path]) -> AudioDocument:
         """Load a single .rttm file into an
         :class:`~medkit.core.audio.document.AudioDocument`.
 
@@ -176,9 +174,7 @@ class RTTMInputConverter(InputConverter):
 
         return doc
 
-    def load_turns(
-        self, rttm_file: Union[str, Path], audio_file: Union[str, Path]
-    ) -> List[Segment]:
+    def load_turns(self, rttm_file: Union[str, Path], audio_file: Union[str, Path]) -> List[Segment]:
         """Load a .rttm file and return a list of
         :class:`~medkit.core.audio.annotation.Segment` objects.
 
@@ -211,16 +207,11 @@ class RTTMInputConverter(InputConverter):
 
         file_id = rows[0]["file_id"]
         if not all(r["file_id"] == file_id for r in rows):
-            raise RuntimeError(
-                "Multi-file .rttm are not supported, all entries should have same"
-                " file_id or <NA>"
-            )
+            raise RuntimeError("Multi-file .rttm are not supported, all entries should have same" " file_id or <NA>")
 
         return rows
 
-    def _build_turn_segment(
-        self, row: Dict[str, Any], full_audio: FileAudioBuffer
-    ) -> Segment:
+    def _build_turn_segment(self, row: Dict[str, Any], full_audio: FileAudioBuffer) -> Segment:
         start = float(row["onset"])
         end = start + float(row["duration"])
         audio = full_audio.trim_duration(start, end)
@@ -230,9 +221,7 @@ class RTTMInputConverter(InputConverter):
 
         if self._prov_tracer is not None:
             self._prov_tracer.add_prov(segment, self.description, source_data_items=[])
-            self._prov_tracer.add_prov(
-                speaker_attr, self.description, source_data_items=[]
-            )
+            self._prov_tracer.add_prov(speaker_attr, self.description, source_data_items=[])
 
         return segment
 
@@ -287,9 +276,7 @@ class RTTMOutputConverter(OutputConverter):
 
         if doc_names is not None:
             if len(doc_names) != len(docs):
-                raise ValueError(
-                    "doc_names must have the same length as docs when provided"
-                )
+                raise ValueError("doc_names must have the same length as docs when provided")
         else:
             doc_names = [doc.uid for doc in docs]
 
@@ -353,14 +340,10 @@ class RTTMOutputConverter(OutputConverter):
             csv_writer = csv.DictWriter(fp, fieldnames=_RTTM_FIELDS, delimiter=" ")
             csv_writer.writerows(rows)
 
-    def _build_rttm_row(
-        self, turn_segment: Segment, rttm_doc_id: Optional[str]
-    ) -> Dict[str, Any]:
+    def _build_rttm_row(self, turn_segment: Segment, rttm_doc_id: Optional[str]) -> Dict[str, Any]:
         speaker_attrs = turn_segment.attrs.get(label=self.speaker_label)
         if len(speaker_attrs) == 0:
-            raise RuntimeError(
-                f"Found no attribute with label '{self.speaker_label}' on turn segment"
-            )
+            raise RuntimeError(f"Found no attribute with label '{self.speaker_label}' on turn segment")
 
         speaker_attr = speaker_attrs[0]
         span = turn_segment.span

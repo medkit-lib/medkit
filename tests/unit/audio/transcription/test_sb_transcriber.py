@@ -59,18 +59,14 @@ def _mocked_asr(module_mocker):
 
 
 def _gen_segment(nb_samples) -> Segment:
-    audio = MemoryAudioBuffer(
-        signal=np.zeros((1, nb_samples)), sample_rate=_SAMPLE_RATE
-    )
+    audio = MemoryAudioBuffer(signal=np.zeros((1, nb_samples)), sample_rate=_SAMPLE_RATE)
     return Segment(label="turn", audio=audio, span=Span(0, audio.duration))
 
 
 def test_basic():
     """Basic behavior"""
 
-    transcriber = SBTranscriber(
-        model=_MOCK_MODEL_NAME, output_label="transcribed_text", needs_decoder=False
-    )
+    transcriber = SBTranscriber(model=_MOCK_MODEL_NAME, output_label="transcribed_text", needs_decoder=False)
 
     seg_1 = _gen_segment(1000)
     seg_2 = _gen_segment(2000)
@@ -104,9 +100,7 @@ def test_no_formatting():
 def test_prov():
     seg = _gen_segment(1000)
 
-    transcriber = SBTranscriber(
-        model=_MOCK_MODEL_NAME, output_label="transcribed_text", needs_decoder=False
-    )
+    transcriber = SBTranscriber(model=_MOCK_MODEL_NAME, output_label="transcribed_text", needs_decoder=False)
     prov_tracer = ProvTracer()
     transcriber.set_prov_tracer(prov_tracer)
     transcriber.run([seg])

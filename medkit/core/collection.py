@@ -34,9 +34,7 @@ class Collection:
         """
 
         if text_docs is None and audio_docs is None:
-            raise ValueError(
-                "Collection must received at least one list of documents at init"
-            )
+            raise ValueError("Collection must received at least one list of documents at init")
 
         if text_docs is None:
             text_docs = []

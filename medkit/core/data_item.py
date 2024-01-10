@@ -10,9 +10,7 @@ class IdentifiableDataItem(Protocol):
     uid: str
 
 
-IdentifiableDataItemType = TypeVar(
-    "IdentifiableDataItemType", bound=IdentifiableDataItem
-)
+IdentifiableDataItemType = TypeVar("IdentifiableDataItemType", bound=IdentifiableDataItem)
 
 
 @runtime_checkable

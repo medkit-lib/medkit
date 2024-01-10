@@ -79,13 +79,9 @@ def test_intermediate_operation():
     prefixed_items_2 = prefixer_2.prefix(prefixed_items_1)
 
     tracer._graph.check_sanity()
-    assert len(tracer.get_provs()) == len(input_items) + len(prefixed_items_1) + len(
-        prefixed_items_2
-    )
+    assert len(tracer.get_provs()) == len(input_items) + len(prefixed_items_1) + len(prefixed_items_2)
 
-    for input_item, prefixed_item_1, prefixed_item_2 in zip(
-        input_items, prefixed_items_1, prefixed_items_2
-    ):
+    for input_item, prefixed_item_1, prefixed_item_2 in zip(input_items, prefixed_items_1, prefixed_items_2):
         input_prov = tracer.get_prov(input_item.uid)
         assert input_prov.op_desc == generator.description
         assert len(input_prov.source_data_items) == 0
@@ -143,9 +139,7 @@ def test_multiple_source():
     merged_item = merger.merge(input_items)
 
     tracer._graph.check_sanity()
-    assert (
-        len(tracer.get_provs()) == len(input_items) + 1
-    )  # 2 input items + 1 merged item
+    assert len(tracer.get_provs()) == len(input_items) + 1  # 2 input items + 1 merged item
 
     prov = tracer.get_prov(merged_item.uid)
     assert prov.op_desc == merger.description

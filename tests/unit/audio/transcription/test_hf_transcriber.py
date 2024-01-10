@@ -40,9 +40,7 @@ def _mocked_pipeline(module_mocker):
 
 
 def _gen_segment(nb_samples) -> Segment:
-    audio = MemoryAudioBuffer(
-        signal=np.zeros((1, nb_samples)), sample_rate=_SAMPLE_RATE
-    )
+    audio = MemoryAudioBuffer(signal=np.zeros((1, nb_samples)), sample_rate=_SAMPLE_RATE)
     return Segment(label="turn", audio=audio, span=Span(0, audio.duration))
 
 

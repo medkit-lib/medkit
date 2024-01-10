@@ -25,9 +25,7 @@ def extract_anns_and_attrs_from_spacy_doc(
     entities: Optional[List[str]] = None,
     span_groups: Optional[List[str]] = None,
     attrs: Optional[List[str]] = None,
-    attribute_factories: Optional[
-        Dict[str, Callable[[SpacySpan, str], Attribute]]
-    ] = None,
+    attribute_factories: Optional[Dict[str, Callable[[SpacySpan, str], Attribute]]] = None,
     rebuild_medkit_anns_and_attrs: bool = False,
 ) -> Tuple[List[Segment], Dict[str, List[Attribute]]]:
     """Given a spacy document, convert selected entities or spans into Segments.
@@ -78,10 +76,7 @@ def extract_anns_and_attrs_from_spacy_doc(
     _define_default_extensions()
     spacy_doc_medkit_id = spacy_doc._.get(_ATTR_MEDKIT_ID)
     if spacy_doc_medkit_id is not None:
-        if (
-            medkit_source_ann is not None
-            and medkit_source_ann.uid != spacy_doc_medkit_id
-        ):
+        if medkit_source_ann is not None and medkit_source_ann.uid != spacy_doc_medkit_id:
             msg = (
                 "The medkit uid of the Doc object is"
                 f" {spacy_doc_medkit_id}, the medkit source annotation"
@@ -302,9 +297,7 @@ def build_spacy_doc_from_medkit_segment(
     return doc
 
 
-def _add_entities_in_spacy_doc(
-    spacy_doc: Doc, entities: List[Entity], attrs: List[str], include_medkit_info: bool
-):
+def _add_entities_in_spacy_doc(spacy_doc: Doc, entities: List[Entity], attrs: List[str], include_medkit_info: bool):
     """Convert entities into spacy spans and modifies
     the entities in the Doc object (doc.ents)"""
     # create an intermediate list to check for overlaps
@@ -324,13 +317,10 @@ def _add_entities_in_spacy_doc(
     # of the medkit entities
     spacy_doc.ents = ents_filtered
 
-    discarded_str = "--".join(
-        [ent.text for ent in spacy_entities if ent not in ents_filtered]
-    )
+    discarded_str = "--".join([ent.text for ent in spacy_entities if ent not in ents_filtered])
     if discarded_str:
         warnings.warn(
-            f"Spacy does not allow entity overlapping, these entities ({discarded_str})"
-            "  were discarded",
+            f"Spacy does not allow entity overlapping, these entities ({discarded_str})" "  were discarded",
             stacklevel=2,
         )
 
@@ -383,9 +373,7 @@ def _get_defined_spacy_attrs(include_medkit_attrs: bool = False) -> List[str]:
         return attrs
     # does not include medkit-defined attributes
     # remove attrs that have a medkit ID
-    attrs = [
-        attr for attr in attrs if f"{attr}_{_ATTR_MEDKIT_ID}" not in available_attrs
-    ]
+    attrs = [attr for attr in attrs if f"{attr}_{_ATTR_MEDKIT_ID}" not in available_attrs]
     return attrs
 
 
@@ -479,9 +467,7 @@ def _get_text_and_spans_from_span_spacy(
     return text, spans
 
 
-def _get_ents_by_label(
-    spacy_doc: Doc, entities: Optional[List[str]] = None
-) -> List[SpacySpan]:
+def _get_ents_by_label(spacy_doc: Doc, entities: Optional[List[str]] = None) -> List[SpacySpan]:
     if entities is None:
         ents = list(spacy_doc.ents)
     else:
@@ -489,15 +475,11 @@ def _get_ents_by_label(
     return ents
 
 
-def _get_spans_by_label(
-    spacy_doc: Doc, span_groups: Optional[List[str]] = None
-) -> Dict[str, List[SpacySpan]]:
+def _get_spans_by_label(spacy_doc: Doc, span_groups: Optional[List[str]] = None) -> Dict[str, List[SpacySpan]]:
     if span_groups is None:
         spans = dict(spacy_doc.spans)
     else:
-        spans = {
-            label: sp for label, sp in spacy_doc.spans.items() if label in span_groups
-        }
+        spans = {label: sp for label, sp in spacy_doc.spans.items() if label in span_groups}
     return spans
 
 

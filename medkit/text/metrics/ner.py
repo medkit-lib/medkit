@@ -40,9 +40,7 @@ def _compute_seqeval_from_dict(
         mode=mode,
     )
     # add average metrics
-    scores = {
-        f"{average}_{key}": value for key, value in report[f"{average} avg"].items()
-    }
+    scores = {f"{average}_{key}": value for key, value in report[f"{average} avg"].items()}
     scores["support"] = scores.pop(f"{average}_support")
     scores["accuracy"] = accuracy_score(y_true=y_true_all, y_pred=y_pred_all)
 
@@ -112,9 +110,7 @@ class SeqEvalEvaluator:
         self.average = average
         self.labels_remapping = labels_remapping
 
-    def compute(
-        self, documents: List[TextDocument], predicted_entities: List[List[Entity]]
-    ) -> Dict[str, float]:
+    def compute(self, documents: List[TextDocument], predicted_entities: List[List[Entity]]) -> Dict[str, float]:
         """Compute metrics of entity matching giving predictions.
 
         Parameters
@@ -136,12 +132,8 @@ class SeqEvalEvaluator:
             text = document.text
             true_entities = document.anns.entities
 
-            true_tags_all.append(
-                self._tag_text_with_entities(text=text, entities=true_entities)
-            )
-            pred_tags_all.append(
-                self._tag_text_with_entities(text=text, entities=pred_entities)
-            )
+            true_tags_all.append(self._tag_text_with_entities(text=text, entities=true_entities))
+            pred_tags_all.append(self._tag_text_with_entities(text=text, entities=pred_entities))
         scores = _compute_seqeval_from_dict(
             y_true_all=true_tags_all,
             y_pred_all=pred_tags_all,
@@ -225,9 +217,7 @@ class SeqEvalMetricsComputer:
         self.return_metrics_by_label = return_metrics_by_label
         self.average = average
 
-    def prepare_batch(
-        self, model_output: BatchData, input_batch: BatchData
-    ) -> Dict[str, List[List[str]]]:
+    def prepare_batch(self, model_output: BatchData, input_batch: BatchData) -> Dict[str, List[List[str]]]:
         """Prepare a batch of tensors to compute the metric
 
         Parameters
@@ -242,21 +232,17 @@ class SeqEvalMetricsComputer:
         Dict[str, List[List[str]]]
             A dictionary with the true and predicted tags representation of a batch data
         """
-        predictions_ids = (
-            model_output["logits"].argmax(dim=-1).detach().to("cpu").numpy()
-        )
+        predictions_ids = model_output["logits"].argmax(dim=-1).detach().to("cpu").numpy()
         references_ids = input_batch["labels"].detach().to("cpu").numpy()
         # ignore special tokens
         mask_special_tokens = references_ids != hf_tokenization_utils.SPECIAL_TAG_ID_HF
 
         batch_true_tags = [
-            [self.id_to_label[tag] for tag in ref[mask]]
-            for ref, mask in zip(references_ids, mask_special_tokens)
+            [self.id_to_label[tag] for tag in ref[mask]] for ref, mask in zip(references_ids, mask_special_tokens)
         ]
 
         batch_pred_tags = [
-            [self.id_to_label[tag] for tag in pred[mask]]
-            for pred, mask in zip(predictions_ids, mask_special_tokens)
+            [self.id_to_label[tag] for tag in pred[mask]] for pred, mask in zip(predictions_ids, mask_special_tokens)
         ]
 
         return {"y_true": batch_true_tags, "y_pred": batch_pred_tags}

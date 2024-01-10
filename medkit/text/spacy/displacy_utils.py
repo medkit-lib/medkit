@@ -39,17 +39,11 @@ def medkit_doc_to_displacy(
     """
 
     if entity_labels:
-        entities = [
-            e
-            for label in entity_labels
-            for e in medkit_doc.anns.get_entities(label=label)
-        ]
+        entities = [e for label in entity_labels for e in medkit_doc.anns.get_entities(label=label)]
     else:
         entities = medkit_doc.anns.get_entities()
 
-    return entities_to_displacy(
-        entities, medkit_doc.text, entity_formatter, max_gap_length
-    )
+    return entities_to_displacy(entities, medkit_doc.text, entity_formatter, max_gap_length)
 
 
 def entities_to_displacy(
@@ -103,10 +97,7 @@ def entities_to_displacy(
         else:
             label = entity.label
 
-        ents_data += [
-            {"start": span.start, "end": span.end, "label": label}
-            for span in cleaned_spans
-        ]
+        ents_data += [{"start": span.start, "end": span.end, "label": label} for span in cleaned_spans]
 
     ents_data = sorted(ents_data, key=lambda d: d["start"])
     return {"text": raw_text, "ents": ents_data}

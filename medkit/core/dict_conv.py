@@ -33,9 +33,7 @@ def add_class_name_to_data_dict(instance: object, data_dict: Dict[str, Any]):
         The data dict on which to add the class name
     """
     if _CLASS_NAME_KEY in data_dict:
-        raise ValueError(
-            f"Found pre-existing entry for key {_CLASS_NAME_KEY} in data dict"
-        )
+        raise ValueError(f"Found pre-existing entry for key {_CLASS_NAME_KEY} in data dict")
     data_dict[_CLASS_NAME_KEY] = get_class_name(type(instance))
 
 

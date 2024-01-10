@@ -30,9 +30,7 @@ def test_convert_data_annotation_to_medkit(e3c_corpus_path, tmpdir):
         output_file=medkit_file,
         keep_sentences=True,
     )
-    docs_from_corpus = list(
-        load_data_annotation(dir_path=e3c_corpus_path, keep_sentences=True)
-    )
+    docs_from_corpus = list(load_data_annotation(dir_path=e3c_corpus_path, keep_sentences=True))
     docs_from_medkit = list(load_text_documents(medkit_file))
 
     assert docs_from_corpus == docs_from_medkit

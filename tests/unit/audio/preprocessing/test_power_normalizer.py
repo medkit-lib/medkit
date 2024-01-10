@@ -16,9 +16,7 @@ _TOLERANCE = 1e-7
 def _get_segment(signal):
     duration = signal.shape[1] / _SAMPLE_RATE
     audio = MemoryAudioBuffer(signal=signal, sample_rate=_SAMPLE_RATE)
-    return Segment(
-        label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + duration), audio=audio
-    )
+    return Segment(label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + duration), audio=audio)
 
 
 def _check_normalized_segment(normalized_seg, original_seg):
@@ -72,9 +70,7 @@ def test_basic():
     normalized_power_1 = np.std(normalized_signal_1)
     assert _powers_are_close(normalized_power_1, 1.0)
     # power ratio between channels must be preserved
-    normalized_power_ratio = np.std(normalized_signal_1[0]) / np.std(
-        normalized_signal_1[1]
-    )
+    normalized_power_ratio = np.std(normalized_signal_1[0]) / np.std(normalized_signal_1[1])
     assert _powers_are_close(normalized_power_ratio, amps_1[0] / amps_1[1])
 
     # check attributes of 2d normalized segment
@@ -88,9 +84,7 @@ def test_basic():
 
 def test_target_value():
     """Custom target_value"""
-    signal = generate_sin_signal(
-        duration=0.5, sample_rate=_SAMPLE_RATE, amplitudes=[0.1]
-    )
+    signal = generate_sin_signal(duration=0.5, sample_rate=_SAMPLE_RATE, amplitudes=[0.1])
     seg = _get_segment(signal)
 
     target_value = 0.9
@@ -105,9 +99,7 @@ def test_target_value():
 
 def test_channel_wise():
     """Channel-wise normalization, balance across channel is not preserved"""
-    signal = generate_sin_signal(
-        duration=0.5, sample_rate=_SAMPLE_RATE, nb_channels=2, amplitudes=[0.1, 0.5]
-    )
+    signal = generate_sin_signal(duration=0.5, sample_rate=_SAMPLE_RATE, nb_channels=2, amplitudes=[0.1, 0.5])
     seg = _get_segment(signal)
 
     normalizer = PowerNormalizer(output_label=_OUTPUT_LABEL, channel_wise=True)
@@ -122,13 +114,9 @@ def test_channel_wise():
 
 def test_prov():
     """Generated provenance nodes"""
-    signal_1 = generate_sin_signal(
-        duration=0.25, sample_rate=_SAMPLE_RATE, nb_channels=2
-    )
+    signal_1 = generate_sin_signal(duration=0.25, sample_rate=_SAMPLE_RATE, nb_channels=2)
     seg_1 = _get_segment(signal_1)
-    signal_2 = generate_sin_signal(
-        duration=0.25, sample_rate=_SAMPLE_RATE, nb_channels=2
-    )
+    signal_2 = generate_sin_signal(duration=0.25, sample_rate=_SAMPLE_RATE, nb_channels=2)
     seg_2 = _get_segment(signal_2)
     segs = [seg_1, seg_2]
 

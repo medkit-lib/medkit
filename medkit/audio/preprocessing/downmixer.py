@@ -59,9 +59,7 @@ class Downmixer(PreprocessingOperation):
             downmixed_signal = np.sum(signal, axis=0, keepdims=True)
             if self.prevent_clipping:
                 downmixed_signal /= signal.shape[0]
-            downmixed_audio = MemoryAudioBuffer(
-                downmixed_signal, sample_rate=audio.sample_rate
-            )
+            downmixed_audio = MemoryAudioBuffer(downmixed_signal, sample_rate=audio.sample_rate)
 
         downmixed_segment = Segment(
             label=self.output_label,

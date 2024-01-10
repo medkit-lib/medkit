@@ -113,11 +113,7 @@ def test_normalization():
     rule = SimstringMatcherRule(
         term="diabète",
         label="problem",
-        normalizations=[
-            SimstringMatcherNormalization(
-                kb_name="umls", kb_version="2021AB", kb_id="C0011849"
-            )
-        ],
+        normalizations=[SimstringMatcherNormalization(kb_name="umls", kb_version="2021AB", kb_id="C0011849")],
     )
     matcher = SimstringMatcher(rules=[rule])
     entities = matcher.run([sentence])
@@ -166,9 +162,7 @@ def test_unicode_sensitive():
     assert len(entities) == 0
 
     # without unicode sensitivity, one match is found
-    rule = SimstringMatcherRule(
-        term="diabète", label="problem", unicode_sensitive=False
-    )
+    rule = SimstringMatcherRule(term="diabète", label="problem", unicode_sensitive=False)
     matcher = SimstringMatcher(rules=[rule], threshold=1.0)
     entities = matcher.run([sentence])
     assert len(entities) == 1
@@ -309,11 +303,7 @@ def test_prov():
     rule = SimstringMatcherRule(
         term="diabète",
         label="problem",
-        normalizations=[
-            SimstringMatcherNormalization(
-                kb_name="umls", kb_version="2021AB", kb_id="C0011849"
-            )
-        ],
+        normalizations=[SimstringMatcherNormalization(kb_name="umls", kb_version="2021AB", kb_id="C0011849")],
     )
     matcher = SimstringMatcher(rules=[rule])
 
@@ -343,11 +333,7 @@ def test_load_save_rules(tmpdir):
             label="problem",
             case_sensitive=True,
             unicode_sensitive=True,
-            normalizations=[
-                SimstringMatcherNormalization(
-                    kb_name="umls", kb_version="2021AB", kb_id="C0011849"
-                )
-            ],
+            normalizations=[SimstringMatcherNormalization(kb_name="umls", kb_version="2021AB", kb_id="C0011849")],
         ),
     ]
 

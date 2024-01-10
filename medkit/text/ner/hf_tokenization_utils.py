@@ -34,7 +34,7 @@ def convert_labels_to_tags(
 
     Examples
     --------
-    >>> convert_labels_to_tags(labels=["test","problem"],tagging_scheme="iob2")
+    >>> convert_labels_to_tags(labels=["test", "problem"], tagging_scheme="iob2")
     {'O': 0, 'B-test': 1, 'I-test': 2, 'B-problem': 3, 'I-problem': 4}
 
     """
@@ -53,9 +53,7 @@ def convert_labels_to_tags(
     return label_to_id
 
 
-def create_entity_tags(
-    nb_tags: int, label: str, tagging_scheme: Literal["bilou", "iob2"]
-) -> List[str]:
+def create_entity_tags(nb_tags: int, label: str, tagging_scheme: Literal["bilou", "iob2"]) -> List[str]:
     """Create a list of tags representing one entity
 
     Parameters
@@ -120,7 +118,9 @@ def transform_entities_to_tags(
     >>> tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased", use_fast=True)
 
     >>> document = TextDocument(text="medkit")
-    >>> entities = [Entity(label="corporation", spans=[Span(start=0, end=6)], text='medkit')]
+    >>> entities = [
+    ...     Entity(label="corporation", spans=[Span(start=0, end=6)], text="medkit")
+    ... ]
     >>> # Get text encoding of the document using the tokenizer
     >>> text_encoding = tokenizer(document.text).encodings[0]
     >>> print(text_encoding.tokens)
@@ -128,13 +128,13 @@ def transform_entities_to_tags(
 
     Transform to BILOU tags
 
-    >>> tags = transform_entities_to_tags(text_encoding,entities)
-    >>> assert tags == ['O', 'B-corporation', 'L-corporation', 'O']
+    >>> tags = transform_entities_to_tags(text_encoding, entities)
+    >>> assert tags == ["O", "B-corporation", "L-corporation", "O"]
 
     Transform to IOB2 tags
 
-    >>> tags = transform_entities_to_tags(text_encoding,entities,"iob2")
-    >>> assert tags == ['O', 'B-corporation', 'I-corporation', 'O']
+    >>> tags = transform_entities_to_tags(text_encoding, entities, "iob2")
+    >>> assert tags == ["O", "B-corporation", "I-corporation", "O"]
 
 
     """
@@ -158,9 +158,7 @@ def transform_entities_to_tags(
         if not tokens_entity:
             continue
 
-        entity_tags = create_entity_tags(
-            nb_tags=len(tokens_entity), label=label, tagging_scheme=tagging_scheme
-        )
+        entity_tags = create_entity_tags(nb_tags=len(tokens_entity), label=label, tagging_scheme=tagging_scheme)
 
         for token_idx, tag in zip(tokens_entity, entity_tags):
             tags[token_idx] = tag
@@ -205,19 +203,19 @@ def align_and_map_tokens_with_tags(
 
     >>> # define data to map
     >>> text_encoding = tokenizer("medkit").encodings[0]
-    >>> tags = ["O","B-corporation","I-corporation","O"]
-    >>> tag_to_id = {"O":0, "B-corporation":1, "I-corporation":2}
+    >>> tags = ["O", "B-corporation", "I-corporation", "O"]
+    >>> tag_to_id = {"O": 0, "B-corporation": 1, "I-corporation": 2}
     >>> print(text_encoding.tokens)
     ['[CLS]', 'med',##kit', '[SEP]']
 
     Mapping all tags to tags_ids
 
-    >>> tags_ids = align_and_map_tokens_with_tags(text_encoding, tags,tag_to_id)
+    >>> tags_ids = align_and_map_tokens_with_tags(text_encoding, tags, tag_to_id)
     >>> assert tags_ids == [-100, 1, 2, -100]
 
     Mapping only first tag in tokens
 
-    >>> tags_ids = align_and_map_tokens_with_tags(text_encoding, tags, tag_to_id,False)
+    >>> tags_ids = align_and_map_tokens_with_tags(text_encoding, tags, tag_to_id, False)
     >>> assert tags_ids == [-100, 1, -100, -100]
     """
     special_tokens_mask = text_encoding.special_tokens_mask

@@ -228,10 +228,7 @@ def test_multiple_subgraphs_for_same_op():
     graph.add_sub_graph(op_id, sub_graph_2)
     # both sub graphs should be merged into a new sub graph with all nodes
     merged_sub_graph = graph.get_sub_graph(op_id)
-    assert (
-        merged_sub_graph.get_nodes()
-        == sub_graph_1.get_nodes() + sub_graph_2.get_nodes()
-    )
+    assert merged_sub_graph.get_nodes() == sub_graph_1.get_nodes() + sub_graph_2.get_nodes()
 
 
 def test_sanity_check():
@@ -262,9 +259,7 @@ def test_sanity_check():
         derived_ids=[],
     )
     graph_2 = ProvGraph([node_3])
-    with pytest.raises(
-        Exception, match="Node with identifier .* has source ids but no operation"
-    ):
+    with pytest.raises(Exception, match="Node with identifier .* has source ids but no operation"):
         graph_2.check_sanity()
 
     # node with source uid not corresponding to any node
@@ -277,9 +272,7 @@ def test_sanity_check():
     graph_3 = ProvGraph([node_4])
     with pytest.raises(
         Exception,
-        match=(
-            "Source identifier .* in node with identifier .* has no corresponding node"
-        ),
+        match=("Source identifier .* in node with identifier .* has no corresponding node"),
     ):
         graph_3.check_sanity()
 
@@ -293,9 +286,7 @@ def test_sanity_check():
     graph_4 = ProvGraph([node_4])
     with pytest.raises(
         Exception,
-        match=(
-            "Derived identifier .* in node with identifier .* has no corresponding node"
-        ),
+        match=("Derived identifier .* in node with identifier .* has no corresponding node"),
     ):
         graph_4.check_sanity()
 
@@ -341,8 +332,7 @@ def test_sanity_check():
     with pytest.raises(
         Exception,
         match=(
-            "Node with identifier .* has derived item with identifier .* but"
-            " reciprocate source link does not exists"
+            "Node with identifier .* has derived item with identifier .* but" " reciprocate source link does not exists"
         ),
     ):
         graph_5.check_sanity()
@@ -350,7 +340,5 @@ def test_sanity_check():
     # valid graph with invalid sub_graph
     sub_graphs_by_op_id = {generate_id(): graph_3}
     graph_6 = ProvGraph([node_1, node_2], sub_graphs_by_op_id)
-    with pytest.raises(
-        Exception, match="Source identifier .* has no corresponding node"
-    ):
+    with pytest.raises(Exception, match="Source identifier .* has no corresponding node"):
         graph_6.check_sanity()

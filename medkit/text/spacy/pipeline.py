@@ -20,9 +20,7 @@ class SpacyPipeline(Operation):
         spacy_entities: Optional[List[str]] = None,
         spacy_span_groups: Optional[List[str]] = None,
         spacy_attrs: Optional[List[str]] = None,
-        medkit_attribute_factories: Optional[
-            Dict[str, Callable[[SpacySpan, str], Attribute]]
-        ] = None,
+        medkit_attribute_factories: Optional[Dict[str, Callable[[SpacySpan, str], Attribute]]] = None,
         name: Optional[str] = None,
         uid: Optional[str] = None,
     ):
@@ -95,9 +93,7 @@ class SpacyPipeline(Operation):
             # apply nlp spacy
             spacy_doc = self.nlp(spacy_doc)
 
-            new_segments = self._find_segments_in_spacy_doc(
-                spacy_doc=spacy_doc, medkit_source_ann=segment
-            )
+            new_segments = self._find_segments_in_spacy_doc(spacy_doc=spacy_doc, medkit_source_ann=segment)
             output_segments.extend(new_segments)
 
         return output_segments

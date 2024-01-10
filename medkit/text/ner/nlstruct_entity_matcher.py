@@ -32,7 +32,8 @@ class NLStructEntityMatcher(NEROperation):
     The paper [1]_ presents a model trained with the NLstruct [2]_ library and the mimic learning approach.
     The model used a private teacher model to annotate the unlabeled [CAS clinical French corpus](https://aclanthology.org/W18-5614/).
     The weights of the CAS student model are shared via the HuggingFace Hub and you can
-    load the model using the following model name `NesrineBannour/CAS-privacy-preserving-model` to create a NLstructEntityMatcher.
+    load the model using the following model name `NesrineBannour/CAS-privacy-preserving-model`
+    to create a NLstructEntityMatcher.
 
     References
     ----------
@@ -116,16 +117,10 @@ class NLStructEntityMatcher(NEROperation):
         """Get the location of the checkpoint and fix the path of the Fast Text file
         in the configuration. Return the nlstruct model created with the modified config.
         """
-        checkpoint_filepaths = [
-            filepath
-            for pattern in _PYTORCH_FILES
-            for filepath in checkpoint_dir.glob(pattern)
-        ]
+        checkpoint_filepaths = [filepath for pattern in _PYTORCH_FILES for filepath in checkpoint_dir.glob(pattern)]
 
         if not len(checkpoint_filepaths):
-            raise FileNotFoundError(
-                f"There was no PyTorch file with a NLstruct checkpoint in '{checkpoint_dir.name}'"
-            )
+            raise FileNotFoundError(f"There was no PyTorch file with a NLstruct checkpoint in '{checkpoint_dir.name}'")
 
         # BUGFIX: (nlstruct) The config created from nlstruct defines a filename
         # without a relative path. This means that the text file needs to be in
@@ -154,9 +149,7 @@ class NLStructEntityMatcher(NEROperation):
                     new_path = os.path.join(checkpoint_dir, Path(filename).name)
 
                     if not Path(new_path).exists():
-                        raise ValueError(
-                            f"The text file '{new_path}' with the fast text embeddings does not exist"
-                        )
+                        raise ValueError(f"The text file '{new_path}' with the fast text embeddings does not exist")
 
                     # update the filename of the wordEmbeddings model
                     config["encoder"]["encoders"][key]["filename"] = new_path
@@ -187,28 +180,20 @@ class NLStructEntityMatcher(NEROperation):
             entities.extend(self._matches_to_entities(matches, segment))
         return entities
 
-    def _matches_to_entities(
-        self, matches: List[Dict], segment: Segment
-    ) -> Iterator[Entity]:
+    def _matches_to_entities(self, matches: List[Dict], segment: Segment) -> Iterator[Entity]:
         for match in matches["entities"]:
             text_all, spans_all = [], []
 
             # build entity by fragments
             for fragment in match["fragments"]:
-                text, spans = span_utils.extract(
-                    segment.text, segment.spans, [(fragment["begin"], fragment["end"])]
-                )
+                text, spans = span_utils.extract(segment.text, segment.spans, [(fragment["begin"], fragment["end"])])
                 text_all.append(text)
                 spans_all.extend(spans)
 
             text_all = "".join(text_all)
 
             # support multilabel
-            label = (
-                match["label"]
-                if isinstance(match["label"], str)
-                else "-".join(match["label"])
-            )
+            label = match["label"] if isinstance(match["label"], str) else "-".join(match["label"])
             entity = Entity(
                 label=label,
                 text=text_all,
@@ -217,19 +202,13 @@ class NLStructEntityMatcher(NEROperation):
 
             # TBD: This confidence is not well described,
             # normally around 0.99, round to avoid problems in export
-            score_attr = Attribute(
-                label="confidence", value=float("{:.2f}".format(match["confidence"]))
-            )
+            score_attr = Attribute(label="confidence", value=float("{:.2f}".format(match["confidence"])))
             entity.attrs.add(score_attr)
 
             # handle provenance
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    entity, self.description, source_data_items=[segment]
-                )
-                self._prov_tracer.add_prov(
-                    score_attr, self.description, source_data_items=[segment]
-                )
+                self._prov_tracer.add_prov(entity, self.description, source_data_items=[segment])
+                self._prov_tracer.add_prov(score_attr, self.description, source_data_items=[segment])
 
             # copy attrs from segment
             for label in self.attrs_to_copy:
@@ -238,8 +217,6 @@ class NLStructEntityMatcher(NEROperation):
                     entity.attrs.add(copied_attr)
                     # handle provenance
                     if self._prov_tracer is not None:
-                        self._prov_tracer.add_prov(
-                            copied_attr, self.description, [attr]
-                        )
+                        self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
             yield entity

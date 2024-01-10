@@ -135,9 +135,7 @@ class DocTranscriber(Operation):
             text = transcription_attr.value
 
             # handle joining between segments
-            full_text = self.augment_full_text_for_next_segment(
-                full_text, text, audio_seg
-            )
+            full_text = self.augment_full_text_for_next_segment(full_text, text, audio_seg)
 
             # compute text span
             start = len(full_text)
@@ -154,9 +152,7 @@ class DocTranscriber(Operation):
                     text_seg.attrs.add(copied_attr)
                     # handle provenance
                     if self._prov_tracer is not None:
-                        self._prov_tracer.add_prov(
-                            copied_attr, self.description, [attr]
-                        )
+                        self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
             text_segs.append(text_seg)
 
@@ -165,9 +161,7 @@ class DocTranscriber(Operation):
 
             # handle provenance (text segment generated from transcription attribute)
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    text_seg, self.description, [transcription_attr]
-                )
+                self._prov_tracer.add_prov(text_seg, self.description, [transcription_attr])
 
         text_doc = TranscribedTextDocument(
             text=full_text,
@@ -183,9 +177,7 @@ class DocTranscriber(Operation):
         #     )
         return text_doc
 
-    def augment_full_text_for_next_segment(
-        self, full_text: str, segment_text: str, audio_segment: AudioSegment
-    ) -> str:
+    def augment_full_text_for_next_segment(self, full_text: str, segment_text: str, audio_segment: AudioSegment) -> str:
         """Append intermediate joining text to full text before the next segment is
         concatenated to it. Override for custom behavior."""
         if len(full_text) > 0:

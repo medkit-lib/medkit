@@ -23,9 +23,7 @@ class DummyTextCat(nn.Module):
         self.config = config
         self.loss = torch.nn.CrossEntropyLoss()
 
-        self.embedding = nn.EmbeddingBag(
-            self.config.vocab_size, self.config.embed_dim, sparse=True
-        )
+        self.embedding = nn.EmbeddingBag(self.config.vocab_size, self.config.embed_dim, sparse=True)
         self.fc = nn.Linear(self.config.embed_dim, self.config.num_class)
         self.init_weights()
 
@@ -35,9 +33,7 @@ class DummyTextCat(nn.Module):
         self.fc.weight.data.uniform_(-initrange, initrange)
         self.fc.bias.data.zero_()
 
-    def forward(
-        self, inputs_ids: torch.FloatTensor, offsets: torch.FloatTensor
-    ) -> BatchData:
+    def forward(self, inputs_ids: torch.FloatTensor, offsets: torch.FloatTensor) -> BatchData:
         embedded = self.embedding(inputs_ids, offsets)
         logits = self.fc(embedded)
         return logits

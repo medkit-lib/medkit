@@ -82,9 +82,7 @@ def test_multiple_rules_no_id():
 
 
 def test_exclusions():
-    syntagmas = _get_syntagma_segments(
-        ["Diabetes is discarded", "Results have not discarded covid"]
-    )
+    syntagmas = _get_syntagma_segments(["Diabetes is discarded", "Results have not discarded covid"])
 
     rule = NegationDetectorRule(
         id="id_neg_discard",
@@ -314,8 +312,7 @@ def test_default_rules():
 
         if is_negated:
             assert attr.value is True, (
-                f"Syntagma '{syntagma.text}' should have been matched by '{rule_id}' "
-                "but wasn't"
+                f"Syntagma '{syntagma.text}' should have been matched by '{rule_id}' " "but wasn't"
             )
             assert attr.metadata["rule_id"] == rule_id, (
                 f"Syntagma '{syntagma.text}' should have been matched by '{rule_id}' "
@@ -323,8 +320,7 @@ def test_default_rules():
             )
         else:
             assert attr.value is False, (
-                f"Syntagma '{syntagma.text}' was matched by "
-                f"'{attr.metadata['rule_id']}' but shouldn't have been"
+                f"Syntagma '{syntagma.text}' was matched by " f"'{attr.metadata['rule_id']}' but shouldn't have been"
             )
 
 
@@ -341,6 +337,4 @@ def test_load_save_rules(tmpdir):
 
 def test_rules_file_encoding_error():
     with pytest.raises(UnicodeError):
-        NegationDetector.load_rules(
-            path_to_rules=_PATH_TO_DEFAULT_RULES, encoding="utf-16"
-        )
+        NegationDetector.load_rules(path_to_rules=_PATH_TO_DEFAULT_RULES, encoding="utf-16")

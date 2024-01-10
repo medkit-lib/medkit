@@ -1,9 +1,7 @@
 import pytest
 
 # must import pandas first, cf workaround description in pa_speaker_detector.py
-pytest.importorskip(
-    modname="pandas", reason="pandas (therefore pyannote) is not installed"
-)
+pytest.importorskip(modname="pandas", reason="pandas (therefore pyannote) is not installed")
 pytest.importorskip(modname="pyannote.audio", reason="pyannote.audio is not installed")
 
 import math  # noqa: E402
@@ -154,18 +152,14 @@ def test_multiple():
     span_1 = turn_seg_1.span
     assert span_1.start == input_seg_1.span.start
     assert span_1.end == input_seg_1.span.start + speaker_change_time_1
-    expected_signal = input_seg_1.audio.trim_duration(
-        end_time=speaker_change_time_1
-    ).read()
+    expected_signal = input_seg_1.audio.trim_duration(end_time=speaker_change_time_1).read()
     assert signals_are_equal(turn_seg_1.audio.read(), expected_signal)
 
     turn_seg_2 = turn_segs[1]
     span_2 = turn_seg_2.span
     assert span_2.start == input_seg_1.span.start + speaker_change_time_1
     assert span_2.end == input_seg_1.span.end
-    expected_signal = input_seg_1.audio.trim_duration(
-        start_time=speaker_change_time_1
-    ).read()
+    expected_signal = input_seg_1.audio.trim_duration(start_time=speaker_change_time_1).read()
     assert signals_are_equal(turn_seg_2.audio.read(), expected_signal)
 
     speaker_change_time_2 = duration_2 / 2.0
@@ -173,18 +167,14 @@ def test_multiple():
     span_3 = turn_seg_3.span
     assert span_3.start == input_seg_2.span.start
     assert span_3.end == input_seg_2.span.start + speaker_change_time_2
-    expected_signal = input_seg_2.audio.trim_duration(
-        end_time=speaker_change_time_2
-    ).read()
+    expected_signal = input_seg_2.audio.trim_duration(end_time=speaker_change_time_2).read()
     assert signals_are_equal(turn_seg_3.audio.read(), expected_signal)
 
     turn_seg_4 = turn_segs[3]
     span_4 = turn_seg_4.span
     assert span_4.start == input_seg_2.span.start + speaker_change_time_2
     assert span_4.end == input_seg_2.span.end
-    expected_signal = input_seg_2.audio.trim_duration(
-        start_time=speaker_change_time_2
-    ).read()
+    expected_signal = input_seg_2.audio.trim_duration(start_time=speaker_change_time_2).read()
     assert signals_are_equal(turn_seg_4.audio.read(), expected_signal)
 
 

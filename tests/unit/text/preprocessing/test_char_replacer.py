@@ -122,9 +122,7 @@ TEST_PARAMS_CONFIG = [
 )
 def test_char_replacer(rules, text, expected_text, expected_spans):
     segment = _get_segment_from_text(text)
-    preprocessed_segment = CharReplacer(
-        output_label="PREPROCESSED_TEXT", rules=rules
-    ).run([segment])[0]
+    preprocessed_segment = CharReplacer(output_label="PREPROCESSED_TEXT", rules=rules).run([segment])[0]
 
     # Verify modifications
     assert preprocessed_segment.label == "PREPROCESSED_TEXT"

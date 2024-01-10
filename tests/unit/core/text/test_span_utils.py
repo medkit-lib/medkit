@@ -100,9 +100,7 @@ def test_replace_in_spans():
         Span(7, 10),
     ]
     # replace whole span
-    assert _replace_in_spans(spans, [(0, 10)], [10]) == [
-        ModifiedSpan(10, [Span(0, 10)])
-    ]
+    assert _replace_in_spans(spans, [(0, 10)], [10]) == [ModifiedSpan(10, [Span(0, 10)])]
     # replace several ranges
     assert _replace_in_spans(spans, [(3, 5), (7, 8)], [10, 5]) == [
         Span(0, 3),
@@ -131,9 +129,7 @@ def test_replace_in_spans():
         Span(17, 20),
     ]
     # replace whole span
-    assert _replace_in_spans(spans, [(0, 10)], [10]) == [
-        ModifiedSpan(10, [Span(10, 20)])
-    ]
+    assert _replace_in_spans(spans, [(0, 10)], [10]) == [ModifiedSpan(10, [Span(10, 20)])]
     # replace inside (longer replacement)
     assert _replace_in_spans(spans, [(4, 7)], [10]) == [
         Span(10, 14),

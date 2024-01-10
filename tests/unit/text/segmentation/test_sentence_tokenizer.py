@@ -55,10 +55,7 @@ TEST_CONFIG = [
         [
             ("Sentence testing the dot", [Span(start=0, end=24)]),
             (
-                (
-                    "We are testing the carriage return\rthis is the newline\n Test"
-                    " interrogation "
-                ),
+                ("We are testing the carriage return\rthis is the newline\n Test" " interrogation "),
                 [Span(start=26, end=101)],
             ),
             ("Now, testing semicolon", [Span(start=103, end=125)]),
@@ -136,9 +133,7 @@ def test_run(sentence_tokenizer, text, expected_sentences):
 
 
 def test_prov():
-    clean_text_segment = _get_clean_text_segment(
-        "This is a sentence. This is another sentence."
-    )
+    clean_text_segment = _get_clean_text_segment("This is a sentence. This is another sentence.")
 
     tokenizer = SentenceTokenizer()
     prov_tracer = ProvTracer()

@@ -218,9 +218,7 @@ class Entity(Segment):
         store: Optional[Store] = None,
         attr_container_class: Type[EntityAttributeContainer] = EntityAttributeContainer,
     ):
-        super().__init__(
-            label, text, spans, attrs, metadata, uid, store, attr_container_class
-        )
+        super().__init__(label, text, spans, attrs, metadata, uid, store, attr_container_class)
 
 
 @dataclasses.dataclass(init=False)

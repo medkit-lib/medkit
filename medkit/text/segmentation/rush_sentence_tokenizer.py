@@ -15,9 +15,7 @@ from PyRuSH import RuSH
 
 from medkit.core.text import Segment, SegmentationOperation, span_utils
 
-_PATH_TO_DEFAULT_RULES = (
-    Path(__file__).parent / "rush_sentence_tokenizer_default_rules.tsv"
-)
+_PATH_TO_DEFAULT_RULES = Path(__file__).parent / "rush_sentence_tokenizer_default_rules.tsv"
 
 
 class RushSentenceTokenizer(SegmentationOperation):
@@ -86,11 +84,7 @@ class RushSentenceTokenizer(SegmentationOperation):
         List[Segments]:
             Sentences segments found in `segments`
         """
-        return [
-            sentence
-            for segment in segments
-            for sentence in self._find_sentences_in_segment(segment)
-        ]
+        return [sentence for segment in segments for sentence in self._find_sentences_in_segment(segment)]
 
     def _find_sentences_in_segment(self, segment: Segment) -> Iterator[Segment]:
         rush_spans = self._rush.segToSentenceSpans(segment.text)
@@ -119,13 +113,9 @@ class RushSentenceTokenizer(SegmentationOperation):
                     sentence.attrs.add(copied_attr)
                     # handle provenance
                     if self._prov_tracer is not None:
-                        self._prov_tracer.add_prov(
-                            copied_attr, self.description, [attr]
-                        )
+                        self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    sentence, self.description, source_data_items=[segment]
-                )
+                self._prov_tracer.add_prov(sentence, self.description, source_data_items=[segment])
 
             yield sentence

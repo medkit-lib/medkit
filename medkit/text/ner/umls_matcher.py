@@ -171,10 +171,7 @@ class UMLSMatcher(BaseSimstringMatcher):
         if semgroups is not None:
             for semgroup in semgroups:
                 if semgroup not in umls_utils.SEMGROUPS:
-                    raise ValueError(
-                        f"Unknown semgroup: {semgroup}. Should be one of"
-                        f" {umls_utils.SEMGROUPS}"
-                    )
+                    raise ValueError(f"Unknown semgroup: {semgroup}. Should be one of" f" {umls_utils.SEMGROUPS}")
 
         cache_dir.mkdir(parents=True, exist_ok=True)
 
@@ -203,9 +200,7 @@ class UMLSMatcher(BaseSimstringMatcher):
                     f" {cache_params}"
                 )
         else:
-            logger.info(
-                "Building simstring database from UMLS terms, this may take a while"
-            )
+            logger.info("Building simstring database from UMLS terms, this may take a while")
             rules = self._build_rules(
                 umls_dir,
                 language,
@@ -223,10 +218,7 @@ class UMLSMatcher(BaseSimstringMatcher):
         if spacy_tokenization:
             spacy_tokenization_language = _SPACY_LANGUAGE_MAP.get(language)
             if spacy_tokenization_language is None:
-                raise ValueError(
-                    "Spacy tokenization not supported for language"
-                    f" '{spacy_tokenization_language}'"
-                )
+                raise ValueError("Spacy tokenization not supported for language" f" '{spacy_tokenization_language}'")
         else:
             spacy_tokenization_language = None
 
@@ -246,9 +238,7 @@ class UMLSMatcher(BaseSimstringMatcher):
         )
 
     @classmethod
-    def _get_labels_by_semgroup(
-        cls, output_labels: Union[None, str, Dict[str, str]]
-    ) -> Dict[str, str]:
+    def _get_labels_by_semgroup(cls, output_labels: Union[None, str, Dict[str, str]]) -> Dict[str, str]:
         """
         Return a mapping giving the label to use for all entries of a given semgroup
 
@@ -272,10 +262,7 @@ class UMLSMatcher(BaseSimstringMatcher):
         # check that the keys of output_labels are valid semgroup ids
         for semgroup in output_labels.keys():
             if semgroup not in umls_utils.SEMGROUPS:
-                raise ValueError(
-                    f"Unknown semgroup: {semgroup}. Should be one of"
-                    f" {umls_utils.SEMGROUPS}"
-                )
+                raise ValueError(f"Unknown semgroup: {semgroup}. Should be one of" f" {umls_utils.SEMGROUPS}")
 
         label_mapping = umls_utils.SEMGROUP_LABELS.copy()
         label_mapping.update(output_labels)

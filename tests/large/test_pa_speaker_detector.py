@@ -1,9 +1,7 @@
 import pytest
 
 # must import pandas first, cf workaround description in pa_speaker_detector.py
-pytest.importorskip(
-    modname="pandas", reason="pandas (therefore pyannote) is not installed"
-)
+pytest.importorskip(modname="pandas", reason="pandas (therefore pyannote) is not installed")
 pytest.importorskip(modname="pyannote.audio", reason="pyannote.audio is not installed")
 
 from pathlib import Path  # noqa: E402
@@ -42,16 +40,12 @@ def test_basic():
     turn_1 = turns[0]
     span_1 = turn_1.span
     assert 0.0 <= span_1.start <= _MARGIN
-    assert (
-        _SPEAKER_CHANGE_TIME - _MARGIN <= span_1.end <= _SPEAKER_CHANGE_TIME + _MARGIN
-    )
+    assert _SPEAKER_CHANGE_TIME - _MARGIN <= span_1.end <= _SPEAKER_CHANGE_TIME + _MARGIN
 
     # span of 2nd segment should be from speaker change time to end
     turn_2 = turns[1]
     span_2 = turn_2.span
-    assert (
-        _SPEAKER_CHANGE_TIME - _MARGIN <= span_2.start <= _SPEAKER_CHANGE_TIME + _MARGIN
-    )
+    assert _SPEAKER_CHANGE_TIME - _MARGIN <= span_2.start <= _SPEAKER_CHANGE_TIME + _MARGIN
     assert _AUDIO.duration - _MARGIN <= span_2.end <= _AUDIO.duration
 
     # segments must have different speakers

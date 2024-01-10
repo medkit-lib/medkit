@@ -135,9 +135,7 @@ def test_exceptions(tmp_path):
     create_doccano_zip_files_disk(tmp_path, filename=wrong_task.value)
 
     with pytest.raises(Exception, match="Impossible to convert.*"):
-        DoccanoInputConverter(task=task).load_from_directory_zip(
-            dir_path=f"{tmp_path}/{wrong_task.value}"
-        )
+        DoccanoInputConverter(task=task).load_from_directory_zip(dir_path=f"{tmp_path}/{wrong_task.value}")
 
     # testing incoherence between data and task
     task = DoccanoTask.RELATION_EXTRACTION
@@ -145,9 +143,7 @@ def test_exceptions(tmp_path):
     create_doccano_zip_files_disk(tmp_path, filename=wrong_task.value)
 
     with pytest.raises(Exception, match="Impossible to convert.*"):
-        DoccanoInputConverter(task=task).load_from_directory_zip(
-            dir_path=f"{tmp_path}/{wrong_task.value}"
-        )
+        DoccanoInputConverter(task=task).load_from_directory_zip(dir_path=f"{tmp_path}/{wrong_task.value}")
 
     # testing incoherence between data and task
     task = DoccanoTask.TEXT_CLASSIFICATION
@@ -155,6 +151,4 @@ def test_exceptions(tmp_path):
     create_doccano_zip_files_disk(tmp_path, filename=wrong_task.value)
 
     with pytest.raises(Exception, match="Impossible to convert.*"):
-        DoccanoInputConverter(task=task).load_from_directory_zip(
-            dir_path=f"{tmp_path}/{wrong_task.value}"
-        )
+        DoccanoInputConverter(task=task).load_from_directory_zip(dir_path=f"{tmp_path}/{wrong_task.value}")

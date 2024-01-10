@@ -55,10 +55,7 @@ class AnnotationContainer(Generic[AnnotationType]):
 
         uid = ann.uid
         if uid in self._ann_ids:
-            raise ValueError(
-                f"Impossible to add this annotation.The uid {uid} already"
-                " exists in the document"
-            )
+            raise ValueError(f"Impossible to add this annotation.The uid {uid} already" " exists in the document")
 
         self._ann_ids.append(uid)
         self._store.store_data_item(data_item=ann, parent_id=self._doc_id)
@@ -87,9 +84,7 @@ class AnnotationContainer(Generic[AnnotationType]):
 
         return iter(self.get_by_id(uid) for uid in self._ann_ids)
 
-    def __getitem__(
-        self, key: Union[int, slice]
-    ) -> Union[AnnotationType, List[AnnotationType]]:
+    def __getitem__(self, key: Union[int, slice]) -> Union[AnnotationType, List[AnnotationType]]:
         """
         Add support for subscript access
         """
@@ -99,9 +94,7 @@ class AnnotationContainer(Generic[AnnotationType]):
         else:
             return self.get_by_id(self._ann_ids[key])
 
-    def get(
-        self, *, label: Optional[str] = None, key: Optional[str] = None
-    ) -> List[AnnotationType]:
+    def get(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[AnnotationType]:
         """
         Return a list of the annotations of the document, optionally filtering
         by label or key.
@@ -117,9 +110,7 @@ class AnnotationContainer(Generic[AnnotationType]):
         uids = self.get_ids(label=label, key=key)
         return [self.get_by_id(uid) for uid in uids]
 
-    def get_ids(
-        self, *, label: Optional[str] = None, key: Optional[str] = None
-    ) -> Iterator[str]:
+    def get_ids(self, *, label: Optional[str] = None, key: Optional[str] = None) -> Iterator[str]:
         """
         Return an iterator of the identifiers of the annotations of the
         document, optionally filtering by label or key.

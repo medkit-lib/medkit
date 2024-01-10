@@ -66,9 +66,7 @@ class BaseSimstringMatcherRule:
     label: str
     case_sensitive: bool = False
     unicode_sensitive: bool = False
-    normalizations: List[BaseSimstringMatcherNormalization] = dataclasses.field(
-        default_factory=list
-    )
+    normalizations: List[BaseSimstringMatcherNormalization] = dataclasses.field(default_factory=list)
 
 
 @dataclasses.dataclass
@@ -94,9 +92,7 @@ class BaseSimstringMatcherNormalization:
     kb_version: Optional[str] = None
     term: Optional[str] = None
 
-    def to_attribute(
-        self: BaseSimstringMatcherNormalization, score: float
-    ) -> EntityNormAttribute:
+    def to_attribute(self: BaseSimstringMatcherNormalization, score: float) -> EntityNormAttribute:
         """
         Create a normalization attribute based on the normalization descriptor
 
@@ -213,8 +209,7 @@ class BaseSimstringMatcher(NEROperation):
         super().__init__(**init_args)
 
         assert similarity in _SIMILARITY_MAP.keys(), (
-            f"Invalid similarity '{similarity}', must be one of"
-            f" {list(_SIMILARITY_MAP.keys())}"
+            f"Invalid similarity '{similarity}', must be one of" f" {list(_SIMILARITY_MAP.keys())}"
         )
 
         if blacklist is None:
@@ -238,10 +233,7 @@ class BaseSimstringMatcher(NEROperation):
 
         if spacy_tokenization_language is not None:
             if spacy is None:
-                raise Exception(
-                    "Spacy module must be installed to use the 'spacy_language_code'"
-                    " init parameter"
-                )
+                raise Exception("Spacy module must be installed to use the 'spacy_language_code'" " init parameter")
             if spacy_tokenization_language == "en":
                 spacy_model = "en_core_web_sm"
             else:
@@ -281,21 +273,15 @@ class BaseSimstringMatcher(NEROperation):
             for entity in self._find_matches_in_segment(segment, spacy_doc)
         ]
 
-    def _find_matches_in_segment(
-        self, segment: Segment, spacy_doc: Optional[Any]
-    ) -> Iterator[Entity]:
+    def _find_matches_in_segment(self, segment: Segment, spacy_doc: Optional[Any]) -> Iterator[Entity]:
         """Return an iterator to the entities matched in a segment"""
 
         text = segment.text
         matches = []
         if spacy_doc is not None:
-            ranges = _build_candidate_ranges_with_spacy(
-                spacy_doc, self.min_length, self.max_length
-            )
+            ranges = _build_candidate_ranges_with_spacy(spacy_doc, self.min_length, self.max_length)
         else:
-            ranges = _build_candidate_ranges_with_regexp(
-                text, self.min_length, self.max_length
-            )
+            ranges = _build_candidate_ranges_with_regexp(text, self.min_length, self.max_length)
 
         for start, end in ranges:
             candidate_text = text[start:end]
@@ -307,10 +293,7 @@ class BaseSimstringMatcher(NEROperation):
 
             for matched_term in matched_terms:
                 # if requested, ignore matches that start differently
-                if (
-                    self.same_beginning
-                    and matched_term[0] != candidate_text_processed[0]
-                ):
+                if self.same_beginning and matched_term[0] != candidate_text_processed[0]:
                     continue
 
                 # retrieve rules corresponding to matched term
@@ -336,9 +319,7 @@ class BaseSimstringMatcher(NEROperation):
                         continue
 
                     # recompute similarity and keep match if above threshold
-                    score = _get_similarity_score(
-                        rule_term, candidate_text, self.similarity
-                    )
+                    score = _get_similarity_score(rule_term, candidate_text, self.similarity)
                     if score >= self.threshold:
                         match = _Match(start, end, rule, score)
                         matches.append(match)
@@ -371,17 +352,13 @@ class BaseSimstringMatcher(NEROperation):
         """Build an entity from a match in a segment"""
 
         # extract text and spans corresponding to match
-        text, spans = span_utils.extract(
-            segment.text, segment.spans, [(match.start, match.end)]
-        )
+        text, spans = span_utils.extract(segment.text, segment.spans, [(match.start, match.end)])
 
         # create entity
         label = match.rule.label
         entity = Entity(label=label, text=text, spans=spans)
         if self._prov_tracer is not None:
-            self._prov_tracer.add_prov(
-                entity, self.description, source_data_items=[segment]
-            )
+            self._prov_tracer.add_prov(entity, self.description, source_data_items=[segment])
 
         # propagate attrs_to_copy from segment to new entity
         for attr_label in self.attrs_to_copy:
@@ -398,9 +375,7 @@ class BaseSimstringMatcher(NEROperation):
             entity.attrs.add(norm_attr)
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    norm_attr, self.description, source_data_items=[segment]
-                )
+                self._prov_tracer.add_prov(norm_attr, self.description, source_data_items=[segment])
 
         return entity
 
@@ -459,9 +434,7 @@ def build_simstring_matcher_databases(
 _TOKENIZATION_PATTERN = re.compile(r"[\w]+|[^\w ]")
 
 
-def _build_candidate_ranges_with_regexp(
-    text: str, min_length: int, max_length: int
-) -> Iterator[Tuple[int, int]]:
+def _build_candidate_ranges_with_regexp(text: str, min_length: int, max_length: int) -> Iterator[Tuple[int, int]]:
     """From a string, generate all candidate matches (by tokenizing it and then
     re-concatenating tokens) and return their ranges. Based on the QuickUMLS
     code.
@@ -490,9 +463,7 @@ def _build_candidate_ranges_with_regexp(
     """
 
     # find all tokens and corresponding ranges using regexp
-    tokens_and_ranges = [
-        (m.group(0), m.span()) for m in _TOKENIZATION_PATTERN.finditer(text)
-    ]
+    tokens_and_ranges = [(m.group(0), m.span()) for m in _TOKENIZATION_PATTERN.finditer(text)]
     if len(tokens_and_ranges) == 0:
         return
     tokens, ranges = zip(*tokens_and_ranges)
@@ -560,11 +531,7 @@ def _build_candidate_ranges_with_spacy(
     # don't allow candidates to start or end with pre/post positions,
     # determinants or conjunctions
     def is_invalid_boundary_token(token):
-        return (
-            token.is_punct
-            or token.is_space
-            or token.pos_ in ("ADP", "DET", "SCONJ", "CCONJ", "CONJ")
-        )
+        return token.is_punct or token.is_space or token.pos_ in ("ADP", "DET", "SCONJ", "CCONJ", "CONJ")
 
     # iterate over tokens
     nb_tokens = len(spacy_doc)
@@ -635,7 +602,5 @@ def _get_similarity_score(text_1, text_2, similarity_name, ngram_size=3):
         return nb_ngrams_common / (nb_ngrams_1 + nb_ngrams_2 - nb_ngrams_common)
     if similarity_name == "cosine":
         return nb_ngrams_common / math.sqrt(nb_ngrams_1 * nb_ngrams_2)
-    assert (
-        similarity_name == "overlap"
-    ), 'similarity_name should be one of ["dice", "jaccard", "cosine", "overlap"]'
+    assert similarity_name == "overlap", 'similarity_name should be one of ["dice", "jaccard", "cosine", "overlap"]'
     return nb_ngrams_common

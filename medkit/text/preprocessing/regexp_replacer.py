@@ -73,11 +73,7 @@ class RegexpReplacer(Operation):
         List[~medkit.core.text.Segment]:
             List of normalized segments
         """
-        return [
-            norm_segment
-            for segment in segments
-            for norm_segment in self._normalize_segment_text(segment)
-        ]
+        return [norm_segment for segment in segments for norm_segment in self._normalize_segment_text(segment)]
 
     def _normalize_segment_text(self, segment: Segment):
         ranges = []
@@ -97,13 +93,9 @@ class RegexpReplacer(Operation):
             replacement_texts=replacement_texts,
         )
 
-        normalized_text = Segment(
-            label=self.output_label, spans=new_spans, text=new_text
-        )
+        normalized_text = Segment(label=self.output_label, spans=new_spans, text=new_text)
 
         if self._prov_tracer is not None:
-            self._prov_tracer.add_prov(
-                normalized_text, self.description, source_data_items=[segment]
-            )
+            self._prov_tracer.add_prov(normalized_text, self.description, source_data_items=[segment])
 
         yield normalized_text

@@ -144,9 +144,7 @@ class IAMSystemMatcher(NEROperation):
         inserts = [" " for i in positions]
         text, spans = span_utils.insert(text, spans, positions, inserts)
 
-        tokens_algos = [
-            dict(token.__dict__, algos=algos) for token, algos in ann.get_tokens_algos()
-        ]
+        tokens_algos = [dict(token.__dict__, algos=algos) for token, algos in ann.get_tokens_algos()]
 
         metadata = dict(
             tokens_algos=tokens_algos,
@@ -171,9 +169,7 @@ class IAMSystemMatcher(NEROperation):
                     self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
         if self._prov_tracer is not None:
-            self._prov_tracer.add_prov(
-                entity, self.description, source_data_items=[segment]
-            )
+            self._prov_tracer.add_prov(entity, self.description, source_data_items=[segment])
 
         # create normalization attributes
         for kw in ann.keywords:
@@ -189,8 +185,6 @@ class IAMSystemMatcher(NEROperation):
                 norm_attr = entity.attrs.add(norm_attr)
 
                 if self._prov_tracer is not None:
-                    self._prov_tracer.add_prov(
-                        norm_attr, self.description, source_data_items=[segment]
-                    )
+                    self._prov_tracer.add_prov(norm_attr, self.description, source_data_items=[segment])
 
         return entity

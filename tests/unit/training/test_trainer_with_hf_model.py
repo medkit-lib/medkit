@@ -47,10 +47,7 @@ def create_model_and_tokenizer(tmp_path):
 def _create_tiny_data(pairs_text_entities):
     docs = []
     for text, ents in pairs_text_entities:
-        entities = [
-            Entity(label=e[0], text=text[e[1] : e[2]], spans=[Span(e[1], e[2])])
-            for e in ents
-        ]
+        entities = [Entity(label=e[0], text=text[e[1] : e[2]], spans=[Span(e[1], e[2])]) for e in ents]
         docs.append(TextDocument(text=text, anns=entities))
     return docs
 
@@ -93,9 +90,7 @@ def test_trainer_default(train_data, eval_data, tmp_path):
         seed=0,
     )
 
-    trainer = Trainer(
-        component=matcher, config=config, train_data=train_data, eval_data=eval_data
-    )
+    trainer = Trainer(component=matcher, config=config, train_data=train_data, eval_data=eval_data)
 
     log_history = trainer.train()
     assert len(log_history) == config.nb_training_epochs
@@ -126,9 +121,7 @@ def test_trainer_with_seqeval(train_data, eval_data, tmp_path):
     )
 
     # define a metrics computer with seq eval
-    metrics_computer = SeqEvalMetricsComputer(
-        id_to_label=matcher.id_to_label, tagging_scheme=matcher.tagging_scheme
-    )
+    metrics_computer = SeqEvalMetricsComputer(id_to_label=matcher.id_to_label, tagging_scheme=matcher.tagging_scheme)
     trainer = Trainer(
         component=matcher,
         config=config,

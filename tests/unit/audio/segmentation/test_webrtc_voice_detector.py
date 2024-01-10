@@ -24,13 +24,9 @@ _DETECTION_MARGIN = 0.5
 def _get_segment(voice_signal, sample_rate, silence_duration):
     nb_channels = voice_signal.shape[0]
     silence = generate_silence(silence_duration, sample_rate, nb_channels)
-    signal = np.concatenate(
-        (silence, voice_signal, silence, voice_signal, silence), axis=1
-    )
+    signal = np.concatenate((silence, voice_signal, silence, voice_signal, silence), axis=1)
     audio = MemoryAudioBuffer(signal, sample_rate)
-    segment = Segment(
-        label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + audio.duration), audio=audio
-    )
+    segment = Segment(label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + audio.duration), audio=audio)
     return segment
 
 
@@ -50,16 +46,8 @@ def _check_voice_segment(voice_seg, original_seg, expected_start, expected_end):
     assert math.isclose(voice_audio.duration, voice_seg.span.length)
 
     # detected spans should be close enough to expected
-    assert (
-        expected_start - _DETECTION_MARGIN
-        < voice_seg.span.start
-        < expected_start + _DETECTION_MARGIN
-    )
-    assert (
-        expected_end - _DETECTION_MARGIN
-        < voice_seg.span.end
-        < expected_end + _DETECTION_MARGIN
-    )
+    assert expected_start - _DETECTION_MARGIN < voice_seg.span.start < expected_start + _DETECTION_MARGIN
+    assert expected_end - _DETECTION_MARGIN < voice_seg.span.end < expected_end + _DETECTION_MARGIN
 
     # voice signal should correspond to original signal span
     expected_signal = original_audio.trim_duration(
@@ -72,9 +60,7 @@ def _check_voice_segment(voice_seg, original_seg, expected_start, expected_end):
 def test_basic():
     """Basic behavior"""
     # use file containing voice signal
-    voice_signal, sample_rate = sf.read(
-        _PATH_TO_VOICE_FILE, always_2d=True, dtype=np.float32
-    )
+    voice_signal, sample_rate = sf.read(_PATH_TO_VOICE_FILE, always_2d=True, dtype=np.float32)
     voice_signal = voice_signal.T
     voice_duration = voice_signal.shape[1] / sample_rate
     # interleave it with silences (twice per segment)
@@ -114,9 +100,7 @@ def test_basic():
 def test_prov():
     """Generated provenance nodes"""
     # use file containing voice signal
-    voice_signal, sample_rate = sf.read(
-        _PATH_TO_VOICE_FILE, always_2d=True, dtype=np.float32
-    )
+    voice_signal, sample_rate = sf.read(_PATH_TO_VOICE_FILE, always_2d=True, dtype=np.float32)
     voice_signal = voice_signal.T
     # interleave it with silences (twice per segment)
     silence_duration_1 = 3.0

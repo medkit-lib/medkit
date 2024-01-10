@@ -76,18 +76,12 @@ class RegexpMatcherRule:
     case_sensitive: bool = True
     unicode_sensitive: bool = True
     exclusion_regexp: Optional[str] = None
-    normalizations: List[RegexpMatcherNormalization] = dataclasses.field(
-        default_factory=list
-    )
+    normalizations: List[RegexpMatcherNormalization] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
         assert self.unicode_sensitive or (
-            self.regexp.isascii()
-            and (self.exclusion_regexp is None or self.exclusion_regexp.isascii())
-        ), (
-            "RegexpMatcherRule regexps shouldn't contain non-ASCII chars when"
-            " unicode_sensitive is False"
-        )
+            self.regexp.isascii() and (self.exclusion_regexp is None or self.exclusion_regexp.isascii())
+        ), "RegexpMatcherRule regexps shouldn't contain non-ASCII chars when" " unicode_sensitive is False"
 
 
 @dataclasses.dataclass
@@ -183,8 +177,7 @@ class RegexpMatcher(NEROperation):
 
         # pre-compile patterns
         self._patterns = [
-            re.compile(rule.regexp, flags=0 if rule.case_sensitive else re.IGNORECASE)
-            for rule in self.rules
+            re.compile(rule.regexp, flags=0 if rule.case_sensitive else re.IGNORECASE) for rule in self.rules
         ]
         self._exclusion_patterns = [
             (
@@ -197,9 +190,7 @@ class RegexpMatcher(NEROperation):
             )
             for rule in self.rules
         ]
-        self._has_non_unicode_sensitive_rule = any(
-            not r.unicode_sensitive for r in rules
-        )
+        self._has_non_unicode_sensitive_rule = any(not r.unicode_sensitive for r in rules)
 
     def run(self, segments: List[Segment]) -> List[Entity]:
         """
@@ -216,11 +207,7 @@ class RegexpMatcher(NEROperation):
             Entities found in `segments` (with optional normalization attributes).
             Entities have a metadata dict with fields described in :class:`.RegexpMetadata`
         """
-        return [
-            entity
-            for segment in segments
-            for entity in self._find_matches_in_segment(segment)
-        ]
+        return [entity for segment in segments for entity in self._find_matches_in_segment(segment)]
 
     def _find_matches_in_segment(self, segment: Segment) -> Iterator[Entity]:
         text_ascii = None
@@ -229,9 +216,7 @@ class RegexpMatcher(NEROperation):
             text_ascii = get_ascii_from_unicode(segment.text, logger=logger)
 
         for rule_index in range(len(self.rules)):
-            yield from self._find_matches_in_segment_for_rule(
-                rule_index, segment, text_ascii
-            )
+            yield from self._find_matches_in_segment_for_rule(rule_index, segment, text_ascii)
 
     def _find_matches_in_segment_for_rule(
         self, rule_index: int, segment: Segment, text_ascii: Optional[str]
@@ -248,16 +233,11 @@ class RegexpMatcher(NEROperation):
             # match
             # we could check if we have any exclude match overlapping with
             # the current match but that wouldn't work for all cases
-            if (
-                exclusion_pattern is not None
-                and exclusion_pattern.search(text_to_match) is not None
-            ):
+            if exclusion_pattern is not None and exclusion_pattern.search(text_to_match) is not None:
                 continue
 
             # extract raw span list from regex match range
-            text, spans = span_utils.extract(
-                segment.text, segment.spans, [match.span(rule.index_extract)]
-            )
+            text, spans = span_utils.extract(segment.text, segment.spans, [match.span(rule.index_extract)])
 
             rule_id = rule.id if rule.id is not None else rule_index
             metadata = RegexpMetadata(rule_id=rule_id, version=rule.version)
@@ -275,9 +255,7 @@ class RegexpMatcher(NEROperation):
                     entity.attrs.add(copied_attr)
                     # handle provenance
                     if self._prov_tracer is not None:
-                        self._prov_tracer.add_prov(
-                            copied_attr, self.description, [attr]
-                        )
+                        self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
             # create normalization attributes for each normalization descriptor
             # of the rule
@@ -287,18 +265,12 @@ class RegexpMatcher(NEROperation):
 
             # create manual normalization attribute from term
             if rule.term is not None:
-                entity.attrs.add(
-                    EntityNormAttribute(kb_name="rules", kb_id=None, term=rule.term)
-                )
+                entity.attrs.add(EntityNormAttribute(kb_name="rules", kb_id=None, term=rule.term))
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    entity, self.description, source_data_items=[segment]
-                )
+                self._prov_tracer.add_prov(entity, self.description, source_data_items=[segment])
                 for norm_attr in norm_attrs:
-                    self._prov_tracer.add_prov(
-                        norm_attr, self.description, source_data_items=[segment]
-                    )
+                    self._prov_tracer.add_prov(norm_attr, self.description, source_data_items=[segment])
 
             yield entity
 
@@ -307,15 +279,11 @@ class RegexpMatcher(NEROperation):
         if norm.kb_name == "umls":
             norm_attr = UMLSNormAttribute(cui=norm.kb_id, umls_version=norm.kb_version)
         else:
-            norm_attr = EntityNormAttribute(
-                kb_name=norm.kb_name, kb_id=norm.kb_id, kb_version=norm.kb_version
-            )
+            norm_attr = EntityNormAttribute(kb_name=norm.kb_name, kb_id=norm.kb_id, kb_version=norm.kb_version)
         return norm_attr
 
     @staticmethod
-    def load_rules(
-        path_to_rules: Path, encoding: Optional[str] = None
-    ) -> List[RegexpMatcherRule]:
+    def load_rules(path_to_rules: Path, encoding: Optional[str] = None) -> List[RegexpMatcherRule]:
         """
         Load all rules stored in a yml file
 
@@ -348,9 +316,7 @@ class RegexpMatcher(NEROperation):
             else:
                 return RegexpMatcherRule(**data)
 
-        Loader.add_constructor(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, construct_mapping
-        )
+        Loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, construct_mapping)
 
         with open(path_to_rules, mode="r", encoding=encoding) as f:
             rules = yaml.load(f, Loader=Loader)
@@ -363,13 +329,10 @@ class RegexpMatcher(NEROperation):
         if any(r.id is not None for r in rules):
             if not all(r.id is not None for r in rules):
                 raise ValueError(
-                    "Some rules have ids and other do not. Please provide either ids"
-                    " for all rules or no ids at all"
+                    "Some rules have ids and other do not. Please provide either ids" " for all rules or no ids at all"
                 )
             if len({r.id for r in rules}) != len(rules):
-                raise ValueError(
-                    "Some rules have the same id, each rule must have a unique id"
-                )
+                raise ValueError("Some rules have the same id, each rule must have a unique id")
 
     @staticmethod
     def save_rules(

@@ -33,9 +33,7 @@ def test_load_anns():
 
 
 def test_load_document_split():
-    doc = medkit_json.load_audio_document(
-        SPLIT_DOC_JSON_FILE, SPLIT_DOC_ANNS_JSONL_FILE
-    )
+    doc = medkit_json.load_audio_document(SPLIT_DOC_JSON_FILE, SPLIT_DOC_ANNS_JSONL_FILE)
 
     expected_doc = build_doc()
     assert doc == expected_doc

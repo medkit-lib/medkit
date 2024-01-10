@@ -4,9 +4,7 @@ from pathlib import Path
 import pytest
 
 torch = pytest.importorskip(modname="torch", reason="torch is not installed")
-transformers = pytest.importorskip(
-    modname="transformers", reason="transformers is not installed"
-)
+transformers = pytest.importorskip(modname="transformers", reason="transformers is not installed")
 
 from medkit.core.text import Entity, Span, TextDocument  # noqa: E402
 from medkit.text.ner.hf_entity_matcher_trainable import (  # noqa: E402
@@ -18,9 +16,7 @@ from tests.data_utils import get_path_hf_dummy_vocab  # noqa: E402
 
 @pytest.fixture(autouse=True)
 def create_model_and_tokenizer(tmp_path):
-    tokenizer = transformers.BertTokenizerFast(
-        get_path_hf_dummy_vocab(), model_max_length=32
-    )
+    tokenizer = transformers.BertTokenizerFast(get_path_hf_dummy_vocab(), model_max_length=32)
     config = transformers.BertConfig(
         vocab_size=tokenizer.vocab_size,
         hidden_size=20,
@@ -75,9 +71,7 @@ def test_collate_and_forward(matcher: HFEntityMatcherTrainable, input_data):
     assert all(tensor.size() == torch.Size([4, 6]) for tensor in collated_data.values())
 
     # returning loss
-    model_output, loss = matcher.forward(
-        collated_data, return_loss=True, eval_mode=True
-    )
+    model_output, loss = matcher.forward(collated_data, return_loss=True, eval_mode=True)
     assert isinstance(model_output, BatchData)
     assert "logits" in model_output
     assert isinstance(model_output["logits"], torch.Tensor)
@@ -85,9 +79,7 @@ def test_collate_and_forward(matcher: HFEntityMatcherTrainable, input_data):
     assert loss is not None and isinstance(loss, torch.Tensor)
 
     # without loss
-    model_output, loss = matcher.forward(
-        collated_data, return_loss=False, eval_mode=True
-    )
+    model_output, loss = matcher.forward(collated_data, return_loss=False, eval_mode=True)
     assert isinstance(model_output, BatchData)
     assert isinstance(model_output["logits"], torch.Tensor)
     assert loss is None

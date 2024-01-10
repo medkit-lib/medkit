@@ -113,9 +113,7 @@ class _DoccanoDocRelationExtraction:
     metadata: Dict[str, Any]
 
     @classmethod
-    def from_dict(
-        cls, doc_line: Dict[str, Any], client_config: DoccanoClientConfig
-    ) -> Self:
+    def from_dict(cls, doc_line: Dict[str, Any], client_config: DoccanoClientConfig) -> Self:
         text: str = doc_line.pop(client_config.column_text)
         entities = [_DoccanoEntity(**ann) for ann in doc_line.pop("entities")]
         relations = [_DoccanoRelation(**ann) for ann in doc_line.pop("relations")]
@@ -138,14 +136,9 @@ class _DoccanoDocSeqLabeling:
     metadata: Dict[str, Any]
 
     @classmethod
-    def from_dict(
-        cls, doc_line: Dict[str, Any], client_config: DoccanoClientConfig
-    ) -> Self:
+    def from_dict(cls, doc_line: Dict[str, Any], client_config: DoccanoClientConfig) -> Self:
         text = doc_line.pop(client_config.column_text)
-        entities = [
-            _DoccanoEntityTuple(*ann)
-            for ann in doc_line.pop(client_config.column_label)
-        ]
+        entities = [_DoccanoEntityTuple(*ann) for ann in doc_line.pop(client_config.column_label)]
         # in doccano, metadata is what remains after removing key fields
         metadata = doc_line
         return cls(text=text, entities=entities, metadata=metadata)
@@ -164,9 +157,7 @@ class _DoccanoDocTextClassification:
     metadata: Dict[str, Any]
 
     @classmethod
-    def from_dict(
-        cls, doc_line: Dict[str, Any], client_config: DoccanoClientConfig
-    ) -> Self:
+    def from_dict(cls, doc_line: Dict[str, Any], client_config: DoccanoClientConfig) -> Self:
         text = doc_line.pop(client_config.column_text)
         label = doc_line.pop(client_config.column_label)[0]
 
@@ -326,13 +317,8 @@ class DoccanoInputConverter:
         """Check if the list of converted documents contains the CRLF character.
         This character is the only indicator available to warn
         if there are alignment problems in the documents"""
-        if (
-            self.task == DoccanoTask.RELATION_EXTRACTION
-            or self.task == DoccanoTask.SEQUENCE_LABELING
-        ):
-            nb_docs_with_warning = sum(
-                document.text.find("\r\n") != -1 for document in documents
-            )
+        if self.task == DoccanoTask.RELATION_EXTRACTION or self.task == DoccanoTask.SEQUENCE_LABELING:
+            nb_docs_with_warning = sum(document.text.find("\r\n") != -1 for document in documents)
 
             if nb_docs_with_warning > 0:
                 logger.warning(
@@ -364,9 +350,7 @@ class DoccanoInputConverter:
         if self.task == DoccanoTask.SEQUENCE_LABELING:
             return self._parse_doc_line_seq_labeling(doc_line=doc_line)
 
-    def _parse_doc_line_relation_extraction(
-        self, doc_line: Dict[str, Any]
-    ) -> TextDocument:
+    def _parse_doc_line_relation_extraction(self, doc_line: Dict[str, Any]) -> TextDocument:
         """Parse a dictionary and return a TextDocument with entities and relations
 
         Parameters
@@ -380,9 +364,7 @@ class DoccanoInputConverter:
             The document with annotations
         """
         try:
-            doccano_doc = _DoccanoDocRelationExtraction.from_dict(
-                doc_line, client_config=self.client_config
-            )
+            doccano_doc = _DoccanoDocRelationExtraction.from_dict(doc_line, client_config=self.client_config)
         except Exception as err:
             raise Exception(
                 "Impossible to convert the document. Please check the task"
@@ -392,9 +374,7 @@ class DoccanoInputConverter:
         ents_by_doccano_id = dict()
         relations = []
         for doccano_entity in doccano_doc.entities:
-            text = doccano_doc.text[
-                doccano_entity.start_offset : doccano_entity.end_offset
-            ]
+            text = doccano_doc.text[doccano_entity.start_offset : doccano_entity.end_offset]
             entity = Entity(
                 text=text,
                 label=doccano_entity.label,
@@ -404,9 +384,7 @@ class DoccanoInputConverter:
             ents_by_doccano_id[doccano_entity.id] = entity
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    entity, self.description, source_data_items=[]
-                )
+                self._prov_tracer.add_prov(entity, self.description, source_data_items=[])
 
         for doccano_relation in doccano_doc.relations:
             relation = Relation(
@@ -418,9 +396,7 @@ class DoccanoInputConverter:
             relations.append(relation)
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    relation, self.description, source_data_items=[]
-                )
+                self._prov_tracer.add_prov(relation, self.description, source_data_items=[])
 
         anns = list(ents_by_doccano_id.values()) + relations
         doc = TextDocument(
@@ -445,9 +421,7 @@ class DoccanoInputConverter:
             The document with annotations
         """
         try:
-            doccano_doc = _DoccanoDocSeqLabeling.from_dict(
-                doc_line, client_config=self.client_config
-            )
+            doccano_doc = _DoccanoDocSeqLabeling.from_dict(doc_line, client_config=self.client_config)
         except Exception as err:
             raise Exception(
                 "Impossible to convert the document. Please check the task"
@@ -456,9 +430,7 @@ class DoccanoInputConverter:
 
         entities = []
         for doccano_entity in doccano_doc.entities:
-            text = doccano_doc.text[
-                doccano_entity.start_offset : doccano_entity.end_offset
-            ]
+            text = doccano_doc.text[doccano_entity.start_offset : doccano_entity.end_offset]
             entity = Entity(
                 text=text,
                 label=doccano_entity.label,
@@ -467,9 +439,7 @@ class DoccanoInputConverter:
             entities.append(entity)
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    entity, self.description, source_data_items=[]
-                )
+                self._prov_tracer.add_prov(entity, self.description, source_data_items=[])
 
         doc = TextDocument(
             text=doccano_doc.text,
@@ -478,9 +448,7 @@ class DoccanoInputConverter:
         )
         return doc
 
-    def _parse_doc_line_text_classification(
-        self, doc_line: Dict[str, Any]
-    ) -> TextDocument:
+    def _parse_doc_line_text_classification(self, doc_line: Dict[str, Any]) -> TextDocument:
         """Parse a dictionary and return a TextDocument with an attribute.
 
         Parameters
@@ -494,9 +462,7 @@ class DoccanoInputConverter:
             The document with its category
         """
         try:
-            doccano_doc = _DoccanoDocTextClassification.from_dict(
-                doc_line, client_config=self.client_config
-            )
+            doccano_doc = _DoccanoDocTextClassification.from_dict(doc_line, client_config=self.client_config)
         except Exception as err:
             raise Exception(
                 "Impossible to convert the document. Please check the task"
@@ -609,9 +575,7 @@ class DoccanoOutputConverter:
         if self.task == DoccanoTask.SEQUENCE_LABELING:
             return self._convert_doc_seq_labeling(medkit_doc=medkit_doc)
 
-    def _convert_doc_relation_extraction(
-        self, medkit_doc: TextDocument
-    ) -> Dict[str, Any]:
+    def _convert_doc_relation_extraction(self, medkit_doc: TextDocument) -> Dict[str, Any]:
         """Convert a TextDocument to a doc_line compatible
         with the doccano relation extraction task
 
@@ -650,10 +614,7 @@ class DoccanoOutputConverter:
             obj = doccano_ents_by_medkit_uid.get(medkit_relation.target_id)
 
             if subj is None or obj is None:
-                logger.warning(
-                    f"Ignore relation {medkit_relation.uid}. Entity source/target was"
-                    " no found"
-                )
+                logger.warning(f"Ignore relation {medkit_relation.uid}. Entity source/target was" " no found")
                 continue
 
             ann_id = generate_deterministic_id(medkit_relation.uid)
@@ -714,9 +675,7 @@ class DoccanoOutputConverter:
 
         return doccano_doc.to_dict()
 
-    def _convert_doc_text_classification(
-        self, medkit_doc: TextDocument
-    ) -> Dict[str, Any]:
+    def _convert_doc_text_classification(self, medkit_doc: TextDocument) -> Dict[str, Any]:
         """Convert a TextDocument to a doc_line compatible with
         the doccano text classification task.
 

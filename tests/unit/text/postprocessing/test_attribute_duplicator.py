@@ -14,9 +14,7 @@ def _extract_segment(segment, ranges, label, uid=None):
 
 @pytest.fixture()
 def doc():
-    doc = TextDocument(
-        """Sa mère présente douleurs abdominales mais le patient n'a pas une maladie."""
-    )
+    doc = TextDocument("""Sa mère présente douleurs abdominales mais le patient n'a pas une maladie.""")
     sentence = _extract_segment(doc.raw_segment, [(0, 73)], "sentence")
     syntagme_0 = _extract_segment(sentence, [(0, 37)], "syntagme", uid="syntagme_0")
     syntagme_1 = _extract_segment(sentence, [(37, 73)], "syntagme", uid="syntagme_1")

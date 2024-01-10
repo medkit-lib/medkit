@@ -14,9 +14,7 @@ from medkit.core import Attribute
 from medkit.core.text import Segment, SegmentationOperation, span_utils
 from medkit.core.text.utils import lstrip, rstrip
 
-_PATH_TO_DEFAULT_RULES = (
-    pathlib.Path(__file__).parent / "default_section_definition.yml"
-)
+_PATH_TO_DEFAULT_RULES = pathlib.Path(__file__).parent / "default_section_definition.yml"
 
 
 @dataclasses.dataclass
@@ -69,9 +67,7 @@ class SectionTokenizer(SegmentationOperation):
         self.strip_chars = strip_chars
 
         if section_dict is None:
-            section_dict, section_rules = self.load_section_definition(
-                _PATH_TO_DEFAULT_RULES, encoding="utf-8"
-            )
+            section_dict, section_rules = self.load_section_definition(_PATH_TO_DEFAULT_RULES, encoding="utf-8")
 
         self.section_dict = section_dict
         self.section_rules = tuple(section_rules)
@@ -96,11 +92,7 @@ class SectionTokenizer(SegmentationOperation):
         List[Segments]:
             Sections segments found in `segments`
         """
-        return [
-            section
-            for segment in segments
-            for section in self._find_sections_in_segment(segment)
-        ]
+        return [section for segment in segments for section in self._find_sections_in_segment(segment)]
 
     def _find_sections_in_segment(self, segment: Segment):
         # Process mappings
@@ -128,9 +120,7 @@ class SectionTokenizer(SegmentationOperation):
             # and white spaces at end of the text
             strip_ranges = []
             for start, end in ranges:
-                text, new_start = lstrip(
-                    segment.text[start:end], start, self.strip_chars
-                )
+                text, new_start = lstrip(segment.text[start:end], start, self.strip_chars)
                 text, new_end = rstrip(text, end)
                 if len(text) == 0:  # empty segment
                     continue
@@ -157,12 +147,8 @@ class SectionTokenizer(SegmentationOperation):
             section.attrs.add(attr)
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    section, self.description, source_data_items=[segment]
-                )
-                self._prov_tracer.add_prov(
-                    attr, self.description, source_data_items=[segment]
-                )
+                self._prov_tracer.add_prov(section, self.description, source_data_items=[segment])
+                self._prov_tracer.add_prov(attr, self.description, source_data_items=[segment])
 
             yield section
 
@@ -193,9 +179,7 @@ class SectionTokenizer(SegmentationOperation):
     @classmethod
     def get_example(cls):
         config_path = _PATH_TO_DEFAULT_RULES
-        section_dict, section_rules = cls.load_section_definition(
-            config_path, encoding="utf-8"
-        )
+        section_dict, section_rules = cls.load_section_definition(config_path, encoding="utf-8")
         section_tokenizer = cls(
             section_dict=section_dict,
             section_rules=section_rules,
@@ -230,9 +214,7 @@ class SectionTokenizer(SegmentationOperation):
             config = yaml.safe_load(f)
 
         section_dict = config["sections"]
-        section_rules = tuple(
-            SectionModificationRule(**rule) for rule in config["rules"]
-        )
+        section_rules = tuple(SectionModificationRule(**rule) for rule in config["rules"])
 
         return section_dict, section_rules
 

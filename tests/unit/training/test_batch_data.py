@@ -47,9 +47,7 @@ def test_to_device():
 
 def test_to_cpu():
     cpu = torch.device("cpu")
-    data = BatchData(
-        inputs=["hello", "world"], outputs=[torch.tensor(0), torch.tensor(1)]
-    )
+    data = BatchData(inputs=["hello", "world"], outputs=[torch.tensor(0), torch.tensor(1)])
     new_data = data.to_device(cpu)
     for old_tensor, new_tensor in zip(data["outputs"], new_data["outputs"]):
         assert old_tensor.device == cpu

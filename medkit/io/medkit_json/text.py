@@ -57,9 +57,7 @@ def load_text_document(
     return doc
 
 
-def load_text_documents(
-    input_file: Union[str, Path], encoding: Optional[str] = "utf-8"
-) -> Iterator[TextDocument]:
+def load_text_documents(input_file: Union[str, Path], encoding: Optional[str] = "utf-8") -> Iterator[TextDocument]:
     """
     Returns an iterator on text documents loaded from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_text_documents`
@@ -90,9 +88,7 @@ def load_text_documents(
             yield doc
 
 
-def load_text_anns(
-    input_file: Union[str, Path], encoding: Optional[str] = "utf-8"
-) -> Iterator[TextAnnotation]:
+def load_text_anns(input_file: Union[str, Path], encoding: Optional[str] = "utf-8") -> Iterator[TextAnnotation]:
     """
     Return an iterator on text annotations loaded from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_text_anns`

@@ -67,11 +67,7 @@ class CharReplacer(Operation):
         List[~medkit.core.text.Segment]:
             List of new segments
         """
-        return [
-            processed_segment
-            for segment in segments
-            for processed_segment in self._process_segment_text(segment)
-        ]
+        return [processed_segment for segment in segments for processed_segment in self._process_segment_text(segment)]
 
     def _process_segment_text(self, segment: Segment):
         ranges = []
@@ -90,13 +86,9 @@ class CharReplacer(Operation):
             replacement_texts=replacement_texts,
         )
 
-        processed_text = Segment(
-            label=self.output_label, spans=new_spans, text=new_text
-        )
+        processed_text = Segment(label=self.output_label, spans=new_spans, text=new_text)
 
         if self._prov_tracer is not None:
-            self._prov_tracer.add_prov(
-                processed_text, self.description, source_data_items=[segment]
-            )
+            self._prov_tracer.add_prov(processed_text, self.description, source_data_items=[segment])
 
         yield processed_text

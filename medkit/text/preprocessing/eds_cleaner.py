@@ -90,11 +90,7 @@ class EDSCleaner(Operation):
         List[~medkit.core.text.Segment]:
             List of cleaned segments.
         """
-        return [
-            norm_segment
-            for segment in segments
-            for norm_segment in self._clean_segment_text(segment)
-        ]
+        return [norm_segment for segment in segments for norm_segment in self._clean_segment_text(segment)]
 
     def _clean_segment_text(self, segment: Segment):
         """
@@ -110,9 +106,7 @@ class EDSCleaner(Operation):
         text, spans = utils.replace_point_in_numbers(text, spans)
 
         # modify newline character
-        text, spans = utils.clean_newline_character(
-            text=text, spans=spans, keep_endlines=self.keep_endlines
-        )
+        text, spans = utils.clean_newline_character(text=text, spans=spans, keep_endlines=self.keep_endlines)
         # modify all whitespaces characters
         text, spans = utils.clean_multiple_whitespaces_in_sentence(text, spans)
 
@@ -137,16 +131,12 @@ class EDSCleaner(Operation):
                 strict=False,
             )
             # before certain prepositions (venue   . `avec`)
-            text, spans = utils.replace_point_before_keywords(
-                text=text, spans=spans, keywords=_FR_KEYWORDS_BEFORE
-            )
+            text, spans = utils.replace_point_before_keywords(text=text, spans=spans, keywords=_FR_KEYWORDS_BEFORE)
 
         # create ann with the clean text
         clean_text = Segment(label=self.output_label, spans=spans, text=text)
 
         if self._prov_tracer is not None:
-            self._prov_tracer.add_prov(
-                clean_text, self.description, source_data_items=[segment]
-            )
+            self._prov_tracer.add_prov(clean_text, self.description, source_data_items=[segment])
 
         yield clean_text

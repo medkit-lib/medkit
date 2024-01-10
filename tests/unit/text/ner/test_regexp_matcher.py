@@ -105,9 +105,7 @@ def test_normalization():
         regexp="diabetes",
         normalizations=[
             RegexpMatcherNormalization(kb_name="icd", kb_version="10", kb_id="E10-E14"),
-            RegexpMatcherNormalization(
-                kb_name="umls", kb_version="2020AB", kb_id="C0011849"
-            ),
+            RegexpMatcherNormalization(kb_name="umls", kb_version="2020AB", kb_id="C0011849"),
         ],
     )
     matcher = RegexpMatcher(rules=[rule])
@@ -135,9 +133,7 @@ def test_normalization():
 def test_exclusion_regex():
     sentence = _get_sentence_segment()
 
-    rule = RegexpMatcherRule(
-        label="Diabetes", regexp="diabetes", exclusion_regexp="type 1 diabetes"
-    )
+    rule = RegexpMatcherRule(label="Diabetes", regexp="diabetes", exclusion_regexp="type 1 diabetes")
     matcher = RegexpMatcher(rules=[rule])
     entities = matcher.run([sentence])
 
@@ -186,9 +182,7 @@ def test_case_sensitivity_exclusion_on():
 def test_unicode_sensitive_off(caplog):
     sentence = _get_sentence_segment("Le patient fait du diabète")
 
-    rule = RegexpMatcherRule(
-        label="Diabetes", regexp="diabete", unicode_sensitive=False
-    )
+    rule = RegexpMatcherRule(label="Diabetes", regexp="diabete", unicode_sensitive=False)
     matcher = RegexpMatcher(rules=[rule])
     entities = matcher.run([sentence])
 
@@ -197,8 +191,7 @@ def test_unicode_sensitive_off(caplog):
     assert entity.label == "Diabetes"
 
     sentence_with_ligatures = _get_sentence_segment(
-        "Il a une sœur atteinte de diabète et pensait que sa mère avait peut-être aussi"
-        " le diabète. "
+        "Il a une sœur atteinte de diabète et pensait que sa mère avait peut-être aussi" " le diabète. "
     )
     with caplog.at_level(logging.INFO, logger="medkit.text.ner.regexp_matcher"):
         matcher.run([sentence_with_ligatures])
@@ -269,9 +262,7 @@ def test_prov():
     sentence = _get_sentence_segment()
 
     normalization = RegexpMatcherNormalization("umls", "2020AB", "C0011849")
-    rule = RegexpMatcherRule(
-        label="Diabetes", regexp="diabetes", normalizations=[normalization]
-    )
+    rule = RegexpMatcherRule(label="Diabetes", regexp="diabetes", normalizations=[normalization])
     matcher = RegexpMatcher(rules=[rule])
 
     prov_tracer = ProvTracer()

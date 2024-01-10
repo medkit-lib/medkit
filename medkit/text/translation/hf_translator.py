@@ -100,9 +100,7 @@ class HFTranslator(Operation):
         self.batch_size = batch_size
 
         if isinstance(self.translation_model, str):
-            task = transformers.pipelines.get_task(
-                translation_model, token=hf_auth_token
-            )
+            task = transformers.pipelines.get_task(translation_model, token=hf_auth_token)
             if not task.startswith("translation"):
                 raise ValueError(
                     f"Model {self.translation_model} is not associated to a translation"
@@ -147,19 +145,13 @@ class HFTranslator(Operation):
 
     def _translate_segments(self, segments: List[Segment]) -> Iterator[Segment]:
         original_texts = [s.text for s in segments]
-        translated_texts = [
-            d["translation_text"] for d in self._translation_pipeline(original_texts)
-        ]
+        translated_texts = [d["translation_text"] for d in self._translation_pipeline(original_texts)]
 
         # compute words alignments
         alignments = self._aligner.align(translated_texts, original_texts)
 
-        for segment, translated_text, alignment in zip(
-            segments, translated_texts, alignments
-        ):
-            translated_spans = self._get_translated_spans(
-                alignment, translated_text, segment.text, segment.spans
-            )
+        for segment, translated_text, alignment in zip(segments, translated_texts, alignments):
+            translated_spans = self._get_translated_spans(alignment, translated_text, segment.text, segment.spans)
 
             translated_segment = Segment(
                 label=self.output_label,
@@ -168,15 +160,11 @@ class HFTranslator(Operation):
             )
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    translated_segment, self.description, source_data_items=[segment]
-                )
+                self._prov_tracer.add_prov(translated_segment, self.description, source_data_items=[segment])
 
             yield translated_segment
 
-    def _get_translated_spans(
-        self, alignment, translated_text, original_text, original_spans
-    ):
+    def _get_translated_spans(self, alignment, translated_text, original_text, original_spans):
         """Compute spans for translated segments, making translated words reference words
         in original text through ModifiedSpans when possible"""
 
@@ -195,9 +183,7 @@ class HFTranslator(Operation):
 
             # handle gaps between aligned sub texts
             if current_char < translated_start:
-                translated_spans.append(
-                    ModifiedSpan(translated_start - current_char, replaced_spans=[])
-                )
+                translated_spans.append(ModifiedSpan(translated_start - current_char, replaced_spans=[]))
 
             # extract spans corresponding to sub text in original text
             original_sub_text, original_sub_text_spans = span_utils.extract(
@@ -210,17 +196,13 @@ class HFTranslator(Operation):
             else:
                 # otherwise create modified span pointing to original spans
                 length = translated_end - translated_start
-                translated_spans.append(
-                    ModifiedSpan(length, replaced_spans=original_sub_text_spans)
-                )
+                translated_spans.append(ModifiedSpan(length, replaced_spans=original_sub_text_spans))
 
             current_char = translated_end
 
         # handle trail
         if current_char < len(translated_text):
-            translated_spans.append(
-                ModifiedSpan(len(translated_text) - current_char, replaced_spans=[])
-            )
+            translated_spans.append(ModifiedSpan(len(translated_text) - current_char, replaced_spans=[]))
 
         assert sum(s.length for s in translated_spans) == len(translated_text)
         return translated_spans
@@ -265,9 +247,7 @@ class _Aligner:
         self._threshold: float = threshold
         self._tokenizer = BertTokenizerFast.from_pretrained(model, token=hf_auth_token)
 
-    def align(
-        self, source_texts: List[str], target_texts: List[str]
-    ) -> List[_AlignmentDict]:
+    def align(self, source_texts: List[str], target_texts: List[str]) -> List[_AlignmentDict]:
         """Compute word alignments between two lists of texts in different languages.
 
         Parameters
@@ -282,20 +262,12 @@ class _Aligner:
         List[_AlignmentDict]:
             List of alignments dicts between characters ranges (cf description of _AlignmentDict)
         """
-        assert len(source_texts) == len(
-            target_texts
-        ), "Must have same number of source and target texts"
+        assert len(source_texts) == len(target_texts), "Must have same number of source and target texts"
 
         alignments = []
-        source_text_batches_iter = medkit.core.utils.batch_list(
-            source_texts, self._batch_size
-        )
-        target_text_batches_iter = medkit.core.utils.batch_list(
-            target_texts, self._batch_size
-        )
-        for source_text_batch, target_text_batch in zip(
-            source_text_batches_iter, target_text_batches_iter
-        ):
+        source_text_batches_iter = medkit.core.utils.batch_list(source_texts, self._batch_size)
+        target_text_batches_iter = medkit.core.utils.batch_list(target_texts, self._batch_size)
+        for source_text_batch, target_text_batch in zip(source_text_batches_iter, target_text_batches_iter):
             alignments += self._align_batch(source_text_batch, target_text_batch)
         return alignments
 
@@ -324,9 +296,7 @@ class _Aligner:
             softmax_source_target = torch.nn.Softmax(dim=-1)(dot_prod)
             softmax_target_source = torch.nn.Softmax(dim=-2)(dot_prod)
             # flag as aligned where similarities are greater than threshold
-            softmax_inter = (softmax_source_target > self._threshold) * (
-                softmax_target_source > self._threshold
-            )
+            softmax_inter = (softmax_source_target > self._threshold) * (softmax_target_source > self._threshold)
             token_alignment = torch.nonzero(softmax_inter, as_tuple=False)
 
             # align word spans (build word alignments from token alignments, and take word spans)
@@ -366,12 +336,8 @@ class _Aligner:
             if source_word is None or target_word is None:
                 continue
 
-            source_range = tuple(
-                source_encoding.word_to_chars(batch_index, source_word)
-            )
-            target_range = tuple(
-                target_encoding.word_to_chars(batch_index, target_word)
-            )
+            source_range = tuple(source_encoding.word_to_chars(batch_index, source_word))
+            target_range = tuple(target_encoding.word_to_chars(batch_index, target_word))
             if target_range not in word_alignment[source_range]:
                 word_alignment[source_range].append(target_range)
 

@@ -78,9 +78,7 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
         """
         pass
 
-    def trim_duration(
-        self, start_time: Optional[float] = None, end_time: Optional[float] = None
-    ) -> AudioBuffer:
+    def trim_duration(self, start_time: Optional[float] = None, end_time: Optional[float] = None) -> AudioBuffer:
         """Return a new audio buffer pointing to a portion of the signal in the original buffer,
         using boundaries in seconds. Since `start_time` and `end_time` are in seconds, the exact
         trim boundaries will be rounded to the nearest sample and will therefore depend on the sampling
@@ -101,11 +99,7 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
         """
         assert end_time is None or end_time <= self.duration
         start = round(start_time * self.sample_rate) if start_time is not None else None
-        end = (
-            min(round(end_time * self.sample_rate), self.nb_samples)
-            if end_time is not None
-            else None
-        )
+        end = min(round(end_time * self.sample_rate), self.nb_samples) if end_time is not None else None
         return self.trim(start, end)
 
     def __init_subclass__(cls):
@@ -176,9 +170,7 @@ class FileAudioBuffer(AudioBuffer):
         nb_samples = trim_end - trim_start
         nb_channels = sf_info.channels
 
-        super().__init__(
-            sample_rate=sample_rate, nb_samples=nb_samples, nb_channels=nb_channels
-        )
+        super().__init__(sample_rate=sample_rate, nb_samples=nb_samples, nb_channels=nb_channels)
 
         self.path = path
         self._trim_end = trim_end
@@ -195,9 +187,7 @@ class FileAudioBuffer(AudioBuffer):
         )
         return signal.T
 
-    def trim(
-        self, start: Optional[int] = None, end: Optional[int] = None
-    ) -> AudioBuffer:
+    def trim(self, start: Optional[int] = None, end: Optional[int] = None) -> AudioBuffer:
         assert start is None or 0 <= start <= self.nb_samples
         assert end is None or 0 <= end <= self.nb_samples
 
@@ -223,18 +213,12 @@ class FileAudioBuffer(AudioBuffer):
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> Self:
-        return cls(
-            path=data["path"], trim_start=data["trim_start"], trim_end=data["trim_end"]
-        )
+        return cls(path=data["path"], trim_start=data["trim_start"], trim_end=data["trim_end"])
 
     def __eq__(self, other: object) -> bool:
         if type(other) is not self.__class__:
             return False
-        return (
-            self.path == other.path
-            and self._trim_end == other._trim_end
-            and self._trim_start == other._trim_start
-        )
+        return self.path == other.path and self._trim_end == other._trim_end and self._trim_start == other._trim_start
 
 
 class MemoryAudioBuffer(AudioBuffer):
@@ -252,9 +236,7 @@ class MemoryAudioBuffer(AudioBuffer):
         """
         nb_channels, nb_samples = signal.shape
 
-        super().__init__(
-            sample_rate=sample_rate, nb_samples=nb_samples, nb_channels=nb_channels
-        )
+        super().__init__(sample_rate=sample_rate, nb_samples=nb_samples, nb_channels=nb_channels)
 
         self._signal = signal
 
@@ -264,9 +246,7 @@ class MemoryAudioBuffer(AudioBuffer):
         else:
             return self._signal
 
-    def trim(
-        self, start: Optional[int] = None, end: Optional[int] = None
-    ) -> AudioBuffer:
+    def trim(self, start: Optional[int] = None, end: Optional[int] = None) -> AudioBuffer:
         assert start is None or 0 <= start <= self.nb_samples
         assert end is None or 0 <= end <= self.nb_samples
 
@@ -311,14 +291,10 @@ class PlaceholderAudioBuffer(AudioBuffer):
         )
 
     def read(self, copy: bool = False) -> np.ndarray:
-        raise NotImplementedError(
-            "Cannot call read() on a PlaceholderAudioBuffer, signal is unknown"
-        )
+        raise NotImplementedError("Cannot call read() on a PlaceholderAudioBuffer, signal is unknown")
 
     def trim(self, start: Optional[int], end: Optional[int]) -> AudioBuffer:
-        raise NotImplementedError(
-            "Cannot call trim() on a PlaceholderAudioBuffer, signal is unknown"
-        )
+        raise NotImplementedError("Cannot call trim() on a PlaceholderAudioBuffer, signal is unknown")
 
     def to_dict(self) -> Dict[str, Any]:
         buffer_dict = dict(

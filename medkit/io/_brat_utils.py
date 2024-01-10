@@ -223,9 +223,7 @@ class BratAnnConfiguration:
         for attr_type, values in self._attr_relation_values.items():
             # get the 'n' most common values in the attr
             most_common_values = Counter(values).most_common(self.top_values_by_attr)
-            attrs[attr_type] = sorted(
-                attr_value for attr_value, _ in most_common_values
-            )
+            attrs[attr_type] = sorted(attr_value for attr_value, _ in most_common_values)
         return attrs
 
     @property
@@ -234,9 +232,7 @@ class BratAnnConfiguration:
         for attr_type, values in self._attr_entity_values.items():
             # get the 'n' most common values in the attr
             most_common_values = Counter(values).most_common(self.top_values_by_attr)
-            attrs[attr_type] = sorted(
-                attr_value for attr_value, _ in most_common_values
-            )
+            attrs[attr_type] = sorted(attr_value for attr_value, _ in most_common_values)
         return attrs
 
     def add_entity_type(self, type: str):
@@ -294,16 +290,10 @@ class BratAnnConfiguration:
     def _attribute_to_str(type: str, values: List[str], from_entity: bool) -> str:
         arg = "<ENTITY>" if from_entity else "<RELATION>"
         values_str = "|".join(values)
-        return (
-            f"{type}\tArg:{arg}"
-            if not values_str
-            else f"{type}\tArg:{arg}, Value:{values_str}"
-        )
+        return f"{type}\tArg:{arg}" if not values_str else f"{type}\tArg:{arg}, Value:{values_str}"
 
     @staticmethod
-    def _relation_to_str(
-        type: str, arg_1_types: List[str], arg_2_types: List[str]
-    ) -> str:
+    def _relation_to_str(type: str, arg_1_types: List[str], arg_2_types: List[str]) -> str:
         arg_1_str = "|".join(arg_1_types)
         arg_2_str = "|".join(arg_2_types)
         return f"{type}\tArg1:{arg_1_str}, Arg2:{arg_2_str}"
@@ -364,9 +354,7 @@ def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
     for i, ann in enumerate(annotations):
         line_number = i + 1
         if len(ann) == 0 or ann[0] not in ("T", "R", "A", "#"):
-            logger.info(
-                f"Ignoring empty line or unsupported annotation {ann} on {line_number}"
-            )
+            logger.info(f"Ignoring empty line or unsupported annotation {ann} on {line_number}")
             continue
         ann_id, ann_content = ann.split("\t", maxsplit=1)
         try:
@@ -390,9 +378,7 @@ def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
     groups = None
     if detect_groups:
         groups: Dict[str, Grouping] = dict()
-        grouping_relations = {
-            r.uid: r for r in relations.values() if r.type in GROUPING_RELATIONS
-        }
+        grouping_relations = {r.uid: r for r in relations.values() if r.type in GROUPING_RELATIONS}
 
         for entity in entities.values():
             if entity.type in GROUPING_ENTITIES:
@@ -472,14 +458,9 @@ def _parse_relation(relation_id: str, relation_content: str) -> BratRelation:
         raise ValueError("Impossible to parse the relation.") from err
 
     if subj.startswith("E") or obj.startswith("E"):
-        raise ValueError(
-            "Impossible to parse the relation. Relations between events are not"
-            " supported"
-        )
+        raise ValueError("Impossible to parse the relation. Relations between events are not" " supported")
 
-    return BratRelation(
-        relation_id.strip(), relation.strip(), subj.strip(), obj.strip()
-    )
+    return BratRelation(relation_id.strip(), relation.strip(), subj.strip(), obj.strip())
 
 
 def _parse_attribute(attribute_id: str, attribute_content: str) -> BratAttribute:
