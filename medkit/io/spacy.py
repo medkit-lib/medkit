@@ -124,9 +124,7 @@ class SpacyInputConverter:
                     ann.attrs.add(attr)
                     if self._prov_tracer is not None:
                         # the input converter does not know the source data item
-                        self._prov_tracer.add_prov(
-                            attr, self.description, source_data_items=[]
-                        )
+                        self._prov_tracer.add_prov(attr, self.description, source_data_items=[])
         return annotations
 
 
@@ -186,9 +184,7 @@ class SpacyOutputConverter:
             attrs=self.attrs,
             apply_nlp_spacy=self.apply_nlp_spacy,
         )
-        return OperationDescription(
-            uid=self.uid, class_name=self.__class__.__name__, config=config
-        )
+        return OperationDescription(uid=self.uid, class_name=self.__class__.__name__, config=config)
 
     def convert(self, medkit_docs: List[TextDocument]) -> List[Doc]:
         """

@@ -120,9 +120,7 @@ TEST_PARAMS_CONFIG = [
 )
 def test_regexp_replacer(rules, text, expected_text, expected_spans):
     segment = _get_segment_from_text(text)
-    norm_segment = RegexpReplacer(output_label="NORMALIZED_TEXT", rules=rules).run(
-        [segment]
-    )[0]
+    norm_segment = RegexpReplacer(output_label="NORMALIZED_TEXT", rules=rules).run([segment])[0]
 
     # Verify modifications
     assert norm_segment.label == "NORMALIZED_TEXT"

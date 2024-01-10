@@ -42,7 +42,5 @@ def test_basic():
 
 
 def test_raises_wrong_model_error():
-    with pytest.raises(
-        FileNotFoundError, match="There was no PyTorch file with a NLstruct.*"
-    ):
+    with pytest.raises(FileNotFoundError, match="There was no PyTorch file with a NLstruct.*"):
         NLStructEntityMatcher(model_name_or_dirpath=_MODEL_NO_VALID)

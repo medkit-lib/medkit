@@ -66,9 +66,7 @@ def test_basic():
     # 1st text doc
     text_doc_1 = text_docs[0]
     # reconstructed full text is as expected
-    expected_text = (
-        "This is transcribed text number 1.\nThis is transcribed text number 2."
-    )
+    expected_text = "This is transcribed text number 1.\nThis is transcribed text number 2."
     assert text_doc_1.text == expected_text
     # reference to original audio doc
     assert text_doc_1.audio_doc_id == audio_doc_1.uid
@@ -183,9 +181,7 @@ def test_attrs_to_copy():
 
 
 class _CustomDocTranscriber(DocTranscriber):
-    def augment_full_text_for_next_segment(
-        self, full_text, segment_text, audio_segment
-    ):
+    def augment_full_text_for_next_segment(self, full_text, segment_text, audio_segment):
         # retrieve speaker name from audio segment attrs and include it in full text
         if len(full_text) > 0:
             full_text += "\n\n"
@@ -215,8 +211,5 @@ def test_custom_full_text():
     )
     text_doc = doc_transcriber.run([audio_doc])[0]
 
-    expected_text = (
-        "- BOB:\nThis is transcribed text number 1.\n\n- ALICE:\nThis is transcribed"
-        " text number 2."
-    )
+    expected_text = "- BOB:\nThis is transcribed text number 1.\n\n- ALICE:\nThis is transcribed" " text number 2."
     assert text_doc.text == expected_text

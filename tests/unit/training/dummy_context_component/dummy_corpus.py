@@ -22,8 +22,6 @@ def get_segment(text, value):
 
 
 DUMMY_DATASETS = {
-    "train": [
-        get_segment(text, value) for text, value in zip(texts_training, labels_training)
-    ],
+    "train": [get_segment(text, value) for text, value in zip(texts_training, labels_training)],
     "eval": [get_segment(text, value) for text, value in zip(texts_eval, labels_eval)],
 }

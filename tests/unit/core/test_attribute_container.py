@@ -33,7 +33,5 @@ def test_add_same_attr():
     attr = Attribute(label="negation", value=False)
     attrs.add(attr)
 
-    with pytest.raises(
-        ValueError, match="Attribute with uid .* already attached to annotation"
-    ):
+    with pytest.raises(ValueError, match="Attribute with uid .* already attached to annotation"):
         attrs.add(attr)

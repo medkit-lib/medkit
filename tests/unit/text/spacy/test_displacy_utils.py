@@ -70,9 +70,7 @@ _TEST_DATA = [
         [
             Entity(
                 label="disease",
-                spans=[
-                    ModifiedSpan(length=15, replaced_spans=[Span(29, 36), Span(39, 47)])
-                ],
+                spans=[ModifiedSpan(length=15, replaced_spans=[Span(29, 36), Span(39, 47)])],
                 text="type 1 diabetes",
             )
         ],
@@ -91,11 +89,7 @@ _TEST_DATA = [
                 label="disease",
                 spans=[Span(27, 47)],
                 text="a diabetes of type 1",
-                attrs=[
-                    EntityNormAttribute(
-                        kb_name="umls", kb_id="C0011854", kb_version="2021AB"
-                    )
-                ],
+                attrs=[EntityNormAttribute(kb_name="umls", kb_id="C0011854", kb_version="2021AB")],
             ),
         ],
         _custom_entity_formatter,
@@ -126,9 +120,7 @@ def _get_doc():
     doc.anns.add(entity_1)
     entity_2 = Entity(label="disease", spans=[Span(16, 22)], text="asthma")
     doc.anns.add(entity_2)
-    entity_3 = Entity(
-        label="disease", spans=[Span(27, 47)], text="a diabetes of type 1"
-    )
+    entity_3 = Entity(label="disease", spans=[Span(27, 47)], text="a diabetes of type 1")
     doc.anns.add(entity_3)
     segment = Segment(label="segment", spans=[Span(0, 19)], text="This is a sentence.")
     doc.anns.add(segment)

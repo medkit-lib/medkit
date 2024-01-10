@@ -51,9 +51,7 @@ def test_save_document_split(tmp_path):
 
     output_file = tmp_path / "split_doc.json"
     anns_output_file = tmp_path / "split_doc_anns.jsonl"
-    medkit_json.save_text_document(
-        doc, output_file, split_anns=True, anns_output_file=anns_output_file
-    )
+    medkit_json.save_text_document(doc, output_file, split_anns=True, anns_output_file=anns_output_file)
 
     _check_json_files_are_equal(output_file, SPLIT_DOC_JSON_FILE)
     _check_json_files_are_equal(anns_output_file, SPLIT_DOC_ANNS_JSONL_FILE)

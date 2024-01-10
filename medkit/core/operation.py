@@ -39,7 +39,7 @@ class Operation(abc.ABC):
         In the `__init__` function of your annotator, use:
 
         >>> init_args = locals()
-        >>> init_args.pop('self')
+        >>> init_args.pop("self")
         >>> super().__init__(**init_args)
         """
         if uid is None:

@@ -52,10 +52,7 @@ class SimstringMatcherRule(BaseSimstringMatcherRule):
             label=data["label"],
             case_sensitive=data["case_sensitive"],
             unicode_sensitive=data["unicode_sensitive"],
-            normalizations=[
-                SimstringMatcherNormalization.from_dict(n)
-                for n in data["normalizations"]
-            ],
+            normalizations=[SimstringMatcherNormalization.from_dict(n) for n in data["normalizations"]],
         )
 
 
@@ -178,9 +175,7 @@ class SimstringMatcher(BaseSimstringMatcher):
         )
 
     @staticmethod
-    def load_rules(
-        path_to_rules: Path, encoding: Optional[str] = None
-    ) -> List[SimstringMatcherRule]:
+    def load_rules(path_to_rules: Path, encoding: Optional[str] = None) -> List[SimstringMatcherRule]:
         """
         Load all rules stored in a yml file
 
@@ -209,9 +204,7 @@ class SimstringMatcher(BaseSimstringMatcher):
             else:
                 return SimstringMatcherRule(**data)
 
-        _Loader.add_constructor(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _construct_mapping
-        )
+        _Loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _construct_mapping)
 
         with open(path_to_rules, encoding=encoding) as f:
             rules = yaml.load(f, Loader=_Loader)

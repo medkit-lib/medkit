@@ -132,11 +132,7 @@ class PASpeakerDetector(SegmentationOperation):
             Segments detected as containing speech activity (with speaker
             attributes)
         """
-        return [
-            turn_seg
-            for seg in segments
-            for turn_seg in self._detect_turns_in_segment(seg)
-        ]
+        return [turn_seg for seg in segments for turn_seg in self._detect_turns_in_segment(seg)]
 
     def _detect_turns_in_segment(self, segment: Segment) -> Iterator[Segment]:
         audio = segment.audio

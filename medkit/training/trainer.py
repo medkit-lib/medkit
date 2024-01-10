@@ -88,7 +88,8 @@ class Trainer:
             metrics in training.
         lr_scheduler_builder:
             Optional function that build a `lr_scheduler` to adjust the learning rate after an epoch. Must take
-            an Optimizer and return a `lr_scheduler`. If not provided, the learning rate does not change during training.
+            an Optimizer and return a `lr_scheduler`. If not provided, the learning rate does not change during
+            training.
         callback:
             Optional callback to customize training.
         """
@@ -114,11 +115,7 @@ class Trainer:
         self.config = config
 
         self.optimizer = component.configure_optimizer(self.config.learning_rate)
-        self.lr_scheduler = (
-            None
-            if lr_scheduler_builder is None
-            else lr_scheduler_builder(self.optimizer)
-        )
+        self.lr_scheduler = None if lr_scheduler_builder is None else lr_scheduler_builder(self.optimizer)
 
         self.metrics_computer = metrics_computer
 
@@ -156,9 +153,7 @@ class Trainer:
         data_for_metrics = defaultdict(list)
 
         for step, input_batch in enumerate(self.train_dataloader):
-            self.callback.on_step_begin(
-                step, nb_batches=len(self.train_dataloader), phase="train"
-            )
+            self.callback.on_step_begin(step, nb_batches=len(self.train_dataloader), phase="train")
 
             model_output, loss = self.make_forward_pass(input_batch, eval_mode=False)
 
@@ -167,24 +162,18 @@ class Trainer:
 
             loss.backward()
 
-            if ((step + 1) % config.gradient_accumulation_steps == 0) or (
-                step + 1 == len(self.train_dataloader)
-            ):
+            if ((step + 1) % config.gradient_accumulation_steps == 0) or (step + 1 == len(self.train_dataloader)):
                 self.optimizer.step()
                 self.optimizer.zero_grad()
 
             total_loss_epoch += loss.item()
 
             if config.do_metrics_in_training and self.metrics_computer is not None:
-                prepared_batch = self.metrics_computer.prepare_batch(
-                    model_output, input_batch
-                )
+                prepared_batch = self.metrics_computer.prepare_batch(model_output, input_batch)
                 for key, values in prepared_batch.items():
                     data_for_metrics[key].extend(values)
 
-            self.callback.on_step_end(
-                step, nb_batches=len(self.train_dataloader), phase="train"
-            )
+            self.callback.on_step_end(step, nb_batches=len(self.train_dataloader), phase="train")
 
         total_loss_epoch /= len(self.train_dataloader)
         metrics["loss"] = total_loss_epoch
@@ -206,23 +195,17 @@ class Trainer:
 
         with torch.no_grad():
             for step, input_batch in enumerate(eval_dataloader):
-                self.callback.on_step_begin(
-                    step, nb_batches=len(eval_dataloader), phase="eval"
-                )
+                self.callback.on_step_begin(step, nb_batches=len(eval_dataloader), phase="eval")
 
                 model_output, loss = self.make_forward_pass(input_batch, eval_mode=True)
                 total_loss_epoch += loss.item()
 
                 if self.metrics_computer is not None:
-                    prepared_batch = self.metrics_computer.prepare_batch(
-                        model_output, input_batch
-                    )
+                    prepared_batch = self.metrics_computer.prepare_batch(model_output, input_batch)
                     for key, values in prepared_batch.items():
                         data_for_metrics[key].extend(values)
 
-                self.callback.on_step_end(
-                    step, nb_batches=len(eval_dataloader), phase="eval"
-                )
+                self.callback.on_step_end(step, nb_batches=len(eval_dataloader), phase="eval")
 
         total_loss_epoch /= len(self.eval_dataloader)
         metrics["loss"] = total_loss_epoch
@@ -231,14 +214,10 @@ class Trainer:
             metrics.update(self.metrics_computer.compute(dict(data_for_metrics)))
         return metrics
 
-    def make_forward_pass(
-        self, inputs: BatchData, eval_mode: bool
-    ) -> Tuple[BatchData, torch.Tensor]:
+    def make_forward_pass(self, inputs: BatchData, eval_mode: bool) -> Tuple[BatchData, torch.Tensor]:
         """Run forward safely, same device as the component"""
         inputs = inputs.to_device(self.device)
-        model_output, loss = self.component.forward(
-            inputs, return_loss=True, eval_mode=eval_mode
-        )
+        model_output, loss = self.component.forward(inputs, return_loss=True, eval_mode=eval_mode)
 
         if loss is None:
             raise ValueError("The component did not return a 'loss' from the input.")
@@ -294,8 +273,7 @@ class Trainer:
 
             # save checkpoint every N epochs if N != 0, or at last epoch
             if epoch != self.nb_training_epochs and (
-                self.config.checkpoint_period == 0
-                or epoch % self.config.checkpoint_period != 0
+                self.config.checkpoint_period == 0 or epoch % self.config.checkpoint_period != 0
             ):
                 continue
 
@@ -305,18 +283,12 @@ class Trainer:
             # checkpoint is the new best
             last_checkpoint_metric = metrics["eval"].get(self.config.checkpoint_metric)
             if last_checkpoint_metric is None:
-                raise ValueError(
-                    f"Checkpoint metric '{self.config.checkpoint_metric}' not found"
-                )
+                raise ValueError(f"Checkpoint metric '{self.config.checkpoint_metric}' not found")
             if best_checkpoint_dir is None:
                 best_checkpoint_dir = last_checkpoint_dir
                 best_checkpoint_metric = last_checkpoint_metric
-            elif (
-                self.config.minimize_checkpoint_metric
-                and last_checkpoint_metric < best_checkpoint_metric
-            ) or (
-                not self.config.minimize_checkpoint_metric
-                and last_checkpoint_metric > best_checkpoint_metric
+            elif (self.config.minimize_checkpoint_metric and last_checkpoint_metric < best_checkpoint_metric) or (
+                not self.config.minimize_checkpoint_metric and last_checkpoint_metric > best_checkpoint_metric
             ):
                 shutil.rmtree(best_checkpoint_dir)
                 best_checkpoint_dir = last_checkpoint_dir
@@ -361,9 +333,7 @@ class Trainer:
                 sort_keys=False,
             )
 
-        torch.save(
-            self.optimizer.state_dict(), os.path.join(checkpoint_dir, OPTIMIZER_NAME)
-        )
+        torch.save(self.optimizer.state_dict(), os.path.join(checkpoint_dir, OPTIMIZER_NAME))
 
         if self.lr_scheduler is not None:
             torch.save(

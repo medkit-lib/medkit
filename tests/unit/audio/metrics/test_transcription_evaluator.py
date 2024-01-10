@@ -169,9 +169,7 @@ _TEST_DATA = {
 }
 
 
-@pytest.mark.parametrize(
-    "speech_data,params,expected_result", _TEST_DATA.values(), ids=_TEST_DATA.keys()
-)
+@pytest.mark.parametrize("speech_data,params,expected_result", _TEST_DATA.values(), ids=_TEST_DATA.keys())
 def test_transcription_evaluator(speech_data, params, expected_result):
     pred_segs = [
         Segment(
@@ -184,8 +182,6 @@ def test_transcription_evaluator(speech_data, params, expected_result):
     ]
 
     doc = _get_doc()
-    evaluator = TranscriptionEvaluator(
-        speech_label="speech", transcription_label="transcription", **params
-    )
+    evaluator = TranscriptionEvaluator(speech_label="speech", transcription_label="transcription", **params)
     result = evaluator.compute([doc], [pred_segs])
     assert result == expected_result

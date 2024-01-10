@@ -139,9 +139,7 @@ def test_both():
 def test_char_fingerprint():
     """Use char fingerprint type"""
 
-    detector = DuplicateFinder(
-        output_label="duplicate", fingerprint_type="char", min_duplicate_length=10
-    )
+    detector = DuplicateFinder(output_label="duplicate", fingerprint_type="char", min_duplicate_length=10)
     docs = _get_docs()
     collection = Collection(text_docs=docs)
     detector.run([collection])
@@ -242,7 +240,5 @@ def test_dict():
     detector = DuplicateFinder(output_label="deduplicated", segments_to_output="both")
     detector.run([collection])
 
-    seg_attr = (
-        docs[1].anns.get(label="deduplicated")[0].attrs.get(label="is_duplicate")[0]
-    )
+    seg_attr = docs[1].anns.get(label="deduplicated")[0].attrs.get(label="is_duplicate")[0]
     assert seg_attr == DuplicationAttribute.from_dict(seg_attr.to_dict())

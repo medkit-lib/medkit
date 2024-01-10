@@ -89,9 +89,7 @@ class HFEntityMatcherTrainable:
         self._model.to(self.device)
 
         # init data collator in charge of padding
-        self._data_collator = transformers.DataCollatorForTokenClassification(
-            tokenizer=self._tokenizer
-        )
+        self._data_collator = transformers.DataCollatorForTokenClassification(tokenizer=self._tokenizer)
 
     def configure_optimizer(self, lr: float) -> torch.optim.Optimizer:
         # todo: group_params optimizer_parameters = [{}]
@@ -194,14 +192,10 @@ class HFEntityMatcherTrainable:
         self._tokenizer = tokenizer
         self._model = model
 
-    def _get_valid_model_config(
-        self, labels: List[str], hf_auth_token: Optional[str] = None
-    ):
+    def _get_valid_model_config(self, labels: List[str], hf_auth_token: Optional[str] = None):
         """Return a config file with the correct mapping of labels"""
         # get possible tags from labels list
-        label_to_id = hf_tokenization_utils.convert_labels_to_tags(
-            labels=labels, tagging_scheme=self.tagging_scheme
-        )
+        label_to_id = hf_tokenization_utils.convert_labels_to_tags(labels=labels, tagging_scheme=self.tagging_scheme)
         nb_labels = len(label_to_id)
 
         # load configuration with the correct number of NER labels

@@ -81,23 +81,17 @@ class WebRTCVoiceDetector(SegmentationOperation):
         List[~medkit.core.audio.Segment]:
             Segments detected as containing speech activity.
         """
-        return [
-            voice_seg
-            for seg in segments
-            for voice_seg in self._detect_activity_in_segment(seg)
-        ]
+        return [voice_seg for seg in segments for voice_seg in self._detect_activity_in_segment(seg)]
 
     def _detect_activity_in_segment(self, segment: Segment) -> Iterator[Segment]:
         audio = segment.audio
         if audio.nb_channels > 1:
             raise RuntimeError(
-                f"Segment with identifier {segment.uid} has multi-channel audio, which"
-                " is not supported"
+                f"Segment with identifier {segment.uid} has multi-channel audio, which" " is not supported"
             )
         if audio.sample_rate not in _SUPPORTED_SAMPLE_RATES:
             raise RuntimeError(
-                f"Segment with identifier {segment.uid} has non-supported sample rate"
-                f" {audio.sample_rate}"
+                f"Segment with identifier {segment.uid} has non-supported sample rate" f" {audio.sample_rate}"
             )
 
         sample_rate = audio.sample_rate
@@ -126,12 +120,8 @@ class WebRTCVoiceDetector(SegmentationOperation):
             start_time = start / sample_rate
             end_time = end / sample_rate
             # build corresponding span
-            voiced_span = Span(
-                segment.span.start + start_time, segment.span.start + end_time
-            )
-            voiced_segment = Segment(
-                label=self.output_label, span=voiced_span, audio=voiced_audio
-            )
+            voiced_span = Span(segment.span.start + start_time, segment.span.start + end_time)
+            voiced_segment = Segment(label=self.output_label, span=voiced_span, audio=voiced_audio)
 
             if self._prov_tracer is not None:
                 self._prov_tracer.add_prov(voiced_segment, self.description, [segment])
@@ -156,9 +146,7 @@ class WebRTCVoiceDetector(SegmentationOperation):
             window_ring_buffer.append((i, frame_is_speech))
 
             if not is_speech:
-                nb_speech_frames = sum(
-                    frame_is_speech for _, frame_is_speech in window_ring_buffer
-                )
+                nb_speech_frames = sum(frame_is_speech for _, frame_is_speech in window_ring_buffer)
                 # if we are NONSPEECH and more than 90% of the frames in
                 # the ring buffer are speech frames, then enter the
                 # SPEECH state
@@ -170,9 +158,7 @@ class WebRTCVoiceDetector(SegmentationOperation):
                     # NONSPEECH state
                     window_ring_buffer.clear()
             else:
-                nb_non_speech_frames = sum(
-                    not frame_is_speech for _, frame_is_speech in window_ring_buffer
-                )
+                nb_non_speech_frames = sum(not frame_is_speech for _, frame_is_speech in window_ring_buffer)
                 # if more than 90% of the frames in the ring buffer are
                 # non-speech, then enter NONSPEECH
                 if nb_non_speech_frames > self.switch_ratio * window_ring_buffer.maxlen:

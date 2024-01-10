@@ -86,11 +86,7 @@ class DocumentSplitter(Operation):
             entities = (
                 doc.anns.get_entities()
                 if self.entity_labels is None
-                else [
-                    ent
-                    for label in self.entity_labels
-                    for ent in doc.anns.get_entities(label=label)
-                ]
+                else [ent for label in self.entity_labels for ent in doc.anns.get_entities(label=label)]
             )
 
             # align segment and entities (fully contained)
@@ -100,11 +96,7 @@ class DocumentSplitter(Operation):
             relations = (
                 doc.anns.get_relations()
                 if self.relation_labels is None
-                else [
-                    rel
-                    for label in self.relation_labels
-                    for rel in doc.anns.get_relations(label=label)
-                ]
+                else [rel for label in self.relation_labels for rel in doc.anns.get_relations(label=label)]
             )
 
             # Iterate over all segments and corresponding nested entities
@@ -114,8 +106,7 @@ class DocumentSplitter(Operation):
                 nested_relations = [
                     relation
                     for relation in relations
-                    if relation.source_id in entities_uid
-                    and relation.target_id in entities_uid
+                    if relation.source_id in entities_uid and relation.target_id in entities_uid
                 ]
                 # create new document from segment
                 segment_doc = self._create_segment_doc(
@@ -162,15 +153,11 @@ class DocumentSplitter(Operation):
         metadata = doc_source.metadata.copy()
         metadata.update(segment.metadata)
 
-        segment_doc = TextDocument(
-            text=doc_source.text[offset:end_span], metadata=metadata
-        )
+        segment_doc = TextDocument(text=doc_source.text[offset:end_span], metadata=metadata)
 
         # handle provenance
         if self._prov_tracer is not None:
-            self._prov_tracer.add_prov(
-                segment_doc, self.description, source_data_items=[segment]
-            )
+            self._prov_tracer.add_prov(segment_doc, self.description, source_data_items=[segment])
 
         # Copy segment attributes
         segment_attrs = self._filter_attrs_from_ann(segment)
@@ -194,13 +181,8 @@ class DocumentSplitter(Operation):
                 if isinstance(span, Span):
                     spans.append(Span(span.start - offset, span.end - offset))
                 else:
-                    replaced_spans = [
-                        Span(sp.start - offset, sp.end - offset)
-                        for sp in span.replaced_spans
-                    ]
-                    spans.append(
-                        ModifiedSpan(length=span.length, replaced_spans=replaced_spans)
-                    )
+                    replaced_spans = [Span(sp.start - offset, sp.end - offset) for sp in span.replaced_spans]
+                    spans.append(ModifiedSpan(length=span.length, replaced_spans=replaced_spans))
             # define the new entity
             relocated_ent = Entity(
                 text=ent.text,
@@ -213,9 +195,7 @@ class DocumentSplitter(Operation):
 
             # handle provenance
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    relocated_ent, self.description, source_data_items=[ent]
-                )
+                self._prov_tracer.add_prov(relocated_ent, self.description, source_data_items=[ent])
 
             # Copy entity attributes
             entity_attrs = self._filter_attrs_from_ann(ent)
@@ -242,9 +222,7 @@ class DocumentSplitter(Operation):
             )
             # handle provenance
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    relation, self.description, source_data_items=[rel]
-                )
+                self._prov_tracer.add_prov(relation, self.description, source_data_items=[rel])
 
             # Copy relation attributes
             relation_attrs = self._filter_attrs_from_ann(rel)
@@ -269,10 +247,6 @@ class DocumentSplitter(Operation):
         attrs = (
             ann.attrs.get()
             if self.attr_labels is None
-            else [
-                attr
-                for label in self.attr_labels
-                for attr in ann.attrs.get(label=label)
-            ]
+            else [attr for label in self.attr_labels for attr in ann.attrs.get(label=label)]
         )
         return attrs

@@ -74,9 +74,7 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
         )
     elif isinstance(value, EDSNLP_RelativeDate):
         direction = (
-            RelativeDateDirection.PAST
-            if value.direction is EDSNLP_Direction.PAST
-            else RelativeDateDirection.FUTURE
+            RelativeDateDirection.PAST if value.direction is EDSNLP_Direction.PAST else RelativeDateDirection.FUTURE
         )
         return RelativeDateAttribute(
             label=spacy_label,
@@ -90,15 +88,10 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
             seconds=value.second,
         )
     else:
-        raise ValueError(
-            f"Unexpected value type: {type(value)} for spaCy attribute with label"
-            f" '{spacy_label}'"
-        )
+        raise ValueError(f"Unexpected value type: {type(value)} for spaCy attribute with label" f" '{spacy_label}'")
 
 
-def build_duration_attribute(
-    spacy_span: SpacySpan, spacy_label: str
-) -> DurationAttribute:
+def build_duration_attribute(spacy_span: SpacySpan, spacy_label: str) -> DurationAttribute:
     """
     Build a medkit duration attribute from an EDS-NLP attribute with a duration
     object as value.
@@ -130,9 +123,7 @@ def build_duration_attribute(
     )
 
 
-def build_adicap_attribute(
-    spacy_span: SpacySpan, spacy_label: str
-) -> ADICAPNormAttribute:
+def build_adicap_attribute(spacy_span: SpacySpan, spacy_label: str) -> ADICAPNormAttribute:
     """
     Build a medkit ADICAP normalization attribute from an EDS-NLP attribute with
     an ADICAP object as value.
@@ -216,9 +207,7 @@ def build_measurement_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attr
     """
     value = spacy_span._.get(spacy_label)
     assert isinstance(value, EDSNLP_SimpleMeasurement)
-    return Attribute(
-        label=spacy_label, value=value.value, metadata={"unit": value.unit}
-    )
+    return Attribute(label=spacy_label, value=value.value, metadata={"unit": value.unit})
 
 
 DEFAULT_ATTRIBUTE_FACTORIES = {
@@ -291,9 +280,7 @@ class EDSNLPPipeline(SpacyPipeline):
         spacy_entities: Optional[List[str]] = None,
         spacy_span_groups: Optional[List[str]] = None,
         spacy_attrs: Optional[List[str]] = None,
-        medkit_attribute_factories: Optional[
-            Dict[str, Callable[[SpacySpan, str], Attribute]]
-        ] = None,
+        medkit_attribute_factories: Optional[Dict[str, Callable[[SpacySpan, str], Attribute]]] = None,
         name: Optional[str] = None,
         uid: Optional[str] = None,
     ):
@@ -335,11 +322,7 @@ class EDSNLPPipeline(SpacyPipeline):
 
         if spacy_attrs is None:
             # default to all span attributes except blacklisted ones
-            spacy_attrs = [
-                attr
-                for attr in Underscore.span_extensions
-                if attr not in _ATTR_LABELS_TO_IGNORE
-            ]
+            spacy_attrs = [attr for attr in Underscore.span_extensions if attr not in _ATTR_LABELS_TO_IGNORE]
 
         super().__init__(
             nlp=nlp,
@@ -365,9 +348,7 @@ class EDSNLPDocPipeline(SpacyDocPipeline):
         spacy_entities: Optional[List[str]] = None,
         spacy_span_groups: Optional[List[str]] = None,
         spacy_attrs: Optional[List[str]] = None,
-        medkit_attribute_factories: Optional[
-            Dict[str, Callable[[SpacySpan, str], Attribute]]
-        ] = None,
+        medkit_attribute_factories: Optional[Dict[str, Callable[[SpacySpan, str], Attribute]]] = None,
         name: Optional[str] = None,
         uid: Optional[str] = None,
     ):
@@ -419,11 +400,7 @@ class EDSNLPDocPipeline(SpacyDocPipeline):
 
         if spacy_attrs is None:
             # default to all span attributes except blacklisted ones
-            spacy_attrs = [
-                attr
-                for attr in Underscore.span_extensions
-                if attr not in _ATTR_LABELS_TO_IGNORE
-            ]
+            spacy_attrs = [attr for attr in Underscore.span_extensions if attr not in _ATTR_LABELS_TO_IGNORE]
 
         super().__init__(
             nlp=nlp,

@@ -53,9 +53,7 @@ class DefaultPrinterCallback(TrainerCallback):
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.INFO)
 
-        formatter = logging.Formatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-        )
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         console_handler.setFormatter(formatter)
 
         # ensure a single handler for the logger
@@ -81,10 +79,7 @@ class DefaultPrinterCallback(TrainerCallback):
         if train_metrics is not None:
             message += (
                 "Training metrics:\n "
-                + "\n ".join(
-                    f"{metric_key}:{value:8.3f}"
-                    for metric_key, value in train_metrics.items()
-                )
+                + "\n ".join(f"{metric_key}:{value:8.3f}" for metric_key, value in train_metrics.items())
                 + "\n"
             )
 
@@ -92,10 +87,7 @@ class DefaultPrinterCallback(TrainerCallback):
         if eval_metrics is not None:
             message += (
                 "Evaluation metrics:\n "
-                + "\n ".join(
-                    f"{metric_key}:{value:8.3f}"
-                    for metric_key, value in eval_metrics.items()
-                )
+                + "\n ".join(f"{metric_key}:{value:8.3f}" for metric_key, value in eval_metrics.items())
                 + "\n"
             )
         self.logger.info(message)

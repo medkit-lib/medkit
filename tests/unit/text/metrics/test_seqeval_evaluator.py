@@ -65,9 +65,7 @@ TEST_DATA = [
             "macro_precision": 0.0,
             "macro_recall": 0.0,
             "macro_f1-score": 0.0,
-            "accuracy": (
-                0.38
-            ),  # there is 14 'O' in GT, 4 were tagged with 'misc' so, 10/26
+            "accuracy": (0.38),  # there is 14 'O' in GT, 4 were tagged with 'misc' so, 10/26
             "support": 2,
         },
     ),
@@ -86,12 +84,8 @@ TEST_DATA = [
 def test_evaluator_bio(document, predicted_entities, expected_metrics):
     # define an evaluator with IOB2 scheme, no entities metrics
     tagging_scheme = "iob2"
-    evaluator = SeqEvalEvaluator(
-        tokenizer=None, tagging_scheme=tagging_scheme, return_metrics_by_label=False
-    )
-    metrics = evaluator.compute(
-        documents=[document], predicted_entities=[predicted_entities]
-    )
+    evaluator = SeqEvalEvaluator(tokenizer=None, tagging_scheme=tagging_scheme, return_metrics_by_label=False)
+    metrics = evaluator.compute(documents=[document], predicted_entities=[predicted_entities])
     assert len(metrics.keys()) == len(expected_metrics.keys())
     for metric_key, value in expected_metrics.items():
         assert metric_key in metrics
@@ -102,19 +96,13 @@ def test_evaluator_bio(document, predicted_entities, expected_metrics):
     "tagging_scheme,expected_accuracy",
     [("iob2", 0.80), ("bilou", 0.76)],
 )
-def test_evaluator_with_entities_all_schemes(
-    document, tagging_scheme, expected_accuracy
-):
+def test_evaluator_with_entities_all_schemes(document, tagging_scheme, expected_accuracy):
     # only accuracy changes with the scheme
     # testing with two entities, one incorrect
     predicted_entities = _PREDICTED_ENTS_BY_CASE["one_missing"]
 
-    evaluator = SeqEvalEvaluator(
-        tokenizer=None, tagging_scheme=tagging_scheme, return_metrics_by_label=True
-    )
-    metrics = evaluator.compute(
-        documents=[document], predicted_entities=[predicted_entities]
-    )
+    evaluator = SeqEvalEvaluator(tokenizer=None, tagging_scheme=tagging_scheme, return_metrics_by_label=True)
+    metrics = evaluator.compute(documents=[document], predicted_entities=[predicted_entities])
     expected_metrics = {
         "macro_precision": 0.5,
         "macro_recall": 0.5,
@@ -149,9 +137,7 @@ def test_evaluator_with_bert_tokenizer(document, tagging_scheme, expected_accura
         tagging_scheme=tagging_scheme,
         return_metrics_by_label=True,
     )
-    metrics = evaluator.compute(
-        documents=[document], predicted_entities=[predicted_entities]
-    )
+    metrics = evaluator.compute(documents=[document], predicted_entities=[predicted_entities])
     expected_metrics = {
         "macro_precision": 0.5,
         "macro_recall": 0.5,
@@ -192,9 +178,7 @@ def test_modified_spans():
     )
     evaluator = SeqEvalEvaluator(return_metrics_by_label=False)
     # should not crash
-    metrics = evaluator.compute(
-        documents=[doc], predicted_entities=[[predicted_entity]]
-    )
+    metrics = evaluator.compute(documents=[doc], predicted_entities=[[predicted_entity]])
     assert metrics == {
         "macro_precision": 0.0,
         "macro_recall": 0.0,
@@ -224,9 +208,7 @@ def test_labels_remapping(document):
         labels_remapping={"CORP": "corporation", "LANG": "language"},
         return_metrics_by_label=False,
     )
-    metrics = evaluator.compute(
-        documents=[document], predicted_entities=[predicted_entities]
-    )
+    metrics = evaluator.compute(documents=[document], predicted_entities=[predicted_entities])
     assert metrics == expected_metrics
 
     # remap all entities (predicted and reference) to unique label
@@ -239,7 +221,5 @@ def test_labels_remapping(document):
         },
         return_metrics_by_label=False,
     )
-    metrics = evaluator.compute(
-        documents=[document], predicted_entities=[predicted_entities]
-    )
+    metrics = evaluator.compute(documents=[document], predicted_entities=[predicted_entities])
     assert metrics == expected_metrics

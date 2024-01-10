@@ -25,20 +25,14 @@ def _get_doc():
     medkit_doc = TextDocument(text=TEXT)
 
     # entities
-    ent_1 = Entity(
-        label="medication", spans=[Span(36, 46)], text="Lisinopril", attrs=[]
-    )
+    ent_1 = Entity(label="medication", spans=[Span(36, 46)], text="Lisinopril", attrs=[])
     medkit_doc.anns.add(ent_1)
 
     ent_2_attr = Attribute(label="severity", value="high")
-    ent_2 = Entity(
-        label="disease", spans=[Span(84, 96)], text="hypertension", attrs=[ent_2_attr]
-    )
+    ent_2 = Entity(label="disease", spans=[Span(84, 96)], text="hypertension", attrs=[ent_2_attr])
     medkit_doc.anns.add(ent_2)
 
-    ent_3 = Entity(
-        label="medication", spans=[Span(120, 133)], text="Levothyroxine", attrs=[]
-    )
+    ent_3 = Entity(label="medication", spans=[Span(120, 133)], text="Levothyroxine", attrs=[])
     medkit_doc.anns.add(ent_3)
 
     # segments
@@ -52,9 +46,7 @@ def _get_doc():
     medkit_doc.anns.add(seg_1)
 
     seg_2_attr = Attribute(label="family", value=False)
-    seg_2 = Segment(
-        label="PEOPLE", spans=[Span(98, 109)], text="The patient", attrs=[seg_2_attr]
-    )
+    seg_2 = Segment(label="PEOPLE", spans=[Span(98, 109)], text="The patient", attrs=[seg_2_attr])
     medkit_doc.anns.add(seg_2)
     return medkit_doc
 
@@ -71,9 +63,7 @@ TEST_ENTS_TO_SPACY = [
     TEST_ENTS_TO_SPACY,
     ids=["all_ents", "no_annotations", "entity_by_label"],
 )
-def test_output_converter_entity_transfer(
-    nlp_spacy, labels_ents_to_transfer, expected_nb_ents, expected_label_ents
-):
+def test_output_converter_entity_transfer(nlp_spacy, labels_ents_to_transfer, expected_nb_ents, expected_label_ents):
     # get medkit document to test
     medkit_doc = _get_doc()
 
@@ -138,9 +128,7 @@ def test_output_converter_attr_transfer(
     else:
         assert ent_desease._.get("severity") is None
 
-    span_people = _span_spacy_by_text(
-        spacy_doc.spans["PEOPLE"], "The patient's father"
-    )[0]
+    span_people = _span_spacy_by_text(spacy_doc.spans["PEOPLE"], "The patient's father")[0]
     if should_have_family_attr:
         assert span_people._.get("family") is not None
         # medkit_id is not transferred

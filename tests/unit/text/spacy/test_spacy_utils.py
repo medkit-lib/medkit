@@ -29,16 +29,10 @@ def _get_doc():
     medkit_doc = TextDocument(text=TEXT)
 
     # entities
-    ent_1 = Entity(
-        label="medication", spans=[Span(36, 46)], text="Lisinopril", attrs=[]
-    )
+    ent_1 = Entity(label="medication", spans=[Span(36, 46)], text="Lisinopril", attrs=[])
     ent_2_attr = Attribute(label="severity", value="high")
-    ent_2 = Entity(
-        label="disease", spans=[Span(84, 96)], text="hypertension", attrs=[ent_2_attr]
-    )
-    ent_3 = Entity(
-        label="medication", spans=[Span(120, 133)], text="Levothyroxine", attrs=[]
-    )
+    ent_2 = Entity(label="disease", spans=[Span(84, 96)], text="hypertension", attrs=[ent_2_attr])
+    ent_3 = Entity(label="medication", spans=[Span(120, 133)], text="Levothyroxine", attrs=[])
 
     # segments
     seg_1_attr = Attribute(label="family", value=True)
@@ -50,9 +44,7 @@ def _get_doc():
     )
 
     seg_2_attr = Attribute(label="family", value=False)
-    seg_2 = Segment(
-        label="PEOPLE", spans=[Span(98, 109)], text="The patient", attrs=[seg_2_attr]
-    )
+    seg_2 = Segment(label="PEOPLE", spans=[Span(98, 109)], text="The patient", attrs=[seg_2_attr])
 
     for ann in [ent_1, ent_2, ent_3, seg_1, seg_2]:
         medkit_doc.anns.add(ann)
@@ -115,9 +107,7 @@ def test_medkit_to_spacy_doc_selected_ents_list(nlp_spacy, caplog):
 
     ents = medkit_doc.anns.get_entities()
     # guarantee the same order to compare
-    doc_ents = sorted(
-        spacy_doc.ents, key=lambda ent_spacy: ent_spacy._.get("medkit_id")
-    )
+    doc_ents = sorted(spacy_doc.ents, key=lambda ent_spacy: ent_spacy._.get("medkit_id"))
     ents = sorted(ents, key=lambda sp: sp.uid)
 
     # each entity created has the same uid and label as its entity of origin
@@ -213,14 +203,10 @@ def test_normalization_attr(nlp_spacy):
     text = "Le patient souffre d'asthme"
     doc = TextDocument(text=text)
     entity = Entity(label="maladie", text="asthme", spans=[Span(21, 27)])
-    entity.attrs.add(
-        EntityNormAttribute(kb_name="umls", kb_id="C0004096", kb_version="2021AB")
-    )
+    entity.attrs.add(EntityNormAttribute(kb_name="umls", kb_id="C0004096", kb_version="2021AB"))
     doc.anns.add(entity)
 
-    spacy_doc = spacy_utils.build_spacy_doc_from_medkit_doc(
-        nlp=nlp_spacy, medkit_doc=doc
-    )
+    spacy_doc = spacy_utils.build_spacy_doc_from_medkit_doc(nlp=nlp_spacy, medkit_doc=doc)
     assert spacy_doc.ents[0]._.get("NORMALIZATION") == "umls:C0004096"
 
 
@@ -245,9 +231,7 @@ class _DateAttribute(Attribute):
 
 def _build_date_attr(spacy_span: SpacySpan, spacy_label: str):
     value = spacy_span._.get(spacy_label)
-    return _DateAttribute(
-        label=spacy_label, year=value.year, month=value.month, day=value.day
-    )
+    return _DateAttribute(label=spacy_label, year=value.year, month=value.month, day=value.day)
 
 
 def test_spacy_to_medkit_with_custom_attr_value(nlp_spacy):

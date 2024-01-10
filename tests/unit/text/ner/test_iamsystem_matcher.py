@@ -82,9 +82,7 @@ def test_matcher_userkw_multiple_ent_label():
     ent_label (if set)."""
     matcher = Matcher.build(
         keywords=[
-            UserKeyword(
-                label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label="first one"
-            ),
+            UserKeyword(label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label="first one"),
             UserKeyword(
                 label="calcium",
                 kb_id="LOINC-2",
@@ -102,12 +100,8 @@ def test_matcher_userkw_multiple_ent_label_first_none():
     ent_label that is not None."""
     matcher = Matcher.build(
         keywords=[
-            UserKeyword(
-                label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label=None
-            ),
-            UserKeyword(
-                label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label="first one"
-            ),
+            UserKeyword(label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label=None),
+            UserKeyword(label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label="first one"),
             UserKeyword(
                 label="calcium",
                 kb_id="LOINC-2",
@@ -122,13 +116,7 @@ def test_matcher_userkw_multiple_ent_label_first_none():
 
 def test_matcher_userkw_ent_label_none():
     """When ent_label is None, it should return the keyword's label."""
-    matcher = Matcher.build(
-        keywords=[
-            UserKeyword(
-                label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label=None
-            )
-        ]
-    )
+    matcher = Matcher.build(keywords=[UserKeyword(label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label=None)])
     entity = _get_first_entity(matcher)
     assert entity.label == "calcium"
 
@@ -141,12 +129,8 @@ def test_matcher_userkw_len_norm_attr():
         keywords=[
             "calcium",
             Term(label="calcium", kb_id="LOINC-1"),
-            UserKeyword(
-                label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label=None
-            ),
-            UserKeyword(
-                label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label=None
-            ),
+            UserKeyword(label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label=None),
+            UserKeyword(label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label=None),
         ]
     )
     entity = _get_first_entity(matcher)
@@ -159,12 +143,8 @@ def test_matcher_kb_name_kb_id():
 
     matcher = Matcher.build(
         keywords=[
-            UserKeyword(
-                label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label=None
-            ),
-            MedkitKeyword(
-                label="calcium", kb_id=None, kb_name="WIKIPEDIA", ent_label=None
-            ),
+            UserKeyword(label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label=None),
+            MedkitKeyword(label="calcium", kb_id=None, kb_name="WIKIPEDIA", ent_label=None),
             Keyword(label="calcium"),
         ]
     )
@@ -191,9 +171,7 @@ def test_matcher_custom_label_provider():
 
     matcher = Matcher.build(
         keywords=[
-            MedkitKeyword(
-                label="calcium", kb_id=None, kb_name="WIKIPEDIA", ent_label="compound"
-            ),
+            MedkitKeyword(label="calcium", kb_id=None, kb_name="WIKIPEDIA", ent_label="compound"),
             MedkitKeyword(
                 label="calcium",
                 kb_id=None,
@@ -203,9 +181,7 @@ def test_matcher_custom_label_provider():
         ],
     )
     text = "calcium blood level"
-    medkit_matcher = IAMSystemMatcher(
-        matcher=matcher, label_provider=provide_umls_label
-    )
+    medkit_matcher = IAMSystemMatcher(matcher=matcher, label_provider=provide_umls_label)
     segment = Segment(label="raw_text", text=text, spans=[Span(0, len(text))])
     entity = medkit_matcher.run([segment])[0]
     assert entity.label == "biological measurement"

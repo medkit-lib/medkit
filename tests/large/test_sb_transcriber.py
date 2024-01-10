@@ -25,9 +25,7 @@ def test_basic():
     span = Span(0.0, _AUDIO.duration)
     seg = Segment(label="turn", audio=_AUDIO, span=span)
 
-    transcriber = SBTranscriber(
-        model=_MODEL, output_label="transcribed_text", needs_decoder=True
-    )
+    transcriber = SBTranscriber(model=_MODEL, output_label="transcribed_text", needs_decoder=True)
     transcriber.run([seg])
 
     attrs = seg.attrs.get(label="transcribed_text")

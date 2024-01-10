@@ -25,10 +25,7 @@ from medkit.io.brat import BratOutputConverter
 
 
 def _get_medkit_doc():
-    text = (
-        "Le patient présente une douleur abdominale de grade 4, la douleur abdominale"
-        " est sévère."
-    )
+    text = "Le patient présente une douleur abdominale de grade 4, la douleur abdominale" " est sévère."
     doc = TextDocument(uid="doc_brat", text=text)
     medkit_anns = [
         Entity(
@@ -148,9 +145,7 @@ A1\tfrom_umls R1
         "list_anns_list_attrs_no_segment",
     ],
 )
-def test_save(
-    tmp_path: Path, ann_labels, attrs, ignore_segments, create_config, expected_ann
-):
+def test_save(tmp_path: Path, ann_labels, attrs, ignore_segments, create_config, expected_ann):
     # create medkit_doc with 4 entities, 1 relation, 1 segment, 2 attrs
     medkit_doc = _get_medkit_doc()
     output_path = tmp_path / "output"
@@ -234,17 +229,11 @@ def test_annotation_conf_file():
 def test__convert_segment_to_brat():
     original_text = "segment_text"
     brat_converter = BratOutputConverter()
-    segment_medkit = Segment(
-        label="label_segment", spans=[Span(0, 12)], text=original_text
-    )
+    segment_medkit = Segment(label="label_segment", spans=[Span(0, 12)], text=original_text)
     with pytest.raises(AssertionError):
-        brat_converter._convert_segment_to_brat(
-            segment=segment_medkit, nb_segment=0, raw_text=original_text
-        )
+        brat_converter._convert_segment_to_brat(segment=segment_medkit, nb_segment=0, raw_text=original_text)
 
-    brat_entity = brat_converter._convert_segment_to_brat(
-        segment=segment_medkit, nb_segment=1, raw_text=original_text
-    )
+    brat_entity = brat_converter._convert_segment_to_brat(segment=segment_medkit, nb_segment=1, raw_text=original_text)
     assert isinstance(brat_entity, BratEntity)
     assert brat_entity.uid == "T1"
     assert brat_entity.type == "label_segment"
@@ -308,12 +297,8 @@ def test__convert_relation():
 
     # create entities brat and save them in a dict
     entities_by_medkit_id = dict()
-    entities_by_medkit_id[ent_1.uid] = brat_converter._convert_segment_to_brat(
-        ent_1, nb_segment=1, raw_text=ent_1.text
-    )
-    entities_by_medkit_id[ent_2.uid] = brat_converter._convert_segment_to_brat(
-        ent_2, nb_segment=2, raw_text=ent_2.text
-    )
+    entities_by_medkit_id[ent_1.uid] = brat_converter._convert_segment_to_brat(ent_1, nb_segment=1, raw_text=ent_1.text)
+    entities_by_medkit_id[ent_2.uid] = brat_converter._convert_segment_to_brat(ent_2, nb_segment=2, raw_text=ent_2.text)
 
     brat_relation, _ = brat_converter._convert_relation_to_brat(
         relation=relation,
@@ -429,9 +414,7 @@ def test_normalization_attr(tmp_path: Path):
     text = "Le patient souffre d'asthme"
     doc = TextDocument(text=text)
     entity = Entity(label="maladie", text="asthme", spans=[Span(21, 27)])
-    entity.attrs.add(
-        EntityNormAttribute(kb_name="umls", kb_id="C0004096", kb_version="2021AB")
-    )
+    entity.attrs.add(EntityNormAttribute(kb_name="umls", kb_id="C0004096", kb_version="2021AB"))
     doc.anns.add(entity)
 
     brat_converter = BratOutputConverter()

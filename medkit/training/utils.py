@@ -45,9 +45,7 @@ class BatchData(dict):
 class MetricsComputer(Protocol):
     "A MetricsComputer is the base protocol to compute metrics in training"
 
-    def prepare_batch(
-        self, model_output: BatchData, input_batch: BatchData
-    ) -> Dict[str, List[Any]]:
+    def prepare_batch(self, model_output: BatchData, input_batch: BatchData) -> Dict[str, List[Any]]:
         """Prepare a batch of data to compute the metrics
 
         Parameters

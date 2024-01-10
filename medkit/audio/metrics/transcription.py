@@ -145,9 +145,7 @@ class TranscriptionEvaluator:
             Computed metrics
         """
 
-        assert len(reference) == len(
-            predicted
-        ), "reference and predicted must have the same length"
+        assert len(reference) == len(predicted), "reference and predicted must have the same length"
 
         sb_wer_metric = ErrorRateStats()
         sb_cer_metric = ErrorRateStats(split_tokens=True)
@@ -195,14 +193,10 @@ class TranscriptionEvaluator:
             transcription_attrs = seg.attrs.get(label=self.transcription_label)
 
             if not transcription_attrs:
-                raise ValueError(
-                    f"Attribute with label '{self.transcription_label}' not found on"
-                    " speech segment"
-                )
+                raise ValueError(f"Attribute with label '{self.transcription_label}' not found on" " speech segment")
             if len(transcription_attrs) > 1:
                 logger.warning(
-                    f"Found several attributes with label '{self.transcription_label}',"
-                    " ignoring all but first"
+                    f"Found several attributes with label '{self.transcription_label}'," " ignoring all but first"
                 )
             transcription = transcription_attrs[0].value
             texts.append(transcription)

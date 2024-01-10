@@ -268,9 +268,7 @@ def preprocess_term_to_match(
     return term
 
 
-_ACRONYM_PATTERN = re.compile(
-    r"^ *(?P<acronym>[^ \(\)]+) *\( *(?P<expanded>[^\(\)]+) *\) *$"
-)
+_ACRONYM_PATTERN = re.compile(r"^ *(?P<acronym>[^ \(\)]+) *\( *(?P<expanded>[^\(\)]+) *\) *$")
 
 
 def preprocess_acronym(term: str) -> Optional[str]:

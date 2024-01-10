@@ -66,9 +66,7 @@ class ProvTracer:
     operations, leading to a tree-like structure of nested provenance tracers.
     """
 
-    def __init__(
-        self, store: Optional[ProvStore] = None, _graph: Optional[ProvGraph] = None
-    ):
+    def __init__(self, store: Optional[ProvStore] = None, _graph: Optional[ProvGraph] = None):
         """
         Parameters
         ----------
@@ -154,9 +152,7 @@ class ProvTracer:
                         " operation_id"
                     )
                 continue
-            self._add_prov_from_sub_tracer_for_data_item(
-                data_item.uid, op_desc.uid, sub_graph
-            )
+            self._add_prov_from_sub_tracer_for_data_item(data_item.uid, op_desc.uid, sub_graph)
 
     def _add_prov_from_sub_tracer_for_data_item(
         self,
@@ -293,18 +289,11 @@ class ProvTracer:
         List[ProvTracer]
             All sub-provenance tracers of this provenance tracer.
         """
-        return [
-            ProvTracer(store=self.store, _graph=sub_graph)
-            for sub_graph in self._graph.get_sub_graphs()
-        ]
+        return [ProvTracer(store=self.store, _graph=sub_graph) for sub_graph in self._graph.get_sub_graphs()]
 
     def _build_prov_from_node(self, node: ProvNode):
         data_item = self.store.get_data_item(node.data_item_id)
-        op_desc = (
-            self.store.get_op_desc(node.operation_id)
-            if node.operation_id is not None
-            else None
-        )
+        op_desc = self.store.get_op_desc(node.operation_id) if node.operation_id is not None else None
         source_data_items = [self.store.get_data_item(uid) for uid in node.source_ids]
         derived_data_items = [self.store.get_data_item(uid) for uid in node.derived_ids]
         return Prov(data_item, op_desc, source_data_items, derived_data_items)

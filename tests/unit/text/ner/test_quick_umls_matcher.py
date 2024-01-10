@@ -2,12 +2,8 @@ from pathlib import Path
 
 import pytest
 
-packaging = pytest.importorskip(
-    modname="packaging", reason="packaging is not installed"
-)
-quickumls = pytest.importorskip(
-    modname="quickumls", reason="quickumls is not installed"
-)
+packaging = pytest.importorskip(modname="packaging", reason="packaging is not installed")
+quickumls = pytest.importorskip(modname="quickumls", reason="quickumls is not installed")
 
 import spacy.cli  # noqa: E402
 
@@ -165,9 +161,7 @@ def test_lowercase():
     assert len(entities) == 0
 
     # with lowercase flag, entity is found
-    umls_matcher_lowercase = QuickUMLSMatcher(
-        language="FRE", version="2021AB", lowercase=True
-    )
+    umls_matcher_lowercase = QuickUMLSMatcher(language="FRE", version="2021AB", lowercase=True)
     entities = umls_matcher_lowercase.run([sentence])
     assert len(entities) == 1
     entity = entities[0]

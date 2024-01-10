@@ -22,9 +22,7 @@ def _mocked_umls_embeddings_chunk_size(module_mocker):
     # force a very small precomputed embeddings chunk size so we can test behavior with
     # several chunks even though we have a very small sample MRCONSO.RRF
     # (cf test_nb_umls_embeddings_chunks())
-    module_mocker.patch(
-        "medkit.text.ner.umls_coder_normalizer._UMLS_EMBEDDINGS_CHUNK_SIZE", 2
-    )
+    module_mocker.patch("medkit.text.ner.umls_coder_normalizer._UMLS_EMBEDDINGS_CHUNK_SIZE", 2)
 
 
 @pytest.fixture(scope="module")
@@ -220,10 +218,7 @@ def test_inconsistent_params(module_tmp_dir):
     # then try to reuse precomputed embedding but with MEAN method
     with pytest.raises(
         Exception,
-        match=(
-            r"Cache directory .* contains UMLS embeddings pre-computed with different"
-            r" params"
-        ),
+        match=(r"Cache directory .* contains UMLS embeddings pre-computed with different" r" params"),
     ):
         _ = UMLSCoderNormalizer(
             umls_mrconso_file=_PATH_TO_MR_CONSO_FILE,

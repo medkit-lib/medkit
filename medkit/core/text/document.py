@@ -77,9 +77,7 @@ class TextDocument(dict_conv.SubclassMapping):
         # auto-generated raw segment to hold the text
         self.raw_segment = self._generate_raw_segment(text, uid)
 
-        self.anns = TextAnnotationContainer(
-            doc_id=self.uid, raw_segment=self.raw_segment
-        )
+        self.anns = TextAnnotationContainer(doc_id=self.uid, raw_segment=self.raw_segment)
         for ann in anns:
             self.anns.add(ann)
 

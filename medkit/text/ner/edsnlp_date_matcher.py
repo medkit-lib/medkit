@@ -52,9 +52,7 @@ class EDSNLPDateMatcher(NEROperation):
             Identifier of the matcher
         """
 
-        super().__init__(
-            output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid
-        )
+        super().__init__(output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid)
 
         if attrs_to_copy is None:
             attrs_to_copy = []
@@ -113,12 +111,8 @@ class EDSNLPDateMatcher(NEROperation):
 
         # handle provenance
         if self._prov_tracer is not None:
-            self._prov_tracer.add_prov(
-                entity, self.description, source_data_items=[segment]
-            )
-            self._prov_tracer.add_prov(
-                attr, self.description, source_data_items=[segment]
-            )
+            self._prov_tracer.add_prov(entity, self.description, source_data_items=[segment])
+            self._prov_tracer.add_prov(attr, self.description, source_data_items=[segment])
 
         # copy attrs from source segment to date entity
         for label in self.attrs_to_copy:

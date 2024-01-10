@@ -48,9 +48,7 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
 
     def add(self, ann: TextAnnotation):
         if ann.label == self.raw_segment.label:
-            raise RuntimeError(
-                f"Cannot add annotation with reserved label {self.raw_segment.label}"
-            )
+            raise RuntimeError(f"Cannot add annotation with reserved label {self.raw_segment.label}")
 
         super().add(ann)
 
@@ -65,9 +63,7 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
                 self._relation_ids_by_source_id[ann.source_id] = []
             self._relation_ids_by_source_id[ann.source_id].append(ann.uid)
 
-    def get(
-        self, *, label: Optional[str] = None, key: Optional[str] = None
-    ) -> List[TextAnnotation]:
+    def get(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[TextAnnotation]:
         # inject raw segment
         if label == self.raw_segment.label and key is None:
             return [self.raw_segment]
@@ -79,9 +75,7 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
             return self.raw_segment
         return super().get_by_id(uid)
 
-    def get_segments(
-        self, *, label: Optional[str] = None, key: Optional[str] = None
-    ) -> List[Segment]:
+    def get_segments(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[Segment]:
         """
         Return a list of the segments of the document (not including entities),
         optionally filtering by label or key.
@@ -102,9 +96,7 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         segments = [self.get_by_id(uid) for uid in uids]
         return typing.cast(List[Segment], segments)
 
-    def get_entities(
-        self, *, label: Optional[str] = None, key: Optional[str] = None
-    ) -> List[Entity]:
+    def get_entities(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[Entity]:
         """
         Return a list of the entities of the document, optionally filtering
         by label or key.

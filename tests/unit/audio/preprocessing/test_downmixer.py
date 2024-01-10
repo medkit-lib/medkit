@@ -13,9 +13,7 @@ _SPAN_OFFSET = 10.0
 def _get_segment(signal):
     duration = signal.shape[1] / _SAMPLE_RATE
     audio = MemoryAudioBuffer(signal=signal, sample_rate=_SAMPLE_RATE)
-    return Segment(
-        label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + duration), audio=audio
-    )
+    return Segment(label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + duration), audio=audio)
 
 
 def _check_downmixed_segment(downmixed_seg, original_seg):
@@ -115,13 +113,9 @@ def test_prevent_clipping():
 
 def test_prov():
     """Generated provenance nodes"""
-    signal_1 = generate_dc_signal(
-        duration=0.25, sample_rate=_SAMPLE_RATE, nb_channels=2
-    )
+    signal_1 = generate_dc_signal(duration=0.25, sample_rate=_SAMPLE_RATE, nb_channels=2)
     seg_1 = _get_segment(signal_1)
-    signal_2 = generate_dc_signal(
-        duration=0.25, sample_rate=_SAMPLE_RATE, nb_channels=2
-    )
+    signal_2 = generate_dc_signal(duration=0.25, sample_rate=_SAMPLE_RATE, nb_channels=2)
     seg_2 = _get_segment(signal_2)
     segs = [seg_1, seg_2]
 

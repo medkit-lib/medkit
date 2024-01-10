@@ -27,9 +27,7 @@ _PUNCT_CHARS = r"\.,;\?\!\:\("
 _LOWERCASE_CHARS = "a-zàâäçéèêëîïôöùûüÿ"
 
 
-def clean_newline_character(
-    text: str, spans: List[AnySpan], keep_endlines: bool = False
-) -> Tuple[str, List[AnySpan]]:
+def clean_newline_character(text: str, spans: List[AnySpan], keep_endlines: bool = False) -> Tuple[str, List[AnySpan]]:
     """Replace the newline character depending on its position in the text.
     The endlines characters that are not suppressed can be either kept as
     endlines, or replaced by spaces. This method combines :func:`replace_multiple_newline_after_sentence`
@@ -64,9 +62,7 @@ def clean_newline_character(
     """
     text, spans = replace_multiple_newline_after_sentence(text, spans)
     text, spans = replace_newline_inside_sentence(text, spans)
-    text, spans = _replace_text(
-        text, spans, pattern="\n+", repl=".\n" if keep_endlines else ". "
-    )
+    text, spans = _replace_text(text, spans, pattern="\n+", repl=".\n" if keep_endlines else ". ")
     return text, spans
 
 
@@ -83,8 +79,8 @@ def clean_parentheses_eds(text: str, spans: List[AnySpan]) -> Tuple[str, List[An
     ... de GAMT et X fragile) sont revenus négatifs.
     ... Le patient a un traitement(debuté le 3/02).
     ... \"\"\"
-    >>> spans = [Span(0,len(text))]
-    >>> text, spans = clean_parentheses_eds(text,spans)
+    >>> spans = [Span(0, len(text))]
+    >>> text, spans = clean_parentheses_eds(text, spans)
     >>> print(text)
     Le test PCR est  negatif , pas de nouvelles.
     L'examen d'aujourd'hui est  positif .
@@ -100,9 +96,7 @@ def clean_parentheses_eds(text: str, spans: List[AnySpan]) -> Tuple[str, List[An
     return text, spans
 
 
-def clean_multiple_whitespaces_in_sentence(
-    text: str, spans: List[AnySpan]
-) -> Tuple[str, List[AnySpan]]:
+def clean_multiple_whitespaces_in_sentence(text: str, spans: List[AnySpan]) -> Tuple[str, List[AnySpan]]:
     """Replace multiple white-spaces between alphanumeric characters and
     lowercase characters with a single whitespace
 
@@ -152,8 +146,8 @@ def replace_point_after_keywords(
     --------
     >>> text = "Le Dr. a un rdv. Mme. Bernand est venue à 14h"
     >>> spans = [Span(0, len(text))]
-    >>> keywords = ["Dr","Mme"]
-    >>> text, spans = replace_point_after_keywords(text, spans, keywords,replace_by="")
+    >>> keywords = ["Dr", "Mme"]
+    >>> text, spans = replace_point_after_keywords(text, spans, keywords, replace_by="")
     >>> print(text)
     Le Dr a un rdv. Mme Bernand est venue à 14h
 
@@ -170,9 +164,7 @@ def replace_point_after_keywords(
     return text, spans
 
 
-def replace_multiple_newline_after_sentence(
-    text: str, spans: List[AnySpan]
-) -> Tuple[str, List[AnySpan]]:
+def replace_multiple_newline_after_sentence(text: str, spans: List[AnySpan]) -> Tuple[str, List[AnySpan]]:
     """Replace multiple space characters between a newline
     character \\\\n and a capital letter or a number with a single newline character.
 
@@ -194,9 +186,7 @@ def replace_multiple_newline_after_sentence(
     return text, spans
 
 
-def replace_newline_inside_sentence(
-    text: str, spans: List[AnySpan]
-) -> Tuple[str, List[AnySpan]]:
+def replace_newline_inside_sentence(text: str, spans: List[AnySpan]) -> Tuple[str, List[AnySpan]]:
     """Replace the newline character \\\\n between lowercase letters
     or punctuation marks with a space
 
@@ -218,17 +208,13 @@ def replace_newline_inside_sentence(
     return text, spans
 
 
-def _replace_big_parentheses(
-    text: str, spans: List[AnySpan]
-) -> Tuple[str, List[AnySpan]]:
+def _replace_big_parentheses(text: str, spans: List[AnySpan]) -> Tuple[str, List[AnySpan]]:
     """Modify the sentence containing large parentheses.
     The new sentence contains the text after the parentheses followed by
     the text that was inside the parentheses.
     """
     # capture multiple spaces to control the output format
-    pattern = re.compile(
-        r"(\s*)\((?P<txt_inside>[^)(]{30,5000})\)(\s*)(?P<txt_after>[^.]*)\."
-    )
+    pattern = re.compile(r"(\s*)\((?P<txt_inside>[^)(]{30,5000})\)(\s*)(?P<txt_after>[^.]*)\.")
 
     while True:
         # iteration over the new text until no matches are found
@@ -244,34 +230,22 @@ def _replace_big_parentheses(
             # insert characters before and after each group
             txt_in, span_in = span_utils.insert(txt_in, span_in, [len(txt_in)], ["."])
             # insert a space by default (eq: ' {text_af} ; ')
-            txt_af, span_af = span_utils.insert(
-                txt_af, span_af, [0, len(txt_af)], [" ", " ; "]
-            )
+            txt_af, span_af = span_utils.insert(txt_af, span_af, [0, len(txt_af)], [" ", " ; "])
             # create the new phrase
-            txt_new, span_new = span_utils.concatenate(
-                [txt_af, txt_in], [span_af, span_in]
-            )
+            txt_new, span_new = span_utils.concatenate([txt_af, txt_in], [span_af, span_in])
         else:
             # there is no text after (), insert ';' before
-            txt_new, span_new = span_utils.insert(
-                txt_in, span_in, [0, len(txt_in)], [" ; ", "."]
-            )
+            txt_new, span_new = span_utils.insert(txt_in, span_in, [0, len(txt_in)], [" ; ", "."])
 
         # add the new phrase into the text. Extract text_before and text_after
         # from this match and concatenate all to update texp_tmp and spans
         txt_before, span_before = span_utils.extract(text, spans, [(0, match.start(0))])
-        txt_after, span_after = span_utils.extract(
-            text, spans, [(match.end(0), len(text))]
-        )
-        text, spans = span_utils.concatenate(
-            [txt_before, txt_new, txt_after], [span_before, span_new, span_after]
-        )
+        txt_after, span_after = span_utils.extract(text, spans, [(match.end(0), len(text))])
+        text, spans = span_utils.concatenate([txt_before, txt_new, txt_after], [span_before, span_new, span_after])
     return text, spans
 
 
-def _replace_small_parentheses(
-    text: str, spans: List[AnySpan]
-) -> Tuple[str, List[AnySpan]]:
+def _replace_small_parentheses(text: str, spans: List[AnySpan]) -> Tuple[str, List[AnySpan]]:
     """Modify the sentence containing small parentheses.
     The new sentence has the text that was inside the parentheses surrounded by `,`
     """
@@ -296,9 +270,7 @@ def _replace_text(
     return span_utils.replace(text, spans, ranges, [repl] * len(ranges))
 
 
-def replace_point_in_uppercase(
-    text: str, spans: List[AnySpan]
-) -> Tuple[str, List[AnySpan]]:
+def replace_point_in_uppercase(text: str, spans: List[AnySpan]) -> Tuple[str, List[AnySpan]]:
     """Replace the character '.' between uppercase characters
     with a space and update its span.
 
@@ -316,9 +288,7 @@ def replace_point_in_uppercase(
     return text, spans
 
 
-def replace_point_in_numbers(
-    text: str, spans: List[AnySpan]
-) -> Tuple[str, List[AnySpan]]:
+def replace_point_in_numbers(text: str, spans: List[AnySpan]) -> Tuple[str, List[AnySpan]]:
     """Replace the character '.' between numbers
     with the character ',' a space and update its span.
 
@@ -335,9 +305,7 @@ def replace_point_in_numbers(
     return text, spans
 
 
-def replace_point_before_keywords(
-    text: str, spans: List[AnySpan], keywords: List[str]
-) -> Tuple[str, List[AnySpan]]:
+def replace_point_before_keywords(text: str, spans: List[AnySpan], keywords: List[str]) -> Tuple[str, List[AnySpan]]:
     """Replace the character '.' before a keyword
     with a space and update its span.
     """

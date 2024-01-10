@@ -193,15 +193,11 @@ def load_annotated_document(
     xml_parser = ElementTree.XMLParser(encoding=encoding)
     root = ElementTree.parse(filepath, parser=xml_parser).getroot()
     # get xml namespaces
-    ns = dict(
-        [node for _, node in ElementTree.iterparse(filepath, events=["start-ns"])]
-    )
+    ns = dict([node for _, node in ElementTree.iterparse(filepath, events=["start-ns"])])
     metadata = root.find("custom:METADATA", ns).attrib
     text = root.find("cas:Sofa", ns).attrib.get("sofaString", "")
     doc = E3CDocument(
-        authors=[
-            {"author": author.strip()} for author in metadata["docAuthor"].split(";")
-        ],
+        authors=[{"author": author.strip()} for author in metadata["docAuthor"].split(";")],
         doi=metadata["docDOI"],
         publication_date=metadata["docTime"],
         id=metadata["docName"],
@@ -217,9 +213,7 @@ def load_annotated_document(
 
     # create medkit text document
     doc_uid = str(generate_deterministic_id(doc.id))
-    medkit_doc = TextDocument(
-        text=doc.text, uid=doc_uid, metadata=doc.extract_metadata()
-    )
+    medkit_doc = TextDocument(text=doc.text, uid=doc_uid, metadata=doc.extract_metadata())
 
     # parse sentences if wanted by user
     if keep_sentences:
@@ -243,9 +237,7 @@ def load_annotated_document(
     for elem in root.findall("custom:CLINENTITY", ns):
         clin_entity = elem.attrib
         span = Span(int(clin_entity["begin"]), int(clin_entity["end"]))
-        entity_uid = clin_entity[
-            "{http://www.omg.org/XMI}id"
-        ]  # retrieve xmi:id from attributes
+        entity_uid = clin_entity["{http://www.omg.org/XMI}id"]  # retrieve xmi:id from attributes
 
         medkit_entity = Entity(
             uid=str(generate_deterministic_id(doc_uid + entity_uid)),
@@ -264,9 +256,7 @@ def load_annotated_document(
                 "xtra": clin_entity.get("xtra"),
             }
             attr_uid = str(generate_deterministic_id("norm" + doc_uid + entity_uid))
-            attr = UMLSNormAttribute(
-                cui=cui, umls_version="", metadata=metadata, uid=str(attr_uid)
-            )
+            attr = UMLSNormAttribute(cui=cui, umls_version="", metadata=metadata, uid=str(attr_uid))
             medkit_entity.attrs.add(attr)
 
         else:
@@ -314,9 +304,7 @@ def load_data_annotation(
             dir_path,
         )
     for filepath in filepaths:
-        yield load_annotated_document(
-            filepath, encoding=encoding, keep_sentences=keep_sentences
-        )
+        yield load_annotated_document(filepath, encoding=encoding, keep_sentences=keep_sentences)
 
 
 def convert_data_annotation_to_medkit(

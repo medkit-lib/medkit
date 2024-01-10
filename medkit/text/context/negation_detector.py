@@ -51,11 +51,8 @@ class NegationDetectorRule:
     unicode_sensitive: bool = False
 
     def __post_init__(self):
-        assert self.unicode_sensitive or (
-            self.regexp.isascii() and all(r.isascii() for r in self.exclusion_regexps)
-        ), (
-            "NegationDetectorRule regexps shouldn't contain non-ASCII chars when"
-            " unicode_sensitive is False"
+        assert self.unicode_sensitive or (self.regexp.isascii() and all(r.isascii() for r in self.exclusion_regexps)), (
+            "NegationDetectorRule regexps shouldn't contain non-ASCII chars when" " unicode_sensitive is False"
         )
 
 
@@ -123,15 +120,12 @@ class NegationDetector(ContextOperation):
         # pre-compile patterns
         self._non_empty_text_pattern = re.compile(r"[a-z]", flags=re.IGNORECASE)
         self._patterns = [
-            re.compile(rule.regexp, flags=0 if rule.case_sensitive else re.IGNORECASE)
-            for rule in self.rules
+            re.compile(rule.regexp, flags=0 if rule.case_sensitive else re.IGNORECASE) for rule in self.rules
         ]
         self._exclusion_patterns = [
             (
                 re.compile(
-                    "|".join(
-                        f"(?:{r})" for r in rule.exclusion_regexps
-                    ),  # join all exclusions in one pattern
+                    "|".join(f"(?:{r})" for r in rule.exclusion_regexps),  # join all exclusions in one pattern
                     flags=0 if rule.case_sensitive else re.IGNORECASE,
                 )
                 if rule.exclusion_regexps
@@ -139,9 +133,7 @@ class NegationDetector(ContextOperation):
             )
             for rule in self.rules
         ]
-        self._has_non_unicode_sensitive_rule = any(
-            not r.unicode_sensitive for r in rules
-        )
+        self._has_non_unicode_sensitive_rule = any(not r.unicode_sensitive for r in rules)
 
     def run(self, segments: List[Segment]):
         """Add a negation attribute to each segment with a boolean value
@@ -173,9 +165,7 @@ class NegationDetector(ContextOperation):
             neg_attr = Attribute(label=self.output_label, value=False)
 
         if self._prov_tracer is not None:
-            self._prov_tracer.add_prov(
-                neg_attr, self.description, source_data_items=[segment]
-            )
+            self._prov_tracer.add_prov(neg_attr, self.description, source_data_items=[segment])
 
         return neg_attr
 
@@ -204,9 +194,7 @@ class NegationDetector(ContextOperation):
         return None
 
     @staticmethod
-    def load_rules(
-        path_to_rules: Path, encoding: Optional[str] = None
-    ) -> List[NegationDetectorRule]:
+    def load_rules(path_to_rules: Path, encoding: Optional[str] = None) -> List[NegationDetectorRule]:
         """
         Load all rules stored in a yml file
 
@@ -237,13 +225,10 @@ class NegationDetector(ContextOperation):
         if any(r.id is not None for r in rules):
             if not all(r.id is not None for r in rules):
                 raise ValueError(
-                    "Some rules have ids and other do not. Please provide either ids"
-                    " for all rules or no ids at all"
+                    "Some rules have ids and other do not. Please provide either ids" " for all rules or no ids at all"
                 )
             if len({r.id for r in rules}) != len(rules):
-                raise ValueError(
-                    "Some rules have the same uid, each rule must have a unique uid"
-                )
+                raise ValueError("Some rules have the same uid, each rule must have a unique uid")
 
     @staticmethod
     def save_rules(

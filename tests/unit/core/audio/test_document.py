@@ -14,9 +14,7 @@ _SAMPLE_RATE = 4000
 
 def test_basic():
     """Basic AudioDocument behavior"""
-    audio = MemoryAudioBuffer(
-        signal=generate_silence(0.5, _SAMPLE_RATE), sample_rate=_SAMPLE_RATE
-    )
+    audio = MemoryAudioBuffer(signal=generate_silence(0.5, _SAMPLE_RATE), sample_rate=_SAMPLE_RATE)
     doc = AudioDocument(audio=audio)
     assert doc.audio == audio
 
@@ -61,9 +59,7 @@ def test_basic():
 
 def test_raw_segment():
     """Handling of raw audio segment"""
-    audio = MemoryAudioBuffer(
-        signal=generate_silence(0.5, _SAMPLE_RATE), sample_rate=_SAMPLE_RATE
-    )
+    audio = MemoryAudioBuffer(signal=generate_silence(0.5, _SAMPLE_RATE), sample_rate=_SAMPLE_RATE)
 
     # raw audio segment automatically created
     doc_with_raw_audio = AudioDocument(audio=audio)
@@ -84,12 +80,8 @@ def test_raw_segment():
 
     # manually adding raw audio segment is forbidden
     doc = AudioDocument(audio=audio)
-    seg = Segment(
-        label=AudioDocument.RAW_LABEL, audio=audio, span=Span(0.0, audio.duration)
-    )
-    with pytest.raises(
-        RuntimeError, match=r"Cannot add annotation with reserved label .*"
-    ):
+    seg = Segment(label=AudioDocument.RAW_LABEL, audio=audio, span=Span(0.0, audio.duration))
+    with pytest.raises(RuntimeError, match=r"Cannot add annotation with reserved label .*"):
         doc.anns.add(seg)
 
 

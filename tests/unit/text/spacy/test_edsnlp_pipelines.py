@@ -181,9 +181,7 @@ def test_custom_attribute_factory():
 
     nlp = spacy.blank("eds")
     nlp.add_pipe("eds.dates")
-    edsnlp_pipeline = EDSNLPPipeline(
-        nlp, medkit_attribute_factories={"date": build_date_attribute}
-    )
+    edsnlp_pipeline = EDSNLPPipeline(nlp, medkit_attribute_factories={"date": build_date_attribute})
 
     seg = _get_segment("Hospitalisé le 25/10/2012")
     anns = edsnlp_pipeline.run([seg])

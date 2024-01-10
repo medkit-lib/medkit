@@ -83,14 +83,11 @@ class ProvGraph:
             # a node already exists for the data item. this is valid only if the
             # node is a "stub" node, otherwise it probably means that add_node()
             # has been called twice with the same data_item_id
-            assert (
-                node.operation_id is None
-            ), f"Node with uid {data_item_id} already added to graph"
+            assert node.operation_id is None, f"Node with uid {data_item_id} already added to graph"
             # check consistency of stub node: operation_id should be None, and
             # source_ids should be empty
             assert len(node.source_ids) == 0, (
-                "Inconsistent values for stub node: operation_id is None but source_ids"
-                " is not empty"
+                "Inconsistent values for stub node: operation_id is None but source_ids" " is not empty"
             )
             # we are now sure that the node is a stub node and that operation_id
             # and source_ids are empty and can be set to the provided values
@@ -147,15 +144,12 @@ class ProvGraph:
     def check_sanity(self):
         for node_id, node in self._nodes_by_id.items():
             if node.source_ids and node.operation_id is None:
-                raise Exception(
-                    f"Node with identifier {node_id} has source ids but no operation"
-                )
+                raise Exception(f"Node with identifier {node_id} has source ids but no operation")
             for source_id in node.source_ids:
                 source_node = self._nodes_by_id.get(source_id)
                 if source_node is None:
                     raise Exception(
-                        f"Source identifier {source_id} in node with identifier"
-                        f" {node_id} has no corresponding node"
+                        f"Source identifier {source_id} in node with identifier" f" {node_id} has no corresponding node"
                     )
                 if node_id not in source_node.derived_ids:
                     raise Exception(
@@ -181,7 +175,5 @@ class ProvGraph:
 
     def to_dict(self) -> Dict[str, Any]:
         nodes = [n.to_dict() for n in self._nodes_by_id.values()]
-        sub_graphs_by_op_id = {
-            uid: s.to_dict() for uid, s in self._sub_graphs_by_op_id.items()
-        }
+        sub_graphs_by_op_id = {uid: s.to_dict() for uid, s in self._sub_graphs_by_op_id.items()}
         return dict(nodes=nodes, sub_graphs_by_op_id=sub_graphs_by_op_id)

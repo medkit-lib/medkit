@@ -129,9 +129,7 @@ class DiarizationEvaluator:
             Computed metrics
         """
 
-        assert len(reference) == len(
-            predicted
-        ), "reference and predicted must have the same length"
+        assert len(reference) == len(predicted), "reference and predicted must have the same length"
 
         # init pyannote metrics object into which results are accumulated
         pa_metric = GreedyDiarizationErrorRate(collar=self.collar)
@@ -142,9 +140,7 @@ class DiarizationEvaluator:
             ref_segs = ref_doc.anns.get(label=self.turn_label)
             # UEM timeline representing annotated timeline
             # (needed to get rid of pyannote warning)
-            uem = PATimeline(
-                segments=[PASegment(start=0.0, end=ref_doc.audio.duration)]
-            )
+            uem = PATimeline(segments=[PASegment(start=0.0, end=ref_doc.audio.duration)])
 
             # convert reference and predicted segment to pyannote annotation objects
             ref_pa_ann = self._get_pa_annotation(ref_segs)
@@ -179,15 +175,9 @@ class DiarizationEvaluator:
             speaker_attrs = seg.attrs.get(label=self.speaker_label)
 
             if not speaker_attrs:
-                raise ValueError(
-                    f"Attribute with label '{self.speaker_label}' not found on"
-                    " turn segment"
-                )
+                raise ValueError(f"Attribute with label '{self.speaker_label}' not found on" " turn segment")
             if len(speaker_attrs) > 1:
-                logger.warning(
-                    f"Found several attributes with label '{self.speaker_label}',"
-                    " ignoring all but first"
-                )
+                logger.warning(f"Found several attributes with label '{self.speaker_label}'," " ignoring all but first")
             speaker = speaker_attrs[0].value
 
             # create pyannote segment object to hold boundaries

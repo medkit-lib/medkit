@@ -29,9 +29,7 @@ class TextClassificationEvaluator:
         """
         self.attr_label = attr_label
 
-    def _extract_attr_values(
-        self, docs: List[TextDocument]
-    ) -> List[Union[str, int, bool]]:
+    def _extract_attr_values(self, docs: List[TextDocument]) -> List[Union[str, int, bool]]:
         """Prepare docs attrs to compute the metric
 
         Parameters
@@ -49,15 +47,9 @@ class TextClassificationEvaluator:
             attrs = doc.attrs.get(label=self.attr_label)
 
             if not attrs:
-                raise ValueError(
-                    f"No attribute with label {self.attr_label} was found in the"
-                    " document"
-                )
+                raise ValueError(f"No attribute with label {self.attr_label} was found in the" " document")
             if len(attrs) > 1:
-                logger.warning(
-                    f"Found several attributes with label '{self.attr_label}', ignoring"
-                    " all but first"
-                )
+                logger.warning(f"Found several attributes with label '{self.attr_label}', ignoring" " all but first")
 
             attr_value = attrs[0].value
             if not isinstance(attr_value, (str, int, bool)):
@@ -112,9 +104,7 @@ class TextClassificationEvaluator:
             zero_division=0,
         )
 
-        scores = {
-            f"{average}_{key}": value for key, value in report[f"{average} avg"].items()
-        }
+        scores = {f"{average}_{key}": value for key, value in report[f"{average} avg"].items()}
         scores["support"] = scores.pop(f"{average}_support")
         scores["accuracy"] = report.pop("accuracy")
 
@@ -162,9 +152,7 @@ class TextClassificationEvaluator:
 
         return scores
 
-    def compute_krippendorff_alpha(
-        self, docs_annotators: List[List[TextDocument]]
-    ) -> Dict[str, Union[float, int]]:
+    def compute_krippendorff_alpha(self, docs_annotators: List[List[TextDocument]]) -> Dict[str, Union[float, int]]:
         """Compute the Krippendorff alpha score, an inter-rated agreement score between
         multiple annotators.
 
@@ -188,10 +176,7 @@ class TextClassificationEvaluator:
             absence of reliability.
         """
         if len(docs_annotators) < 2 or not isinstance(docs_annotators[0], list):
-            raise ValueError(
-                "'docs_annotators' should contain at least two list of TextDocuments to"
-                " compare"
-            )
+            raise ValueError("'docs_annotators' should contain at least two list of TextDocuments to" " compare")
 
         all_annotators_data = []
 

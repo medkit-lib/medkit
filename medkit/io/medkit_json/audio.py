@@ -57,9 +57,7 @@ def load_audio_document(
     return doc
 
 
-def load_audio_documents(
-    input_file: Union[str, Path], encoding: Optional[str] = "utf-8"
-) -> Iterator[AudioDocument]:
+def load_audio_documents(input_file: Union[str, Path], encoding: Optional[str] = "utf-8") -> Iterator[AudioDocument]:
     """
     Load audio documents from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_audio_documents`
@@ -90,9 +88,7 @@ def load_audio_documents(
             yield doc
 
 
-def load_audio_anns(
-    input_file: Union[str, Path], encoding: Optional[str] = "utf-8"
-) -> Iterator[Segment]:
+def load_audio_anns(input_file: Union[str, Path], encoding: Optional[str] = "utf-8") -> Iterator[Segment]:
     """
     Load audio annotations from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_audio_anns`

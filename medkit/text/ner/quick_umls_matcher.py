@@ -222,9 +222,7 @@ class QuickUMLSMatcher(NEROperation):
         self.accepted_semtypes = accepted_semtypes
         self.attrs_to_copy = attrs_to_copy
 
-        path_to_install = self._get_path_to_install(
-            version, language, lowercase, normalize_unicode
-        )
+        path_to_install = self._get_path_to_install(version, language, lowercase, normalize_unicode)
         self._matcher = QuickUMLS(
             quickumls_fp=path_to_install,
             overlapping_criteria=overlapping,
@@ -243,9 +241,7 @@ class QuickUMLSMatcher(NEROperation):
         self.label_mapping = self._get_label_mapping(output_label)
 
     @staticmethod
-    def _get_label_mapping(
-        output_label: Union[None, str, Dict[str, str]]
-    ) -> Dict[str, str]:
+    def _get_label_mapping(output_label: Union[None, str, Dict[str, str]]) -> Dict[str, str]:
         """Return label mapping according to `output_label`"""
         if output_label is None:
             return umls_utils.SEMGROUP_LABELS
@@ -271,11 +267,7 @@ class QuickUMLSMatcher(NEROperation):
         entities: List[Entity]
             Entities found in `segments`, with :class:`~UMLSNormAttribute` attributes.
         """
-        return [
-            entity
-            for segment in segments
-            for entity in self._find_matches_in_segment(segment)
-        ]
+        return [entity for segment in segments for entity in self._find_matches_in_segment(segment)]
 
     def _find_matches_in_segment(self, segment: Segment) -> Iterator[Entity]:
         matches = self._matcher.match(segment.text)
@@ -284,9 +276,7 @@ class QuickUMLSMatcher(NEROperation):
             # TODO should we create a normalization attributes for each CUI instead?
             match = match_candidates[0]
 
-            text, spans = span_utils.extract(
-                segment.text, segment.spans, [(match["start"], match["end"])]
-            )
+            text, spans = span_utils.extract(segment.text, segment.spans, [(match["start"], match["end"])])
             semtypes = list(match["semtypes"])
 
             # define label using the first semtype
@@ -305,9 +295,7 @@ class QuickUMLSMatcher(NEROperation):
                     entity.attrs.add(copied_attr)
                     # handle provenance
                     if self._prov_tracer is not None:
-                        self._prov_tracer.add_prov(
-                            copied_attr, self.description, [attr]
-                        )
+                        self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
             norm_attr = UMLSNormAttribute(
                 cui=match["cui"],
@@ -319,11 +307,7 @@ class QuickUMLSMatcher(NEROperation):
             entity.attrs.add(norm_attr)
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    entity, self.description, source_data_items=[segment]
-                )
-                self._prov_tracer.add_prov(
-                    norm_attr, self.description, source_data_items=[segment]
-                )
+                self._prov_tracer.add_prov(entity, self.description, source_data_items=[segment])
+                self._prov_tracer.add_prov(norm_attr, self.description, source_data_items=[segment])
 
             yield entity

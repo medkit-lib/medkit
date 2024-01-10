@@ -95,9 +95,7 @@ class DocPipeline(DocOperation, Generic[AnnotationType]):
             # retrieve annotations by their label(s) for each input key
             for input_key in self.pipeline.input_keys:
                 labels = self.labels_by_input_key[input_key]
-                input_anns = [
-                    ann for label in labels for ann in doc.anns.get(label=label)
-                ]
+                input_anns = [ann for label in labels for ann in doc.anns.get(label=label)]
                 all_input_anns.append(input_anns)
 
         all_output_anns = self.pipeline.run(*all_input_anns)

@@ -70,9 +70,7 @@ def _get_text_alignments(original_text, translated_segment):
         translated_sub_text = translated_segment.text[start:end]
         if isinstance(span, ModifiedSpan):
             if span.replaced_spans:
-                original_sub_text = " ".join(
-                    original_text[s.start : s.end] for s in span.replaced_spans
-                )
+                original_sub_text = " ".join(original_text[s.start : s.end] for s in span.replaced_spans)
             else:
                 original_sub_text = None
         else:

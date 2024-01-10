@@ -29,6 +29,4 @@ class OperationDescription:
     config: Dict[str, Any] = dataclasses.field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
-        return dict(
-            uid=self.uid, name=self.name, class_name=self.class_name, config=self.config
-        )
+        return dict(uid=self.uid, name=self.name, class_name=self.class_name, config=self.config)

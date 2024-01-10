@@ -1,9 +1,7 @@
 import pytest
 
 # must import pandas first, cf workaround description in metrics/diarization.py
-pytest.importorskip(
-    modname="pandas", reason="pandas (therefore pyannote) is not installed"
-)
+pytest.importorskip(modname="pandas", reason="pandas (therefore pyannote) is not installed")
 pytest.importorskip(modname="pyannote.audio", reason="pyannote.audio is not installed")
 
 from medkit.audio.metrics.diarization import (
@@ -129,9 +127,7 @@ _TEST_DATA = {
 }
 
 
-@pytest.mark.parametrize(
-    "turns_data,params,expected_result", _TEST_DATA.values(), ids=_TEST_DATA.keys()
-)
+@pytest.mark.parametrize("turns_data,params,expected_result", _TEST_DATA.values(), ids=_TEST_DATA.keys())
 def test_diarization_evaluator(turns_data, params, expected_result):
     pred_segs = [
         Segment(
@@ -144,8 +140,6 @@ def test_diarization_evaluator(turns_data, params, expected_result):
     ]
 
     doc = _get_doc()
-    evaluator = DiarizationEvaluator(
-        turn_label="turn", speaker_label="speaker", **params
-    )
+    evaluator = DiarizationEvaluator(turn_label="turn", speaker_label="speaker", **params)
     result = evaluator.compute([doc], [pred_segs])
     assert result == expected_result

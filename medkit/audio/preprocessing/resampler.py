@@ -67,12 +67,8 @@ class Resampler(PreprocessingOperation):
             resampled_audio = audio
         else:
             signal = audio.read()
-            resampled_signal = resampy.resample(
-                signal, audio.sample_rate, self.sample_rate, axis=1
-            )
-            resampled_audio = MemoryAudioBuffer(
-                resampled_signal, sample_rate=self.sample_rate
-            )
+            resampled_signal = resampy.resample(signal, audio.sample_rate, self.sample_rate, axis=1)
+            resampled_audio = MemoryAudioBuffer(resampled_signal, sample_rate=self.sample_rate)
 
         resampled_segment = Segment(
             label=self.output_label,

@@ -206,9 +206,7 @@ def test_relation_conf_file():
     assert relation_conf_args1["treats"] == ["medicament_1", "medicament_2"]
     assert relation_conf_args2["treats"] == ["disease"]
     assert (
-        conf_file._relation_to_str(
-            "treats", relation_conf_args1["treats"], relation_conf_args2["treats"]
-        )
+        conf_file._relation_to_str("treats", relation_conf_args1["treats"], relation_conf_args2["treats"])
         == "treats\tArg1:medicament_1|medicament_2, Arg2:disease"
     )
 
@@ -229,9 +227,7 @@ TEST_CONFIG = [
     TEST_CONFIG,
     ids=["no_values", "max_2_values", "all_values"],
 )
-def test_attribute_entity_conf_file_top_values(
-    top_values_by_attr, expected_values, expected_str
-):
+def test_attribute_entity_conf_file_top_values(top_values_by_attr, expected_values, expected_str):
     # testing limit of values in attr config
     # an attribute may have many values,'top_values_by_attr' allow to
     # limit that number. Only the 'n' most common values will be shown in the config (max)
@@ -257,7 +253,4 @@ def test_attribute_entity_conf_file_top_values(
     entity_attrs = conf_file.attr_entity_values
     assert list(entity_attrs.keys()) == ["severity"]
     assert entity_attrs["severity"] == expected_values
-    assert (
-        conf_file._attribute_to_str("severity", entity_attrs["severity"], True)
-        == expected_str
-    )
+    assert conf_file._attribute_to_str("severity", entity_attrs["severity"], True) == expected_str

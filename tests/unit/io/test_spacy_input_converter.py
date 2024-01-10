@@ -18,9 +18,7 @@ def nlp_spacy():
 
 def _get_doc_spacy(nlp_spacy):
     """Spacy doc with entities and spans"""
-    spacy_doc = nlp_spacy(
-        "Marie Dupont started treatment at the central hospital in 2012"
-    )
+    spacy_doc = nlp_spacy("Marie Dupont started treatment at the central hospital in 2012")
     # add entities in spacy doc
     ents = [spacy_doc.char_span(0, 12, "PERSON"), spacy_doc.char_span(58, 62, "DATE")]
     spacy_doc.ents = list(spacy_doc.ents) + ents
@@ -86,9 +84,7 @@ TEST_ATTR_FROM_SPACY = [
     TEST_ATTR_FROM_SPACY,
     ids=["default", "no_attributes", "attr_by_label"],
 )
-def test_input_converter_attribute_transfer(
-    nlp_spacy, attrs_to_transfer, expected_nb_attrs, expected_values_attr_date
-):
+def test_input_converter_attribute_transfer(nlp_spacy, attrs_to_transfer, expected_nb_attrs, expected_values_attr_date):
     # define spacy extensions to test
     if not SpacySpan.has_extension("nb_tokens_in"):
         SpacySpan.set_extension("nb_tokens_in", default=None)
@@ -234,9 +230,7 @@ def test_input_converter_segments_transfer(
     assert isinstance(medkit_doc, TextDocument)
 
     # each span group was transferred as a segment using its name as label
-    assert {
-        s.label for s in medkit_doc.anns.get_segments()
-    } == expected_labels_in_segments
+    assert {s.label for s in medkit_doc.anns.get_segments()} == expected_labels_in_segments
 
     # all selected spans should be included
     assert len(medkit_doc.anns) == expected_total_annotations

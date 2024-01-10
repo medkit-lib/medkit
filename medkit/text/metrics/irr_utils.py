@@ -6,9 +6,7 @@ from typing import List, Union
 import numpy as np
 
 
-def _get_values_by_unit_matrix(
-    reliability_data: np.ndarray, labels_set: np.ndarray
-) -> np.ndarray:
+def _get_values_by_unit_matrix(reliability_data: np.ndarray, labels_set: np.ndarray) -> np.ndarray:
     """
     Return the label counts given the annotators_data.
 
@@ -136,10 +134,10 @@ def krippendorff_alpha(all_annotators_data: List[List[Union[None, str, int]]]) -
     --------
     Three annotators labelled six items. Some labels are missing.
 
-    >>> annotator_A = ['yes','yes','no','no','yes',None]
-    >>> annotator_B = [None,'yes','no','yes','yes','no']
-    >>> annotator_C = ['yes','no','no','yes','yes',None]
-    >>> krippendorff_alpha([annotator_A,annotator_B,annotator_C])
+    >>> annotator_A = ["yes", "yes", "no", "no", "yes", None]
+    >>> annotator_B = [None, "yes", "no", "yes", "yes", "no"]
+    >>> annotator_C = ["yes", "no", "no", "yes", "yes", None]
+    >>> krippendorff_alpha([annotator_A, annotator_B, annotator_C])
     0.42222222222222217
     """
     assert all(
@@ -147,9 +145,7 @@ def krippendorff_alpha(all_annotators_data: List[List[Union[None, str, int]]]) -
     ), "Number of labels should be the same for all annotators"
 
     all_annotators_data = np.asarray(all_annotators_data)
-    labels_set = np.asarray(
-        list({x for x in all_annotators_data.flatten() if x is not None})
-    )
+    labels_set = np.asarray(list({x for x in all_annotators_data.flatten() if x is not None}))
     assert len(labels_set) > 1, "There must be more than one label in annotators data"
 
     values_count = _get_values_by_unit_matrix(all_annotators_data, labels_set)

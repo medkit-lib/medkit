@@ -28,9 +28,7 @@ class HFEntityMatcher(NEROperation):
     def __init__(
         self,
         model: Union[str, Path],
-        aggregation_strategy: Literal[
-            "none", "simple", "first", "average", "max"
-        ] = "max",
+        aggregation_strategy: Literal["none", "simple", "first", "average", "max"] = "max",
         attrs_to_copy: Optional[List[str]] = None,
         device: int = -1,
         batch_size: int = 1,
@@ -81,9 +79,7 @@ class HFEntityMatcher(NEROperation):
         self.model = model
         self.attrs_to_copy = attrs_to_copy
 
-        valid_model = hf_utils.check_model_for_task_HF(
-            self.model, "token-classification", hf_auth_token=hf_auth_token
-        )
+        valid_model = hf_utils.check_model_for_task_HF(self.model, "token-classification", hf_auth_token=hf_auth_token)
 
         if not valid_model:
             raise ValueError(
@@ -125,13 +121,9 @@ class HFEntityMatcher(NEROperation):
             for entity in self._matches_to_entities(matches, segment)
         ]
 
-    def _matches_to_entities(
-        self, matches: List[Dict], segment: Segment
-    ) -> Iterator[Entity]:
+    def _matches_to_entities(self, matches: List[Dict], segment: Segment) -> Iterator[Entity]:
         for match in matches:
-            text, spans = span_utils.extract(
-                segment.text, segment.spans, [(match["start"], match["end"])]
-            )
+            text, spans = span_utils.extract(segment.text, segment.spans, [(match["start"], match["end"])])
 
             entity = Entity(
                 label=match["entity_group"],
@@ -145,9 +137,7 @@ class HFEntityMatcher(NEROperation):
                     entity.attrs.add(copied_attr)
                     # handle provenance
                     if self._prov_tracer is not None:
-                        self._prov_tracer.add_prov(
-                            copied_attr, self.description, [attr]
-                        )
+                        self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
             score_attr = Attribute(
                 label="score",
@@ -157,12 +147,8 @@ class HFEntityMatcher(NEROperation):
             entity.attrs.add(score_attr)
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    entity, self.description, source_data_items=[segment]
-                )
-                self._prov_tracer.add_prov(
-                    score_attr, self.description, source_data_items=[segment]
-                )
+                self._prov_tracer.add_prov(entity, self.description, source_data_items=[segment])
+                self._prov_tracer.add_prov(score_attr, self.description, source_data_items=[segment])
 
             yield entity
 

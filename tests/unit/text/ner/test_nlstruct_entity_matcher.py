@@ -6,9 +6,7 @@ from medkit.core.text import Segment, Span
 
 pytest.importorskip(modname="nlstruct", reason="nlstruct is not installed")
 pytest.importorskip(modname="torch", reason="torch is not installed")
-pytest.importorskip(
-    modname="huggingface_hub", reason="huggingface-hub is not installed"
-)
+pytest.importorskip(modname="huggingface_hub", reason="huggingface-hub is not installed")
 
 
 from medkit.text.ner.nlstruct_entity_matcher import NLStructEntityMatcher
@@ -95,9 +93,7 @@ def test_attrs_to_copy():
     # uncopied attribute
     sentence.attrs.add(Attribute(label="hypothesis", value=False))
 
-    matcher = NLStructEntityMatcher(
-        model_name_or_dirpath="mock-model", attrs_to_copy=["negation"]
-    )
+    matcher = NLStructEntityMatcher(model_name_or_dirpath="mock-model", attrs_to_copy=["negation"])
     entity = matcher.run([sentence])[0]
 
     assert len(entity.attrs.get(label="confidence")) == 1

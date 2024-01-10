@@ -46,9 +46,7 @@ class Prefixer:
             prefixed_item = TextItem("Hello! " + item.text)
             prefixed_items.append(prefixed_item)
             if self.prov_tracer is not None:
-                self.prov_tracer.add_prov(
-                    prefixed_item, self.description, source_data_items=[item]
-                )
+                self.prov_tracer.add_prov(prefixed_item, self.description, source_data_items=[item])
         return prefixed_items
 
 
@@ -70,12 +68,8 @@ class Splitter:
             split_items.append(right_item)
 
             if self.prov_tracer is not None:
-                self.prov_tracer.add_prov(
-                    left_item, self.description, source_data_items=[item]
-                )
-                self.prov_tracer.add_prov(
-                    right_item, self.description, source_data_items=[item]
-                )
+                self.prov_tracer.add_prov(left_item, self.description, source_data_items=[item])
+                self.prov_tracer.add_prov(right_item, self.description, source_data_items=[item])
         return split_items
 
 
@@ -91,7 +85,5 @@ class Merger:
         text = "".join(s.text for s in items)
         merged_item = TextItem(text)
         if self.prov_tracer is not None:
-            self.prov_tracer.add_prov(
-                merged_item, self.description, source_data_items=items
-            )
+            self.prov_tracer.add_prov(merged_item, self.description, source_data_items=items)
         return merged_item

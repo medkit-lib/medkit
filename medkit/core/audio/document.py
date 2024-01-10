@@ -77,9 +77,7 @@ class AudioDocument(dict_conv.SubclassMapping):
         # auto-generated raw segment to hold the audio buffer
         self.raw_segment = self._generate_raw_segment(audio, uid)
 
-        self.anns = AudioAnnotationContainer(
-            doc_id=self.uid, raw_segment=self.raw_segment
-        )
+        self.anns = AudioAnnotationContainer(doc_id=self.uid, raw_segment=self.raw_segment)
         for ann in anns:
             self.anns.add(ann)
 

@@ -21,9 +21,7 @@ class SpacyDocPipeline(DocOperation):
         spacy_entities: Optional[List[str]] = None,
         spacy_span_groups: Optional[List[str]] = None,
         spacy_attrs: Optional[List[str]] = None,
-        medkit_attribute_factories: Optional[
-            Dict[str, Callable[[SpacySpan, str], Attribute]]
-        ] = None,
+        medkit_attribute_factories: Optional[Dict[str, Callable[[SpacySpan, str], Attribute]]] = None,
         name: Optional[str] = None,
         uid: Optional[str] = None,
     ):
@@ -135,6 +133,4 @@ class SpacyDocPipeline(DocOperation):
                         # generate the attribute, else, it was regenerate using
                         # raw_text_segment
                         source_data_item = raw_segment if ann in anns else ann
-                        self._prov_tracer.add_prov(
-                            attr, self.description, source_data_items=[source_data_item]
-                        )
+                        self._prov_tracer.add_prov(attr, self.description, source_data_items=[source_data_item])

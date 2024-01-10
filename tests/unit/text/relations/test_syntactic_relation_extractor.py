@@ -22,10 +22,7 @@ def setup():
 
 
 def _get_medkit_doc():
-    text = (
-        "Le patient présente une douleur abdominale de grade 4, la douleur abdominale"
-        " est sévère."
-    )
+    text = "Le patient présente une douleur abdominale de grade 4, la douleur abdominale" " est sévère."
     doc = TextDocument(text=text)
     entities = [
         Entity(spans=[Span(24, 42)], label="maladie", text="douleur abdominale"),

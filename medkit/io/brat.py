@@ -130,10 +130,7 @@ class BratInputConverter(InputConverter):
 
             if not text_path.exists():
                 # ignore .ann without .txt
-                logging.warning(
-                    f"Didn't find corresponding .txt for '{ann_path}', ignoring"
-                    " document"
-                )
+                logging.warning(f"Didn't find corresponding .txt for '{ann_path}', ignoring" " document")
                 continue
 
             if not ann_path.exists():
@@ -151,9 +148,7 @@ class BratInputConverter(InputConverter):
 
         return documents
 
-    def load_doc(
-        self, ann_path: Union[str, Path], text_path: Union[str, Path]
-    ) -> TextDocument:
+    def load_doc(self, ann_path: Union[str, Path], text_path: Union[str, Path]) -> TextDocument:
         """
         Create a TextDocument from a .ann file and its associated .txt file
 
@@ -223,15 +218,12 @@ class BratInputConverter(InputConverter):
                 )
             except Exception as err:
                 raise ValueError(
-                    "Impossible to create an entity from"
-                    f" '{ann_file.name}':{brat_entity.uid}."
+                    "Impossible to create an entity from" f" '{ann_file.name}':{brat_entity.uid}."
                 ) from err
 
             anns_by_brat_id[brat_entity.uid] = entity
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    entity, self.description, source_data_items=[]
-                )
+                self._prov_tracer.add_prov(entity, self.description, source_data_items=[])
 
         for brat_relation in brat_doc.relations.values():
             relation = Relation(
@@ -242,9 +234,7 @@ class BratInputConverter(InputConverter):
             )
             anns_by_brat_id[brat_relation.uid] = relation
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    relation, self.description, source_data_items=[]
-                )
+                self._prov_tracer.add_prov(relation, self.description, source_data_items=[])
 
         for brat_attribute in brat_doc.attributes.values():
             attribute = Attribute(
@@ -254,9 +244,7 @@ class BratInputConverter(InputConverter):
             )
             anns_by_brat_id[brat_attribute.target].attrs.add(attribute)
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    attribute, self.description, source_data_items=[]
-                )
+                self._prov_tracer.add_prov(attribute, self.description, source_data_items=[])
 
         for brat_note in brat_doc.notes.values():
             # try to detect CUI in notes and recreate normalization attrs
@@ -267,18 +255,14 @@ class BratInputConverter(InputConverter):
                         attribute = UMLSNormAttribute(cui=cui, umls_version=None)
                         anns_by_brat_id[brat_note.target].attrs.add(attribute)
                         if self._prov_tracer is not None:
-                            self._prov_tracer.add_prov(
-                                attribute, self.description, source_data_items=[]
-                            )
+                            self._prov_tracer.add_prov(attribute, self.description, source_data_items=[])
                     continue
 
             # if no CUI detected, store note contents in plain attribute
             attribute = Attribute(label=self.notes_label, value=brat_note.value)
             anns_by_brat_id[brat_note.target].attrs.add(attribute)
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    attribute, self.description, source_data_items=[]
-                )
+                self._prov_tracer.add_prov(attribute, self.description, source_data_items=[])
 
         return list(anns_by_brat_id.values())
 
@@ -358,9 +342,7 @@ class BratOutputConverter(OutputConverter):
             create_config=self.create_config,
             top_values_by_attr=self.top_values_by_attr,
         )
-        return OperationDescription(
-            uid=self.uid, class_name=self.__class__.__name__, config=config
-        )
+        return OperationDescription(uid=self.uid, class_name=self.__class__.__name__, config=config)
 
     def save(
         self,
@@ -457,9 +439,7 @@ class BratOutputConverter(OutputConverter):
 
         # First convert segments then relations including its attributes
         for medkit_segment in segments:
-            brat_entity = self._convert_segment_to_brat(
-                medkit_segment, nb_segment, raw_text
-            )
+            brat_entity = self._convert_segment_to_brat(medkit_segment, nb_segment, raw_text)
             brat_anns.append(brat_entity)
             # store link between medkit id and brat entities
             # (needed for relations)
@@ -471,11 +451,7 @@ class BratOutputConverter(OutputConverter):
             if self.attrs is None:
                 attrs = medkit_segment.attrs.get()
             else:
-                attrs = [
-                    a
-                    for label in self.attrs
-                    for a in medkit_segment.attrs.get(label=label)
-                ]
+                attrs = [a for label in self.attrs for a in medkit_segment.attrs.get(label=label)]
             for attr in attrs:
                 # skip UMLS attributes that will be converted to notes
                 if self.convert_cuis_to_notes and isinstance(attr, UMLSNormAttribute):
@@ -506,9 +482,7 @@ class BratOutputConverter(OutputConverter):
                     logger.warning(f"Ignore attribute {attr.uid}. {err}")
 
             if self.convert_cuis_to_notes:
-                cuis = [
-                    attr.kb_id for attr in attrs if isinstance(attr, UMLSNormAttribute)
-                ]
+                cuis = [attr.kb_id for attr in attrs if isinstance(attr, UMLSNormAttribute)]
                 if len(cuis):
                     brat_note = self._convert_umls_attributes_to_brat_note(
                         cuis=cuis,
@@ -546,11 +520,7 @@ class BratOutputConverter(OutputConverter):
             if self.attrs is None:
                 attrs = medkit_relation.attrs.get()
             else:
-                attrs = [
-                    a
-                    for label in self.attrs
-                    for a in medkit_relation.attrs.get(label=label)
-                ]
+                attrs = [a for label in self.attrs for a in medkit_relation.attrs.get(label=label)]
             for attr in attrs:
                 value = attr.to_brat()
 
@@ -574,9 +544,7 @@ class BratOutputConverter(OutputConverter):
         return brat_anns
 
     @staticmethod
-    def _ensure_text_and_spans(
-        segment: Segment, raw_text: str
-    ) -> Tuple[str, List[Tuple[int, int]]]:
+    def _ensure_text_and_spans(segment: Segment, raw_text: str) -> Tuple[str, List[Tuple[int, int]]]:
         """Ensure consistency between the segment and the raw text.
         The text of a BRAT annotation can't contain multiple white spaces (including a newline character).
         This method clean the text of the fragments and adjust its spans to point to the same
@@ -619,9 +587,7 @@ class BratOutputConverter(OutputConverter):
         text_brat = " ".join(texts_brat)
         return text_brat, spans_brat
 
-    def _convert_segment_to_brat(
-        self, segment: Segment, nb_segment: int, raw_text: str
-    ) -> BratEntity:
+    def _convert_segment_to_brat(self, segment: Segment, nb_segment: int, raw_text: str) -> BratEntity:
         """
         Get a brat entity from a medkit segment
 

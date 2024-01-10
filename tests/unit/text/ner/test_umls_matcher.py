@@ -89,14 +89,9 @@ def test_cache(tmpdir):
     # different params, cache can't be used, an error should be thrown
     with pytest.raises(
         Exception,
-        match=(
-            "Cache directory .* contains database pre-computed with different"
-            " params: .*"
-        ),
+        match=("Cache directory .* contains database pre-computed with different" " params: .*"),
     ):
-        _ = UMLSMatcher(
-            umls_dir=_UMLS_DIR, language="FRE", cache_dir=tmpdir, normalize_unicode=True
-        )
+        _ = UMLSMatcher(umls_dir=_UMLS_DIR, language="FRE", cache_dir=tmpdir, normalize_unicode=True)
 
 
 def test_language(tmpdir):
@@ -131,9 +126,7 @@ def test_lowercase(tmpdir):
     assert len(entities) == 0
 
     # with lowercase flag, entity is found
-    umls_matcher = UMLSMatcher(
-        umls_dir=_UMLS_DIR, language="FRE", lowercase=True, cache_dir=tmpdir / "lower"
-    )
+    umls_matcher = UMLSMatcher(umls_dir=_UMLS_DIR, language="FRE", lowercase=True, cache_dir=tmpdir / "lower")
     entities = umls_matcher.run([sentence])
     assert len(entities) == 1
     entity = entities[0]

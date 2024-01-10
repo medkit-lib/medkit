@@ -58,13 +58,9 @@ class SentenceTokenizer(SegmentationOperation):
         self.attrs_to_copy = attrs_to_copy
 
         # pre-compile patterns
-        self._newline_pattern = re.compile(
-            r" *(?P<content>[^\n\r]+) *(?P<separator>[\n\r]+|$)"
-        )
+        self._newline_pattern = re.compile(r" *(?P<content>[^\n\r]+) *(?P<separator>[\n\r]+|$)")
         punct_string = re.escape("".join(self.punct_chars))
-        self._punct_pattern = re.compile(
-            rf" *(?P<content>[^{punct_string}]+) *(?P<separator>[{punct_string}]+|$)"
-        )
+        self._punct_pattern = re.compile(rf" *(?P<content>[^{punct_string}]+) *(?P<separator>[{punct_string}]+|$)")
 
     def run(self, segments: List[Segment]) -> List[Segment]:
         """
@@ -81,18 +77,12 @@ class SentenceTokenizer(SegmentationOperation):
         List[Segments]:
             Sentences segments found in `segments`
         """
-        return [
-            sentence
-            for segment in segments
-            for sentence in self._find_sentences_in_segment(segment)
-        ]
+        return [sentence for segment in segments for sentence in self._find_sentences_in_segment(segment)]
 
     def _find_sentences_in_segment(self, segment: Segment) -> Iterator[Segment]:
         # split on newlines (discarding newline chars) then split each line on punct chars
         if self.split_on_newlines:
-            for line_start, line_end in self._split_text(
-                segment.text, self._newline_pattern, keep_separator=False
-            ):
+            for line_start, line_end in self._split_text(segment.text, self._newline_pattern, keep_separator=False):
                 sub_text = segment.text[line_start:line_end]
                 for sub_start, sub_end in self._split_text(
                     sub_text, self._punct_pattern, keep_separator=self.keep_punct
@@ -102,15 +92,11 @@ class SentenceTokenizer(SegmentationOperation):
                     yield self._build_sentence(segment, range=(start, end))
         # or split directly on punct chars
         else:
-            for start, end in self._split_text(
-                segment.text, self._punct_pattern, keep_separator=self.keep_punct
-            ):
+            for start, end in self._split_text(segment.text, self._punct_pattern, keep_separator=self.keep_punct):
                 yield self._build_sentence(segment, range=(start, end))
 
     @staticmethod
-    def _split_text(
-        text: str, pattern: re.Pattern, keep_separator: bool
-    ) -> Iterator[Tuple[int, int]]:
+    def _split_text(text: str, pattern: re.Pattern, keep_separator: bool) -> Iterator[Tuple[int, int]]:
         for match in pattern.finditer(text):
             start = match.start("content")
             end = match.end("separator") if keep_separator else match.end("content")
@@ -118,9 +104,7 @@ class SentenceTokenizer(SegmentationOperation):
             if end > start and has_letters:
                 yield start, end
 
-    def _build_sentence(
-        self, source_segment: Segment, range: Tuple[int, int]
-    ) -> Segment:
+    def _build_sentence(self, source_segment: Segment, range: Tuple[int, int]) -> Segment:
         text, spans = span_utils.extract(
             text=source_segment.text,
             spans=source_segment.spans,
@@ -143,8 +127,6 @@ class SentenceTokenizer(SegmentationOperation):
                     self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
         if self._prov_tracer is not None:
-            self._prov_tracer.add_prov(
-                sentence, self.description, source_data_items=[source_segment]
-            )
+            self._prov_tracer.add_prov(sentence, self.description, source_data_items=[source_segment])
 
         return sentence

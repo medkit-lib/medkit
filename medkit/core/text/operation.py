@@ -93,9 +93,7 @@ class _CustomTextOperation(Operation):
     def set_prov_tracer(self, prov_tracer: ProvTracer):
         self._prov_tracer = prov_tracer
 
-    def set_function(
-        self, function: Callable, function_type: CustomTextOpType, **kwargs: Any
-    ):
+    def set_function(self, function: Callable, function_type: CustomTextOpType, **kwargs: Any):
         """
         Assign a user-defined function to the operation
         Parameters
@@ -145,9 +143,7 @@ class _CustomTextOperation(Operation):
         elif self._function_type == CustomTextOpType.FILTER:
             return self._run_filter_function(all_input_data)
 
-    def _run_one_to_n_function(
-        self, all_input_data: List[Any], function_type: CustomTextOpType
-    ) -> List[Any]:
+    def _run_one_to_n_function(self, all_input_data: List[Any], function_type: CustomTextOpType) -> List[Any]:
         all_output_data = []
         for input_data in all_input_data:
             output_data = self._function(input_data, **self._kwargs)
@@ -156,10 +152,7 @@ class _CustomTextOperation(Operation):
                 all_output_data.extend(output_data)
             else:
                 all_output_data.append(output_data)
-            if (
-                function_type == CustomTextOpType.CREATE_ONE_TO_N
-                and self._prov_tracer is not None
-            ):
+            if function_type == CustomTextOpType.CREATE_ONE_TO_N and self._prov_tracer is not None:
                 if is_iterable:
                     for data in output_data:
                         self._prov_tracer.add_prov(

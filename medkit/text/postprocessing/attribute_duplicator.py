@@ -43,16 +43,10 @@ class AttributeDuplicator(Operation):
         target_segments:
             List of segments target
         """
-        nested = alignment_utils.compute_nested_segments(
-            source_segments, target_segments
-        )
+        nested = alignment_utils.compute_nested_segments(source_segments, target_segments)
 
         for parent, children in nested:
-            attrs_to_copy = [
-                attr
-                for label in self.attr_labels
-                for attr in parent.attrs.get(label=label)
-            ]
+            attrs_to_copy = [attr for label in self.attr_labels for attr in parent.attrs.get(label=label)]
 
             # create a new attr in target from the source attr
             for attr in attrs_to_copy:
@@ -64,6 +58,4 @@ class AttributeDuplicator(Operation):
         target.attrs.add(target_attr)
 
         if self._prov_tracer is not None:
-            self._prov_tracer.add_prov(
-                target_attr, self.description, source_data_items=[attr]
-            )
+            self._prov_tracer.add_prov(target_attr, self.description, source_data_items=[attr])

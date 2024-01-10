@@ -57,10 +57,7 @@ def test_run(filepath, expected_sections):
     for i, (spans, attr_value) in enumerate(expected_sections):
         assert sections[i].spans == spans
         assert sections[i].metadata["name"] == attr_value
-        assert (
-            sections[i].attrs.get(label=section_tokenizer.output_label)[0].value
-            == attr_value
-        )
+        assert sections[i].attrs.get(label=section_tokenizer.output_label)[0].value == attr_value
 
 
 def test_run_with_rules():
@@ -82,23 +79,13 @@ def test_run_with_rules():
             other_sections=["antecedent"],
         ),
     )
-    section_tokenizer = SectionTokenizer(
-        section_dict=section_dict, section_rules=section_rules
-    )
+    section_tokenizer = SectionTokenizer(section_dict=section_dict, section_rules=section_rules)
     sections = section_tokenizer.run([clean_text_segment])
 
     assert len(sections) == 2
-    sections_antecedent = [
-        section
-        for section in sections
-        if section.metadata["name"] == "antecedent_before_exam"
-    ]
+    sections_antecedent = [section for section in sections if section.metadata["name"] == "antecedent_before_exam"]
     assert len(sections_antecedent) == 1
-    section_examen = [
-        section
-        for section in sections
-        if section.metadata["name"] == "exam_after_antecedent"
-    ]
+    section_examen = [section for section in sections if section.metadata["name"] == "exam_after_antecedent"]
     assert len(section_examen) == 1
 
 
@@ -127,9 +114,7 @@ def test_prov():
 
 def test_section_def_file_encoding_error():
     with pytest.raises(UnicodeError):
-        SectionTokenizer.load_section_definition(
-            filepath=_PATH_TO_DEFAULT_RULES, encoding="utf-16"
-        )
+        SectionTokenizer.load_section_definition(filepath=_PATH_TO_DEFAULT_RULES, encoding="utf-16")
 
 
 def test_section_def_file(tmp_path):
@@ -161,8 +146,6 @@ def test_section_def_file(tmp_path):
         filepath=filepath,
         encoding="utf-8",
     )
-    loaded_dict, loaded_rules = SectionTokenizer.load_section_definition(
-        filepath, encoding="utf-8"
-    )
+    loaded_dict, loaded_rules = SectionTokenizer.load_section_definition(filepath, encoding="utf-8")
     assert loaded_dict == section_dict
     assert loaded_rules == treatment_rules

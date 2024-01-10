@@ -121,9 +121,7 @@ def test_single_step():
         input_keys=step.input_keys,
         output_keys=step.output_keys,
     )
-    doc_pipeline = DocPipeline(
-        pipeline=pipeline, labels_by_input_key={"SENTENCE": ["sentence"]}
-    )
+    doc_pipeline = DocPipeline(pipeline=pipeline, labels_by_input_key={"SENTENCE": ["sentence"]})
 
     doc = _get_doc()
     doc_pipeline.run([doc])
@@ -160,9 +158,7 @@ def test_multiple_steps():
         output_keys=step_2.output_keys,
     )
 
-    doc_pipeline = DocPipeline(
-        pipeline=pipeline, labels_by_input_key={"SENTENCE": ["sentence"]}
-    )
+    doc_pipeline = DocPipeline(pipeline=pipeline, labels_by_input_key={"SENTENCE": ["sentence"]})
     doc = _get_doc()
     doc_pipeline.run([doc])
 
@@ -189,9 +185,7 @@ def test_no_output():
 
     pipeline = Pipeline(steps=[step_1], input_keys=step_1.input_keys, output_keys=[])
 
-    doc_pipeline = DocPipeline(
-        pipeline=pipeline, labels_by_input_key={"SENTENCE": ["sentence"]}
-    )
+    doc_pipeline = DocPipeline(pipeline=pipeline, labels_by_input_key={"SENTENCE": ["sentence"]})
     doc = _get_doc()
     doc_pipeline.run([doc])
 
@@ -224,9 +218,7 @@ def test_multiple_outputs():
         output_keys=step_1.output_keys + step_2.output_keys,
     )
 
-    doc_pipeline = DocPipeline(
-        pipeline=pipeline, labels_by_input_key={"SENTENCE": ["sentence"]}
-    )
+    doc_pipeline = DocPipeline(pipeline=pipeline, labels_by_input_key={"SENTENCE": ["sentence"]})
     doc = _get_doc()
     doc_pipeline.run([doc])
 
@@ -382,9 +374,7 @@ def test_nested_pipeline():
         input_keys=sub_step.input_keys,
         output_keys=sub_step.output_keys,
     )
-    doc_sub_pipeline = DocPipeline(
-        pipeline=sub_pipeline, labels_by_input_key={"SENTENCE": ["sentence"]}
-    )
+    doc_sub_pipeline = DocPipeline(pipeline=sub_pipeline, labels_by_input_key={"SENTENCE": ["sentence"]})
 
     # wrap it in main pipeline
     step = PipelineStep(
@@ -419,9 +409,7 @@ def test_key_group():
         output_keys=step.output_keys,
     )
 
-    doc_pipeline = DocPipeline(
-        pipeline=pipeline, labels_by_input_key={"SENTENCE": ["sentence"]}
-    )
+    doc_pipeline = DocPipeline(pipeline=pipeline, labels_by_input_key={"SENTENCE": ["sentence"]})
     doc = _get_doc()
     doc_pipeline.run([doc])
 

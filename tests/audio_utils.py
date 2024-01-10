@@ -10,9 +10,7 @@ import numpy as np
 _BASE_FREQ = 110
 
 
-def generate_sin_signal(
-    duration, sample_rate, nb_channels=1, amplitudes=None, freqs=None
-):
+def generate_sin_signal(duration, sample_rate, nb_channels=1, amplitudes=None, freqs=None):
     """Generate a sin wave signal with a different frequency for each channel"""
     # default amplitudes to 1.0 for all channels if none provided
     if amplitudes is None:
@@ -29,12 +27,7 @@ def generate_sin_signal(
     time = np.arange(nb_samples, dtype=np.float32) / sample_rate
 
     # generate sin waves for each channel
-    signal = np.sin(
-        2
-        * np.pi
-        * np.array(freqs, dtype=np.float32).reshape(-1, 1)
-        * time.reshape(1, -1)
-    )
+    signal = np.sin(2 * np.pi * np.array(freqs, dtype=np.float32).reshape(-1, 1) * time.reshape(1, -1))
     # apply amplitudes
     signal *= np.array(amplitudes).reshape(-1, 1)
 

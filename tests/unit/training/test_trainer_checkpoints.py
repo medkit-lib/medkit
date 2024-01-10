@@ -35,9 +35,7 @@ class DummyMetricsComputer:
         return {"accuracy": score}
 
 
-def _get_trainer(
-    output_dir, nb_epochs, minimize_metric, use_lr_scheduler, checkpoint_period
-):
+def _get_trainer(output_dir, nb_epochs, minimize_metric, use_lr_scheduler, checkpoint_period):
     mock_component = MockTrainableComponent()
     config = TrainerConfig(
         output_dir=output_dir,

@@ -81,11 +81,7 @@ def load_mtsamples(
 
         return [
             TextDocument(
-                text=(
-                    sample["transcription_translated"]
-                    if translated
-                    else sample["transcription"]
-                ),
+                text=(sample["transcription_translated"] if translated else sample["transcription"]),
                 metadata=dict(
                     id=sample["id"] if translated else sample[""],
                     description=sample["description"],

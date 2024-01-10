@@ -84,11 +84,7 @@ class DucklingMatcher(NEROperation):
         entities: List[Entity]
             Entities found in `segments`
         """
-        return [
-            entity
-            for segment in segments
-            for entity in self._find_matches_in_segment(segment)
-        ]
+        return [entity for segment in segments for entity in self._find_matches_in_segment(segment)]
 
     def _find_matches_in_segment(self, segment: Segment) -> Iterator[Entity]:
         payload = {
@@ -103,21 +99,15 @@ class DucklingMatcher(NEROperation):
         api_result = requests.post(f"{self.url}/parse", data=payload)
 
         if api_result.status_code != 200:
-            raise ConnectionError(
-                "Request response not correct : status code {res.status_code}"
-            )
+            raise ConnectionError("Request response not correct : status code {res.status_code}")
 
         matches = api_result.json()
         for match in matches:
             if self.dims is not None and match["dim"] not in self.dims:
-                warnings.warn(
-                    "Dims are not properly filtered by duckling API call", stacklevel=2
-                )
+                warnings.warn("Dims are not properly filtered by duckling API call", stacklevel=2)
                 continue
 
-            text, spans = span_utils.extract(
-                segment.text, segment.spans, [(match["start"], match["end"])]
-            )
+            text, spans = span_utils.extract(segment.text, segment.spans, [(match["start"], match["end"])])
 
             entity = Entity(
                 label=match["dim"],
@@ -131,9 +121,7 @@ class DucklingMatcher(NEROperation):
                     entity.attrs.add(copied_attr)
                     # handle provenance
                     if self._prov_tracer is not None:
-                        self._prov_tracer.add_prov(
-                            copied_attr, self.description, [attr]
-                        )
+                        self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
             norm_attr = Attribute(
                 label=self.output_label,
@@ -145,18 +133,12 @@ class DucklingMatcher(NEROperation):
             entity.attrs.add(norm_attr)
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    entity, self.description, source_data_items=[segment]
-                )
-                self._prov_tracer.add_prov(
-                    norm_attr, self.description, source_data_items=[segment]
-                )
+                self._prov_tracer.add_prov(entity, self.description, source_data_items=[segment])
+                self._prov_tracer.add_prov(norm_attr, self.description, source_data_items=[segment])
 
             yield entity
 
     def _test_connection(self):
         api_result = requests.get(self.url)
         if api_result.status_code != 200:
-            raise ConnectionError(
-                f"The duckling server did not respond correctly at {self.url}"
-            )
+            raise ConnectionError(f"The duckling server did not respond correctly at {self.url}")

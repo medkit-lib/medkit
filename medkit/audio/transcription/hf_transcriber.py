@@ -107,10 +107,8 @@ class HFTranscriber(Operation):
         )
 
         if language is not None:
-            self._pipeline.model.config.forced_decoder_ids = (
-                self._pipeline.tokenizer.get_decoder_prompt_ids(
-                    language=language, task="transcribe"
-                )
+            self._pipeline.model.config.forced_decoder_ids = self._pipeline.tokenizer.get_decoder_prompt_ids(
+                language=language, task="transcribe"
             )
 
     def run(self, segments: List[Segment]):

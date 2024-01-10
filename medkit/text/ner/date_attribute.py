@@ -291,9 +291,7 @@ class RelativeDateAttribute(Attribute):
         metadata: Optional[Dict[str, Any]] = None,
         uid: Optional[str] = None,
     ):
-        value = _format_relative_date(
-            direction, years, months, weeks, days, hours, minutes, seconds
-        )
+        value = _format_relative_date(direction, years, months, weeks, days, hours, minutes, seconds)
         super().__init__(label=label, value=value, metadata=metadata, uid=uid)
 
         self.direction = direction
@@ -445,6 +443,4 @@ def _format_relative_date(
     """
 
     prefix = "+ " if direction is RelativeDateDirection.FUTURE else "- "
-    return prefix + _format_duration(
-        years, months, weeks, days, hours, minutes, seconds
-    )
+    return prefix + _format_duration(years, months, weeks, days, hours, minutes, seconds)

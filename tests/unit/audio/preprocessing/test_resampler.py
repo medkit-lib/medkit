@@ -17,9 +17,7 @@ _SPAN_OFFSET = 10.0
 def _get_segment(signal, sample_rate):
     duration = signal.shape[1] / sample_rate
     audio = MemoryAudioBuffer(signal=signal, sample_rate=sample_rate)
-    return Segment(
-        label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + duration), audio=audio
-    )
+    return Segment(label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + duration), audio=audio)
 
 
 def _check_resampled_segment(resampled_seg, original_seg):
@@ -77,9 +75,7 @@ def test_basic():
     _check_resampled_segment(resampled_seg_1, seg_1)
     # check audio signal, frequencies should be the same
     resampled_audio_1 = resampled_seg_1.audio
-    resampled_freqs_1 = _get_freqs(
-        resampled_audio_1.read(), resampled_audio_1.sample_rate
-    )
+    resampled_freqs_1 = _get_freqs(resampled_audio_1.read(), resampled_audio_1.sample_rate)
     assert resampled_freqs_1 == freqs_1
 
     # check attributes of 2d downmixed segment
@@ -87,9 +83,7 @@ def test_basic():
     _check_resampled_segment(resampled_seg_2, seg_2)
     # check audio signal, frequency should be the same
     resampled_audio_2 = resampled_seg_2.audio
-    resampled_freqs_2 = _get_freqs(
-        resampled_audio_2.read(), resampled_audio_2.sample_rate
-    )
+    resampled_freqs_2 = _get_freqs(resampled_audio_2.read(), resampled_audio_2.sample_rate)
     assert resampled_freqs_2 == freqs_2
 
 
@@ -116,13 +110,9 @@ def test_fast():
 
 def test_prov():
     """Generated provenance nodes"""
-    signal_1 = generate_sin_signal(
-        duration=0.25, sample_rate=_TARGET_SAMPLE_RATE * 2, nb_channels=2
-    )
+    signal_1 = generate_sin_signal(duration=0.25, sample_rate=_TARGET_SAMPLE_RATE * 2, nb_channels=2)
     seg_1 = _get_segment(signal_1, _TARGET_SAMPLE_RATE * 2)
-    signal_2 = generate_sin_signal(
-        duration=0.25, sample_rate=_TARGET_SAMPLE_RATE * 2, nb_channels=2
-    )
+    signal_2 = generate_sin_signal(duration=0.25, sample_rate=_TARGET_SAMPLE_RATE * 2, nb_channels=2)
     seg_2 = _get_segment(signal_2, _TARGET_SAMPLE_RATE * 2)
     segs = [seg_1, seg_2]
 

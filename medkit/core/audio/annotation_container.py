@@ -26,15 +26,11 @@ class AudioAnnotationContainer(AnnotationContainer[Segment]):
 
     def add(self, ann: Segment):
         if ann.label == self.raw_segment.label:
-            raise RuntimeError(
-                f"Cannot add annotation with reserved label {self.raw_segment.label}"
-            )
+            raise RuntimeError(f"Cannot add annotation with reserved label {self.raw_segment.label}")
 
         super().add(ann)
 
-    def get(
-        self, *, label: Optional[str] = None, key: Optional[str] = None
-    ) -> List[Segment]:
+    def get(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[Segment]:
         # inject raw segment
         if label == self.raw_segment.label and key is None:
             return [self.raw_segment]

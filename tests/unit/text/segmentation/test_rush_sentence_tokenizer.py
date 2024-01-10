@@ -78,9 +78,7 @@ def test_default_rules(text, sentence_tokenizer, expected_sentences):
 
 
 def test_prov():
-    clean_text_segment = _get_clean_text_segment(
-        "This is a sentence. This is another sentence. "
-    )
+    clean_text_segment = _get_clean_text_segment("This is a sentence. This is another sentence. ")
 
     tokenizer = RushSentenceTokenizer()
     prov_tracer = ProvTracer()

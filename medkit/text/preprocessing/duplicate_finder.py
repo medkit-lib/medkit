@@ -279,9 +279,7 @@ class DuplicateFinder(Operation):
         """Create a segment representing a non-duplicated zone"""
 
         # "rebase" the range taking into accounts spans of the target segment
-        text, spans = span_utils.extract(
-            target_segment.text, target_segment.spans, ranges=[range]
-        )
+        text, spans = span_utils.extract(target_segment.text, target_segment.spans, ranges=[range])
 
         # skip if empty
         if not self._NON_EMPTY_REGEXP.search(text):
@@ -307,15 +305,11 @@ class DuplicateFinder(Operation):
 
         return segment
 
-    def _create_duplicate_segment(
-        self, target_segment, target_range, source_doc, source_range
-    ):
+    def _create_duplicate_segment(self, target_segment, target_range, source_doc, source_range):
         """Create a segment representing a duplicated zone"""
 
         # "rebase" the target range taking into accounts spans of the target segment
-        text, spans = span_utils.extract(
-            target_segment.text, target_segment.spans, ranges=[target_range]
-        )
+        text, spans = span_utils.extract(target_segment.text, target_segment.spans, ranges=[target_range])
 
         # skip if empty
         if not self._NON_EMPTY_REGEXP.search(text):
@@ -324,16 +318,10 @@ class DuplicateFinder(Operation):
         # "rebase" the source range taking into accounts spans of the source
         # segment
         source_segment = source_doc.raw_segment
-        _, source_spans = span_utils.extract(
-            source_segment.text, source_segment.spans, ranges=[source_range]
-        )
+        _, source_spans = span_utils.extract(source_segment.text, source_segment.spans, ranges=[source_range])
 
         # store info about source in duplication attr
-        source_doc_date = (
-            source_doc.metadata[self.date_metadata_key]
-            if self.date_metadata_key is not None
-            else None
-        )
+        source_doc_date = source_doc.metadata[self.date_metadata_key] if self.date_metadata_key is not None else None
         attr = DuplicationAttribute(
             value=True,
             source_doc_id=source_doc.uid,

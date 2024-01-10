@@ -42,9 +42,7 @@ class MockTrainableComponent:
     def preprocess(self, data_item):
         model_inputs = {}
 
-        model_inputs["inputs_ids"] = torch.tensor(
-            self.tokenizer(data_item.text), dtype=torch.int64
-        )
+        model_inputs["inputs_ids"] = torch.tensor(self.tokenizer(data_item.text), dtype=torch.int64)
         attribute = data_item.attrs.get(label=self.output_label)
         if not attribute:
             raise ValueError(f"Attr '{self.output_label}' was not found in the corpus")

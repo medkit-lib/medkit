@@ -11,9 +11,7 @@ import yaml
 from medkit.core.text import Segment, SegmentationOperation, span_utils
 from medkit.core.text.utils import lstrip, rstrip
 
-_PATH_TO_DEFAULT_RULES = (
-    pathlib.Path(__file__).parent / "default_syntagma_definition.yml"
-)
+_PATH_TO_DEFAULT_RULES = pathlib.Path(__file__).parent / "default_syntagma_definition.yml"
 
 
 class SyntagmaTokenizer(SegmentationOperation):
@@ -60,9 +58,7 @@ class SyntagmaTokenizer(SegmentationOperation):
         self.separators = separators
         self.strip_chars = strip_chars
         if separators is None:
-            self.separators = self.load_syntagma_definition(
-                _PATH_TO_DEFAULT_RULES, encoding="utf-8"
-            )
+            self.separators = self.load_syntagma_definition(_PATH_TO_DEFAULT_RULES, encoding="utf-8")
         self.attrs_to_copy = attrs_to_copy
 
     def run(self, segments: List[Segment]) -> List[Segment]:
@@ -79,11 +75,7 @@ class SyntagmaTokenizer(SegmentationOperation):
         List[Segments]:
             Syntagmas segments found in `segments`
         """
-        return [
-            syntagma
-            for segment in segments
-            for syntagma in self._find_syntagmas_in_segment(segment)
-        ]
+        return [syntagma for segment in segments for syntagma in self._find_syntagmas_in_segment(segment)]
 
     def _find_syntagmas_in_segment(self, segment: Segment) -> Iterator[Segment]:
         regex_rule = (
@@ -136,14 +128,10 @@ class SyntagmaTokenizer(SegmentationOperation):
                     syntagma.attrs.add(copied_attr)
                     # handle provenance
                     if self._prov_tracer is not None:
-                        self._prov_tracer.add_prov(
-                            copied_attr, self.description, [attr]
-                        )
+                        self._prov_tracer.add_prov(copied_attr, self.description, [attr])
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(
-                    syntagma, self.description, source_data_items=[segment]
-                )
+                self._prov_tracer.add_prov(syntagma, self.description, source_data_items=[segment])
 
             yield syntagma
 
@@ -155,9 +143,7 @@ class SyntagmaTokenizer(SegmentationOperation):
         return syntagma_tokenizer
 
     @staticmethod
-    def load_syntagma_definition(
-        filepath: pathlib.Path, encoding: Optional[str] = None
-    ) -> Tuple[str, ...]:
+    def load_syntagma_definition(filepath: pathlib.Path, encoding: Optional[str] = None) -> Tuple[str, ...]:
         """
         Load the syntagma definition stored in yml file
 

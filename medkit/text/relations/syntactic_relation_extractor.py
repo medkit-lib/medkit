@@ -151,9 +151,7 @@ class SyntacticRelationExtractor(DocOperation):
                     relation = self._create_relation(
                         source=source,
                         target=target,
-                        metadata=dict(
-                            dep_tag=e2.root.dep_, dep_direction="left_to_right"
-                        ),
+                        metadata=dict(dep_tag=e2.root.dep_, dep_direction="left_to_right"),
                     )
                     if relation is not None:
                         relations.append(relation)
@@ -165,9 +163,7 @@ class SyntacticRelationExtractor(DocOperation):
                     relation = self._create_relation(
                         source=source,
                         target=target,
-                        metadata=dict(
-                            dep_tag=e1.root.dep_, dep_direction="right_to_left"
-                        ),
+                        metadata=dict(dep_tag=e1.root.dep_, dep_direction="right_to_left"),
                     )
                     if relation is not None:
                         relations.append(relation)
@@ -182,9 +178,7 @@ class SyntacticRelationExtractor(DocOperation):
             return target, source
         return source, target
 
-    def _create_relation(
-        self, source: SpacySpan, target: SpacySpan, metadata: Dict[str, str]
-    ) -> Optional[Relation]:
+    def _create_relation(self, source: SpacySpan, target: SpacySpan, metadata: Dict[str, str]) -> Optional[Relation]:
         """
         Parse the spacy relation content into a Relation object.
 
@@ -229,9 +223,7 @@ class SyntacticRelationExtractor(DocOperation):
         )
         return relation
 
-    def _add_relations_to_document(
-        self, medkit_doc: TextDocument, relations: List[Relation]
-    ):
+    def _add_relations_to_document(self, medkit_doc: TextDocument, relations: List[Relation]):
         for relation in relations:
             medkit_doc.anns.add(relation)
             if self._prov_tracer is not None:

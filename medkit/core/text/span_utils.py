@@ -75,9 +75,7 @@ def replace(
     Hi, my name is Jane Doe.
     """
     # validate params
-    assert _spans_have_same_length_as_text(
-        text, spans
-    ), "Total span length should be equal to text length"
+    assert _spans_have_same_length_as_text(text, spans), "Total span length should be equal to text length"
     assert _lists_have_same_dimension(
         ranges, replacement_texts
     ), "Ranges and replacement_texts should have the same dimension"
@@ -140,11 +138,7 @@ def _replace_in_spans(spans, ranges, replacement_lengths):
                 replaced_spans = [] if replacement_length > 0 else None
 
         # iterate to next span if current span has been fully handled
-        if (
-            span_end == span_start
-            or range_index == len(ranges)
-            or span_end <= range_start
-        ):
+        if span_end == span_start or range_index == len(ranges) or span_end <= range_start:
             # add current span to output
             if span_end != span_start:
                 output_spans.append(span)
@@ -162,10 +156,7 @@ def _replace_in_spans(spans, ranges, replacement_lengths):
         length_after_range = max(span_end - range_end, 0)
 
         # store part of span that will be replaced
-        if (
-            replacement_length > 0
-            and length_before_range + length_after_range < span.length
-        ):
+        if replacement_length > 0 and length_before_range + length_after_range < span.length:
             if isinstance(span, Span):
                 replaced_span = Span(
                     start=span.start + length_before_range,
@@ -183,18 +174,14 @@ def _replace_in_spans(spans, ranges, replacement_lengths):
         # and add it to output
         if length_before_range > 0:
             if isinstance(span, Span):
-                before_span = Span(
-                    start=span.start, end=span.start + length_before_range
-                )
+                before_span = Span(start=span.start, end=span.start + length_before_range)
             else:
                 # create new ModifiedSpan covering only the length before the range,
                 # but referencing the same replaced_spans
                 # (not possible to know which subpart of the replaced_spans corresponds
                 # to the part of the ModifiedSpan before the range)
                 assert isinstance(span, ModifiedSpan)
-                before_span = ModifiedSpan(
-                    length=length_before_range, replaced_spans=span.replaced_spans
-                )
+                before_span = ModifiedSpan(length=length_before_range, replaced_spans=span.replaced_spans)
             output_spans.append(before_span)
 
         # create span for the remaining part after the range
@@ -208,9 +195,7 @@ def _replace_in_spans(spans, ranges, replacement_lengths):
                 # (not possible to know which subpart of the replaced_spans corresponds
                 # to the part of the ModifiedSpan after the range)
                 assert isinstance(span, ModifiedSpan)
-                span = ModifiedSpan(
-                    length=length_after_range, replaced_spans=span.replaced_spans
-                )
+                span = ModifiedSpan(length=length_after_range, replaced_spans=span.replaced_spans)
         # update span_start to point to the beginning of the remainder
         span_start = span_end - length_after_range
 
@@ -242,9 +227,7 @@ def remove(
         The spans associated with the updated text
     """
     # validate params
-    assert _spans_have_same_length_as_text(
-        text, spans
-    ), "Total span length should be equal to text length"
+    assert _spans_have_same_length_as_text(text, spans), "Total span length should be equal to text length"
     assert _ranges_are_within_text(text, ranges), "Ranges should be within of text"
     assert _list_is_sorted(ranges), "Ranges should be sorted"
 
@@ -291,9 +274,7 @@ def extract(
         The spans associated with the extracted text
     """
     # validate params
-    assert _spans_have_same_length_as_text(
-        text, spans
-    ), "Total span length should be equal to text length"
+    assert _spans_have_same_length_as_text(text, spans), "Total span length should be equal to text length"
     assert _ranges_are_within_text(text, ranges), "Ranges should be within of text"
     assert _list_is_sorted(ranges), "Ranges should be sorted"
 
@@ -311,9 +292,7 @@ def _extract_in_spans(spans, ranges):
     first_range_start = ranges[0][0]
     ranges_to_remove.append((0, first_range_start))
 
-    ranges_to_remove += [
-        (end_1, start_2) for (_, end_1), (start_2, _) in zip(ranges, ranges[1:])
-    ]
+    ranges_to_remove += [(end_1, start_2) for (_, end_1), (start_2, _) in zip(ranges, ranges[1:])]
 
     last_range_end = ranges[-1][1]
     total_length = sum(s.length for s in spans)
@@ -359,9 +338,7 @@ def insert(
     Hello everybody, my name is John Doe."
     """
     # validate params
-    assert _spans_have_same_length_as_text(
-        text, spans
-    ), "Total span length should be equal to text length"
+    assert _spans_have_same_length_as_text(text, spans), "Total span length should be equal to text length"
     assert _lists_have_same_dimension(
         positions, insertion_texts
     ), "Positions and insertion_texts should have the same dimension"
@@ -468,14 +445,10 @@ def _move_in_spans(spans, range, destination):
     return spans
 
 
-def concatenate(
-    texts: List[str], all_spans: List[List[AnySpan]]
-) -> Tuple[str, List[AnySpan]]:
+def concatenate(texts: List[str], all_spans: List[List[AnySpan]]) -> Tuple[str, List[AnySpan]]:
     """Concatenate text and span objects"""
 
-    assert _lists_have_same_dimension(
-        texts, all_spans
-    ), "Text and all_spans should have the same dimension"
+    assert _lists_have_same_dimension(texts, all_spans), "Text and all_spans should have the same dimension"
     text = "".join(texts)
     span = [sp for spans in all_spans for sp in spans]
 
@@ -501,7 +474,11 @@ def normalize_spans(spans: List[AnySpan]) -> List[Span]:
     Examples
     --------
 
-    >>> spans = [Span(0, 10), Span(20, 30), ModifiedSpan(8, replaced_spans=[Span(30, 36)])]
+    >>> spans = [
+    ...     Span(0, 10),
+    ...     Span(20, 30),
+    ...     ModifiedSpan(8, replaced_spans=[Span(30, 36)]),
+    ... ]
     >>> spans = normalize_spans(spans)
     >>> print(spans)
     >>> [Span(0, 10), Span(20, 36)]
@@ -531,9 +508,7 @@ def normalize_spans(spans: List[AnySpan]) -> List[Span]:
     return all_spans_merged
 
 
-def clean_up_gaps_in_normalized_spans(
-    spans: List[Span], text: str, max_gap_length: int = 3
-):
+def clean_up_gaps_in_normalized_spans(spans: List[Span], text: str, max_gap_length: int = 3):
     """Remove small gaps in normalized spans.
 
     This is useful for converting non-contiguous entity spans with small gaps containing
