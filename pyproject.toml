@@ -237,14 +237,14 @@ exclude_lines = [
 ]
 
 [tool.ruff]
-line-length = 88
+line-length = 120
 indent-width = 4
 target-version = "py38"
 src = ["medkit", "tests"]
 
 [tool.ruff.lint]
 select = ["B", "C", "E", "F", "I001", "W"]
-ignore = ["E203", "C408", "C901", "E402", "E501"]
+ignore = ["E203", "C408", "C901", "E402"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["medkit"]
