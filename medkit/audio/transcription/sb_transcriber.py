@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[sb-transcriber]`.
 """
 
@@ -37,8 +36,7 @@ class SBTranscriber(Operation):
         batch_size: int = 1,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         model:
             Name of the model on the Hugging Face models hub, or local path.
@@ -97,8 +95,7 @@ class SBTranscriber(Operation):
         self._sample_rate = self._asr.audio_normalizer.sample_rate
 
     def run(self, segments: List[Segment]):
-        """
-        Add a transcription attribute to each segment with a text value
+        """Add a transcription attribute to each segment with a text value
         containing the transcribed text.
 
         Parameters
@@ -106,7 +103,6 @@ class SBTranscriber(Operation):
         segments:
             List of segments to transcribe
         """
-
         audios = [s.audio for s in segments]
         texts = self._transcribe_audios(audios)
 

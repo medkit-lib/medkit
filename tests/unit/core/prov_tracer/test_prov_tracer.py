@@ -65,8 +65,7 @@ def test_multiple_items_with_sources():
 
 
 def test_intermediate_operation():
-    """
-    Input items passed to an intermediate operation,
+    """Input items passed to an intermediate operation,
     then intermediate items passed to another operation.
     """
     tracer = ProvTracer()

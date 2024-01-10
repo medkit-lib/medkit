@@ -7,8 +7,7 @@ from medkit.core.audio.annotation import Segment
 
 
 class AudioAnnotationContainer(AnnotationContainer[Segment]):
-    """
-    Manage a list of audio annotations belonging to an audio document.
+    """Manage a list of audio annotations belonging to an audio document.
 
     This behaves more or less like a list: calling `len()` and iterating are
     supported. Additional filtering is available through the `get()` method.

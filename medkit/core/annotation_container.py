@@ -8,8 +8,7 @@ from medkit.core.store import GlobalStore, Store
 
 
 class AnnotationContainer(Generic[AnnotationType]):
-    """
-    Manage a list of annotations belonging to a document.
+    """Manage a list of annotations belonging to a document.
 
     This behaves more or less like a list: calling `len()` and iterating are
     supported. Additional filtering is available through the `get()` method.
@@ -23,8 +22,7 @@ class AnnotationContainer(Generic[AnnotationType]):
     """
 
     def __init__(self, doc_id: str):
-        """
-        Instantiate the annotation container
+        """Instantiate the annotation container
 
         Parameters
         ----------
@@ -38,8 +36,7 @@ class AnnotationContainer(Generic[AnnotationType]):
         self._ann_ids_by_key: Dict[str, List[str]] = {}
 
     def add(self, ann: AnnotationType):
-        """
-        Attach an annotation to the document.
+        """Attach an annotation to the document.
 
         Parameters
         ----------
@@ -52,7 +49,6 @@ class AnnotationContainer(Generic[AnnotationType]):
             If the annotation is already attached to the document
             (based on `annotation.uid`)
         """
-
         uid = ann.uid
         if uid in self._ann_ids:
             raise ValueError(f"Impossible to add this annotation.The uid {uid} already" " exists in the document")
@@ -77,26 +73,20 @@ class AnnotationContainer(Generic[AnnotationType]):
         return len(self._ann_ids)
 
     def __iter__(self) -> Iterator[AnnotationType]:
-        """
-        Add support for iterating over an `AnnotationContainer` (will yield each
+        """Add support for iterating over an `AnnotationContainer` (will yield each
         attribute)
         """
-
         return iter(self.get_by_id(uid) for uid in self._ann_ids)
 
     def __getitem__(self, key: Union[int, slice]) -> Union[AnnotationType, List[AnnotationType]]:
-        """
-        Add support for subscript access
-        """
-
+        """Add support for subscript access"""
         if isinstance(key, slice):
             return [self.get_by_id(uid) for uid in self._ann_ids[key]]
         else:
             return self.get_by_id(self._ann_ids[key])
 
     def get(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[AnnotationType]:
-        """
-        Return a list of the annotations of the document, optionally filtering
+        """Return a list of the annotations of the document, optionally filtering
         by label or key.
 
         Parameters
@@ -106,13 +96,11 @@ class AnnotationContainer(Generic[AnnotationType]):
         key:
             Key to use to filter annotations.
         """
-
         uids = self.get_ids(label=label, key=key)
         return [self.get_by_id(uid) for uid in uids]
 
     def get_ids(self, *, label: Optional[str] = None, key: Optional[str] = None) -> Iterator[str]:
-        """
-        Return an iterator of the identifiers of the annotations of the
+        """Return an iterator of the identifiers of the annotations of the
         document, optionally filtering by label or key.
 
         This method is provided, so it is easier to implement additional
@@ -125,7 +113,6 @@ class AnnotationContainer(Generic[AnnotationType]):
         key:
             Key to use to filter annotations.
         """
-
         uids = iter(self._ann_ids)
 
         if label is not None:
@@ -144,7 +131,6 @@ class AnnotationContainer(Generic[AnnotationType]):
         uid:
             Identifier of the annotation to return.
         """
-
         ann = self._store.get_data_item(uid)
         if ann is None:
             raise ValueError(f"No known annotation with uid '{uid}'")

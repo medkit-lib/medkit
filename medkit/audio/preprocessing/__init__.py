@@ -6,4 +6,4 @@ from .downmixer import Downmixer
 from .power_normalizer import PowerNormalizer
 
 if modules_are_available(["resampy"]):
-    __all__.append("resampler")
+    __all__ += ["resampler"]

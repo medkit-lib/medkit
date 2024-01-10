@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[webrtc-voice-detector]`.
 """
 
@@ -35,8 +34,7 @@ class WebRTCVoiceDetector(SegmentationOperation):
         switch_ratio: float = 0.9,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         output_label:
             Label of output speech segments.
@@ -54,7 +52,6 @@ class WebRTCVoiceDetector(SegmentationOperation):
         uid:
             Identifier of the detector.
         """
-
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -91,7 +88,7 @@ class WebRTCVoiceDetector(SegmentationOperation):
             )
         if audio.sample_rate not in _SUPPORTED_SAMPLE_RATES:
             raise RuntimeError(
-                f"Segment with identifier {segment.uid} has non-supported sample rate" f" {audio.sample_rate}"
+                f"Segment with identifier {segment.uid} has non-supported sample rate {audio.sample_rate}"
             )
 
         sample_rate = audio.sample_rate
@@ -131,7 +128,6 @@ class WebRTCVoiceDetector(SegmentationOperation):
     # from https://github.com/wiseman/py-webrtcvad/blob/master/example.py
     def _get_aggregated_vad(self, frames, sample_rate):
         """Return index ranges of voiced frames using webrtcvad"""
-
         # deque for our sliding window ring buffer
         window_ring_buffer = collections.deque(maxlen=self.nb_frames_in_window)
         # we have two states: SPEECH and NONSPEECH (we start in NONSPEECH)

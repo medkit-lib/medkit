@@ -76,8 +76,7 @@ class BratNote:
 
 
 def ensure_attr_value(attr_value: Any) -> str:
-    """
-    Ensure that `attr_value` is a string. If it's not, the
+    """Ensure that `attr_value` is a string. If it's not, the
     value is changed depending on its original format.
     """
     if isinstance(attr_value, str):
@@ -135,25 +134,23 @@ class BratDocument:
     def get_augmented_entities(self) -> Dict[str, BratAugmentedEntity]:
         augmented_entities = {}
         for entity in self.entities.values():
-            entity_relations_from_me = []
-            entity_relations_to_me = []
-            entity_attributes = []
-            for relation in self.relations.values():
-                if relation.subj == entity.uid:
-                    entity_relations_from_me.append(relation)
-                if relation.obj == entity.uid:
-                    entity_relations_to_me.append(relation)
-            for attribute in self.attributes.values():
-                if attribute.target == entity.uid:
-                    entity_attributes.append(attribute)
+            entity_relations_from_me = tuple(
+                relation for relation in self.relations.values() if relation.subj == entity.uid
+            )
+            entity_relations_to_me = tuple(
+                relation for relation in self.relations.values() if relation.obj == entity.uid
+            )
+            entity_attributes = tuple(
+                attribute for attribute in self.attributes.values() if attribute.target == entity.uid
+            )
             augmented_entities[entity.uid] = BratAugmentedEntity(
                 uid=entity.uid,
                 type=entity.type,
                 span=entity.span,
                 text=entity.text,
-                relations_from_me=tuple(entity_relations_from_me),
-                relations_to_me=tuple(entity_relations_to_me),
-                attributes=tuple(entity_attributes),
+                relations_from_me=entity_relations_from_me,
+                relations_to_me=entity_relations_to_me,
+                attributes=entity_attributes,
             )
         return augmented_entities
 
@@ -300,15 +297,14 @@ class BratAnnConfiguration:
 
 
 def parse_file(ann_path: Union[str, Path], detect_groups: bool = False) -> BratDocument:
-    """
-    Read an annotation file to get the Entities, Relations and Attributes in it.
+    """Read an annotation file to get the Entities, Relations and Attributes in it.
     All other lines are ignored.
 
     Parameters
     ----------
-    ann_path: str
+    ann_path : str or Path
         The path to the annotation file to be processed.
-    detect_groups: bool, optional
+    detect_groups : bool, default=False
         If set to `True`, the function will also parse the group of entities according
         to some specific keywords.
         By default, it is set to False.
@@ -326,16 +322,15 @@ def parse_file(ann_path: Union[str, Path], detect_groups: bool = False) -> BratD
 
 
 def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
-    """
-    Read a string containing all annotations and extract Entities, Relations and
+    """Read a string containing all annotations and extract Entities, Relations and
     Attributes.
     All other lines are ignored.
 
     Parameters
     ----------
-    ann_string: str
+    ann_string : str
         The string containing all brat annotations
-    detect_groups: bool, optional
+    detect_groups : bool, default=False
         If set to `True`, the function will also parse the group of entities according
         to some specific keywords.
         By default, it is set to False.
@@ -354,7 +349,7 @@ def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
     for i, ann in enumerate(annotations):
         line_number = i + 1
         if len(ann) == 0 or ann[0] not in ("T", "R", "A", "#"):
-            logger.info(f"Ignoring empty line or unsupported annotation {ann} on {line_number}")
+            logger.info("Ignoring empty line or unsupported annotation %s on %s", ann, line_number)
             continue
         ann_id, ann_content = ann.split("\t", maxsplit=1)
         try:
@@ -372,7 +367,7 @@ def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
                 notes[note.uid] = note
         except ValueError as err:
             logger.warning(err)
-            logger.warning(f"Ignore annotation {ann_id} at line {line_number}")
+            logger.warning("Ignore annotation %s at line %s", ann_id, line_number)
 
     # Process groups
     groups = None
@@ -382,24 +377,22 @@ def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
 
         for entity in entities.values():
             if entity.type in GROUPING_ENTITIES:
-                items: List[BratEntity] = list()
-                for relation in grouping_relations.values():
-                    if relation.subj == entity.uid:
-                        items.append(entities[relation.obj])
+                items = [
+                    entities[relation.obj] for relation in grouping_relations.values() if relation.subj == entity.uid
+                ]
                 groups[entity.uid] = Grouping(entity.uid, entity.type, items)
 
     return BratDocument(entities, relations, attributes, notes, groups)
 
 
 def _parse_entity(entity_id: str, entity_content: str) -> BratEntity:
-    """
-    Parse the brat entity string into an Entity structure.
+    """Parse the brat entity string into an Entity structure.
 
     Parameters
     ----------
-    entity_id: str
+    entity_id : str
         The ID defined in the brat annotation (e.g.,`T12`)
-    entity_content: str
+    entity_content : str
         The string content for this ID to parse
          (e.g., `Temporal-Modifier 116 126\thistory of`)
 
@@ -425,19 +418,18 @@ def _parse_entity(entity_id: str, entity_content: str) -> BratEntity:
             start, end = int(start_s), int(end_s)
             spans.append((start, end))
         return BratEntity(entity_id.strip(), tag.strip(), spans, text)
-    except Exception as err:
+    except ValueError as err:
         raise ValueError("Impossible to parse entity.") from err
 
 
 def _parse_relation(relation_id: str, relation_content: str) -> BratRelation:
-    """
-    Parse the annotation string into a Relation structure.
+    """Parse the annotation string into a Relation structure.
 
     Parameters
     ----------
-    relation_id: str
+    relation_id : str
         The ID defined in the brat annotation (e.g., R12)
-    relation_content: str
+    relation_content : str
         The relation text content. (e.g., `Modified-By Arg1:T8 Arg2:T6\t`)
 
     Returns
@@ -454,29 +446,28 @@ def _parse_relation(relation_id: str, relation_content: str) -> BratRelation:
         relation, subj, obj = relation_content.strip().split()
         subj = subj.replace("Arg1:", "")
         obj = obj.replace("Arg2:", "")
-    except Exception as err:
+    except ValueError as err:
         raise ValueError("Impossible to parse the relation.") from err
 
     if subj.startswith("E") or obj.startswith("E"):
-        raise ValueError("Impossible to parse the relation. Relations between events are not" " supported")
+        raise ValueError("Impossible to parse the relation. Relations between events are not supported")
 
     return BratRelation(relation_id.strip(), relation.strip(), subj.strip(), obj.strip())
 
 
 def _parse_attribute(attribute_id: str, attribute_content: str) -> BratAttribute:
-    """
-    Parse the annotation string into an Attribute structure.
+    """Parse the annotation string into an Attribute structure.
 
     Parameters
     ----------
     attribute_id : str
         The attribute ID defined in the annotation. (e.g., `A1`)
-    attribute_content: str
+    attribute_content : str
          The attribute text content. (e.g., `Tense T19 Past-Ended`)
 
     Returns
     -------
-    BratAttribute:
+    BratAttribute
         The dataclass object representing the attribute
 
     Raises
@@ -484,7 +475,6 @@ def _parse_attribute(attribute_id: str, attribute_content: str) -> BratAttribute
     ValueError
         Raises when the attribute can't be parsed
     """
-
     attribute_arguments = attribute_content.strip().split(" ", maxsplit=2)
     if len(attribute_arguments) < 2:
         raise ValueError("Impossible to parse the input attribute")
@@ -505,19 +495,18 @@ def _parse_attribute(attribute_id: str, attribute_content: str) -> BratAttribute
 
 
 def _parse_note(note_id: str, note_content: str) -> BratNote:
-    """
-    Parse the annotation string into an Note structure.
+    """Parse the annotation string into an Note structure.
 
     Parameters
     ----------
     note_id : str
         The note ID defined in the annotation. (e.g., `#1`)
-    note_content: str
+    note_content : str
         The note text content. (e.g., `AnnotatorNotes T10	C0011849`)
 
     Returns
     -------
-    BratNote:
+    BratNote
         The dataclass object representing the note
 
     Raises

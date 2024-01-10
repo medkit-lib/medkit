@@ -332,7 +332,7 @@ def test_sanity_check():
     with pytest.raises(
         Exception,
         match=(
-            "Node with identifier .* has derived item with identifier .* but" " reciprocate source link does not exists"
+            "Node with identifier .* has derived item with identifier .* but reciprocate source link does not exists"
         ),
     ):
         graph_5.check_sanity()

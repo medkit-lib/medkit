@@ -199,7 +199,6 @@ def test_medkit_segments_to_spacy_docs(nlp_spacy):
 
 def test_normalization_attr(nlp_spacy):
     """Conversion of normalization objects to strings"""
-
     text = "Le patient souffre d'asthme"
     doc = TextDocument(text=text)
     entity = Entity(label="maladie", text="asthme", spans=[Span(21, 27)])

@@ -68,21 +68,19 @@ def extract_anns_and_attrs_from_spacy_doc(
     ValueError
         Raises when the given medkit source and the spacy doc do not have the same medkit uid
     """
-
     if attribute_factories is None:
         attribute_factories = {}
 
     # extensions to indicate the medkit origin
     _define_default_extensions()
     spacy_doc_medkit_id = spacy_doc._.get(_ATTR_MEDKIT_ID)
-    if spacy_doc_medkit_id is not None:
-        if medkit_source_ann is not None and medkit_source_ann.uid != spacy_doc_medkit_id:
-            msg = (
-                "The medkit uid of the Doc object is"
-                f" {spacy_doc_medkit_id}, the medkit source annotation"
-                f" provided has a different uid: {medkit_source_ann.uid}."
-            )
-            raise ValueError(msg)
+    if spacy_doc_medkit_id and medkit_source_ann and medkit_source_ann.uid != spacy_doc_medkit_id:
+        msg = (
+            "The medkit uid of the Doc object is"
+            f" {spacy_doc_medkit_id}, the medkit source annotation"
+            f" provided has a different uid: {medkit_source_ann.uid}."
+        )
+        raise ValueError(msg)
 
     # get annotations according to entities and name_spans_to_transfer
     spacy_entities = _get_ents_by_label(spacy_doc, entities)
@@ -115,10 +113,7 @@ def extract_anns_and_attrs_from_spacy_doc(
             if value is None:
                 continue
             factory = attribute_factories.get(attr_label)
-            if factory is not None:
-                attribute = factory(entity_spacy, attr_label)
-            else:
-                attribute = Attribute(attr_label, value)
+            attribute = factory(entity_spacy, attr_label) if factory else Attribute(attr_label, value)
             attributes.append(attribute)
 
         if attributes:
@@ -160,10 +155,7 @@ def extract_anns_and_attrs_from_spacy_doc(
                 if value is None:
                     continue
                 factory = attribute_factories.get(attr_label)
-                if factory is not None:
-                    attribute = factory(span_spacy, attr_label)
-                else:
-                    attribute = Attribute(attr_label, value)
+                attribute = factory(span_spacy, attr_label) if factory else Attribute(attr_label, value)
                 attributes.append(attribute)
 
             if attributes:
@@ -299,7 +291,8 @@ def build_spacy_doc_from_medkit_segment(
 
 def _add_entities_in_spacy_doc(spacy_doc: Doc, entities: List[Entity], attrs: List[str], include_medkit_info: bool):
     """Convert entities into spacy spans and modifies
-    the entities in the Doc object (doc.ents)"""
+    the entities in the Doc object (doc.ents)
+    """
     # create an intermediate list to check for overlaps
     spacy_entities = []
     for medkit_ent in entities:
@@ -332,8 +325,8 @@ def _add_segments_in_spacy_doc(
     include_medkit_info: bool,
 ):
     """Convert segments into a spacy spans and modifies
-    the spans in the Doc object (doc.spans)"""
-
+    the spans in the Doc object (doc.spans)
+    """
     for medkit_seg in segments:
         spacy_span = _segment_to_spacy_span(
             spacy_doc_target=spacy_doc,
@@ -343,7 +336,7 @@ def _add_segments_in_spacy_doc(
         )
         # it is not necessary to check overlaps,
         # the spans are added directly into the Doc object
-        if medkit_seg.label not in spacy_doc.spans.keys():
+        if medkit_seg.label not in spacy_doc.spans:
             spacy_doc.spans[medkit_seg.label] = [spacy_span]
         else:
             spacy_doc.spans[medkit_seg.label].append(spacy_span)
@@ -362,7 +355,6 @@ def _get_defined_spacy_attrs(include_medkit_attrs: bool = False) -> List[str]:
     List[str]:
         Name of spans extensions defined in Spacy
     """
-
     # `get_state` is a spacy function, it returns a tuple of dictionaries
     # with the information of the defined extensions (custom attributes)
     # where ([0]= token_extensions,[1]=span_extensions,[2]=doc_extensions)
@@ -453,7 +445,6 @@ def _get_text_and_spans_from_span_spacy(
     span_spacy: SpacySpan, medkit_source_ann: Optional[Segment]
 ) -> Tuple[str, List[AnySpan]]:
     """Return text and spans depending on the origin of the spacy span"""
-
     if medkit_source_ann is None:
         text = span_spacy.text
         spans = [Span(span_spacy.start_char, span_spacy.end_char)]
@@ -468,10 +459,8 @@ def _get_text_and_spans_from_span_spacy(
 
 
 def _get_ents_by_label(spacy_doc: Doc, entities: Optional[List[str]] = None) -> List[SpacySpan]:
-    if entities is None:
-        ents = list(spacy_doc.ents)
-    else:
-        ents = [ent for ent in spacy_doc.ents if ent.label_ in entities]
+    ents = [ent for ent in spacy_doc.ents if ent.label_ in entities] if entities else list(spacy_doc.ents)
+
     return ents
 
 

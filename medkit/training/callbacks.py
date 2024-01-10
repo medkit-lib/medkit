@@ -3,7 +3,6 @@ from __future__ import annotations
 __all__ = ["TrainerCallback", "DefaultPrinterCallback"]
 
 import logging
-from typing import Dict
 
 from tqdm import tqdm
 
@@ -15,31 +14,24 @@ class TrainerCallback:
 
     def on_train_begin(self, config: TrainerConfig):
         """Event called at the beginning of training"""
-        pass
 
     def on_train_end(self):
         """Event called at the end of training"""
-        pass
 
     def on_epoch_begin(self, epoch: int):
         """Event called at the beginning of an epoch"""
-        pass
 
-    def on_epoch_end(self, metrics: Dict[str, float], epoch: int, epoch_time: float):
+    def on_epoch_end(self, metrics: dict[str, float], epoch: int, epoch_time: float):
         """Event called at the end of an epoch"""
-        pass
 
     def on_step_begin(self, step_idx: int, nb_batches: int, phase: str):
         """Event called at the beginning of a step in training"""
-        pass
 
     def on_step_end(self, step_idx: int, nb_batches: int, phase: str):
         """Event called at the end of a step in training"""
-        pass
 
     def on_save(self, checkpoint_dir: str):
         """Event called on saving a checkpoint"""
-        pass
 
 
 class DefaultPrinterCallback(TrainerCallback):
@@ -66,9 +58,9 @@ class DefaultPrinterCallback(TrainerCallback):
     def on_train_begin(self, config):
         message = (
             "Running training:\n"
-            + f" Num epochs: {config.nb_training_epochs}\n"
-            + f" Train batch size:{config.batch_size}\n"
-            + f" Gradient accum steps: {config.gradient_accumulation_steps}\n"
+            f"\tNum epochs: {config.nb_training_epochs}\n"
+            f"\tTrain batch size:{config.batch_size}\n"
+            f"\tGradient accum steps: {config.gradient_accumulation_steps}\n"
         )
         self.logger.info(message)
 
@@ -96,7 +88,7 @@ class DefaultPrinterCallback(TrainerCallback):
         self.logger.info("Training is completed")
 
     def on_save(self, checkpoint_dir):
-        self.logger.info(f"Saving checkpoint in {checkpoint_dir}")
+        self.logger.info("Saving checkpoint in %s", checkpoint_dir)
 
     def on_step_begin(self, step_idx: int, nb_batches: int, phase: str):
         if step_idx == 0:

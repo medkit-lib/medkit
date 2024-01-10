@@ -21,15 +21,15 @@ from .doccano import (
 from .rttm import RTTMInputConverter, RTTMOutputConverter
 
 try:
-    from .spacy import SpacyInputConverter, SpacyOutputConverter  # noqa: F401
+    from .spacy import SpacyInputConverter, SpacyOutputConverter
 
-    __all__.extend(["SpacyInputConverter", "SpacyOutputConverter"])
+    __all__ += ["SpacyInputConverter", "SpacyOutputConverter"]
 except ImportError:
     pass
 
 try:
-    from .srt import SRTInputConverter, SRTOutputConverter  # noqa: F401
+    from .srt import SRTInputConverter, SRTOutputConverter
 
-    __all__.extend(["SRTInputConverter", "SRTOutputConverter"])
+    __all__ += ["SRTInputConverter", "SRTOutputConverter"]
 except ImportError:
     pass

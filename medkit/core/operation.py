@@ -3,7 +3,6 @@ from __future__ import annotations
 __all__ = ["Operation", "DocOperation"]
 
 import abc
-from typing import List
 
 from medkit.core.document import Document
 from medkit.core.id import generate_id
@@ -15,21 +14,20 @@ class Operation(abc.ABC):
     """Abstract class for all annotator modules"""
 
     uid: str
-    _description: OperationDescription = None
-    _prov_tracer: ProvTracer = None
+    _description: OperationDescription | None = None
+    _prov_tracer: ProvTracer | None = None
 
     @abc.abstractmethod
-    def __init__(self, uid=None, name=None, **kwargs):
-        """
-        Common initialization for all annotators:
+    def __init__(self, uid: str | None = None, name: str | None = None, **kwargs):
+        """Common initialization for all annotators:
           * assigning identifier to operation
           * storing class name, name and config in description
 
         Parameters
         ----------
-        uid:
+        uid: str, optional
             Operation identifier
-        name:
+        name: str, optional
             Operation name (defaults to class name)
         kwargs:
             All other arguments of the child init useful to describe the operation
@@ -56,12 +54,11 @@ class Operation(abc.ABC):
         )
 
     def set_prov_tracer(self, prov_tracer: ProvTracer):
-        """
-        Enable provenance tracing.
+        """Enable provenance tracing.
 
         Parameters
         ----------
-        prov_tracer:
+        prov_tracer: ProvTracer
             The provenance tracer used to trace the provenance.
         """
         self._prov_tracer = prov_tracer
@@ -77,12 +74,11 @@ class Operation(abc.ABC):
 
 
 class DocOperation(Operation):
-    """
-    Abstract operation directly executed on text documents.
+    """Abstract operation directly executed on text documents.
     It uses a list of documents as input for running the operation and creates
     annotations that are directly appended to these documents.
     """
 
     @abc.abstractmethod
-    def run(self, docs: List[Document]) -> None:
+    def run(self, docs: list[Document]) -> None:
         raise NotImplementedError

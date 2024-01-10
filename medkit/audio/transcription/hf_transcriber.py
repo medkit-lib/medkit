@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[hf-transcriber]`.
 """
 
@@ -38,8 +37,7 @@ class HFTranscriber(Operation):
         cache_dir: Optional[Union[str, Path]] = None,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         model:
             Name of the ASR model on the Hugging Face models hub. Must be a
@@ -70,7 +68,6 @@ class HFTranscriber(Operation):
         uid:
             Identifier of the transcriber.
         """
-
         super().__init__(
             model=model,
             output_label=output_label,
@@ -112,8 +109,7 @@ class HFTranscriber(Operation):
             )
 
     def run(self, segments: List[Segment]):
-        """
-        Add a transcription attribute to each segment with a text value
+        """Add a transcription attribute to each segment with a text value
         containing the transcribed text.
 
         Parameters
@@ -121,7 +117,6 @@ class HFTranscriber(Operation):
         segments:
             List of segments to transcribe
         """
-
         audios = [s.audio for s in segments]
         texts = self._transcribe_audios(audios)
 

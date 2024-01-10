@@ -85,7 +85,6 @@ def test_single_match():
 
 def test_attrs_to_copy():
     """Copying of selected attributes from input segment to created entity"""
-
     sentence = _get_segment("The patient has asthma.")
     # copied attribute
     neg_attr = Attribute(label="negation", value=False)

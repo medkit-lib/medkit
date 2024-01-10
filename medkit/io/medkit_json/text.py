@@ -23,8 +23,7 @@ def load_text_document(
     anns_input_file: Optional[Union[str, Path]] = None,
     encoding: Optional[str] = "utf-8",
 ) -> TextDocument:
-    """
-    Load a text document from a medkit-json file generated with
+    """Load a text document from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_text_document`.
 
     Parameters
@@ -42,7 +41,6 @@ def load_text_document(
     TextDocument
         The text document in the file
     """
-
     input_file = Path(input_file)
 
     with open(input_file, encoding=encoding) as fp:
@@ -58,8 +56,7 @@ def load_text_document(
 
 
 def load_text_documents(input_file: Union[str, Path], encoding: Optional[str] = "utf-8") -> Iterator[TextDocument]:
-    """
-    Returns an iterator on text documents loaded from a medkit-json file generated with
+    """Returns an iterator on text documents loaded from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_text_documents`
 
     Parameters
@@ -74,7 +71,6 @@ def load_text_documents(input_file: Union[str, Path], encoding: Optional[str] = 
     Iterator[TextDocument]
         An iterator to the text documents in the file
     """
-
     input_file = Path(input_file)
 
     with open(input_file, encoding=encoding) as fp:
@@ -89,8 +85,7 @@ def load_text_documents(input_file: Union[str, Path], encoding: Optional[str] = 
 
 
 def load_text_anns(input_file: Union[str, Path], encoding: Optional[str] = "utf-8") -> Iterator[TextAnnotation]:
-    """
-    Return an iterator on text annotations loaded from a medkit-json file generated with
+    """Return an iterator on text annotations loaded from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_text_anns`
 
     Parameters
@@ -105,7 +100,6 @@ def load_text_anns(input_file: Union[str, Path], encoding: Optional[str] = "utf-
     Iterator[TextAnnotation]
         An iterator to the text annotations in the file
     """
-
     input_file = Path(input_file)
 
     with open(input_file, encoding=encoding) as fp:
@@ -126,8 +120,7 @@ def save_text_document(
     anns_output_file: Optional[Union[str, Path]] = None,
     encoding: Optional[str] = "utf-8",
 ):
-    """
-    Save a text document into a medkit-json file.
+    """Save a text document into a medkit-json file.
 
     Parameters
     ----------
@@ -144,7 +137,6 @@ def save_text_document(
     encoding:
         Optional encoding of `output_file` and `anns_output_file`
     """
-
     output_file = Path(output_file)
     anns_output_file = Path(anns_output_file) if anns_output_file is not None else None
 
@@ -170,8 +162,7 @@ def save_text_documents(
     output_file: Union[str, Path],
     encoding: Optional[str] = "utf-8",
 ):
-    """
-    Save text documents into a medkit-json file.
+    """Save text documents into a medkit-json file.
 
     Parameters
     ----------
@@ -182,7 +173,6 @@ def save_text_documents(
     encoding:
         Optional encoding of `output_file`
     """
-
     output_file = Path(output_file)
 
     header = build_header(content_type=ContentType.TEXT_DOCUMENT_LIST)
@@ -199,8 +189,7 @@ def save_text_anns(
     output_file: Union[str, Path],
     encoding: Optional[str] = "utf-8",
 ):
-    """
-    Save text annotations into a medkit-json file.
+    """Save text annotations into a medkit-json file.
 
     Parameters
     ----------
@@ -211,7 +200,6 @@ def save_text_anns(
     encoding:
         Optional encoding of `output_file`
     """
-
     output_file = Path(output_file)
 
     header = build_header(content_type=ContentType.TEXT_ANNOTATION_LIST)

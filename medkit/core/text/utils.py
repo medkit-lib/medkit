@@ -17,7 +17,7 @@ __all__ = [
 import re
 from typing import List, Tuple, Union
 
-import medkit.core.text.span_utils as span_utils
+from medkit.core.text import span_utils
 from medkit.core.text.span import AnySpan
 
 # Some strings for character classification
@@ -35,16 +35,19 @@ def clean_newline_character(text: str, spans: List[AnySpan], keep_endlines: bool
 
     Parameters
     ----------
-    text:
+    text : str
         The text to be modified
-    spans:
+    spans : list of AnySpan
         Spans associated to the `text`
-    keep_endlines:
+    keep_endlines : bool, default=False
         Whether to keep the endlines as '.\\\\n' or replace them with '. '
 
     Returns
     -------
-        The cleaned text and the list of spans updated
+    text : str
+        The cleaned text
+    spans : list of AnySpan
+        The list of modified spans
 
     Examples
     --------
@@ -58,7 +61,6 @@ def clean_newline_character(text: str, spans: List[AnySpan], keep_endlines: bool
     >>> print(text)
     This is a sentence.
     Another sentence here
-
     """
     text, spans = replace_multiple_newline_after_sentence(text, spans)
     text, spans = replace_newline_inside_sentence(text, spans)
@@ -100,7 +102,7 @@ def clean_multiple_whitespaces_in_sentence(text: str, spans: List[AnySpan]) -> T
     """Replace multiple white-spaces between alphanumeric characters and
     lowercase characters with a single whitespace
 
-    Example
+    Example:
     -------
     >>> text = "A   phrase    with  multiple   spaces     "
     >>> spans = [Span(0, len(text))]
@@ -126,21 +128,24 @@ def replace_point_after_keywords(
 
     Parameters
     ----------
-    text:
+    text : str
         The text to be modified
-    spans:
+    spans : list of AnySpan
         Spans associated to the `text`
-    keywords:
+    keywords : list of str
         Word or pattern to match before a point
-    strict:
+    strict : bool, default=False
         If True, the keyword must be followed by a point.
         If False, the keyword could have zero or many whitespaces before a point
-    replace_by:
+    replace_by : str, default=" "
         Replacement string
 
     Returns
-    ------
-        The text with the replaced matches and the updated list of spans
+    -------
+    text : str
+        The text with the replaced matches
+    spans : list of AnySpan
+        The list of modified spans
 
     Examples
     --------
@@ -150,14 +155,10 @@ def replace_point_after_keywords(
     >>> text, spans = replace_point_after_keywords(text, spans, keywords, replace_by="")
     >>> print(text)
     Le Dr a un rdv. Mme Bernand est venue à 14h
-
     """
     # Create a list regex using '\b' to indicate that keyword is a word
     keywords_regexp = "|".join([rf"\b{keyword}" for keyword in keywords])
-    if strict:
-        pattern = rf"(?:{keywords_regexp})(\.)"  # point after kw
-    else:
-        pattern = rf"(?:{keywords_regexp})(\s*\.)"  # zero or many whitespaces after kw
+    pattern = rf"(?:{keywords_regexp})(\.)" if strict else rf"(?:{keywords_regexp})(\s*\.)"
 
     # The first group has the span of interest
     text, spans = _replace_text(text, spans, pattern, repl=replace_by, group=1)
@@ -170,15 +171,17 @@ def replace_multiple_newline_after_sentence(text: str, spans: List[AnySpan]) -> 
 
     Parameters
     ----------
-    text:
+    text : str
         The text to be modified
-    spans:
+    spans : list of AnySpan
         Spans associated to the `text`
 
     Returns
-    ------
-        The cleaned text and the list of spans updated
-
+    -------
+    text : str
+        The cleaned text
+    spans : list of AnySpan
+        The list of modified spans
     """
     pattern = rf"(?P<blanks>\r?\n[\r\n]*)[\t\s]*[{_NUMERIC_CHARS}{_UPPERCASE_CHARS}]"
     replace_by = "\n"
@@ -192,15 +195,17 @@ def replace_newline_inside_sentence(text: str, spans: List[AnySpan]) -> Tuple[st
 
     Parameters
     ----------
-    text:
+    text : str
         The text to be modified
-    spans:
+    spans : list of AnySpan
         Spans associated to the `text`
 
     Returns
-    ------
-        The cleaned text and the list of spans updated
-
+    -------
+    text : str
+        The cleaned text
+    spans : list of AnySpan
+        The list of modified spans
     """
     pattern = rf"(?P<blanks>\r?\n[\r\n]*)[\t\s]*[{_LOWERCASE_CHARS}{_PUNCT_CHARS}]"
     replace_by = " "
@@ -292,7 +297,7 @@ def replace_point_in_numbers(text: str, spans: List[AnySpan]) -> Tuple[str, List
     """Replace the character '.' between numbers
     with the character ',' a space and update its span.
 
-    Example
+    Example:
     -------
     >>> text = "La valeur est de 3.456."
     >>> spans = [Span(0, len(text))]
@@ -315,36 +320,50 @@ def replace_point_before_keywords(text: str, spans: List[AnySpan], keywords: Lis
     return text, spans
 
 
-def lstrip(text: str, start: int = 0, chars: str = None) -> Tuple[str, int]:
+def lstrip(text: str, start: int = 0, chars: str | None = None) -> Tuple[str, int]:
     """Returns a copy of the string with leading characters removed
     and its corresponding new start index.
 
     Parameters
     ----------
-    text
+    text : str
         The text to strip.
-    start
+    start : int, default=0
         The start index from the original text if any.
-    chars
+    chars : str, optional
         The list of characters to strip. Default behaviour is like `str.lstrip([chars])`.
+
+    Returns
+    -------
+    new_text : str
+        New text
+    new_start : int
+        New start index
     """
     new_text = text.lstrip(chars)
     new_start = start + (len(text) - len(new_text))
     return new_text, new_start
 
 
-def rstrip(text: str, end: int = None, chars: str = None) -> Tuple[str, int]:
+def rstrip(text: str, end: int | None = None, chars: str | None = None) -> Tuple[str, int]:
     """Returns a copy of the string with trailing characters removed
     and its corresponding new end index.
 
     Parameters
     ----------
-    text
+    text : str
         The text to strip.
-    end
+    end : int, optional
         The end index from the original text if any.
-    chars
+    chars : str, optional
         The list of characters to strip. Default behaviour is like `str.rstrip([chars])`.
+
+    Returns
+    -------
+    new_text : str
+        New text
+    new_end : int
+        New end index
     """
     if end is None:
         end = len(text)
@@ -353,18 +372,27 @@ def rstrip(text: str, end: int = None, chars: str = None) -> Tuple[str, int]:
     return new_text, new_end
 
 
-def strip(text: str, start: int = 0, chars: str = None) -> Tuple[str, int, int]:
+def strip(text: str, start: int = 0, chars: str | None = None) -> Tuple[str, int, int]:
     """Returns a copy of the string with leading characters removed
     and its corresponding new start and end indexes.
 
     Parameters
     ----------
-    text
+    text : str
         The text to strip.
-    start
+    start : int, default=0
         The start index from the original text if any.
-    chars
+    chars : str, optional
         The list of characters to strip. Default behaviour is like `str.lstrip([chars])`.
+
+    Returns
+    -------
+    new_text : str
+        New text
+    new_start : int
+        New start index
+    new_end : int
+        New end index
     """
     new_text, new_start = lstrip(text, start, chars)
     new_end = new_start + len(new_text)

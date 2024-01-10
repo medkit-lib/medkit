@@ -9,7 +9,7 @@ import shutil
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable
 
 import numpy as np
 import torch
@@ -64,12 +64,11 @@ class Trainer:
         config: TrainerConfig,
         train_data: Any,
         eval_data: Any,
-        metrics_computer: Optional[MetricsComputer] = None,
-        lr_scheduler_builder: Optional[Callable[[torch.optim.Optimizer], Any]] = None,
-        callback: Optional[TrainerCallback] = None,
+        metrics_computer: MetricsComputer | None = None,
+        lr_scheduler_builder: Callable[[torch.optim.Optimizer], Any] | None = None,
+        callback: TrainerCallback | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         component:
             The component to train, the component must implement the `TrainableComponent` protocol.
@@ -125,7 +124,8 @@ class Trainer:
 
     def get_dataloader(self, data: any, shuffle: bool) -> DataLoader:
         """Return a DataLoader with transformations defined
-        in the component to train"""
+        in the component to train
+        """
         dataset = _TrainerDataset(data, self.component)
         collate_fn = self.component.collate
         return DataLoader(
@@ -138,9 +138,8 @@ class Trainer:
             pin_memory=self.dataloader_pin_memory,
         )
 
-    def training_epoch(self) -> Dict[str, float]:
-        """
-        Perform an epoch using the training data.
+    def training_epoch(self) -> dict[str, float]:
+        """Perform an epoch using the training data.
 
         When the config enabled metrics in training ('do_metrics_in_training' is True),
         the additional metrics are prepared per batch.
@@ -182,9 +181,8 @@ class Trainer:
             metrics.update(self.metrics_computer.compute(dict(data_for_metrics)))
         return metrics
 
-    def evaluation_epoch(self, eval_dataloader) -> Dict[str, float]:
-        """
-        Perform an epoch using the evaluation data.
+    def evaluation_epoch(self, eval_dataloader) -> dict[str, float]:
+        """Perform an epoch using the evaluation data.
 
         The additional metrics are prepared per batch.
         Return a dictionary with metrics.
@@ -214,7 +212,7 @@ class Trainer:
             metrics.update(self.metrics_computer.compute(dict(data_for_metrics)))
         return metrics
 
-    def make_forward_pass(self, inputs: BatchData, eval_mode: bool) -> Tuple[BatchData, torch.Tensor]:
+    def make_forward_pass(self, inputs: BatchData, eval_mode: bool) -> tuple[BatchData, torch.Tensor]:
         """Run forward safely, same device as the component"""
         inputs = inputs.to_device(self.device)
         model_output, loss = self.component.forward(inputs, return_loss=True, eval_mode=eval_mode)
@@ -224,7 +222,7 @@ class Trainer:
 
         return model_output, loss
 
-    def update_learning_rate(self, eval_metrics: Dict[str, float]):
+    def update_learning_rate(self, eval_metrics: dict[str, float]):
         """Call the learning rate scheduler if defined"""
         if self.lr_scheduler is None:
             return
@@ -241,9 +239,8 @@ class Trainer:
         else:
             self.lr_scheduler.step()
 
-    def train(self) -> List[Dict]:
-        """
-        Main training method. Call the training / eval loop.
+    def train(self) -> list[dict]:
+        """Main training method. Call the training / eval loop.
 
         Return a list with the metrics per epoch.
         """
@@ -298,8 +295,7 @@ class Trainer:
         return log_history
 
     def save(self, epoch: int) -> str:
-        """
-        Save a checkpoint (trainer configuration, model weights, optimizer and
+        """Save a checkpoint (trainer configuration, model weights, optimizer and
         scheduler)
 
         Parameters
@@ -313,7 +309,6 @@ class Trainer:
         Path:
             Path of the checkpoint saved
         """
-
         current_date = datetime.datetime.now().strftime("%d-%m-%Y_%H:%M")
         name = f"checkpoint_{epoch:03d}_{current_date}"
 

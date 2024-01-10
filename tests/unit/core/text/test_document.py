@@ -11,7 +11,7 @@ from tests.data_utils import get_text_document
 # TODO remove tests redundant with test_annotation_container
 
 
-@pytest.fixture()
+@pytest.fixture
 def init_data():
     doc = TextDocument(text="")
     attribute = Attribute(label="Negation")
@@ -116,10 +116,10 @@ def test_snippet():
 
 
 def test_from_dir():
-    dir = Path("tests/data/text")
-    docs = TextDocument.from_dir(dir, pattern="doc[1-3].txt")
+    dir_ = Path("tests/data/text")
+    docs = TextDocument.from_dir(dir_, pattern="doc[1-3].txt")
     assert len(docs) == 3
-    assert docs[0].metadata["path_to_text"] == str((dir / "doc1.txt").absolute())
-    assert docs[0].text == (dir / "doc1.txt").read_text()
-    assert docs[1].text == (dir / "doc2.txt").read_text()
-    assert docs[2].text == (dir / "doc3.txt").read_text()
+    assert docs[0].metadata["path_to_text"] == str((dir_ / "doc1.txt").absolute())
+    assert docs[0].text == (dir_ / "doc1.txt").read_text()
+    assert docs[1].text == (dir_ / "doc2.txt").read_text()
+    assert docs[2].text == (dir_ / "doc3.txt").read_text()

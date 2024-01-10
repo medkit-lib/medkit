@@ -19,7 +19,8 @@ def _create_segments_tree(
     Returns
     -------
     IntervalTree
-        Interval tree from the target segments"""
+    Interval tree from the target segments
+    """
     tree = IntervalTree()
     for segment in target_segments:
         normalized_spans = span_utils.normalize_spans(segment.spans)

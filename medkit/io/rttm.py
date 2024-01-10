@@ -53,17 +53,15 @@ class RTTMInputConverter(InputConverter):
         speaker_label: str = "speaker",
         converter_id: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        turn_label:
+        turn_label : str, default="turn"
             Label of segments representing turns in the .rttm file.
-        speaker_label:
+        speaker_label : str, default="speaker"
             Label of speaker attributes to add to each segment.
-        converter_id:
+        converter_id : str, optional
             Identifier of the converter.
         """
-
         if converter_id is None:
             converter_id = generate_id()
 
@@ -90,7 +88,6 @@ class RTTMInputConverter(InputConverter):
         prov_tracer:
             The provenance tracer used to trace the provenance.
         """
-
         self._prov_tracer = prov_tracer
 
     def load(
@@ -99,8 +96,7 @@ class RTTMInputConverter(InputConverter):
         audio_dir: Optional[Union[str, Path]] = None,
         audio_ext: str = ".wav",
     ) -> List[AudioDocument]:
-        """
-        Load all .rttm files in a directory into a list of
+        """Load all .rttm files in a directory into a list of
         :class:`~medkit.core.audio.document.AudioDocument` objects.
 
         For each .rttm file, they must be a corresponding audio file with the
@@ -109,20 +105,19 @@ class RTTMInputConverter(InputConverter):
 
         Parameters
         ----------
-        rttm_dir:
+        rttm_dir : str or Path
             Directory containing the .rttm files.
-        audio_dir:
+        audio_dir : str or Path, optional
             Directory containing the audio files corresponding to the .rttm files,
             if they are not in `rttm_dir`.
-        audio_ext:
+        audio_ext : str, default=".wav"
             File extension to use for audio files.
 
         Returns
         -------
-        List[AudioDocument]
+        list of AudioDocument
             List of generated documents.
         """
-
         rttm_dir = Path(rttm_dir)
         if audio_dir is not None:
             audio_dir = Path(audio_dir)
@@ -131,16 +126,15 @@ class RTTMInputConverter(InputConverter):
         for rttm_file in sorted(rttm_dir.glob("*.rttm")):
             # corresponding audio file must have same base name with audio extension,
             # either in the same directory or in audio_dir if provided
-            if audio_dir:
-                audio_file = (audio_dir / rttm_file.stem).with_suffix(audio_ext)
-            else:
-                audio_file = rttm_file.with_suffix(audio_ext)
+            audio_file = (
+                (audio_dir / rttm_file.stem).with_suffix(audio_ext) if audio_dir else rttm_file.with_suffix(audio_ext)
+            )
 
             doc = self.load_doc(rttm_file, audio_file)
             docs.append(doc)
 
         if len(docs) == 0:
-            logger.warning(f"No .rttm found in '{rttm_dir}'")
+            logger.warning("No .rttm found in '%s'", rttm_dir)
 
         return docs
 
@@ -150,17 +144,16 @@ class RTTMInputConverter(InputConverter):
 
         Parameters
         ----------
-        rttm_file:
+        rttm_file : str or Path
             Path to the .rttm file.
-        audio_file:
+        audio_file : str or Path
             Path to the corresponding audio file.
 
         Returns
         -------
-        AudioDocument:
+        AudioDocument
             Generated document.
         """
-
         rttm_file = Path(rttm_file)
         audio_file = Path(audio_file)
 
@@ -190,7 +183,6 @@ class RTTMInputConverter(InputConverter):
         List[:class:`~medkit.core.audio.annotation.Segment`]:
             Turn segments as found in the .rttm file.
         """
-
         rttm_file = Path(rttm_file)
         audio_file = Path(audio_file)
 
@@ -207,7 +199,7 @@ class RTTMInputConverter(InputConverter):
 
         file_id = rows[0]["file_id"]
         if not all(r["file_id"] == file_id for r in rows):
-            raise RuntimeError("Multi-file .rttm are not supported, all entries should have same" " file_id or <NA>")
+            raise RuntimeError("Multi-file .rttm are not supported, all entries should have same file_id or <NA>")
 
         return rows
 
@@ -237,15 +229,13 @@ class RTTMOutputConverter(OutputConverter):
     """
 
     def __init__(self, turn_label: str = "turn", speaker_label: str = "speaker"):
-        """
-        Parameters
+        """Parameters
         ----------
         turn_label:
             Label of segments representing turns in the audio documents.
         speaker_label:
             Label of speaker attributes attached to each turn segment.
         """
-
         super().__init__()
 
         self.turn_label = turn_label
@@ -271,7 +261,6 @@ class RTTMOutputConverter(OutputConverter):
             generated .rttm files (2d column). If none provided, the document
             ids will be used.
         """
-
         rttm_dir = Path(rttm_dir)
 
         if doc_names is not None:
@@ -305,7 +294,6 @@ class RTTMOutputConverter(OutputConverter):
             File uid to use for the generated .rttm file (2d column). If none
             provided, the document uid will be used.
         """
-
         rttm_file = Path(rttm_file)
         if rttm_doc_id is None:
             rttm_doc_id = doc.uid
@@ -330,7 +318,6 @@ class RTTMOutputConverter(OutputConverter):
         rttm_doc_id:
             File uid to use for the generated .rttm file (2d column).
         """
-
         rttm_file = Path(rttm_file)
 
         rows = [self._build_rttm_row(s, rttm_doc_id) for s in turn_segments]

@@ -159,7 +159,6 @@ def test_verbs():
 
 def test_empty_segment():
     """Make sure an attribute is created with False value even for empty segments"""
-
     syntagmas = _get_syntagma_segments(["", " .", "21."])
     rule = HypothesisDetectorRule(id="id_if", regexp=r"\bif\b")
     detector = HypothesisDetector(output_label="hypothesis", rules=[rule])

@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[hf-entity-matcher]`.
 """
 
@@ -18,8 +17,7 @@ from medkit.tools import hf_utils
 
 
 class HFEntityMatcher(NEROperation):
-    """
-    Entity matcher based on HuggingFace transformers model
+    """Entity matcher based on HuggingFace transformers model
 
     Any token classification model from the HuggingFace hub can be used
     (for instance "samrawal/bert-base-uncased_clinical-ner").
@@ -37,8 +35,7 @@ class HFEntityMatcher(NEROperation):
         name: Optional[str] = None,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         model:
             Name (on the HuggingFace models hub) or path of the NER model. Must be a model compatible
@@ -79,7 +76,7 @@ class HFEntityMatcher(NEROperation):
         self.model = model
         self.attrs_to_copy = attrs_to_copy
 
-        valid_model = hf_utils.check_model_for_task_HF(self.model, "token-classification", hf_auth_token=hf_auth_token)
+        valid_model = hf_utils.check_model_for_task_hf(self.model, "token-classification", hf_auth_token=hf_auth_token)
 
         if not valid_model:
             raise ValueError(
@@ -162,8 +159,7 @@ class HFEntityMatcher(NEROperation):
         hf_auth_token: Optional[str] = None,
         device: int = -1,
     ):
-        """
-        Return the trainable component of the operation.
+        """Return the trainable component of the operation.
         This component can be trained using :class:`~medkit.training.Trainer`, and then
         used in a new `HFEntityMatcher` operation.
         """

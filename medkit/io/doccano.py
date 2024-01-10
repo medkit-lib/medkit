@@ -50,9 +50,9 @@ class DoccanoClientConfig:
 
     Attributes
     ----------
-    column_text:
+    column_text : str, default="text"
         Name or key representing the text
-    column_label:
+    column_label : str, default="label"
         Name or key representing the label
     """
 
@@ -162,10 +162,11 @@ class _DoccanoDocTextClassification:
         label = doc_line.pop(client_config.column_label)[0]
 
         if not isinstance(label, str):
-            raise TypeError(
+            msg = (
                 "The label must be a string. Please check if the document corresponds"
                 " to a text classification task rather than sequence labeling"
             )
+            raise TypeError(msg)
         # in doccano, metadata is what remains after removing key fields
         metadata = doc_line
         return cls(text=text, label=label, metadata=metadata)
@@ -198,18 +199,17 @@ class DoccanoInputConverter:
         attr_label: str = "doccano_category",
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        task:
+        task : DocanoTask
             The doccano task for the input converter
-        client_config:
+        client_config : DoccanoClientConfig, optional
             Optional client configuration to define default values in doccano interface.
             This config can change, for example, the name of the text field or labels.
-        attr_label:
+        attr_label : str, default="doccano_category"
             The label to use for the medkit attribute that represents the doccano category.
             This is related to :class:`~.io.DoccanoTask.TEXT_CLASSIFICATION` projects.
-        uid:
+        uid : str, optional
             Identifier of the converter.
         """
         if uid is None:
@@ -229,7 +229,7 @@ class DoccanoInputConverter:
 
         Parameters
         ----------
-        prov_tracer:
+        prov_tracer : ProvTracer
             The provenance tracer used to trace the provenance.
         """
         self._prov_tracer = prov_tracer
@@ -250,12 +250,12 @@ class DoccanoInputConverter:
 
         Parameters
         ----------
-        dir_path:
+        dir_path : str or Path
             The path to the directory containing zip files.
 
         Returns
         -------
-        List[TextDocument]
+        list of TextDocument
             A list of TextDocuments
         """
         documents = []
@@ -263,26 +263,24 @@ class DoccanoInputConverter:
             documents.extend(self.load_from_zip(path_zip))
 
         if len(documents) == 0:
-            logger.warning(f"No .zip nor .jsonl found in '{dir_path}'")
+            logger.warning("No .zip nor .jsonl found in '%s'", dir_path)
 
         return documents
 
     def load_from_zip(self, input_file: Union[str, Path]) -> List[TextDocument]:
-        """
-        Create a list of TextDocuments from a zip file containing a JSONL file
+        """Create a list of TextDocuments from a zip file containing a JSONL file
         coming from doccano.
 
         Parameters
         ----------
-        input_file:
+        input_file : str or Path
             The path to the zip file containing a docanno JSONL file
 
         Returns
         -------
-        List[TextDocument]
+        list of TextDocument
             A list of TextDocuments
         """
-
         with tempfile.TemporaryDirectory() as tmpdir:
             with ZipFile(input_file, mode="r") as zip_file:
                 filename = zip_file.namelist()[0]
@@ -295,12 +293,12 @@ class DoccanoInputConverter:
 
         Parameters
         ----------
-        input_file:
+        input_file : str or Path
             The path to the JSONL file containing doccano annotations
 
         Returns
         -------
-        List[TextDocument]
+        list of TextDocument
             A list of TextDocuments
         """
         documents = []
@@ -316,18 +314,21 @@ class DoccanoInputConverter:
     def _check_crlf_character(self, documents: List[TextDocument]):
         """Check if the list of converted documents contains the CRLF character.
         This character is the only indicator available to warn
-        if there are alignment problems in the documents"""
+        if there are alignment problems in the documents
+        """
         if self.task == DoccanoTask.RELATION_EXTRACTION or self.task == DoccanoTask.SEQUENCE_LABELING:
             nb_docs_with_warning = sum(document.text.find("\r\n") != -1 for document in documents)
 
             if nb_docs_with_warning > 0:
                 logger.warning(
-                    f"{nb_docs_with_warning}/{len(documents)} documents contain"
+                    "%s / %s documents contain"
                     " '\\r\\n' characters. If you have selected 'Count grapheme"
                     " clusters as one character' when creating the doccano project,"
                     " converted documents are likely to have alignment problems.\n"
                     " Please ignore this message if you did not select this option when"
-                    " creating the project."
+                    " creating the project.",
+                    nb_docs_with_warning,
+                    nb_docs_with_warning,
                 )
 
     def _parse_doc_line(self, doc_line: Dict[str, Any]) -> TextDocument:
@@ -335,7 +336,7 @@ class DoccanoInputConverter:
 
         Parameters
         ----------
-        doc_line:
+        doc_line : dict of str to Any
             A dictionary representing an annotation from doccano
 
         Returns
@@ -355,7 +356,7 @@ class DoccanoInputConverter:
 
         Parameters
         ----------
-        doc_line:
+        doc_line : dict of str to Any
             Dictionary with doccano annotation
 
         Returns
@@ -365,11 +366,12 @@ class DoccanoInputConverter:
         """
         try:
             doccano_doc = _DoccanoDocRelationExtraction.from_dict(doc_line, client_config=self.client_config)
-        except Exception as err:
-            raise Exception(
+        except TypeError as err:
+            msg = (
                 "Impossible to convert the document. Please check the task"
-                " or the client configuration of the converter"
-            ) from err
+                " or the client configuration of the converter."
+            )
+            raise ValueError(msg) from err
 
         ents_by_doccano_id = dict()
         relations = []
@@ -412,7 +414,7 @@ class DoccanoInputConverter:
 
         Parameters
         ----------
-        doc_line:
+        doc_line : dict of str to Any
             Dictionary with doccano annotation.
 
         Returns
@@ -422,11 +424,12 @@ class DoccanoInputConverter:
         """
         try:
             doccano_doc = _DoccanoDocSeqLabeling.from_dict(doc_line, client_config=self.client_config)
-        except Exception as err:
-            raise Exception(
+        except TypeError as err:
+            msg = (
                 "Impossible to convert the document. Please check the task"
-                " or the client configuration of the converter"
-            ) from err
+                " or the client configuration of the converter."
+            )
+            raise ValueError(msg) from err
 
         entities = []
         for doccano_entity in doccano_doc.entities:
@@ -453,7 +456,7 @@ class DoccanoInputConverter:
 
         Parameters
         ----------
-        doc_line:
+        doc_line : dict of str to Any
             Dictionary with doccano annotation.
 
         Returns
@@ -463,11 +466,12 @@ class DoccanoInputConverter:
         """
         try:
             doccano_doc = _DoccanoDocTextClassification.from_dict(doc_line, client_config=self.client_config)
-        except Exception as err:
-            raise Exception(
+        except TypeError as err:
+            msg = (
                 "Impossible to convert the document. Please check the task"
-                " or the client configuration of the converter"
-            ) from err
+                " or the client configuration of the converter."
+            )
+            raise ValueError(msg) from err
 
         attr = Attribute(label=self.attr_label, value=doccano_doc.label)
 
@@ -494,28 +498,27 @@ class DoccanoOutputConverter:
         include_metadata: Optional[bool] = True,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        task:
+        task : DoccanoTask
             The doccano task for the input converter
-        anns_labels:
+        anns_labels : list of str, optional
             Labels of medkit annotations to convert into doccano annotations.
             If `None` (default) all the entities or relations will be converted.
             Useful for :class:`~.io.DoccanoTask.SEQUENCE_LABELING` or
             :class:`~.io.DoccanoTask.RELATION_EXTRACTION` converters.
-        attr_label:
+        attr_label : str, optional
             The label of the medkit attribute that represents the text category.
             Useful for :class:`~.io.DoccanoTask.TEXT_CLASSIFICATION` converters.
-        ignore_segments:
+        ignore_segments : bool, default=True
             If `True` medkit segments will be ignored. Only entities will be
             converted to Doccano entities.  If `False` the medkit segments will
             be converted to Doccano entities as well.
             Useful for :class:`~.io.DoccanoTask.SEQUENCE_LABELING` or
             :class:`~.io.DoccanoTask.RELATION_EXTRACTION` converters.
-        include_metadata:
+        include_metadata : bool, default=True
             Whether include medkit metadata in the converted documents
-        uid:
+        uid : str, optional
             Identifier of the converter.
         """
         if uid is None:
@@ -542,12 +545,11 @@ class DoccanoOutputConverter:
 
         Parameters
         ----------
-        docs:
+        docs : list of TextDocument
             List of medkit doc objects to convert
-        output_file:
+        output_file : str or Pathg
             Path or string of the JSONL file where to save the converted documents
         """
-
         output_file = Path(output_file)
 
         with open(output_file, mode="w", encoding="utf-8") as fp:
@@ -560,12 +562,12 @@ class DoccanoOutputConverter:
 
         Parameters
         ----------
-        medkit_doc:
+        medkit_doc : TextDocument
             Document to convert
 
         Returns
         -------
-        Dict[str,Any]
+        dict of str to Any
             Dictionary with doccano annotation
         """
         if self.task == DoccanoTask.RELATION_EXTRACTION:
@@ -581,14 +583,13 @@ class DoccanoOutputConverter:
 
         Parameters
         ----------
-        medkit_doc:
-            Document to convert, it may contain entities and relations
+        medkit_doc : TextDocument
+            Document to convert, it may contain entities and relations.
 
         Returns
         -------
-        Dict[str,Any]
-            Dictionary with doccano annotation. It may contain
-            text, entities and relations
+        dict of str to Any
+            Dictionary with doccano annotation. It may contain text, entities and relations.
         """
         doccano_ents_by_medkit_uid = dict()
         doccano_relations = []
@@ -614,7 +615,7 @@ class DoccanoOutputConverter:
             obj = doccano_ents_by_medkit_uid.get(medkit_relation.target_id)
 
             if subj is None or obj is None:
-                logger.warning(f"Ignore relation {medkit_relation.uid}. Entity source/target was" " no found")
+                logger.warning("Ignore relation %s. Entity source/target was no found", medkit_relation.uid)
                 continue
 
             ann_id = generate_deterministic_id(medkit_relation.uid)
@@ -643,14 +644,14 @@ class DoccanoOutputConverter:
 
         Parameters
         ----------
-        medkit_doc:
-            Document to convert, it may contain entities
+        medkit_doc : TextDocument
+            Document to convert, it may contain entities.
 
         Returns
         -------
-        Dict[str,Any]
+        dict of str to Any
             Dictionary with doccano annotation. It may contain
-            text ans its label (a list of tuples representing entities)
+            text ans its label (a list of tuples representing entities).
         """
         anns_by_type = get_anns_by_type(medkit_doc, self.anns_labels)
         medkit_segments = anns_by_type["entities"]
@@ -681,14 +682,14 @@ class DoccanoOutputConverter:
 
         Parameters
         ----------
-        medkit_doc:
+        medkit_doc : TextDocument
             Document to convert, it may contain at least one attribute to convert.
 
         Returns
         -------
-        Dict[str,Any]
+        dict of str to Any
             Dictionary with doccano annotation. It may contain
-            text ans its label (a category(str))
+            text ans its label (a category(str)).
         """
         attributes = medkit_doc.attrs.get(label=self.attr_label)
 

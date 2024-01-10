@@ -1,4 +1,4 @@
-__all__ = ["save_prov_to_dot", "mtsamples", "e3c_corpus"]
+__all__ = ["save_prov_to_dot", "mtsamples", "e3c_corpus", "modules_are_available"]
 
 from medkit.core.utils import modules_are_available
 

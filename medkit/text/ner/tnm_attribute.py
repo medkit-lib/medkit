@@ -1,5 +1,4 @@
-"""
-This package needs extra-dependencies not installed as core dependencies of medkit.
+"""This package needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit[edsnlp]`.
 """
 
@@ -23,8 +22,7 @@ from medkit.core import Attribute, dict_conv
 
 @dataclasses.dataclass
 class TNMAttribute(Attribute):
-    """
-    Attribute destructuring the fields of a TNM string.
+    """Attribute destructuring the fields of a TNM string.
 
     The TNM (Tumour/Node/Metastasis) system is used to describe cancer stages.
 

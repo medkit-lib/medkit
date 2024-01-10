@@ -27,7 +27,7 @@ _LOAD_TEST_PARAMS = [
             UMLSEntry(cui="C0011854", term="Diabète de type 1"),
             UMLSEntry(cui="C0011860", term="Diabetes Mellitus, Non-Insulin-Dependent"),
             UMLSEntry(cui="C0011860", term="Diabète de type 2"),
-            UMLSEntry(cui='C0038454', term='AVC (Accident Vasculaire Cérébral)'),
+            UMLSEntry(cui="C0038454", term="AVC (Accident Vasculaire Cérébral)"),
         ],
     ),
     # filter on language

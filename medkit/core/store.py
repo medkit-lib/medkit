@@ -1,8 +1,8 @@
 __all__ = ["Store", "GlobalStore"]
 
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, runtime_checkable
 
-from typing_extensions import Protocol, runtime_checkable
+from typing_extensions import Protocol
 
 from medkit.core.data_item import IdentifiableDataItem
 
@@ -45,8 +45,7 @@ class GlobalStore:
 
     @classmethod
     def init_store(cls, store: Store):
-        """
-        Initialize the global store for your application
+        """Initialize the global store for your application
 
         Parameters
         ----------
@@ -69,8 +68,7 @@ class GlobalStore:
 
     @classmethod
     def get_store(cls) -> Store:
-        """
-        Returns the global store object
+        """Returns the global store object
 
         Returns
         -------
@@ -83,7 +81,5 @@ class GlobalStore:
 
     @classmethod
     def del_store(cls):
-        """
-        Delete the global store object
-        """
+        """Delete the global store object"""
         cls._store = None

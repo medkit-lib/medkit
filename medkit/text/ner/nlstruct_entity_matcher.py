@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[nlstruct]`.
 """
 
@@ -24,8 +23,7 @@ _EMBEDDING_REGISTRY_NAME = "word_embeddings"
 
 
 class NLStructEntityMatcher(NEROperation):
-    """
-    Entity matcher based on a NLstruct InformationExtraction model.
+    """Entity matcher based on a NLstruct InformationExtraction model.
     The matcher expects a directory with a torch checkpoint and a text file if
     the model was pretrained using word embeddings.
 
@@ -56,8 +54,7 @@ class NLStructEntityMatcher(NEROperation):
         name: Optional[str] = None,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         model_name_or_dirpath:
             Name (on the HuggingFace models hub) or dirpath of the NLstruct model.
@@ -98,7 +95,7 @@ class NLStructEntityMatcher(NEROperation):
         if self.model_name_or_dirpath.exists():
             checkpoint_dir = self.model_name_or_dirpath
         else:
-            allow_patterns = _PYTORCH_FILES + [_TXT_FILES]
+            allow_patterns = [*_PYTORCH_FILES, _TXT_FILES]
             # download only allowed files
             checkpoint_dir = huggingface_hub.snapshot_download(
                 repo_id=str(model_name_or_dirpath),

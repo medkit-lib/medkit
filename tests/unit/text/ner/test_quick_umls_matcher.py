@@ -5,11 +5,11 @@ import pytest
 packaging = pytest.importorskip(modname="packaging", reason="packaging is not installed")
 quickumls = pytest.importorskip(modname="quickumls", reason="quickumls is not installed")
 
-import spacy.cli  # noqa: E402
+import spacy.cli
 
-from medkit.core import Attribute, ProvTracer  # noqa: E402
-from medkit.core.text import Segment, Span, UMLSNormAttribute  # noqa: E402
-from medkit.text.ner.quick_umls_matcher import QuickUMLSMatcher  # noqa: E402
+from medkit.core import Attribute, ProvTracer
+from medkit.core.text import Segment, Span, UMLSNormAttribute
+from medkit.text.ner.quick_umls_matcher import QuickUMLSMatcher
 
 # QuickUMLSMatcher is a wrapper around 3d-party quickumls.core.QuickUMLS,
 # which requires a QuickUMLS install to work. A QuickUMLS install can be

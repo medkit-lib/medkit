@@ -3,7 +3,7 @@ from __future__ import annotations
 __all__ = ["Segment"]
 
 import dataclasses
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from medkit.core import dict_conv
 from medkit.core.attribute import Attribute
@@ -23,25 +23,25 @@ class Segment(dict_conv.SubclassMapping):
 
     Attributes
     ----------
-    uid:
+    uid: str
         Unique identifier of the segment.
-    label:
+    label: str
         Label of the segment.
-    audio:
+    audio: AudioBuffer
         The audio signal of the segment. It must be consistent with the span,
         in the sense that it must correspond to the audio signal of the document
         at the span boundaries. But it can be a modified, processed version of this
         audio signal.
-    span:
+    span: Span
         Span (in seconds) indicating the part of the document's full signal that
         this segment references.
-    attrs:
+    attrs: AttributeContainer
         Attributes of the segment. Stored in a
         :class:{~medkit.core.AttributeContainer} but can be passed as a list at
         init.
-    metadata:
+    metadata: dict of str to Any
         Metadata of the segment.
-    keys:
+    keys: set of str
         Pipeline output keys to which the annotation belongs to.
     """
 
@@ -50,17 +50,17 @@ class Segment(dict_conv.SubclassMapping):
     audio: AudioBuffer
     span: Span
     attrs: AttributeContainer
-    metadata: Dict[str, Any]
-    keys: Set[str]
+    metadata: dict[str, Any]
+    keys: set[str]
 
     def __init__(
         self,
         label: str,
         audio: AudioBuffer,
         span: Span,
-        attrs: Optional[List[Attribute]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
+        attrs: list[Attribute] | None = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
     ):
         if attrs is None:
             attrs = []
@@ -84,7 +84,7 @@ class Segment(dict_conv.SubclassMapping):
         Segment.register_subclass(cls)
         super().__init_subclass__()
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         # convert MemoryAudioBuffer to PlaceholderAudioBuffer
         # because we can't serialize the actual signal
         if isinstance(self.audio, MemoryAudioBuffer):
@@ -107,7 +107,7 @@ class Segment(dict_conv.SubclassMapping):
         return segment_dict
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> Segment:
+    def from_dict(cls, data: dict[str, Any]) -> Segment:
         subclass = cls.get_subclass_for_data_dict(data)
         if subclass is not None:
             return subclass.from_dict(data)

@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[edsnlp]`.
 """
 
@@ -16,8 +15,7 @@ from medkit.text.spacy.edsnlp import build_tnm_attribute
 
 
 class EDSNLPTNMMatcher(NEROperation):
-    """
-    TNM (Tumour/Node/Metastasis) string matcher based on `EDS-NPL's tnm pipeline
+    """TNM (Tumour/Node/Metastasis) string matcher based on `EDS-NPL's tnm pipeline
     <https://aphp.github.io/edsnlp/latest/pipelines/ner/tnm/>`.
 
     For each TNM string that is found, an entity will be created with an
@@ -31,8 +29,7 @@ class EDSNLPTNMMatcher(NEROperation):
         attrs_to_copy: Optional[List[str]] = None,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         output_label:
             Label to use for TNM entities created (the label of the
@@ -44,7 +41,6 @@ class EDSNLPTNMMatcher(NEROperation):
         uid:
             Identifier of the matcher
         """
-
         super().__init__(output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid)
 
         if attrs_to_copy is None:
@@ -70,7 +66,6 @@ class EDSNLPTNMMatcher(NEROperation):
             TNM entities found in `segments`, with
             :class:`~medkit.text.ner.TNMAttribute` attributes
         """
-
         spacy_docs = self._edsnlp.pipe(s.text for s in segments)
         return [
             tnm_entity

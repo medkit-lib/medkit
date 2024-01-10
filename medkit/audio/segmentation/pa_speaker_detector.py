@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[pa-speaker-detector]`.
 """
 
@@ -16,7 +15,7 @@ from typing import Iterator, List, Optional, Union
 # The bug seems to only happen when pandas is imported from pyannote, not if
 # we import pandas manually first.
 # So as a workaround, we always import pandas before importing something from pyannote
-import pandas  # noqa: F401
+import pandas as pd  # noqa: F401
 import torch
 from pyannote.audio import Pipeline
 from pyannote.audio.pipelines import SpeakerDiarization
@@ -63,8 +62,7 @@ class PASpeakerDetector(SegmentationOperation):
         hf_auth_token: Optional[str] = None,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         model:
             Name (on the HuggingFace models hub) or path of a pretrained
@@ -93,7 +91,6 @@ class PASpeakerDetector(SegmentationOperation):
         uid:
             Identifier of the detector.
         """
-
         # Pass all arguments to super (remove self and confidential hf_auth_token)
         init_args = locals()
         init_args.pop("self")
@@ -153,7 +150,9 @@ class PASpeakerDetector(SegmentationOperation):
 
             # trim original audio to turn start/end points
             # (allow pyannote's turn to be slighty over the total input duration)
-            assert turn.end < audio.duration + _DURATION_MARGIN
+            if turn.end > (audio.duration + _DURATION_MARGIN):
+                raise ValueError(f"Turn end {turn.end} exceeds audio duration {audio.duration}")
+
             turn_end = min(turn.end, audio.duration)
             turn_audio = audio.trim_duration(turn.start, turn_end)
 

@@ -1,5 +1,4 @@
-"""
-This module aims to provide facilities for accessing some examples of mtsamples files
+"""This module aims to provide facilities for accessing some examples of mtsamples files
 available on this repository: https://github.com/neurazlab/mtsamplesFR
 
 Refer to the repository for more information.
@@ -36,8 +35,7 @@ def load_mtsamples(
     translated: bool = True,
     nb_max: Optional[int] = None,
 ) -> List[TextDocument]:
-    """
-    Function loading mtsamples data into medkit text documents
+    """Function loading mtsamples data into medkit text documents
 
     Parameters
     ----------
@@ -55,7 +53,6 @@ def load_mtsamples(
         The medkit text documents corresponding to mtsamples data
 
     """
-
     if translated:
         mtsamples_url = _REPO_URL + _MTSAMPLES_TRANSLATED_FILE
         cache_file = Path(cache_dir) / Path(_MTSAMPLES_TRANSLATED_FILE)
@@ -65,16 +62,13 @@ def load_mtsamples(
 
     if not cache_file.exists():
         cache_file.parent.mkdir(exist_ok=True, parents=True)
-        urllib.request.urlretrieve(
+        urllib.request.urlretrieve(  # noqa: S310
             mtsamples_url,
             cache_file,
         )
 
     with open(cache_file) as f:
-        if translated:
-            mtsamples = json.load(f)
-        else:
-            mtsamples = list(csv.DictReader(f))
+        mtsamples = json.load(f) if translated else list(csv.DictReader(f))
 
         if nb_max is not None:
             mtsamples = mtsamples[:nb_max]
@@ -100,8 +94,7 @@ def convert_mtsamples_to_medkit(
     cache_dir: Union[Path, str] = ".cache",
     translated: bool = True,
 ):
-    """
-    Convert mtsamples data into  a medkit file
+    """Convert mtsamples data into  a medkit file
 
     Parameters
     ----------

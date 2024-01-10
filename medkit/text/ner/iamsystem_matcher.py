@@ -2,13 +2,13 @@ from __future__ import annotations
 
 __all__ = ["IAMSystemMatcher", "MedkitKeyword"]
 
-from typing import Any, Callable, List, Optional, Sequence
+from typing import Any, Callable, Sequence, runtime_checkable
 
 from iamsystem import Annotation as IS_Annotation
 from iamsystem import IEntity as IS_IEntity
 from iamsystem import IKeyword as IS_IKeyword
 from iamsystem import Matcher as IS_Matcher
-from typing_extensions import Protocol, runtime_checkable
+from typing_extensions import Protocol
 
 from medkit.core.text import (
     Entity,
@@ -21,17 +21,16 @@ from medkit.core.text import (
 
 @runtime_checkable
 class SupportKBName(IS_IEntity, Protocol):
-    kb_name: Optional[str]
+    kb_name: str | None
 
 
 @runtime_checkable
 class SupportEntLabel(IS_IKeyword, Protocol):
-    ent_label: Optional[str]
+    ent_label: str | None
 
 
 class MedkitKeyword:
-    """
-    A recommended iamsystem's IEntity implementation.
+    """A recommended iamsystem's IEntity implementation.
 
     This class is implemented to allow user to define one of both values of `kb_id`
     or `kb_name` with its iamsystem keyword.
@@ -45,9 +44,9 @@ class MedkitKeyword:
     def __init__(
         self,
         label: str,  # String to search in text
-        kb_id: Optional[Any],
-        kb_name: Optional[str],
-        ent_label: Optional[str],  # Output label for the detected entity
+        kb_id: Any | None,
+        kb_name: str | None,
+        ent_label: str | None,  # Output label for the detected entity
     ):
         self.label = label
         self.kb_id = kb_id
@@ -55,16 +54,15 @@ class MedkitKeyword:
         self.ent_label = ent_label
 
 
-LabelProvider = Callable[[Sequence[IS_IKeyword]], Optional[str]]
+LabelProvider = Callable[[Sequence[IS_IKeyword]], str | None]
 
 
 class DefaultLabelProvider:
     """Default entity label provider"""
 
     @staticmethod
-    def __call__(keywords: Sequence[IS_IKeyword]) -> Optional[str]:
-        """
-        Uses the first keyword which implements`SupportEntLabel` protocol and returns
+    def __call__(keywords: Sequence[IS_IKeyword]) -> str | None:
+        """Uses the first keyword which implements`SupportEntLabel` protocol and returns
         `ent_label`. Otherwise, returns None.
         """
         for kw in keywords:
@@ -74,39 +72,36 @@ class DefaultLabelProvider:
 
 
 class IAMSystemMatcher(NEROperation):
-    """
-    Entity annotator and linker based on iamsystem library
-    """
+    """Entity annotator and linker based on iamsystem library"""
 
     def __init__(
         self,
         matcher: IS_Matcher,
-        label_provider: Optional[LabelProvider] = None,
-        attrs_to_copy: Optional[List[str]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        label_provider: LabelProvider | None = None,
+        attrs_to_copy: list[str] | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
-        """
-        Instantiate the operation supporting the iamsystem matcher
+        """Instantiate the operation supporting the iamsystem matcher
 
         Parameters
         ----------
-        matcher
+        matcher : IS_Matcher
             IAM system Matcher
-        label_provider
+        label_provider : LabelProvider, optional
             Callable providing the output label to set for detected entity.
             As iamsystem matcher may return several keywords for an annotation,
             we have to know how to provide only one entity label whatever the
             number of matched keywords.
             In medkit, normalization attributes are used for representing detected
             keywords.
-        attrs_to_copy:
+        attrs_to_copy : list of str, optional
             Labels of the attributes that should be copied from the input segment
             to the created entity. Useful for propagating context attributes
             (negation, antecedent, etc).
-        name
+        name : str, optional
             Name describing the matcher (defaults to the class name)
-        uid
+        uid : str, optional
             Identifier of the operation
         """
         # Pass all arguments to super (remove self)
@@ -121,12 +116,12 @@ class IAMSystemMatcher(NEROperation):
         self.label_provider = label_provider or DefaultLabelProvider()
         self.attrs_to_copy = attrs_to_copy
 
-    def run(self, segments: List[Segment]) -> List[Entity]:
-        entities = []
-        for segment in segments:
-            anns = self.matcher.annot_text(segment.text)
-            for ann in anns:
-                entities.append(self._create_entity_from_iamsystem_ann(ann, segment))
+    def run(self, segments: list[Segment]) -> list[Entity]:
+        entities = [
+            self._create_entity_from_iamsystem_ann(ann, segment)
+            for segment in segments
+            for ann in self.matcher.annot_text(segment.text)
+        ]
         return entities
 
     def _create_entity_from_iamsystem_ann(self, ann: IS_Annotation, segment: Segment):

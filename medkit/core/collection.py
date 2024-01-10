@@ -8,8 +8,7 @@ from medkit.core.text import TextDocument
 
 
 class Collection:
-    """
-    Collection of documents of any modality (text, audio).
+    """Collection of documents of any modality (text, audio).
 
     This class allows to group together a set of documents representing a common
     unit (for instance a patient), even if they don't belong to the same modality.
@@ -24,15 +23,13 @@ class Collection:
         text_docs: Optional[List[TextDocument]] = None,
         audio_docs: Optional[List[AudioDocument]] = None,
     ):
-        """
-        Parameters
-        -----------
+        """Parameters
+        ----------
         text_docs:
             List of text documents
         audio_docs:
             List of audio documents
         """
-
         if text_docs is None and audio_docs is None:
             raise ValueError("Collection must received at least one list of documents at init")
 
@@ -46,8 +43,7 @@ class Collection:
 
     @property
     def all_docs(self) -> List[Document]:
-        """
-        List of all the documents belonging to the document, whatever they
+        """List of all the documents belonging to the document, whatever they
         modality
         """
         return self.text_docs + self.audio_docs

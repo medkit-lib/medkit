@@ -37,11 +37,11 @@ def medkit_doc_to_displacy(
         Data to be passed to `displacy.render()` as `docs` argument
         (with `manual=True` and `style="ent"`)
     """
-
-    if entity_labels:
-        entities = [e for label in entity_labels for e in medkit_doc.anns.get_entities(label=label)]
-    else:
-        entities = medkit_doc.anns.get_entities()
+    entities = (
+        [e for label in entity_labels for e in medkit_doc.anns.get_entities(label=label)]
+        if entity_labels
+        else medkit_doc.anns.get_entities()
+    )
 
     return entities_to_displacy(entities, medkit_doc.text, entity_formatter, max_gap_length)
 
@@ -92,10 +92,7 @@ def entities_to_displacy(
         )
 
         # generate text label
-        if entity_formatter:
-            label = entity_formatter(entity)
-        else:
-            label = entity.label
+        label = entity_formatter(entity) if entity_formatter else entity.label
 
         ents_data += [{"start": span.start, "end": span.end, "label": label} for span in cleaned_spans]
 

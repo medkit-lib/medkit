@@ -22,14 +22,14 @@ def convert_labels_to_tags(
 
     Parameters
     ----------
-    labels:
+    labels : list of str
         List of labels to convert
-    tagging_scheme:
+    tagging_scheme : str, default="bilou"
         Scheme to use in the conversion, "iob2" follows the BIO scheme.
 
     Returns
     -------
-    label_to_id: Dict[str, int]:
+    dict of str to int
         Mapping with NER tags.
 
     Examples
@@ -41,10 +41,7 @@ def convert_labels_to_tags(
     label_to_id = {}
     label_to_id["O"] = 0
 
-    if tagging_scheme == "bilou":
-        scheme = ["B", "I", "L", "U"]
-    else:
-        scheme = ["B", "I"]
+    scheme = ["B", "I", "L", "U"] if tagging_scheme == "bilou" else ["B", "I"]
 
     all_labels = [f"{prefix}-{label}" for label in labels for prefix in scheme]
 
@@ -91,8 +88,7 @@ def transform_entities_to_tags(
     entities: List[Entity],
     tagging_scheme: Literal["bilou", "iob2"] = "bilou",
 ) -> List[str]:
-    """
-    Transform entities from a encoded document to a list of BILOU/IOB2 tags.
+    """Transform entities from a encoded document to a list of BILOU/IOB2 tags.
 
     Parameters
     ----------
@@ -171,8 +167,7 @@ def align_and_map_tokens_with_tags(
     tag_to_id: Dict[str, int],
     map_sub_tokens: bool = True,
 ) -> List[int]:
-    """
-    Return a list of tags_ids aligned with the text encoding.
+    """Return a list of tags_ids aligned with the text encoding.
     Tags considered as special tokens will have the `SPECIAL_TAG_ID_HF`.
 
     Parameters

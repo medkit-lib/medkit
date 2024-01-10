@@ -24,7 +24,6 @@ def _get_docs():
 
 def test_basic():
     """Basic usage, return duplicate segments"""
-
     detector = DuplicateFinder(output_label="duplicate")
     docs = _get_docs()
     collection = Collection(text_docs=docs)
@@ -66,7 +65,6 @@ def test_basic():
 
 def test_only_nondup():
     """Return non-duplicate segments"""
-
     detector = DuplicateFinder(output_label="nonduplicate", segments_to_output="nondup")
     docs = _get_docs()
     collection = Collection(text_docs=docs)
@@ -107,7 +105,6 @@ def test_only_nondup():
 
 def test_both():
     """Return duplicate and non-duplicate segments"""
-
     detector = DuplicateFinder(output_label="deduplicated", segments_to_output="both")
     docs = _get_docs()
     collection = Collection(text_docs=docs)
@@ -138,7 +135,6 @@ def test_both():
 
 def test_char_fingerprint():
     """Use char fingerprint type"""
-
     detector = DuplicateFinder(output_label="duplicate", fingerprint_type="char", min_duplicate_length=10)
     docs = _get_docs()
     collection = Collection(text_docs=docs)
@@ -162,7 +158,6 @@ def test_char_fingerprint():
 
 def test_date():
     """Use date in metadata to order documents"""
-
     detector = DuplicateFinder(
         output_label="duplicate",
         date_metadata_key="creation_date",

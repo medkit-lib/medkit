@@ -23,8 +23,7 @@ def load_audio_document(
     anns_input_file: Optional[Union[str, Path]] = None,
     encoding: Optional[str] = "utf-8",
 ) -> AudioDocument:
-    """
-    Load an audio document from a medkit-json file generated with
+    """Load an audio document from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_audio_document`
 
     Parameters
@@ -42,7 +41,6 @@ def load_audio_document(
     AudioDocument
         The audio document in the file
     """
-
     input_file = Path(input_file)
 
     with open(input_file, encoding=encoding) as fp:
@@ -58,8 +56,7 @@ def load_audio_document(
 
 
 def load_audio_documents(input_file: Union[str, Path], encoding: Optional[str] = "utf-8") -> Iterator[AudioDocument]:
-    """
-    Load audio documents from a medkit-json file generated with
+    """Load audio documents from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_audio_documents`
 
     Parameters
@@ -74,7 +71,6 @@ def load_audio_documents(input_file: Union[str, Path], encoding: Optional[str] =
     Iterator[AudioDocument]
         An iterator to the audio documents in the file
     """
-
     input_file = Path(input_file)
 
     with open(input_file, encoding=encoding) as fp:
@@ -89,8 +85,7 @@ def load_audio_documents(input_file: Union[str, Path], encoding: Optional[str] =
 
 
 def load_audio_anns(input_file: Union[str, Path], encoding: Optional[str] = "utf-8") -> Iterator[Segment]:
-    """
-    Load audio annotations from a medkit-json file generated with
+    """Load audio annotations from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_audio_anns`
 
     Parameters
@@ -105,7 +100,6 @@ def load_audio_anns(input_file: Union[str, Path], encoding: Optional[str] = "utf
     Iterator[Segment]
         An iterator to the audio annotations in the file
     """
-
     input_file = Path(input_file)
 
     with open(input_file, encoding=encoding) as fp:
@@ -126,8 +120,7 @@ def save_audio_document(
     anns_output_file: Optional[Union[str, Path]] = None,
     encoding: Optional[str] = "utf-8",
 ):
-    """
-    Save an audio document into a medkit-json file.
+    """Save an audio document into a medkit-json file.
 
     Parameters
     ----------
@@ -144,7 +137,6 @@ def save_audio_document(
     encoding:
         Optional encoding of `output_file` and `anns_output_file`
     """
-
     output_file = Path(output_file)
     anns_output_file = Path(anns_output_file) if anns_output_file is not None else None
 
@@ -170,8 +162,7 @@ def save_audio_documents(
     output_file: Union[str, Path],
     encoding: Optional[str] = "utf-8",
 ):
-    """
-    Save audio documents into a medkit-json file.
+    """Save audio documents into a medkit-json file.
 
     Parameters
     ----------
@@ -182,7 +173,6 @@ def save_audio_documents(
     encoding:
         Optional encoding of `output_file`
     """
-
     output_file = Path(output_file)
 
     header = build_header(content_type=ContentType.AUDIO_DOCUMENT_LIST)
@@ -199,8 +189,7 @@ def save_audio_anns(
     output_file: Union[str, Path],
     encoding: Optional[str] = "utf-8",
 ):
-    """
-    Save audio annotations into a medkit-json file.
+    """Save audio annotations into a medkit-json file.
 
     Parameters
     ----------
@@ -211,7 +200,6 @@ def save_audio_anns(
     encoding:
         Optional encoding of `output_file`
     """
-
     output_file = Path(output_file)
 
     header = build_header(content_type=ContentType.AUDIO_ANNOTATION_LIST)

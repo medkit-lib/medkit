@@ -86,7 +86,6 @@ class SpacyDocPipeline(DocOperation):
         medkit_docs:
             List of TextDocuments on which to run the pipeline
         """
-
         for medkit_doc in medkit_docs:
             # build spacy doc
             spacy_doc = spacy_utils.build_spacy_doc_from_medkit_doc(

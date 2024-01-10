@@ -7,8 +7,7 @@ import numpy as np
 
 
 def _get_values_by_unit_matrix(reliability_data: np.ndarray, labels_set: np.ndarray) -> np.ndarray:
-    """
-    Return the label counts given the annotators_data.
+    """Return the label counts given the annotators_data.
 
     Parameters
     ----------
@@ -31,8 +30,7 @@ def _get_values_by_unit_matrix(reliability_data: np.ndarray, labels_set: np.ndar
 
 
 def _compute_observed_disagreement(values_by_unit_matrix: np.ndarray) -> float:
-    """
-    Return the observed disagreement given values-by-unit matrix.
+    """Return the observed disagreement given values-by-unit matrix.
 
     Parameters
     ----------
@@ -53,7 +51,7 @@ def _compute_observed_disagreement(values_by_unit_matrix: np.ndarray) -> float:
     do = 0
     for u, unit in enumerate(matrix_disagreement.T):
         unit = unit[unit > 0]
-        for n in range(0, len(unit)):
+        for n in range(len(unit)):
             # only nominal weight is supported in this function
             # perfect agreement seen as 0 disagreement
             p_unit = np.dot(unit[n], unit[n + 1 :]) / (total_by_unit[u] - 1)
@@ -62,8 +60,7 @@ def _compute_observed_disagreement(values_by_unit_matrix: np.ndarray) -> float:
 
 
 def _compute_expected_disagreement(values_by_unit_matrix: np.ndarray) -> float:
-    """
-    Return the expected disagreement given values-by-unit matrix.
+    """Return the expected disagreement given values-by-unit matrix.
 
     Parameters
     ----------
@@ -81,14 +78,13 @@ def _compute_expected_disagreement(values_by_unit_matrix: np.ndarray) -> float:
 
     de = 0
     # only nominal weight is supported in this function
-    for n_c in range(0, len(total_by_value) - 1):
+    for n_c in range(len(total_by_value) - 1):
         de += np.sum(np.dot(total_by_value[n_c], total_by_value[n_c + 1 :]))
     return de
 
 
 def krippendorff_alpha(all_annotators_data: List[List[Union[None, str, int]]]) -> float:
-    """
-    Compute Krippendorff's alpha: a coefficient of agreement among many
+    """Compute Krippendorff's alpha: a coefficient of agreement among many
     annotators.
 
     This coefficient is a generalization of several reliability indices.

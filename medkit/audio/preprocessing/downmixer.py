@@ -16,8 +16,7 @@ class Downmixer(PreprocessingOperation):
         prevent_clipping: bool = True,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         output_label:
             Label of output downmixed segments.
@@ -26,7 +25,6 @@ class Downmixer(PreprocessingOperation):
         uid:
             Identifier of the downmixer.
         """
-
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")

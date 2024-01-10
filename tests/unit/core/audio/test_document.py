@@ -86,9 +86,9 @@ def test_raw_segment():
 
 
 def test_from_dir():
-    dir = Path("tests/data/audio")
-    docs = AudioDocument.from_dir(dir, pattern="dialog*.ogg")
+    dir_ = Path("tests/data/audio")
+    docs = AudioDocument.from_dir(dir_, pattern="dialog*.ogg")
     assert len(docs) == 2
-    assert docs[0].metadata["path_to_audio"] == str((dir / "dialog.ogg").absolute())
-    assert docs[0].audio == FileAudioBuffer(path=dir / "dialog.ogg")
-    assert docs[1].audio == FileAudioBuffer(path=dir / "dialog_long.ogg")
+    assert docs[0].metadata["path_to_audio"] == str((dir_ / "dialog.ogg").absolute())
+    assert docs[0].audio == FileAudioBuffer(path=dir_ / "dialog.ogg")
+    assert docs[1].audio == FileAudioBuffer(path=dir_ / "dialog_long.ogg")

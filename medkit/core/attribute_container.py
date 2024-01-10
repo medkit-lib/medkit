@@ -8,8 +8,7 @@ from medkit.core.store import GlobalStore, Store
 
 
 class AttributeContainer:
-    """
-    Manage a list of attributes attached to another data structure.
+    """Manage a list of attributes attached to another data structure.
     For example, it may be a document or an annotation.
 
     This behaves more or less like a list: calling `len()` and iterating are
@@ -33,25 +32,20 @@ class AttributeContainer:
         return len(self._attr_ids)
 
     def __iter__(self) -> Iterator[Attribute]:
-        """
-        Add support for iterating over an `AttributeContainer` (will yield each
+        """Add support for iterating over an `AttributeContainer` (will yield each
         attribute)
         """
         return iter(self.get_by_id(uid) for uid in self._attr_ids)
 
     def __getitem__(self, key: Union[int, slice]) -> Union[Attribute, List[Attribute]]:
-        """
-        Add support for subscript access
-        """
-
+        """Add support for subscript access"""
         if isinstance(key, slice):
             return [self.get_by_id(uid) for uid in self._attr_ids[key]]
         else:
             return self.get_by_id(self._attr_ids[key])
 
     def get(self, *, label: Optional[str] = None) -> List[Attribute]:
-        """
-        Return a list of the attributes of the annotation, optionally filtering
+        """Return a list of the attributes of the annotation, optionally filtering
         by label.
 
         Parameters
@@ -65,8 +59,7 @@ class AttributeContainer:
             return [self.get_by_id(uid) for uid in self._attr_ids_by_label.get(label, [])]
 
     def add(self, attr: Attribute):
-        """
-        Attach an attribute to the annotation.
+        """Attach an attribute to the annotation.
 
         Parameters
         ----------
@@ -79,7 +72,6 @@ class AttributeContainer:
             If the attribute is already attached to the annotation (based on
             `attr.uid`).
         """
-
         uid = attr.uid
         if uid in self._attr_ids:
             raise ValueError(f"Attribute with uid {uid} already attached to annotation")
@@ -101,7 +93,6 @@ class AttributeContainer:
         uid:
             Identifier of the attribute to return.
         """
-
         attr = self._store.get_data_item(uid)
         if attr is None:
             raise ValueError(f"No known attribute with uid '{uid}'")

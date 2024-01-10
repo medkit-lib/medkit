@@ -5,7 +5,7 @@ __all__ = ["AudioDocument"]
 import dataclasses
 import os
 from pathlib import Path
-from typing import Any, ClassVar, Dict, List, Optional, Sequence
+from typing import Any, ClassVar, Sequence
 
 from typing_extensions import Self
 
@@ -24,14 +24,13 @@ from medkit.core.id import generate_deterministic_id, generate_id
 
 @dataclasses.dataclass(init=False)
 class AudioDocument(dict_conv.SubclassMapping):
-    """
-    Document holding audio annotations.
+    """Document holding audio annotations.
 
     Attributes
     ----------
-    uid:
+    uid: str
         Unique identifier of the document.
-    audio:
+    audio: AudioBuffer
         Audio buffer containing the entire signal of the document.
     anns: :class:`~.audio.AudioAnnotationContainer`
         Annotations of the document. Stored in an
@@ -39,7 +38,7 @@ class AudioDocument(dict_conv.SubclassMapping):
     attrs: :class:`~.core.AttributeContainer`
         Attributes of the document. Stored in an
         :class:`~.core.AttributeContainer` but can be passed as a list at init
-    metadata:
+    metadata: dict of str to Any
         Document metadata.
     raw_segment: :class:`~.audio.Segment`
         Auto-generated segment containing the full unprocessed document audio.
@@ -51,16 +50,16 @@ class AudioDocument(dict_conv.SubclassMapping):
     uid: str
     anns: AudioAnnotationContainer
     attrs: AttributeContainer
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
     raw_segment: Segment
 
     def __init__(
         self,
         audio: AudioBuffer,
-        anns: Optional[Sequence[Segment]] = None,
-        attrs: Optional[Sequence[Attribute]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
+        anns: Sequence[Segment] | None = None,
+        attrs: Sequence[Attribute] | None = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
     ):
         if anns is None:
             anns = []
@@ -104,7 +103,7 @@ class AudioDocument(dict_conv.SubclassMapping):
         AudioDocument.register_subclass(cls)
         super().__init_subclass__()
 
-    def to_dict(self, with_anns: bool = True) -> Dict[str, Any]:
+    def to_dict(self, with_anns: bool = True) -> dict[str, Any]:
         # convert MemoryAudioBuffer to PlaceholderAudioBuffer
         # because we can't serialize the actual signal
         if isinstance(self.audio, MemoryAudioBuffer):
@@ -112,7 +111,7 @@ class AudioDocument(dict_conv.SubclassMapping):
             audio = placeholder.to_dict()
         else:
             audio = self.audio.to_dict()
-        doc_dict: Dict[str, Any] = dict(
+        doc_dict: dict[str, Any] = dict(
             uid=self.uid,
             audio=audio,
             metadata=self.metadata,
@@ -126,7 +125,7 @@ class AudioDocument(dict_conv.SubclassMapping):
         return doc_dict
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> Self:
+    def from_dict(cls, data: dict[str, Any]) -> Self:
         subclass = cls.get_subclass_for_data_dict(data)
         if subclass is not None:
             return subclass.from_dict(data)
@@ -144,12 +143,11 @@ class AudioDocument(dict_conv.SubclassMapping):
 
     @classmethod
     def from_file(cls, path: os.PathLike) -> Self:
-        """
-        Create document from an audio file
+        """Create document from an audio file
 
         Parameters
         ----------
-        path:
+        path: path-like
             Path to the audio file. Supports all file formats handled by
             `libsndfile` (http://www.mega-nerd.com/libsndfile/#Features)
 
@@ -159,7 +157,6 @@ class AudioDocument(dict_conv.SubclassMapping):
             Audio document with signal of `path` as audio. The file path is
             included in the document metadata.
         """
-
         path = Path(path)
         audio = FileAudioBuffer(path)
         return cls(audio=audio, metadata={"path_to_audio": str(path.absolute())})
@@ -169,15 +166,14 @@ class AudioDocument(dict_conv.SubclassMapping):
         cls,
         path: os.PathLike,
         pattern: str = "*.wav",
-    ) -> List[Self]:
-        """
-        Create documents from audio files in a directory
+    ) -> list[Self]:
+        """Create documents from audio files in a directory
 
         Parameters
         ----------
-        path:
+        path: path-like
             Path of the directory containing audio files
-        pattern:
+        pattern: str, default="*.wav"
             Glob pattern to match audio files in `path`. Supports all file
             formats handled by `libsndfile`
             (http://www.mega-nerd.com/libsndfile/#Features)
@@ -187,7 +183,6 @@ class AudioDocument(dict_conv.SubclassMapping):
         List[AudioDocument]
             Audio documents with signal of each file as audio
         """
-
         path = Path(path)
         files = sorted(path.glob(pattern))
         return [cls.from_file(f) for f in files]

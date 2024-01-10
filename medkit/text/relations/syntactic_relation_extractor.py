@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[syntactic-relation-extractor]`.
 """
 
@@ -179,8 +178,7 @@ class SyntacticRelationExtractor(DocOperation):
         return source, target
 
     def _create_relation(self, source: SpacySpan, target: SpacySpan, metadata: Dict[str, str]) -> Optional[Relation]:
-        """
-        Parse the spacy relation content into a Relation object.
+        """Parse the spacy relation content into a Relation object.
 
         Parameters
         ----------
@@ -209,9 +207,11 @@ class SyntacticRelationExtractor(DocOperation):
 
         if source_id is None or target_id is None:
             logging.warning(
-                f"Can't create a medkit Relation between `{source.text}` and"
-                f" `{target.text}`. Source or target entity has not been detected by"
-                " medkit but spacy pipeline, and it is not supported by this module."
+                "Can't create a medkit Relation between `%s` and"
+                " `%s`. Source or target entity has not been detected by"
+                " medkit but spacy pipeline, and it is not supported by this module.",
+                source.text,
+                target.text,
             )
             return None
 

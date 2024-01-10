@@ -2,12 +2,12 @@ import pytest
 
 torch = pytest.importorskip(modname="torch", reason="torch is not installed")
 
-from medkit.training import Trainer, TrainerConfig  # noqa: E402
+from medkit.training import Trainer, TrainerConfig
 
-from .dummy_context_component.dummy_component import (  # noqa: E402
+from .dummy_context_component.dummy_component import (
     MockTrainableComponent,
 )
-from .dummy_context_component.dummy_corpus import DUMMY_DATASETS  # noqa: E402
+from .dummy_context_component.dummy_corpus import DUMMY_DATASETS
 
 
 class DummyMetricsComputer:
@@ -20,8 +20,8 @@ class DummyMetricsComputer:
         predictions = torch.tensor(all_data["predictions"])
         references = torch.tensor(all_data["references"])
 
-        TP = (predictions == references).sum().item()
-        score = TP / len(predictions)
+        total_predictions = (predictions == references).sum().item()
+        score = total_predictions / len(predictions)
         return {"acc": score}
 
 

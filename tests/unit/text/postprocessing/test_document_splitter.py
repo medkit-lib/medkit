@@ -5,7 +5,7 @@ from medkit.core.text import Entity, ModifiedSpan, Relation, Segment, Span, Text
 from medkit.text.postprocessing.document_splitter import DocumentSplitter
 
 
-@pytest.fixture()
+@pytest.fixture
 def doc():
     text = "The medkit library. This is a    large      entity"
 

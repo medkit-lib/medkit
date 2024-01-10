@@ -34,8 +34,7 @@ class DocumentSplitter(Operation):
         name: Optional[str] = None,
         uid: Optional[str] = None,
     ):
-        """
-        Instantiate the document splitter
+        """Instantiate the document splitter
 
         Parameters
         ----------
@@ -145,7 +144,6 @@ class DocumentSplitter(Operation):
         TextDocument
             A new document with entities, the metadata includes the original span and metadata
         """
-
         normalized_spans = span_utils.normalize_spans(segment.spans)
 
         # create an empty mini-doc with the raw text of the segment

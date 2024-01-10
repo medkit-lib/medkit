@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[rush-sentence-tokenizer]`.
 """
 
@@ -9,7 +8,7 @@ __all__ = ["RushSentenceTokenizer"]
 
 import re
 from pathlib import Path
-from typing import Iterator, List, Optional, Union
+from typing import Iterator
 
 from PyRuSH import RuSH
 
@@ -26,31 +25,29 @@ class RushSentenceTokenizer(SegmentationOperation):
     def __init__(
         self,
         output_label: str = _DEFAULT_LABEL,
-        path_to_rules: Optional[Union[str, Path]] = None,
+        path_to_rules: str | Path | None = None,
         keep_newlines: bool = True,
-        attrs_to_copy: Optional[List[str]] = None,
-        uid: Optional[str] = None,
+        attrs_to_copy: list[str] | None = None,
+        uid: str | None = None,
     ):
-        """
-        Instantiate the RuSH tokenizer
+        """Instantiate the RuSH tokenizer
 
         Parameters
         ----------
-        output_label:
+        output_label: str, optional
             The output label of the created annotations.
-        path_to_rules:
+        path_to_rules: str or Path, optional
             Path to csv or tsv file to provide to PyRuSH. If none provided,
             "rush_tokenizer_default_rules.tsv" will be used
             (corresponds to the "conf/rush_rules.tsv" in the PyRush repo)
-        keep_newlines:
+        keep_newlines: bool, default=True
             With the default rules, newline chars are not used to split
             sentences, therefore a sentence maybe contain one or more newline chars.
             If `keep_newlines` is False, newlines will be replaced by spaces.
-        attrs_to_copy:
+        attrs_to_copy: list of str, optional
             Labels of the attributes that should be copied from the input segment
             to the derived segment. For example, useful for propagating section name.
-
-        uid:
+        uid: str, optional
             Identifier of the tokenizer
         """
         # Pass all arguments to super (remove self)
@@ -70,18 +67,17 @@ class RushSentenceTokenizer(SegmentationOperation):
         self.attrs_to_copy = attrs_to_copy
         self._rush = RuSH(str(path_to_rules))
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
-        """
-        Return sentences detected in `segments`.
+    def run(self, segments: list[Segment]) -> list[Segment]:
+        """Return sentences detected in `segments`.
 
         Parameters
         ----------
-        segments:
+        segments: list of Segment
             List of segments into which to look for sentences
 
         Returns
         -------
-        List[Segments]:
+        list of Segment:
             Sentences segments found in `segments`
         """
         return [sentence for segment in segments for sentence in self._find_sentences_in_segment(segment)]

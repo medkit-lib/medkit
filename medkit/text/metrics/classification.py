@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[metrics-text-classification]`.
 """
 
@@ -24,7 +23,7 @@ class TextClassificationEvaluator:
 
         Parameters
         ----------
-        attr_label:
+        attr_label : str
             Label of the attribute to evaluate.
         """
         self.attr_label = attr_label
@@ -34,12 +33,12 @@ class TextClassificationEvaluator:
 
         Parameters
         ----------
-        docs : List[TextDocument]
+        docs : list of TextDocument
             List of documents with attributes
 
         Returns
         -------
-        attr_values :  List[Union[str,int,bool]]
+        list of str or int or bool
             List with the representation of the attribute by document.
         """
         attr_values = []
@@ -47,9 +46,10 @@ class TextClassificationEvaluator:
             attrs = doc.attrs.get(label=self.attr_label)
 
             if not attrs:
-                raise ValueError(f"No attribute with label {self.attr_label} was found in the" " document")
+                msg = f"No attribute with label {self.attr_label} was found in the document"
+                raise ValueError(msg)
             if len(attrs) > 1:
-                logger.warning(f"Found several attributes with label '{self.attr_label}', ignoring" " all but first")
+                logger.warning("Found several attributes with label '%s', ignoring all but first.", self.attr_label)
 
             attr_value = attrs[0].value
             if not isinstance(attr_value, (str, int, bool)):
@@ -77,21 +77,21 @@ class TextClassificationEvaluator:
 
         Parameters
         ----------
-        true_docs:
+        true_docs : list of TextDocument
             Text documents containing attributes of reference
-        predicted_docs:
+        predicted_docs: list of TextDocument
             Text documents containing predicted attributes
-        metrics_by_attr_value:
+        metrics_by_attr_value: bool, default=True
             Whether return metrics by attribute value.
             If False, only global metrics are returned
-        average:
+        average : str, default="macro"
             Type of average to be performed in metrics.
             - `macro`, unweighted mean (default)
             - `weighted`, weighted average by support (number of true instances by attr value)
 
         Returns
         -------
-        Dict[str,Union[float,int]]:
+        dict of str to float or int
             A dictionary with the computed metrics
         """
         true_tags = self._extract_attr_values(true_docs)
@@ -129,15 +129,15 @@ class TextClassificationEvaluator:
 
         Parameters
         ----------
-        docs_annotator_1:
+        docs_annotator_1 : list of TextDocument
             Text documents containing attributes annotated by the first annotator
-        docs_annotator_2:
+        docs_annotator_2 : list of TextDocument
             Text documents to compare, these documents contain attributes
             annotated by the other annotator
 
         Returns
         -------
-        Dict[str, Union[float, int]]:
+        dict of str to float or int
             A dictionary with cohen's kappa score and support (number of annotated docs).
             The value is a number between -1 and 1, where 1 indicates perfect agreement; zero
             or lower indicates chance agreement.
@@ -164,19 +164,19 @@ class TextClassificationEvaluator:
 
         Parameters
         ----------
-        docs_annotators:
+        docs_annotators : list of list of TextDocument
             A list of list of Text documents containing attributes.
             The size of the list is the number of annotators to compare.
 
         Returns
         -------
-        Dict[str, Union[float,int]]:
+        dict of str to float or int
             A dictionary with the krippendorff alpha score, number of annotators and support (number of documents).
             A value of 1 indicates perfect reliability between annotators; zero or lower indicates
             absence of reliability.
         """
         if len(docs_annotators) < 2 or not isinstance(docs_annotators[0], list):
-            raise ValueError("'docs_annotators' should contain at least two list of TextDocuments to" " compare")
+            raise ValueError("'docs_annotators' should contain at least two list of TextDocuments to compare")
 
         all_annotators_data = []
 

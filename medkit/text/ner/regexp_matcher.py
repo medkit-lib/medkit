@@ -11,7 +11,7 @@ import dataclasses
 import logging
 import re
 from pathlib import Path
-from typing import Any, Iterator, List, Optional, Union
+from typing import Any, Iterator
 
 import yaml
 from typing_extensions import TypedDict
@@ -31,78 +31,76 @@ logger = logging.getLogger(__name__)
 
 @dataclasses.dataclass
 class RegexpMatcherRule:
-    """
-    Regexp-based rule to use with `RegexpMatcher`
+    """Regexp-based rule to use with `RegexpMatcher`
 
     Attributes
     ----------
-    regexp:
+    regexp: str
         The regexp pattern used to match entities
-    label:
+    label: str
         The label to attribute to entities created based on this rule
-    term:
+    term: str, optional
         The optional normalized version of the entity text
-    id:
+    id: str, optional
         Unique identifier of the rule to store in the metadata of the entities
-    version:
+    version: str, optional
         Version string to store in the metadata of the entities
-    index_extract:
+    index_extract: int, default=0
         If the regexp has groups, the index of the group to use to extract
         the entity
-    case_sensitive:
+    case_sensitive: bool, default=True
         Whether to ignore case when running `regexp and `exclusion_regexp`
-    unicode_sensitive:
+    unicode_sensitive: bool, default=True
         If True, regexp rule matches are searched on unicode text.
         So, `regexp and `exclusion_regexps` shall not contain non-ASCII chars because
         they would never be matched.
         If False, regexp rule matches are searched on closest ASCII text when possible.
         (cf. RegexpMatcher)
-    exclusion_regexp:
+    exclusion_regexp: str, optional
         An optional exclusion pattern. Note that this exclusion pattern will be
         executed on the whole input annotation, so when relying on `exclusion_regexp`
         make sure the input annotations passed to `RegexpMatcher` are "local"-enough
         (sentences or syntagmas) rather than the whole text or paragraphs
-    normalizations:
+    normalizations: list of RegexpMatcherNormalization, optional
         Optional list of normalization attributes that should be attached to
         the entities created
     """
 
     regexp: str
     label: str
-    term: Optional[str] = None
-    id: Optional[str] = None
-    version: Optional[str] = None
+    term: str | None = None
+    id: str | None = None
+    version: str | None = None
     index_extract: int = 0
     case_sensitive: bool = True
     unicode_sensitive: bool = True
-    exclusion_regexp: Optional[str] = None
-    normalizations: List[RegexpMatcherNormalization] = dataclasses.field(default_factory=list)
+    exclusion_regexp: str | None = None
+    normalizations: list[RegexpMatcherNormalization] = dataclasses.field(default_factory=list)
 
     def __post_init__(self):
         assert self.unicode_sensitive or (
             self.regexp.isascii() and (self.exclusion_regexp is None or self.exclusion_regexp.isascii())
-        ), "RegexpMatcherRule regexps shouldn't contain non-ASCII chars when" " unicode_sensitive is False"
+        ), "RegexpMatcherRule regexps shouldn't contain non-ASCII chars when unicode_sensitive is False"
 
 
 @dataclasses.dataclass
 class RegexpMatcherNormalization:
-    """
-    Descriptor of normalization attributes to attach to entities
+    """Descriptor of normalization attributes to attach to entities
     created from a `RegexpMatcherRule`
 
     Attributes
     ----------
-    kb_name:
+    kb_name: str
         The name of the knowledge base we are referencing. Ex: "umls"
-    kb_version:
+    kb_version: str
         The name of the knowledge base we are referencing. Ex: "202AB"
-    kb_id:
+    kb_id: str, optional
         The id of the entity in the knowledge base, for instance a CUI
     """
 
     kb_name: str
     kb_id: Any
-    kb_version: Optional[str] = None
+    kb_version: str | None = None
 
 
 class RegexpMetadata(TypedDict):
@@ -110,16 +108,16 @@ class RegexpMetadata(TypedDict):
 
     Parameters
     ----------
-    rule_id:
+    rule_id: str or int
         Identifier of the rule used to match an entity.
         If the rule has no id, then the index of the rule in
         the list of rules is used instead.
-    version:
+    version: str, optional
         Optional version of the rule used to match an entity
     """
 
-    rule_id: Union[str, int]
-    version: Optional[str]
+    rule_id: str | int
+    version: str | None
 
 
 _PATH_TO_DEFAULT_RULES = Path(__file__).parent / "regexp_matcher_default_rules.yml"
@@ -138,26 +136,25 @@ class RegexpMatcher(NEROperation):
 
     def __init__(
         self,
-        rules: Optional[List[RegexpMatcherRule]] = None,
-        attrs_to_copy: Optional[List[str]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        rules: list[RegexpMatcherRule] | None = None,
+        attrs_to_copy: list[str] | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
-        """
-        Instantiate the regexp matcher
+        """Instantiate the regexp matcher
 
         Parameters
         ----------
-        rules:
+        rules: list of RegexpMatcherRule, optional
             The set of rules to use when matching entities. If none provided,
-            the rules in "regexp_matcher_default_rules.yml" will be used
-        attrs_to_copy:
+            the rules in "regexp_matcher_default_rules.yml" will be used.
+        attrs_to_copy: list of str, optional
             Labels of the attributes that should be copied from the source segment
             to the created entity. Useful for propagating context attributes
-            (negation, antecedent, etc)
-        name:
+            (negation, antecedent, etc).
+        name: str, optional
             Name describing the matcher (defaults to the class name)
-        uid:
+        uid: str, optional
             Identifier of the matcher
         """
         # Pass all arguments to super (remove self)
@@ -192,18 +189,17 @@ class RegexpMatcher(NEROperation):
         ]
         self._has_non_unicode_sensitive_rule = any(not r.unicode_sensitive for r in rules)
 
-    def run(self, segments: List[Segment]) -> List[Entity]:
-        """
-        Return entities (with optional normalization attributes) matched in `segments`
+    def run(self, segments: list[Segment]) -> list[Entity]:
+        """Return entities (with optional normalization attributes) matched in `segments`
 
         Parameters
         ----------
-        segments:
+        segments: list of Segment
             List of segments into which to look for matches
 
         Returns
         -------
-        entities: List[Entity]:
+        list of Entity:
             Entities found in `segments` (with optional normalization attributes).
             Entities have a metadata dict with fields described in :class:`.RegexpMetadata`
         """
@@ -219,7 +215,7 @@ class RegexpMatcher(NEROperation):
             yield from self._find_matches_in_segment_for_rule(rule_index, segment, text_ascii)
 
     def _find_matches_in_segment_for_rule(
-        self, rule_index: int, segment: Segment, text_ascii: Optional[str]
+        self, rule_index: int, segment: Segment, text_ascii: str | None
     ) -> Iterator[Entity]:
         rule = self.rules[rule_index]
         pattern = self._patterns[rule_index]
@@ -283,21 +279,20 @@ class RegexpMatcher(NEROperation):
         return norm_attr
 
     @staticmethod
-    def load_rules(path_to_rules: Path, encoding: Optional[str] = None) -> List[RegexpMatcherRule]:
-        """
-        Load all rules stored in a yml file
+    def load_rules(path_to_rules: Path, encoding: str | None = None) -> list[RegexpMatcherRule]:
+        """Load all rules stored in a yml file
 
         Parameters
         ----------
-        path_to_rules
+        path_to_rules: Path
             Path to a yml file containing a list of mappings
             with the same structure as `RegexpMatcherRule`
-        encoding
+        encoding: str, optional
             Encoding of the file to open
 
         Returns
         -------
-        List[RegexpMatcherRule]
+        list of RegexpMatcherRule
             List of all the rules in `path_to_rules`,
             can be used to init a `RegexpMatcher`
         """
@@ -318,41 +313,38 @@ class RegexpMatcher(NEROperation):
 
         Loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, construct_mapping)
 
-        with open(path_to_rules, mode="r", encoding=encoding) as f:
-            rules = yaml.load(f, Loader=Loader)
+        with open(path_to_rules, encoding=encoding) as f:
+            rules = yaml.safe_load(f, Loader=Loader)
         return rules
 
     @staticmethod
-    def check_rules_sanity(rules: List[RegexpMatcherRule]):
+    def check_rules_sanity(rules: list[RegexpMatcherRule]):
         """Check consistency of a set of rules"""
-
         if any(r.id is not None for r in rules):
             if not all(r.id is not None for r in rules):
                 raise ValueError(
-                    "Some rules have ids and other do not. Please provide either ids" " for all rules or no ids at all"
+                    "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
                 )
             if len({r.id for r in rules}) != len(rules):
                 raise ValueError("Some rules have the same id, each rule must have a unique id")
 
     @staticmethod
     def save_rules(
-        rules: List[RegexpMatcherRule],
+        rules: list[RegexpMatcherRule],
         path_to_rules: Path,
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
     ):
-        """
-        Store rules in a yml file
+        """Store rules in a yml file
 
         Parameters
         ----------
-        rules
+        rules: list of RegexpMatcherRule
             The rules to save
-        path_to_rules
+        path_to_rules: Path
             Path to a .yml file that will contain the rules
-        encoding
+        encoding: str, optional
             Encoding of the .yml file
         """
-
         with open(path_to_rules, mode="w", encoding=encoding) as f:
             rules_data = [dataclasses.asdict(r) for r in rules]
             yaml.safe_dump(rules_data, f)

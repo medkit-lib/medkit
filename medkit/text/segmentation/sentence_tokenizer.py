@@ -3,7 +3,7 @@ from __future__ import annotations
 __all__ = ["SentenceTokenizer"]
 
 import re
-from typing import Iterator, List, Optional, Tuple
+from typing import Iterator
 
 from medkit.core.text import Segment, SegmentationOperation, span_utils
 
@@ -17,30 +17,29 @@ class SentenceTokenizer(SegmentationOperation):
     def __init__(
         self,
         output_label: str = _DEFAULT_LABEL,
-        punct_chars: Tuple[str] = _DEFAULT_PUNCT_CHARS,
+        punct_chars: tuple[str, ...] = _DEFAULT_PUNCT_CHARS,
         keep_punct: bool = False,
         split_on_newlines: bool = True,
-        attrs_to_copy: Optional[List[str]] = None,
-        uid: Optional[str] = None,
+        attrs_to_copy: list[str] | None = None,
+        uid: str | None = None,
     ):
-        """
-        Instantiate the sentence tokenizer
+        """Instantiate the sentence tokenizer
 
         Parameters
         ----------
-        output_label: str, Optional
+        output_label : str, optional
             The output label of the created annotations.
-        punct_chars: Tuple[str], Optional
+        punct_chars : tuple of str, optional
             The set of characters corresponding to end punctuations.
-        keep_punct: bool, Optional
+        keep_punct: bool, optional
             If True, the end punctuations are kept in the detected sentence.
             If False, the sentence text does not include the end punctuations.
-        split_on_newlines:
+        split_on_newlines : bool, default=True
             Whether to consider that newlines characters are sentence boundaries or not.
-        attrs_to_copy:
+        attrs_to_copy : list of str, optional
             Labels of the attributes that should be copied from the input segment
             to the derived segment. For example, useful for propagating section name.
-        uid: str, Optional
+        uid : str, optional
             Identifier of the tokenizer
         """
         # Pass all arguments to super (remove self)
@@ -62,19 +61,17 @@ class SentenceTokenizer(SegmentationOperation):
         punct_string = re.escape("".join(self.punct_chars))
         self._punct_pattern = re.compile(rf" *(?P<content>[^{punct_string}]+) *(?P<separator>[{punct_string}]+|$)")
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
-        """
-        Return sentences detected in `segments`.
+    def run(self, segments: list[Segment]) -> list[Segment]:
+        """Return sentences detected in `segments`.
 
         Parameters
         ----------
-
-        segments:
+        segments : list of Segment
             List of segments into which to look for sentences
 
         Returns
         -------
-        List[Segments]:
+        list of Segment
             Sentences segments found in `segments`
         """
         return [sentence for segment in segments for sentence in self._find_sentences_in_segment(segment)]
@@ -89,14 +86,14 @@ class SentenceTokenizer(SegmentationOperation):
                 ):
                     start = line_start + sub_start
                     end = line_start + sub_end
-                    yield self._build_sentence(segment, range=(start, end))
+                    yield self._build_sentence(segment, range_=(start, end))
         # or split directly on punct chars
         else:
             for start, end in self._split_text(segment.text, self._punct_pattern, keep_separator=self.keep_punct):
-                yield self._build_sentence(segment, range=(start, end))
+                yield self._build_sentence(segment, range_=(start, end))
 
     @staticmethod
-    def _split_text(text: str, pattern: re.Pattern, keep_separator: bool) -> Iterator[Tuple[int, int]]:
+    def _split_text(text: str, pattern: re.Pattern, keep_separator: bool) -> Iterator[tuple[int, int]]:
         for match in pattern.finditer(text):
             start = match.start("content")
             end = match.end("separator") if keep_separator else match.end("content")
@@ -104,11 +101,11 @@ class SentenceTokenizer(SegmentationOperation):
             if end > start and has_letters:
                 yield start, end
 
-    def _build_sentence(self, source_segment: Segment, range: Tuple[int, int]) -> Segment:
+    def _build_sentence(self, source_segment: Segment, range_: tuple[int, int]) -> Segment:
         text, spans = span_utils.extract(
             text=source_segment.text,
             spans=source_segment.spans,
-            ranges=[range],
+            ranges=[range_],
         )
 
         sentence = Segment(

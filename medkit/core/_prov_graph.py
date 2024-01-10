@@ -3,17 +3,17 @@ from __future__ import annotations
 __all__ = ["ProvGraph", "ProvNode"]
 
 import dataclasses
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclasses.dataclass
 class ProvNode:
     data_item_id: str
-    operation_id: Optional[str]
-    source_ids: List[str]
-    derived_ids: List[str]
+    operation_id: str | None
+    source_ids: list[str]
+    derived_ids: list[str]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return dict(
             data_item_id=self.data_item_id,
             operation_id=self.operation_id,
@@ -25,40 +25,39 @@ class ProvNode:
 class ProvGraph:
     def __init__(
         self,
-        nodes: Optional[List[ProvNode]] = None,
-        sub_graphs_by_op_id: Optional[Dict[str, ProvGraph]] = None,
+        nodes: list[ProvNode] | None = None,
+        sub_graphs_by_op_id: dict[str, ProvGraph] | None = None,
     ):
         if nodes is None:
             nodes = []
         if sub_graphs_by_op_id is None:
             sub_graphs_by_op_id = {}
 
-        self._nodes_by_id: Dict[str, ProvNode] = {n.data_item_id: n for n in nodes}
-        self._sub_graphs_by_op_id: Dict[str, ProvGraph] = sub_graphs_by_op_id
+        self._nodes_by_id: dict[str, ProvNode] = {n.data_item_id: n for n in nodes}
+        self._sub_graphs_by_op_id: dict[str, ProvGraph] = sub_graphs_by_op_id
 
-    def get_nodes(self) -> List[ProvNode]:
+    def get_nodes(self) -> list[ProvNode]:
         return list(self._nodes_by_id.values())
 
     def get_node(self, data_item_id: str) -> ProvNode:
         return self._nodes_by_id[data_item_id]
 
-    def add_node(self, data_item_id: str, operation_id: str, source_ids: List[str]):
+    def add_node(self, data_item_id: str, operation_id: str, source_ids: list[str]):
         """Create a node describing how a data item was created.
 
         Parameters
         ----------
-        data_item_id:
+        data_item_id: str
             Identifier of the data item that was created.
-        operation_id:
+        operation_id: str
             Identifier of the operation that created the data item.
-        source_ids:
+        source_ids: list of str
             Identifier of pre-existing data items from which the data item was derived
             (if any). If these source data items don't have corresponding nodes,
             "stub" nodes (nodes with no `operation_id` and no `source_ids`) are
             created. It allows us to know how a data item was used even if we
             don't know how it was created.
         """
-
         node = self._nodes_by_id.get(data_item_id)
         # 2 different cases may occur:
         # - there is no node for data_item_id. This is the most straightforward
@@ -83,12 +82,12 @@ class ProvGraph:
             # a node already exists for the data item. this is valid only if the
             # node is a "stub" node, otherwise it probably means that add_node()
             # has been called twice with the same data_item_id
-            assert node.operation_id is None, f"Node with uid {data_item_id} already added to graph"
+            if node.operation_id is not None:
+                raise ValueError(f"Node with uid {data_item_id} already added to graph")
             # check consistency of stub node: operation_id should be None, and
             # source_ids should be empty
-            assert len(node.source_ids) == 0, (
-                "Inconsistent values for stub node: operation_id is None but source_ids" " is not empty"
-            )
+            if len(node.source_ids) != 0:
+                raise ValueError("Inconsistent values for stub node: operation_id is None but source_ids is not empty")
             # we are now sure that the node is a stub node and that operation_id
             # and source_ids are empty and can be set to the provided values
             node.operation_id = operation_id
@@ -112,7 +111,7 @@ class ProvGraph:
     def has_node(self, data_item_id: str) -> bool:
         return data_item_id in self._nodes_by_id
 
-    def get_sub_graphs(self) -> List[ProvGraph]:
+    def get_sub_graphs(self) -> list[ProvGraph]:
         return list(self._sub_graphs_by_op_id.values())
 
     def has_sub_graph(self, operation_id: str) -> bool:
@@ -149,7 +148,7 @@ class ProvGraph:
                 source_node = self._nodes_by_id.get(source_id)
                 if source_node is None:
                     raise Exception(
-                        f"Source identifier {source_id} in node with identifier" f" {node_id} has no corresponding node"
+                        f"Source identifier {source_id} in node with identifier {node_id} has no corresponding node"
                     )
                 if node_id not in source_node.derived_ids:
                     raise Exception(
@@ -173,7 +172,7 @@ class ProvGraph:
         for sub_graph in self._sub_graphs_by_op_id.values():
             sub_graph.check_sanity()
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         nodes = [n.to_dict() for n in self._nodes_by_id.values()]
         sub_graphs_by_op_id = {uid: s.to_dict() for uid, s in self._sub_graphs_by_op_id.items()}
         return dict(nodes=nodes, sub_graphs_by_op_id=sub_graphs_by_op_id)

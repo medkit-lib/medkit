@@ -156,7 +156,8 @@ def test_multiple_steps():
 
 def test_multiple_steps_with_same_output_key():
     """Pipeline with 2 step using the same output key, and another step
-    using it as input"""
+    using it as input
+    """
     prefix_1 = "Hello! "
     _prefixer_1 = _Prefixer(prefix_1)
     step_1 = PipelineStep(
@@ -197,7 +198,8 @@ def test_multiple_steps_with_same_output_key():
 
 def test_multiple_steps_with_same_input_key():
     """Pipeline with 2 step using the same input key,
-    which is also the output key of a previous step"""
+    which is also the output key of a previous step
+    """
     step_1 = PipelineStep(
         operation=_Uppercaser(),
         input_keys=["SENTENCE"],
@@ -306,7 +308,8 @@ def test_step_with_multiple_inputs():
 
 def test_step_with_no_output():
     """Pipeline with a step having no output, because it modifies the data items
-    it receives by adding attributes to them"""
+    it receives by adding attributes to them
+    """
     step_1 = PipelineStep(
         operation=_AttributeAdder(label="validated"),
         input_keys=["SENTENCE"],
@@ -328,7 +331,8 @@ def test_step_with_no_output():
 
 def test_step_with_different_output_length():
     """Simple pipeline with 2 consecutive steps. 1st step returns a number of data items
-    different from the number of data items it received as input"""
+    different from the number of data items it received as input
+    """
     step_1 = PipelineStep(
         operation=_KeywordMatcher(keywords=["sentence", "another"]),
         input_keys=["SENTENCE"],
@@ -435,7 +439,7 @@ def test_sanity_check():
     pipeline_4 = Pipeline(steps=steps_2, input_keys=["SENTENCE"], output_keys=["PREFIX"])
     with pytest.raises(
         Exception,
-        match=("Step input key WRONG_KEY does not correspond to any step output key nor" " any pipeline input key"),
+        match=("Step input key WRONG_KEY does not correspond to any step output key nor any pipeline input key"),
     ):
         pipeline_4.check_sanity()
 

@@ -1,6 +1,8 @@
 __all__ = ["Document"]
 
-from typing_extensions import Protocol, runtime_checkable
+from typing import runtime_checkable
+
+from typing_extensions import Protocol
 
 from medkit.core.annotation import AnnotationType
 from medkit.core.annotation_container import AnnotationContainer
@@ -9,8 +11,7 @@ from medkit.core.attribute_container import AttributeContainer
 
 @runtime_checkable
 class Document(Protocol[AnnotationType]):
-    """
-    Base document protocol that must be implemented by document classes of all
+    """Base document protocol that must be implemented by document classes of all
     modalities (text, audio, etc).
 
     Documents can contain :class:`~medkit.core.annotation.Annotation` objects.

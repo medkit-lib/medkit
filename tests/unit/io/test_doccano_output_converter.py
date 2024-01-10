@@ -15,7 +15,7 @@ _METADATA = {"custom_metadata": "custom", "doc_id": 1234}
 # mock of UUID class used by generate_deterministic_id
 @dataclasses.dataclass()
 class _MockUUID:
-    int: int
+    int: int  # noqa: A003
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -140,7 +140,7 @@ def test_save_by_task_without_metadata(tmp_path, task):
 
     # Prepare expected_data, the test forces not to export metadata
     # the data should not include it
-    for key in _METADATA.keys():
+    for key in _METADATA:
         expected_data.pop(key, None)
 
     assert data == expected_data

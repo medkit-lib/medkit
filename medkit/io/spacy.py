@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[spacy]`.
 """
 
@@ -32,21 +31,20 @@ class SpacyInputConverter:
 
         Parameters
         ----------
-        entities:
+        entities : list of str, optional
             Labels of spacy entities (`doc.ents`) to convert into medkit entities.
             If `None` (default) all spacy entities will be converted and added into
             its origin medkit document.
-        span_groups:
+        span_groups : list of str, optional
             Name of groups of spacy spans (`doc.spans`) to convert into medkit segments.
             If `None` (default) all groups of spacy spans will be converted and added into
             the medkit document.
-        attrs:
+        attrs : list of str, optional
             Name of span extensions to convert into medkit attributes.
             If `None` (default) all non-None extensions will be added for each annotation
-        uid:
+        uid : str, optional
             Identifier of the converter
         """
-
         if uid is None:
             uid = generate_id()
 
@@ -76,19 +74,18 @@ class SpacyInputConverter:
         self._prov_tracer = prov_tracer
 
     def load(self, spacy_docs: List[Doc]) -> List[TextDocument]:
-        """
-        Create a list of TextDocuments from a list of spacy Doc objects.
+        """Create a list of TextDocuments from a list of spacy Doc objects.
         Depending on the configuration of the converted, the selected annotations
         and attributes are included in the documents.
 
         Parameters
         ----------
-        spacy_docs:
+        spacy_docs : list of Doc
             A list of spacy documents to convert
 
         Returns
         -------
-         List[TextDocument]
+         list of TextDocument
             A list of TextDocuments
         """
         medkit_docs = []
@@ -118,7 +115,7 @@ class SpacyInputConverter:
                 # the input converter does not know the source data item
                 self._prov_tracer.add_prov(ann, self.description, source_data_items=[])
 
-            if ann.uid in attributes_by_ann.keys():
+            if ann.uid in attributes_by_ann:
                 attrs = attributes_by_ann[ann.uid]
                 for attr in attrs:
                     ann.attrs.add(attr)
@@ -130,7 +127,8 @@ class SpacyInputConverter:
 
 class SpacyOutputConverter:
     """Class in charge of converting a list of TextDocuments into a
-    list of spacy documents"""
+    list of spacy documents
+    """
 
     def __init__(
         self,
@@ -144,22 +142,22 @@ class SpacyOutputConverter:
 
         Parameters
         ----------
-        nlp:
+        nlp : Language
             Language object with the loaded pipeline from Spacy
-        apply_nlp_spacy:
+        apply_nlp_spacy : bool, default=False
             If True, each component of `nlp` pipeline is applied to the new spacy document.
             Some features, such as 'POS TAG', are added by a component of the pipeline, this
             parameter should be True, in order to add such attributes.
             If False, the `nlp` pipeline is not applied in the spacy document, so the document
             contains only the annotations and attributes transferred by medkit.
-        labels_anns:
+        labels_anns : list of str, optional
             Labels of medkit annotations to include in the spacy document.
             If `None` (default) all the annotations will be included.
-        attrs:
+        attrs : list of str, optional
             Labels of medkit attributes to add in the annotations that will be included.
             If `None` (default) all the attributes will be added as `custom attributes`
             in each annotation included.
-        uid:
+        uid : str, optional
             Identifier of the pipeline
 
         """
@@ -187,22 +185,20 @@ class SpacyOutputConverter:
         return OperationDescription(uid=self.uid, class_name=self.__class__.__name__, config=config)
 
     def convert(self, medkit_docs: List[TextDocument]) -> List[Doc]:
-        """
-        Convert a list of TextDocuments into a list of spacy Doc objects.
+        """Convert a list of TextDocuments into a list of spacy Doc objects.
         Depending on the configuration of the converted, the selected annotations
         and attributes are included in the documents.
 
         Parameters
         ----------
-        medkit_docs:
+        medkit_docs : list of TextDocument
             A list of TextDocuments to convert
 
         Returns
         -------
-        List[Doc]
+        list of Doc
             A list of spacy Doc objects
         """
-
         spacy_docs = []
         for medkit_doc in medkit_docs:
             # create a spacy document from medkit with the selected annotations

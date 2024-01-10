@@ -8,8 +8,7 @@ from medkit.core.operation import Operation
 
 
 class PreprocessingOperation(Operation):
-    """
-    Abstract operation for pre-processing segments.
+    """Abstract operation for pre-processing segments.
 
     It uses a list of segments as input and produces a list of pre-processed
     segments. Each input segment will have a corresponding output segment.
@@ -21,8 +20,7 @@ class PreprocessingOperation(Operation):
 
 
 class SegmentationOperation(Operation):
-    """
-    Abstract operation for segmenting audio.
+    """Abstract operation for segmenting audio.
 
     It uses a list of segments as input and produces a list of new segments.
     Each input segment will have zero, one or more corresponding output

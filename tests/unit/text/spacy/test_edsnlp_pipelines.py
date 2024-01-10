@@ -171,8 +171,7 @@ def test_negation_pipeline():
 
 
 def test_custom_attribute_factory():
-    """
-    Use a custom attribute factory overriding one of the default attribute
+    """Use a custom attribute factory overriding one of the default attribute
     factories
     """
 

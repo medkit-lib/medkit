@@ -11,7 +11,7 @@ _TXT_2 = "Report d'urgences"
 _LABEL_ATTR = "type_note"
 
 
-@pytest.fixture()
+@pytest.fixture
 def true_documents():
     return [
         TextDocument(_TXT_1, attrs=[Attribute(label=_LABEL_ATTR, value="CR")]),
@@ -19,7 +19,7 @@ def true_documents():
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def evaluator():
     return classification.TextClassificationEvaluator(attr_label=_LABEL_ATTR)
 

@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[edsnlp]`.
 """
 
@@ -15,8 +14,7 @@ from medkit.text.spacy.edsnlp import build_date_attribute, build_duration_attrib
 
 
 class EDSNLPDateMatcher(NEROperation):
-    """
-    Date matcher based on `EDS-NPL's dates pipeline
+    """Date matcher based on `EDS-NPL's dates pipeline
     <https://aphp.github.io/edsnlp/latest/pipelines/misc/dates/>`_ which itself
     relies on regular expressions. Note that this operation is designed to run
     on french documents.
@@ -38,8 +36,7 @@ class EDSNLPDateMatcher(NEROperation):
         attrs_to_copy: Optional[List[str]] = None,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         output_label:
             Label to use for date entities created (the label of the
@@ -51,7 +48,6 @@ class EDSNLPDateMatcher(NEROperation):
         uid:
             Identifier of the matcher
         """
-
         super().__init__(output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid)
 
         if attrs_to_copy is None:
@@ -79,7 +75,6 @@ class EDSNLPDateMatcher(NEROperation):
             :class:`~medkit.text.ner.RelativeDateAttribute` or
             :class:`~medkit.text.ner.DurationAttribute` attributes.
         """
-
         spacy_docs = self._edsnlp.pipe(s.text for s in segments)
         return [
             date_entity

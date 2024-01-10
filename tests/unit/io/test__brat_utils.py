@@ -124,7 +124,7 @@ def test_document_get_augmented_entities():
     test_file = pathlib.Path("tests/data/brat/2_augmented_entities.ann")
     doc = parse_file(test_file)
     augmented_entities = doc.get_augmented_entities()
-    assert "T4" in augmented_entities.keys()
+    assert "T4" in augmented_entities
     entity = augmented_entities["T4"]
     assert entity.text == "entity1 entity2"
     assert entity.type == "And-Group"
@@ -140,15 +140,15 @@ def test_document_get_augmented_entities():
 def test_document_grouping():
     test_file = pathlib.Path("tests/data/brat/2_augmented_entities.ann")
     doc = parse_file(test_file, detect_groups=True)
-    assert "T1" not in doc.groups.keys()
+    assert "T1" not in doc.groups
     # Test And-Group
-    assert "T4" in doc.groups.keys()
+    assert "T4" in doc.groups
     and_group = doc.groups["T4"]
     assert and_group.type == "And-Group"
     entity1 = BratEntity(uid="T1", type="label1", span=[(30, 37)], text="entity1")
     assert entity1 in and_group.items
     # Test Or-Group
-    assert "T5" in doc.groups.keys()
+    assert "T5" in doc.groups
     or_group = doc.groups["T5"]
     assert or_group.type == "Or-Group"
     entity3 = BratEntity(uid="T3", type="label3", span=[(140, 147)], text="entity3")

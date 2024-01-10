@@ -1,5 +1,4 @@
-"""
-This module aims to provide facilities for accessing data from e3c corpus.
+"""This module aims to provide facilities for accessing data from e3c corpus.
 
 **Version** : 2.0.0
 **License**: The E3C corpus is released under Creative Commons NonCommercial license
@@ -53,8 +52,7 @@ Label used by medkit for annotated clinical entities of E3C corpus
 
 @dataclass
 class E3CDocument:
-    """
-    Represents the data structure of a json document
+    """Represents the data structure of a json document
     in data collection folder of the E3C corpus
     """
 
@@ -82,8 +80,7 @@ def load_document(
     filepath: Union[str, Path],
     encoding: str = "utf-8",
 ) -> TextDocument:
-    """
-    Load a E3C corpus document (json document) as medkit text document.
+    """Load a E3C corpus document (json document) as medkit text document.
     For example, one in data collection folder.
     Document id is always kept in medkit document metadata.
 
@@ -110,8 +107,7 @@ def load_data_collection(
     dir_path: Union[Path, str],
     encoding: str = "utf-8",
 ) -> Iterator[TextDocument]:
-    """
-    Load the E3C corpus data collection as medkit text documents
+    """Load the E3C corpus data collection as medkit text documents
 
     Parameters
     ----------
@@ -146,8 +142,7 @@ def convert_data_collection_to_medkit(
     output_file: Union[str, Path],
     encoding: Optional[str] = "utf-8",
 ):
-    """
-    Convert E3C corpus data collection to medkit jsonl file
+    """Convert E3C corpus data collection to medkit jsonl file
 
     Parameters
     ----------
@@ -168,8 +163,7 @@ def load_annotated_document(
     encoding: str = "utf-8",
     keep_sentences=False,
 ) -> TextDocument:
-    """
-    Load a E3C corpus annotated document (xml document) as medkit text document.
+    """Load a E3C corpus annotated document (xml document) as medkit text document.
     For example, one in data annotation folder.
     Each annotation id is always kept in corresponding medkit element metadata.
 
@@ -260,7 +254,7 @@ def load_annotated_document(
             medkit_entity.attrs.add(attr)
 
         else:
-            logger.debug(f"no cui for {medkit_entity}")
+            logger.debug("no cui for %s", medkit_entity)
 
         # attach medkit entity to medkit document
         medkit_doc.anns.add(medkit_entity)
@@ -273,8 +267,7 @@ def load_data_annotation(
     encoding: str = "utf-8",
     keep_sentences: bool = False,
 ) -> Iterator[TextDocument]:
-    """
-    Load the E3C corpus data annotation as medkit text documents.
+    """Load the E3C corpus data annotation as medkit text documents.
 
     Parameters
     ----------
@@ -291,7 +284,6 @@ def load_data_annotation(
     Iterator[TextDocument]
         An iterator on corresponding medkit text documents
     """
-
     dir_path = Path(dir_path)
     if not dir_path.exists() or not dir_path.is_dir():
         raise FileNotFoundError("%s is not a directory or does not exist", dir_path)
@@ -313,8 +305,7 @@ def convert_data_annotation_to_medkit(
     encoding: Optional[str] = "utf-8",
     keep_sentences: bool = False,
 ):
-    """
-    Convert E3C corpus data annotation to medkit jsonl file.
+    """Convert E3C corpus data annotation to medkit jsonl file.
 
     Parameters
     ----------

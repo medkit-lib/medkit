@@ -25,7 +25,7 @@ from medkit.io.brat import BratOutputConverter
 
 
 def _get_medkit_doc():
-    text = "Le patient présente une douleur abdominale de grade 4, la douleur abdominale" " est sévère."
+    text = "Le patient présente une douleur abdominale de grade 4, la douleur abdominale est sévère."
     doc = TextDocument(uid="doc_brat", text=text)
     medkit_anns = [
         Entity(
@@ -217,10 +217,10 @@ def test_annotation_conf_file():
     )
 
     assert config_file.entity_types == ["grade", "level", "maladie"]
-    assert "normalized" in config_file.attr_entity_values.keys()
-    assert "from_umls" in config_file.attr_relation_values.keys()
-    assert "related" in config_file.rel_types_arg_1.keys()
-    assert "related" in config_file.rel_types_arg_2.keys()
+    assert "normalized" in config_file.attr_entity_values
+    assert "from_umls" in config_file.attr_relation_values
+    assert "related" in config_file.rel_types_arg_1
+    assert "related" in config_file.rel_types_arg_2
 
     # already sorted
     assert config_file.to_str() == EXPECTED_CONFIG
@@ -410,7 +410,6 @@ def test_brat_output_from_modified_span(tmp_path: Path):
 
 def test_normalization_attr(tmp_path: Path):
     """Conversion of normalization objects to strings"""
-
     text = "Le patient souffre d'asthme"
     doc = TextDocument(text=text)
     entity = Entity(label="maladie", text="asthme", spans=[Span(21, 27)])
@@ -427,7 +426,6 @@ def test_normalization_attr(tmp_path: Path):
 
 def test_convert_cuis_to_notes(tmp_path: Path):
     """Conversion of umls normalization attributes to notes"""
-
     text = "Le patient souffre d'asthme"
     doc = TextDocument(text=text)
 
@@ -461,7 +459,6 @@ def test_convert_cuis_to_notes(tmp_path: Path):
 
 def test_convert_attrs_to_notes(tmp_path: Path):
     """Conversion of n attributes to notes"""
-
     text = "Le patient souffre d'asthme"
     doc = TextDocument(text=text)
 

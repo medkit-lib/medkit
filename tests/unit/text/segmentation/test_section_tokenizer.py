@@ -1,6 +1,5 @@
 import pytest
 
-import tests.data_utils as data_utils
 from medkit.core import ProvTracer
 from medkit.core.text import Segment, Span
 from medkit.text.segmentation.section_tokenizer import (
@@ -8,6 +7,7 @@ from medkit.text.segmentation.section_tokenizer import (
     SectionModificationRule,
     SectionTokenizer,
 )
+from tests import data_utils
 
 TEST_CONFIG = [
     (

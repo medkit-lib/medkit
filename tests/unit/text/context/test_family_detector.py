@@ -163,7 +163,6 @@ def test_unicode_sensitive_on():
 
 def test_empty_segment():
     """Make sure an attribute is created with False value even for empty segments"""
-
     syntagmas = _get_syntagma_segments(["", " .", "21."])
     rule = FamilyDetectorRule(id="id_fam_father", regexp=r"\bfather\b")
     detector = FamilyDetector(output_label=_OUTPUT_LABEL, rules=[rule])

@@ -1,12 +1,11 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[quick-umls-matcher]`.
 """
 
 __all__ = ["QuickUMLSMatcher"]
 
 from pathlib import Path
-from typing import Dict, Iterator, List, NamedTuple, Optional, Union
+from typing import ClassVar, Dict, Iterator, List, NamedTuple, Optional, Union
 
 import quickumls.about
 import quickumls.constants
@@ -84,7 +83,7 @@ class QuickUMLSMatcher(NEROperation):
     on a different environment if a similar install is available.
     """
 
-    _install_paths: Dict[_QuickUMLSInstall, str] = {}
+    _install_paths: ClassVar[Dict[_QuickUMLSInstall, str]] = {}
 
     @classmethod
     def add_install(

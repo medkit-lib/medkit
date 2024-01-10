@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[hf-entity-matcher]`.
 """
 
@@ -21,8 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class HFEntityMatcherTrainable:
-    """
-    Trainable entity matcher based on HuggingFace transformers model
+    """Trainable entity matcher based on HuggingFace transformers model
     Any token classification model from the HuggingFace hub can be used
     (for instance "samrawal/bert-base-uncased_clinical-ner").
     """
@@ -37,8 +35,7 @@ class HFEntityMatcherTrainable:
         hf_auth_token: Optional[str] = None,
         device: int = -1,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         model_name_or_path:
             Name (on the HuggingFace models hub) or path of the NER model. Must be a model compatible
@@ -62,8 +59,7 @@ class HFEntityMatcherTrainable:
             Device to use for the transformer model. Follows the HuggingFace convention
             (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
         """
-
-        valid_model = hf_utils.check_model_for_task_HF(
+        valid_model = hf_utils.check_model_for_task_hf(
             model_name_or_path, "token-classification", hf_auth_token=hf_auth_token
         )
         if not valid_model:
@@ -207,9 +203,11 @@ class HFEntityMatcherTrainable:
         # Easier finetunning
         if sorted(config.label2id.keys()) != sorted(label_to_id.keys()):
             logger.warning(
-                f"""The operation model seems to have different labels.
-            PreTrained with labels: {sorted(config.label2id.keys())}, new labels
-            {sorted(label_to_id.keys())}. Ignoring the model labels as result."""
+                """The operation model seems to have different labels.
+                PreTrained with labels: %s, new labels %s.
+                Ignoring the model labels as result.""",
+                sorted(config.label2id.keys()),
+                sorted(label_to_id.keys()),
             )
             config.label2id = dict(label_to_id.items())
             config.id2label = {idx: label for label, idx in label_to_id.items()}

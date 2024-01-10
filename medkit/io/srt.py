@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[srt-io-convert]`.
 """
 
@@ -25,8 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 class SRTInputConverter(InputConverter):
-    """
-    Convert .srt files containing transcription information into turn segments
+    """Convert .srt files containing transcription information into turn segments
     with transcription attributes.
 
     For each turn in a .srt file, a
@@ -46,8 +44,7 @@ class SRTInputConverter(InputConverter):
         transcription_attr_label: str = "transcribed_text",
         converter_id: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         turn_segment_label:
             Label to use for segments representing turns in the .srt file.
@@ -56,7 +53,6 @@ class SRTInputConverter(InputConverter):
         converter_id:
             Identifier of the converter.
         """
-
         if converter_id is None:
             converter_id = generate_id()
 
@@ -87,7 +83,6 @@ class SRTInputConverter(InputConverter):
         prov_tracer:
             The provenance tracer used to trace the provenance.
         """
-
         self._prov_tracer = prov_tracer
 
     def load(
@@ -96,8 +91,7 @@ class SRTInputConverter(InputConverter):
         audio_dir: Optional[Union[str, Path]] = None,
         audio_ext: str = ".wav",
     ) -> List[AudioDocument]:
-        """
-        Load all .srt files in a directory into a list of
+        """Load all .srt files in a directory into a list of
         :class:`~medkit.core.audio.document.AudioDocument` objects.
 
         For each .srt file, they must be a corresponding audio file with the
@@ -119,7 +113,6 @@ class SRTInputConverter(InputConverter):
         List[AudioDocument]
             List of generated documents.
         """
-
         srt_dir = Path(srt_dir)
         audio_dir = Path(audio_dir) if audio_dir else None
 
@@ -127,16 +120,15 @@ class SRTInputConverter(InputConverter):
         for srt_file in sorted(srt_dir.glob("*.srt")):
             # corresponding audio file must have same base name with audio extension,
             # either in the same directory or in audio_dir if provided
-            if audio_dir:
-                audio_file = (audio_dir / srt_file.stem).with_suffix(audio_ext)
-            else:
-                audio_file = srt_file.with_suffix(audio_ext)
+            audio_file = (
+                (audio_dir / srt_file.stem).with_suffix(audio_ext) if audio_dir else srt_file.with_suffix(audio_ext)
+            )
 
             doc = self.load_doc(srt_file, audio_file)
             docs.append(doc)
 
         if len(docs) == 0:
-            logger.warning(f"No .srt found in '{srt_dir}'")
+            logger.warning("No .srt found in '%s'", srt_dir)
 
         return docs
 
@@ -157,7 +149,6 @@ class SRTInputConverter(InputConverter):
         AudioDocument:
             Generated document.
         """
-
         audio_file = Path(audio_file)
 
         srt_items = pysrt.open(str(srt_file))
@@ -188,7 +179,6 @@ class SRTInputConverter(InputConverter):
             Turn segments as found in the .srt file, with transcription
             attributes attached.
         """
-
         audio_file = Path(audio_file)
 
         srt_items = pysrt.open(str(srt_file))
@@ -215,8 +205,7 @@ class SRTInputConverter(InputConverter):
 
 
 class SRTOutputConverter(OutputConverter):
-    """
-    Build .srt files containing transcription information from
+    """Build .srt files containing transcription information from
     :class:`~medkit.core.audio.annotation.Segment` objects.
 
     There must be a segment for each turn, with an associated
@@ -230,15 +219,13 @@ class SRTOutputConverter(OutputConverter):
         segment_turn_label: str = "turn",
         transcription_attr_label: str = "transcribed_text",
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         segment_turn_label:
             Label of segments representing turns in the audio documents.
         transcription_attr_label:
             Label of segments attributes containing the transcribed text.
         """
-
         super().__init__()
 
         self.segment_turn_label = segment_turn_label
@@ -263,7 +250,6 @@ class SRTOutputConverter(OutputConverter):
             Optional list of names to use as basenames for the generated .srt
             files.
         """
-
         srt_dir = Path(srt_dir)
 
         if doc_names is not None:
@@ -293,7 +279,6 @@ class SRTOutputConverter(OutputConverter):
         srt_file:
             Path of the generated .srt file.
         """
-
         srt_file = Path(srt_file)
 
         segments = doc.anns.get(label=self.segment_turn_label)

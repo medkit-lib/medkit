@@ -4,7 +4,7 @@ import pytest
 
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 
-from medkit.tools.hf_utils import check_model_for_task_HF
+from medkit.tools.hf_utils import check_model_for_task_hf
 
 
 def test_with_local_file(tmpdir):
@@ -16,10 +16,10 @@ def test_with_local_file(tmpdir):
     with open(tmpdir / "config.json", "w") as file:
         json.dump(config_dict, file)
 
-    task = check_model_for_task_HF(tmpdir, "token-classification")
+    task = check_model_for_task_hf(tmpdir, "token-classification")
     assert task
 
-    task = check_model_for_task_HF(tmpdir, "audio-classification")
+    task = check_model_for_task_hf(tmpdir, "audio-classification")
     assert not task
 
 
@@ -33,5 +33,5 @@ def test_with_local_file(tmpdir):
     ],
 )
 def test_with_remote_model(model, task, expected_value):
-    task = check_model_for_task_HF(model, task)
+    task = check_model_for_task_hf(model, task)
     assert task == expected_value

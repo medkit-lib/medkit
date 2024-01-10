@@ -4,10 +4,10 @@ pytest.importorskip(modname="torchaudio", reason="torchaudio is not installed")
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 pytest.importorskip(modname="speechbrain", reason="speechbrain is not installed")
 
-import numpy as np  # noqa: E402
+import numpy as np
 
-from medkit.audio.transcription.sb_transcriber import SBTranscriber  # noqa: E402
-from medkit.core.audio import (  # noqa: E402
+from medkit.audio.transcription.sb_transcriber import SBTranscriber
+from medkit.core.audio import (
     FileAudioBuffer,
     MemoryAudioBuffer,
     Segment,
@@ -21,7 +21,6 @@ _EXPECTED_TEXT = "Hello this is my voice i m speaking to you."
 
 def test_basic():
     """Basic behavior"""
-
     span = Span(0.0, _AUDIO.duration)
     seg = Segment(label="turn", audio=_AUDIO, span=span)
 
@@ -37,7 +36,6 @@ def test_basic():
 @pytest.mark.parametrize("batch_size", [1, 5, 10, 15])
 def test_batch(batch_size):
     """Various batch sizes (smallest, half, exact number of items, more than)"""
-
     transcriber = SBTranscriber(model=_MODEL, needs_decoder=True)
 
     # generate batch of different audios by duplicating signal every other time

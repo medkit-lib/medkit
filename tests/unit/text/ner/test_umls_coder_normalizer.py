@@ -51,7 +51,6 @@ def _get_entity(label, text):
 
 def test_basic(normalizer):
     """Basic behavior with 2 input entities"""
-
     entity_1 = _get_entity(label="disease", text="asthma")
     # intentional small typo in 2d entity
     entity_2 = _get_entity(label="disease", text="type 1 diabts")
@@ -92,7 +91,6 @@ def _get_entities(nb_entities):
 
 def test_threshold(embeddings_cache_dir):
     """Threshold should leave some entities without normalization attributes when similarity is low"""
-
     # 1st entity with small typo
     entity_1 = _get_entity(label="disease", text="type 1 diabets")
     # 2d entity with bigger typo
@@ -141,7 +139,6 @@ def test_max_nb_matches(embeddings_cache_dir):
 )
 def test_batch(embeddings_cache_dir, input_size, batch_size):
     """Behavior with various input length/batch size combinations"""
-
     entities = _get_entities(input_size)
 
     normalizer = UMLSCoderNormalizer(
@@ -171,7 +168,6 @@ def test_nb_umls_embeddings_chunks(embeddings_cache_dir):
     Note that for tests, a chunk contains 2 embeddings
     (cf _mocked_umls_embeddings_chunk_size())
     """
-
     entity = _get_entity(label="disease", text="asthma")
 
     normalizer = UMLSCoderNormalizer(
@@ -204,7 +200,6 @@ def test_nb_umls_embeddings_chunks(embeddings_cache_dir):
 
 def test_inconsistent_params(module_tmp_dir):
     """Use UMLS embeddings dir containing embeddings pre-computed with different params"""
-
     embeddings_cache_dir = module_tmp_dir / "umls_coder_cache_cls"
     # first, generate embeddings with "cls" method in umls_embeddings_dir
     _ = UMLSCoderNormalizer(
@@ -218,7 +213,7 @@ def test_inconsistent_params(module_tmp_dir):
     # then try to reuse precomputed embedding but with MEAN method
     with pytest.raises(
         Exception,
-        match=(r"Cache directory .* contains UMLS embeddings pre-computed with different" r" params"),
+        match=(r"Cache directory .* contains UMLS embeddings pre-computed with different params"),
     ):
         _ = UMLSCoderNormalizer(
             umls_mrconso_file=_PATH_TO_MR_CONSO_FILE,
@@ -231,13 +226,11 @@ def test_inconsistent_params(module_tmp_dir):
 
 def test_empty_list(normalizer):
     """Pass empty list of entities"""
-
     normalizer.run([])
 
 
 def test_prov(normalizer):
     """Generated provenance"""
-
     entity_1 = _get_entity(label="disease", text="asthma")
     entity_2 = _get_entity(label="disease", text="type 1 diabetes")
     entities = [entity_1, entity_2]

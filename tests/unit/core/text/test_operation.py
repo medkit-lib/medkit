@@ -7,7 +7,7 @@ from medkit.core.text import Segment, Span, TextAnnotation, TextDocument
 from medkit.core.text.operation import CustomTextOpType, create_text_operation
 
 
-@pytest.fixture()
+@pytest.fixture
 def init_data():
     text = "hello world"
     doc = TextDocument(text=text)
@@ -83,13 +83,13 @@ def test_create_text_operation_filter(init_data):
         return False
 
     anns = doc.anns.get()
-    filter = create_text_operation(
+    filter_ = create_text_operation(
         function=keep_hello_segment,
         function_type=CustomTextOpType.FILTER,
     )
-    assert filter.description.name == "keep_hello_segment"
-    assert filter.description.config.get("function_type") == CustomTextOpType.FILTER.name
+    assert filter_.description.name == "keep_hello_segment"
+    assert filter_.description.config.get("function_type") == CustomTextOpType.FILTER.name
 
-    res: List[Segment] = filter.run(anns)
+    res: List[Segment] = filter_.run(anns)
     assert len(res) == 1
     assert res[0].text == "hello"

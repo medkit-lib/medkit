@@ -3,9 +3,9 @@ import pytest
 pytest.importorskip(modname="torch", reason="torch is not installed")
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 
-from medkit.core.text import ModifiedSpan, Segment, Span, span_utils  # noqa: E402
-from medkit.text.ner import RegexpMatcher, RegexpMatcherRule  # noqa: E402
-from medkit.text.translation.hf_translator import HFTranslator, _Aligner  # noqa: E402
+from medkit.core.text import ModifiedSpan, Segment, Span, span_utils
+from medkit.text.ner import RegexpMatcher, RegexpMatcherRule
+from medkit.text.translation.hf_translator import HFTranslator, _Aligner
 
 _TEXT_FR = "Je souffre d'insuffisance cardiaque depuis 10 ans."
 _TEXT_EN = "I've been suffering from heart failure for 10 years."
@@ -62,7 +62,8 @@ def test_translator_en_to_fr(translator_en_to_fr):
 def _get_text_alignments(original_text, translated_segment):
     """Return a list of tuple associating each word in the translated text
     to its corresponding word in the original text (if any).
-    This is to visualize alignment in an easier way than with spans"""
+    This is to visualize alignment in an easier way than with spans
+    """
     text_alignments = []
     start = 0
     for span in translated_segment.spans:
@@ -81,8 +82,7 @@ def _get_text_alignments(original_text, translated_segment):
 
 
 def test_translator_with_matcher(translator):
-    """
-    Make sure we are able to link an entity matched on translated text back to original
+    """Make sure we are able to link an entity matched on translated text back to original
     text
     """
     rule = RegexpMatcherRule(
@@ -141,8 +141,7 @@ def test_batch(input_size, batch_size):
 
 
 def test_ranges_sorting():
-    """
-    Alignment ranges are properly sorted even with model outputting non-monotonic
+    """Alignment ranges are properly sorted even with model outputting non-monotonic
     token alignment
     """
     aligner = _Aligner(model="aneuraz/awesome-align-with-co")

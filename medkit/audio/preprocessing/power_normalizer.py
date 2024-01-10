@@ -19,8 +19,7 @@ class PowerNormalizer(PreprocessingOperation):
         channel_wise: bool = False,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         output_label:
             Label of output normalized segments.
@@ -32,7 +31,6 @@ class PowerNormalizer(PreprocessingOperation):
         uid:
             Identifier of the normalizer.
         """
-
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")

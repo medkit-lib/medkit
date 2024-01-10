@@ -52,13 +52,13 @@ class UMLSEntry:
 
     Attributes
     ----------
-    cui:
+    cui : str
         Unique identifier of the concept designated by the term
-    ref_term:
+    term : str
         Original version of the term
-    semtypes:
+    semtypes : list of str, optional
         Semantic types of the concept (TUIs)
-    semgroups:
+    semgroups : list of str, optional
         Semantic groups of the concept
     """
 
@@ -81,7 +81,7 @@ class UMLSEntry:
 
 def load_umls_entries(
     mrconso_file: Union[str, Path],
-    mrsty_file: Union[str, Path] = None,
+    mrsty_file: Optional[Union[str, Path]] = None,
     sources: Optional[List[str]] = None,
     languages: Optional[List[str]] = None,
     show_progress: bool = False,
@@ -90,23 +90,23 @@ def load_umls_entries(
 
     Parameters
     ----------
-    mrconso_file:
+    mrconso_file : str or Path
         Path to the UMLS MRCONSO.RRF file
-    mrsty_file:
+    mrsty_file : str or Path, optional
         Path to the UMLS MRSTY.RRF file. If provided, semtypes info will be
         included in the entries returned.
-    sources:
+    sources : list of str, optional
         Sources to consider (ex: ICD10, CCS) If none provided, CUIs and terms
         of all sources will be taken into account.
-    languages:
+    languages : list of str, optional
         Languages to consider. If none provided, CUIs and terms of all languages
         will be taken into account
-    show_progress:
+    show_progress : bool, default=False
         Whether to show a progressbar
 
     Returns
     -------
-    Iterator[UMLSEntry]
+    iterator of UMLSEntry
         Iterator over all term entries found in UMLS install
     """
     mrconso_file = Path(mrconso_file)
@@ -169,8 +169,7 @@ def load_umls_entries(
 
 
 def load_semtypes_by_cui(mrsty_file: Union[str, Path]) -> Dict[str, List[str]]:
-    """
-    Load the list of semtypes associated to each CUI found in a MRSTY.RRF file
+    """Load the list of semtypes associated to each CUI found in a MRSTY.RRF file
 
     Params
     ------
@@ -182,7 +181,6 @@ def load_semtypes_by_cui(mrsty_file: Union[str, Path]) -> Dict[str, List[str]]:
     Dict[str, List[str]]
         Mapping between CUIs and associated semtypes
     """
-
     mrsty_file = Path(mrsty_file)
     semtypes_by_cui = defaultdict(list)
 
@@ -204,15 +202,13 @@ _SEMGROUPS_BY_SEMTYPE = None
 
 
 def load_semgroups_by_semtype() -> Dict[str, str]:
-    """
-    Load the semgroup associated to each semtype
+    """Load the semgroup associated to each semtype
 
     Returns
     -------
     Dict[str, str]
         Mapping between semtype TUIs and corresponding semgroup
     """
-
     global _SEMGROUPS_BY_SEMTYPE
     if _SEMGROUPS_BY_SEMTYPE is None:
         _SEMGROUPS_BY_SEMTYPE = {}
@@ -234,8 +230,7 @@ def preprocess_term_to_match(
     clean_brackets: bool = False,
     clean_dashes: bool = False,
 ):
-    """
-    Preprocess a UMLS term for matching purposes
+    """Preprocess a UMLS term for matching purposes
 
     Parameters
     ----------
@@ -272,8 +267,7 @@ _ACRONYM_PATTERN = re.compile(r"^ *(?P<acronym>[^ \(\)]+) *\( *(?P<expanded>[^\(
 
 
 def preprocess_acronym(term: str) -> Optional[str]:
-    """
-    Detect if a term contains an acronym with the expanded form between
+    """Detect if a term contains an acronym with the expanded form between
     parenthesis, and return the acronym if that is the case.
 
     This will work for terms such as: "ECG (ÉlectroCardioGramme)", where the
@@ -290,7 +284,6 @@ def preprocess_acronym(term: str) -> Optional[str]:
     Optional[str]
         The acronym in the term if any, else `None`. Ex: "ECG"
     """
-
     match = _ACRONYM_PATTERN.match(term)
     if not match:
         return None
@@ -318,6 +311,7 @@ def guess_umls_version(path: Union[str, Path]) -> str:
     ----------
     path:
         Path to the root directory of the UMLS install or any file inside that directory
+
     Returns
     -------
         UMLS version, estimated by finding the leaf-most folder in `path` that is not

@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[resampler]`.
 """
 
@@ -22,8 +21,7 @@ class Resampler(PreprocessingOperation):
         fast: bool = False,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         output_label:
             Label of output resampled segments.
@@ -35,7 +33,6 @@ class Resampler(PreprocessingOperation):
         uid:
             Identifier of the resampler.
         """
-
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")

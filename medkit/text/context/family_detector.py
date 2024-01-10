@@ -6,7 +6,6 @@ import dataclasses
 import logging
 import re
 from pathlib import Path
-from typing import List, Optional, Union
 
 import yaml
 from typing_extensions import TypedDict
@@ -28,15 +27,15 @@ class FamilyDetectorRule:
 
     Parameters
     ----------
-    regexp:
+    regexp : str
         The regexp pattern used to match a family reference
-    exclusion_regexps:
+    exclusion_regexps : list of str, optional
         Optional exclusion patterns
-    id:
+    id : str, optional
         Unique identifier of the rule to store in the metadata of the entities
-    case_sensitive:
+    case_sensitive : bool, default=False
         Whether to consider case when running `regexp and `exclusion_regexs`
-    unicode_sensitive:
+    unicode_sensitive : bool, default=False
         If True, rule matches are searched on unicode text.
         So, `regexp` and `exclusion_regexps` shall not contain non-ASCII chars because
         they would never be matched.
@@ -45,15 +44,15 @@ class FamilyDetectorRule:
     """
 
     regexp: str
-    exclusion_regexps: List[str] = dataclasses.field(default_factory=list)
-    id: Optional[str] = None
+    exclusion_regexps: list[str] = dataclasses.field(default_factory=list)
+    id: str | None = None
     case_sensitive: bool = False
     unicode_sensitive: bool = False
 
     def __post_init__(self):
-        assert self.unicode_sensitive or (self.regexp.isascii() and all(r.isascii() for r in self.exclusion_regexps)), (
-            "FamilyDetectorRule regexps shouldn't contain non-ASCII chars when" " unicode_sensitive is False"
-        )
+        assert self.unicode_sensitive or (
+            self.regexp.isascii() and all(r.isascii() for r in self.exclusion_regexps)
+        ), "FamilyDetectorRule regexps shouldn't contain non-ASCII chars when unicode_sensitive is False"
 
 
 class FamilyMetadata(TypedDict):
@@ -61,13 +60,13 @@ class FamilyMetadata(TypedDict):
 
     Parameters
     ----------
-    rule_id:
+    rule_id : str or int
         Identifier of the rule used to detect a family reference.
         If the rule has no id, then the index of the rule in
         the list of rules is used instead.
     """
 
-    rule_id: Union[str, int]
+    rule_id: str | int
 
 
 class FamilyDetector(ContextOperation):
@@ -98,18 +97,17 @@ class FamilyDetector(ContextOperation):
     def __init__(
         self,
         output_label: str,
-        rules: Optional[List[FamilyDetectorRule]] = None,
-        uid: Optional[str] = None,
+        rules: list[FamilyDetectorRule] | None = None,
+        uid: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        output_label:
+        output_label : str
             The label of the created attributes
-        rules:
+        rules : list of FamilyDetectorRule, optional
             The set of rules to use when detecting family references. If none provided,
             the rules in "family_detector_default_rules.yml" will be used
-        uid:
+        uid : str, optional
             Identifier of the detector
         """
         # Pass all arguments to super (remove self)
@@ -143,7 +141,7 @@ class FamilyDetector(ContextOperation):
         ]
         self._has_non_unicode_sensitive_rule = any(not r.unicode_sensitive for r in rules)
 
-    def run(self, segments: List[Segment]):
+    def run(self, segments: list[Segment]):
         """Add a family attribute to each segment with a boolean value
         indicating if a family reference has been detected.
 
@@ -152,16 +150,15 @@ class FamilyDetector(ContextOperation):
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             List of segments to detect as being family references or not
         """
-
         for segment in segments:
             family_attr = self._detect_family_ref_in_segment(segment)
             if family_attr is not None:
                 segment.attrs.add(family_attr)
 
-    def _detect_family_ref_in_segment(self, segment: Segment) -> Optional[Attribute]:
+    def _detect_family_ref_in_segment(self, segment: Segment) -> Attribute | None:
         rule_id = self._find_matching_rule(segment.text)
         if rule_id is not None:
             family_attr = Attribute(
@@ -177,7 +174,7 @@ class FamilyDetector(ContextOperation):
 
         return family_attr
 
-    def _find_matching_rule(self, text: str) -> Optional[Union[str, int]]:
+    def _find_matching_rule(self, text: str) -> str | int | None:
         # skip empty text
         if self._non_empty_text_pattern.search(text) is None:
             return None
@@ -193,70 +190,64 @@ class FamilyDetector(ContextOperation):
             pattern = self._patterns[rule_index]
             exclusion_pattern = self._exclusion_patterns[rule_index]
             text = text_unicode if rule.unicode_sensitive else text_ascii
-            if pattern.search(text) is not None:
-                if exclusion_pattern is None or exclusion_pattern.search(text) is None:
-                    # return the rule id or the rule index if no id has been set
-                    rule_id = rule.id if rule.id is not None else rule_index
-                    return rule_id
+            if pattern.search(text) and not (exclusion_pattern and exclusion_pattern.search(text)):
+                # return the rule id or the rule index if no id has been set
+                rule_id = rule.id if rule.id is not None else rule_index
+                return rule_id
 
         return None
 
     @staticmethod
-    def load_rules(path_to_rules: Path, encoding: Optional[str] = None) -> List[FamilyDetectorRule]:
-        """
-        Load all rules stored in a yml file
+    def load_rules(path_to_rules: Path, encoding: str | None = None) -> list[FamilyDetectorRule]:
+        """Load all rules stored in a yml file
 
         Parameters
         ----------
-        path_to_rules
+        path_to_rules : Path
             Path to a yml file containing a list of mappings
             with the same structure as `FamilyDetectorRule`
-        encoding
+        encoding : str, optional
             Encoding of the file to open
 
         Returns
         -------
-        List[FamilyDetectorRule]
+        list of FamilyDetectorRule
             List of all the rules in `path_to_rules`,
             can be used to init a `FamilyDetector`
         """
-
-        with open(path_to_rules, mode="r", encoding=encoding) as f:
+        with open(path_to_rules, encoding=encoding) as f:
             rules_data = yaml.safe_load(f)
         rules = [FamilyDetectorRule(**d) for d in rules_data]
         return rules
 
     @staticmethod
-    def check_rules_sanity(rules: List[FamilyDetectorRule]):
+    def check_rules_sanity(rules: list[FamilyDetectorRule]):
         """Check consistency of a set of rules"""
-
         if any(r.id is not None for r in rules):
             if not all(r.id is not None for r in rules):
                 raise ValueError(
-                    "Some rules have ids and other do not. Please provide either ids" " for all rules or no ids at all"
+                    "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
                 )
             if len({r.id for r in rules}) != len(rules):
                 raise ValueError("Some rules have the same id, each rule must have a unique id")
 
     @staticmethod
     def save_rules(
-        rules: List[FamilyDetectorRule],
+        rules: list[FamilyDetectorRule],
         path_to_rules: Path,
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
     ):
-        """
-        Store rules in a yml file
+        """Store rules in a yml file
 
         Parameters
         ----------
-        rules
+        rules : list of FamilyDetectorRule
             The rules to save
-        path_to_rules
+        path_to_rules : Path
             Path to a .yml file that will contain the rules
-        encoding
+        encoding : str, optional
             Encoding of the .yml file
         """
-
         with open(path_to_rules, mode="w", encoding=encoding) as f:
             rules_data = [dataclasses.asdict(r) for r in rules]
             rules = yaml.safe_dump(rules_data, f)

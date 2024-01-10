@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 __all__ = ["DuplicateFinder", "DuplicationAttribute"]
 
 import dataclasses
 import re
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar
 
 import duptextfinder  # type: ignore
 from typing_extensions import Literal, Self
@@ -13,32 +15,31 @@ from medkit.core.text import AnySpan, Segment, TextDocument, span_utils
 
 @dataclasses.dataclass
 class DuplicationAttribute(Attribute):
-    """
-    Attribute indicating if some text is a duplicate of some other text in
+    """Attribute indicating if some text is a duplicate of some other text in
     another document
 
     Attributes
     ----------
-    uid:
+    uid : str
         Identifier of the attribute
-    label:
+    label : str
         The attribute label, always set to :attr:`DuplicationAttribute.LABEL`
-    value:
+    value : Any, optional
         `True` if the segment or entity to which the attribute belongs is a
         duplicate of the part of another document, `False` otherwise.
-    source_doc_id:
+    source_doc_id : str, optional
         Identifier of the document from which the text was copied
-    source_spans:
+    source_spans : list of AnySpan, optional
         Spans of the duplicated text in the source document
-    source_doc_date:
+    source_doc_date : Any, optional
         Date of the source document, if known
     """
 
-    source_doc_id: Optional[str]
-    source_spans: Optional[List[AnySpan]]
+    source_doc_id: str | None
+    source_spans: list[AnySpan] | None
     # TODO do we need to duplicate this info for convenience,
     # or should source_doc_id be enough?
-    source_doc_date: Optional[Any]
+    source_doc_date: Any | None
 
     LABEL: ClassVar[str] = "is_duplicate"
     """
@@ -48,11 +49,11 @@ class DuplicationAttribute(Attribute):
     def __init__(
         self,
         value: bool,
-        source_doc_id: Optional[str] = None,
-        source_spans: Optional[List[AnySpan]] = None,
-        source_doc_date: Optional[Any] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
+        source_doc_id: str | None = None,
+        source_spans: list[AnySpan] | None = None,
+        source_doc_date: Any | None = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
     ):
         super().__init__(label=self.LABEL, value=value, metadata=metadata, uid=uid)
 
@@ -60,7 +61,7 @@ class DuplicationAttribute(Attribute):
         self.source_spans = source_spans
         self.source_doc_date = source_doc_date
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         attr_dict = dict(
             uid=self.uid,
             value=self.value,
@@ -73,7 +74,7 @@ class DuplicationAttribute(Attribute):
         return attr_dict
 
     @classmethod
-    def from_dict(cls, attr_dict: Dict[str, Any]) -> Self:
+    def from_dict(cls, attr_dict: dict[str, Any]) -> Self:
         return cls(
             uid=attr_dict["uid"],
             value=attr_dict["value"],
@@ -85,8 +86,7 @@ class DuplicationAttribute(Attribute):
 
 
 class DuplicateFinder(Operation):
-    """
-    Detect duplicated chunks of text across a collection of text documents,
+    """Detect duplicated chunks of text across a collection of text documents,
     relying on the `duptextfinder` library.
 
     When a duplicated chunk of text is found, a segment is created on the newest
@@ -116,46 +116,44 @@ class DuplicateFinder(Operation):
         min_duplicate_length: int = 5,
         fingerprint_type: Literal["char", "word"] = "word",
         fingerprint_length: int = 2,
-        date_metadata_key: Optional[str] = None,
+        date_metadata_key: str | None = None,
         case_sensitive: bool = True,
         allow_multiline: bool = True,
         orf: int = 1,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        output_label:
+        output_label : str
             Label of created segments
-        segments_to_output:
+        segments_to_output : str, default="dup"
             Type of segments to create: only duplicate segments (`"dup"`), only
             non-duplicate segments (`"nondup"`), or both (`"both"`)
-        min_duplicate_length:
+        min_duplicate_length : int, default=5
             Minimum length of duplicated segments, in characters (shorter
             segments will be discarded)
-        fingerprint_type:
+        fingerprint_type : str, default="word"
             Base unit to use for fingerprinting (either `"char"` or `"word"`)
-        fingerprint_length:
+        fingerprint_length : int, default=2
             Number of chars or words in each fingerprint. If `fingerprint_type`
             is set to `"char"`, this should be the same value as
             `min_duplicate_length`. If `fingerprint_type` is set to `"word"`,
             this should be around the average word size multiplied by
             `min_duplicate_length`
-        date_metadata_key:
+        date_metadata_key : str, optional
             Key to use to retrieve the date of each document from their metadata
             dicts. When provided, this is used to determine which document
             should be the source of a duplicate (the older) and which document
             should be the recipient (the newer). If None, the order of the
             documents in the collection will be used.
-        case_sensitive:
+        case_sensitive : bool, default=True
             Whether duplication detection should be case-sensitive or not
-        allow_multiline:
+        allow_multiline : bool, default=True
             Whether detected duplicates can span across multiline lines, or
             each line should be handled separately
-        orf:
+        orf : int, default=1
             Step size when building fingerprints, cf the `duptextfinder`
             documentation
         """
-
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -172,23 +170,18 @@ class DuplicateFinder(Operation):
         self.case_sensitive = case_sensitive
         self.allow_multiline = allow_multiline
 
-    def run(self, collections: List[Collection]):
-        """
-        Find duplicates in each collection of documents
+    def run(self, collections: list[Collection]):
+        """Find duplicates in each collection of documents
 
         For each duplicate found, a :class:`~.core.text.Segment` object with a
         :class:`~.DuplicationAttribute` will be created and attached to the document that
         is the recipient of the duplication (ie not the source document).
         """
-
         for collection in collections:
             self._find_duplicate_in_docs(collection.text_docs)
 
-    def _find_duplicate_in_docs(self, docs: List[TextDocument]):
-        """
-        Find duplicates among a set of documents
-        """
-
+    def _find_duplicate_in_docs(self, docs: list[TextDocument]):
+        """Find duplicates among a set of documents"""
         # configure new fingerprint builder and duplicate finder for set of
         # documents (can't reuse the same ones for all collections because they
         # remember previously seen documents)
@@ -222,21 +215,19 @@ class DuplicateFinder(Operation):
         self,
         doc: TextDocument,
         duplicate_finder: duptextfinder.DuplicateFinder,
-        docs_by_id: Dict[str, TextDocument],
+        docs_by_id: dict[str, TextDocument],
     ):
-        """
-        Find duplicates between a document and previously processed documents
+        """Find duplicates between a document and previously processed documents
 
         Parameters
         ----------
-        doc:
+        doc : TextDocument
             Document in which to look for duplicates
-        duplicate_finder:
+        duplicate_finder : DuplicateFinder
             Duplicate finder to use, that has already processed previous documents if any
-        docs_by_id:
+        docs_by_id : dict of str to TextDocument
             Previously processed documents, by id
         """
-
         docs_by_id[doc.uid] = doc
         target_segment = doc.raw_segment
 
@@ -249,7 +240,7 @@ class DuplicateFinder(Operation):
             if self._output_nondup and char_cursor < duplicate.targetSpan.start:
                 nondup_seg = self._create_nondup_segment(
                     target_segment,
-                    range=(char_cursor, duplicate.targetSpan.start),
+                    range_=(char_cursor, duplicate.targetSpan.start),
                 )
                 if nondup_seg is not None:
                     doc.anns.add(nondup_seg)
@@ -270,16 +261,15 @@ class DuplicateFinder(Operation):
         if self._output_nondup and char_cursor < len(target_segment.text):
             nondup_seg = self._create_nondup_segment(
                 target_segment,
-                range=(char_cursor, len(target_segment.text)),
+                range_=(char_cursor, len(target_segment.text)),
             )
             if nondup_seg is not None:
                 doc.anns.add(nondup_seg)
 
-    def _create_nondup_segment(self, target_segment, range):
+    def _create_nondup_segment(self, target_segment, range_):
         """Create a segment representing a non-duplicated zone"""
-
         # "rebase" the range taking into accounts spans of the target segment
-        text, spans = span_utils.extract(target_segment.text, target_segment.spans, ranges=[range])
+        text, spans = span_utils.extract(target_segment.text, target_segment.spans, ranges=[range_])
 
         # skip if empty
         if not self._NON_EMPTY_REGEXP.search(text):
@@ -307,7 +297,6 @@ class DuplicateFinder(Operation):
 
     def _create_duplicate_segment(self, target_segment, target_range, source_doc, source_range):
         """Create a segment representing a duplicated zone"""
-
         # "rebase" the target range taking into accounts spans of the target segment
         text, spans = span_utils.extract(target_segment.text, target_segment.spans, ranges=[target_range])
 

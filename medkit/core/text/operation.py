@@ -17,8 +17,7 @@ from medkit.core.text.annotation import Entity, Segment
 
 
 class ContextOperation(Operation):
-    """
-    Abstract operation for context detection.
+    """Abstract operation for context detection.
     It uses a list of segments as input for running the operation and creates attributes
     that are directly appended to these segments.
     """
@@ -29,8 +28,7 @@ class ContextOperation(Operation):
 
 
 class NEROperation(Operation):
-    """
-    Abstract operation for detecting entities.
+    """Abstract operation for detecting entities.
     It uses a list of segments as input and produces a list of detected entities.
     """
 
@@ -40,8 +38,7 @@ class NEROperation(Operation):
 
 
 class SegmentationOperation(Operation):
-    """
-    Abstract operation for segmenting text.
+    """Abstract operation for segmenting text.
     It uses a list of segments as input and produces a list of new segments.
     """
 
@@ -62,8 +59,7 @@ class CustomTextOpType(IntEnum):
 
 
 class _CustomTextOperation(Operation):
-    """
-    Internal class representing a custom text operation.
+    """Internal class representing a custom text operation.
 
     This class may be only instantiated by `create_text_operation`.
 
@@ -72,9 +68,7 @@ class _CustomTextOperation(Operation):
     """
 
     def __init__(self, name: str, uid: Optional[str] = None):
-        """
-
-        Parameters
+        """Parameters
         ----------
         name
             Name of the operation used for provenance info
@@ -94,8 +88,8 @@ class _CustomTextOperation(Operation):
         self._prov_tracer = prov_tracer
 
     def set_function(self, function: Callable, function_type: CustomTextOpType, **kwargs: Any):
-        """
-        Assign a user-defined function to the operation
+        """Assign a user-defined function to the operation
+
         Parameters
         ----------
         function
@@ -117,8 +111,7 @@ class _CustomTextOperation(Operation):
         # TODO: check signature according to type
 
     def run(self, all_input_data: List[Any]) -> List[Any]:
-        """
-        Run the custom operation on a list of input data and outputs a list of data
+        """Run the custom operation on a list of input data and outputs a list of data
 
         This method uses the user-defined function depending on its type on a
         batch of data.
@@ -183,8 +176,7 @@ def create_text_operation(
     name: Optional[str] = None,
     args: Optional[Dict] = None,
 ) -> _CustomTextOperation:
-    """
-    Function for instantiating a custom test operation from a user-defined function
+    """Function for instantiating a custom test operation from a user-defined function
 
     Parameters
     ----------
@@ -197,6 +189,7 @@ def create_text_operation(
         Name of the operation used for provenance info (default: function name)
     args
         Dictionary containing the arguments of the function if any.
+
     Returns
     -------
     operation

@@ -119,7 +119,7 @@ class SpacyPipeline(Operation):
                 )
 
             # add attributes
-            if new_segment.uid in attrs_by_ann_id.keys():
+            if new_segment.uid in attrs_by_ann_id:
                 for attr in attrs_by_ann_id[new_segment.uid]:
                     new_segment.attrs.add(attr)
                     if self._prov_tracer is not None:

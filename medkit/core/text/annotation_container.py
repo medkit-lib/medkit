@@ -8,8 +8,7 @@ from medkit.core.text.annotation import Entity, Relation, Segment, TextAnnotatio
 
 
 class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
-    """
-    Manage a list of text annotations belonging to a text document.
+    """Manage a list of text annotations belonging to a text document.
 
     This behaves more or less like a list: calling `len()` and iterating are
     supported. Additional filtering is available through the `get()` method.
@@ -76,8 +75,7 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         return super().get_by_id(uid)
 
     def get_segments(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[Segment]:
-        """
-        Return a list of the segments of the document (not including entities),
+        """Return a list of the segments of the document (not including entities),
         optionally filtering by label or key.
 
         Parameters
@@ -87,7 +85,6 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         key:
             Key to use to filter segments.
         """
-
         # get ids filtered by label/key
         uids = self.get_ids(label=label, key=key)
         # keep only segment ids
@@ -97,8 +94,7 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         return typing.cast(List[Segment], segments)
 
     def get_entities(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[Entity]:
-        """
-        Return a list of the entities of the document, optionally filtering
+        """Return a list of the entities of the document, optionally filtering
         by label or key.
 
         Parameters
@@ -108,7 +104,6 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         key:
             Key to use to filter entities.
         """
-
         # get ids filtered by label/key
         uids = self.get_ids(label=label, key=key)
         # keep only entity ids
@@ -124,8 +119,7 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         key: Optional[str] = None,
         source_id: Optional[str] = None,
     ) -> List[Relation]:
-        """
-        Return a list of the relations of the document, optionally filtering
+        """Return a list of the relations of the document, optionally filtering
         by label, key or source entity.
 
         Parameters
@@ -137,7 +131,6 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         source_id:
             Identifier of the source entity to use to filter relations.
         """
-
         # get ids filtered by label/key
         uids = self.get_ids(label=label, key=key)
         # keep only relation ids

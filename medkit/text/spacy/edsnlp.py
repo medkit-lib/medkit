@@ -1,5 +1,4 @@
-"""
-This package needs extra-dependencies not installed as core dependencies of medkit.
+"""This package needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit[edsnlp]`.
 """
 
@@ -42,8 +41,7 @@ from medkit.text.spacy import SpacyDocPipeline, SpacyPipeline
 
 
 def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
-    """
-    Build a medkit date attribute from an EDS-NLP attribute with a date object
+    """Build a medkit date attribute from an EDS-NLP attribute with a date object
     as value.
 
     Parameters
@@ -60,7 +58,6 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
         :class:`~medkit.text.ner.RelativeDateAttribute` instance, depending on
         the EDS-NLP attribute
     """
-
     value = spacy_span._.get(spacy_label)
     if isinstance(value, EDSNLP_AbsoluteDate):
         return DateAttribute(
@@ -88,12 +85,11 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
             seconds=value.second,
         )
     else:
-        raise ValueError(f"Unexpected value type: {type(value)} for spaCy attribute with label" f" '{spacy_label}'")
+        raise ValueError(f"Unexpected value type: {type(value)} for spaCy attribute with label '{spacy_label}'")
 
 
 def build_duration_attribute(spacy_span: SpacySpan, spacy_label: str) -> DurationAttribute:
-    """
-    Build a medkit duration attribute from an EDS-NLP attribute with a duration
+    """Build a medkit duration attribute from an EDS-NLP attribute with a duration
     object as value.
 
     Parameters
@@ -108,7 +104,6 @@ def build_duration_attribute(spacy_span: SpacySpan, spacy_label: str) -> Duratio
     DurationAttribute
         Medkit duration attribute
     """
-
     value = spacy_span._.get(spacy_label)
     assert isinstance(value, EDSNLP_Duration)
     return DurationAttribute(
@@ -124,8 +119,7 @@ def build_duration_attribute(spacy_span: SpacySpan, spacy_label: str) -> Duratio
 
 
 def build_adicap_attribute(spacy_span: SpacySpan, spacy_label: str) -> ADICAPNormAttribute:
-    """
-    Build a medkit ADICAP normalization attribute from an EDS-NLP attribute with
+    """Build a medkit ADICAP normalization attribute from an EDS-NLP attribute with
     an ADICAP object as value.
 
     Parameters
@@ -140,7 +134,6 @@ def build_adicap_attribute(spacy_span: SpacySpan, spacy_label: str) -> ADICAPNor
     ADICAPNormAttribute
         Medkit ADICAP normalization attribute
     """
-
     value = spacy_span._.get(spacy_label)
     assert isinstance(value, EDSNLP_AdicapCode)
     return ADICAPNormAttribute(
@@ -155,8 +148,7 @@ def build_adicap_attribute(spacy_span: SpacySpan, spacy_label: str) -> ADICAPNor
 
 
 def build_tnm_attribute(spacy_span: SpacySpan, spacy_label: str) -> TNMAttribute:
-    """
-    Build a medkit TNM attribute from an EDS-NLP attribute with a TNM object as
+    """Build a medkit TNM attribute from an EDS-NLP attribute with a TNM object as
     value.
 
     Parameters
@@ -171,7 +163,6 @@ def build_tnm_attribute(spacy_span: SpacySpan, spacy_label: str) -> TNMAttribute
     TNMAttribute
         Medkit TNM attribute
     """
-
     value = spacy_span._.get(spacy_label)
     assert isinstance(value, EDSNLP_TNM)
     return TNMAttribute(
@@ -189,8 +180,7 @@ def build_tnm_attribute(spacy_span: SpacySpan, spacy_label: str) -> TNMAttribute
 
 
 def build_measurement_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
-    """
-    Build a medkit attribute from an EDS-NLP attribute with a measurement object
+    """Build a medkit attribute from an EDS-NLP attribute with a measurement object
     as value.
 
     Parameters
@@ -311,7 +301,6 @@ class EDSNLPPipeline(SpacyPipeline):
         uid:
             Identifier of the pipeline
         """
-
         if medkit_attribute_factories is None:
             medkit_attribute_factories = DEFAULT_ATTRIBUTE_FACTORIES
         else:
@@ -336,9 +325,7 @@ class EDSNLPPipeline(SpacyPipeline):
 
 
 class EDSNLPDocPipeline(SpacyDocPipeline):
-    """
-    DocPipeline to obtain annotations created using EDS-NLP
-    """
+    """DocPipeline to obtain annotations created using EDS-NLP"""
 
     def __init__(
         self,
@@ -388,7 +375,6 @@ class EDSNLPDocPipeline(SpacyDocPipeline):
         uid:
             Identifier of the pipeline
         """
-
         # use pre-defined attribute factory
         if medkit_attribute_factories is None:
             medkit_attribute_factories = DEFAULT_ATTRIBUTE_FACTORIES

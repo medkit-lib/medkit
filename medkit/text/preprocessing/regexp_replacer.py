@@ -3,7 +3,7 @@ from __future__ import annotations
 __all__ = ["RegexpReplacer"]
 
 import re
-from typing import List, NamedTuple, Optional, Tuple
+from typing import NamedTuple
 
 from medkit.core.operation import Operation
 from medkit.core.text import Segment, span_utils
@@ -15,8 +15,7 @@ class _Rule(NamedTuple):
 
 
 class RegexpReplacer(Operation):
-    """
-    Generic pattern replacer to be used as pre-processing module
+    """Generic pattern replacer to be used as pre-processing module
 
     This module is a non-destructive module allowing to replace a regex pattern
     by a new text.
@@ -27,20 +26,19 @@ class RegexpReplacer(Operation):
     def __init__(
         self,
         output_label: str,
-        rules: List[Tuple[str, str]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        rules: list[tuple[str, str]] | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        output_label
+        output_label : str
             The output label of the created annotations
-        rules
+        rules : list of tuple, optional
             The list of replacement rules [(pattern_to_replace, new_text)]
-        name:
+        name : str, optional
             Name describing the pre-processing module (defaults to the class name)
-        uid
+        uid : str, optional
             Identifier of the pre-processing module
         """
         # Pass all arguments to super (remove self)
@@ -58,19 +56,18 @@ class RegexpReplacer(Operation):
 
         self._pattern = re.compile(regex_rule)
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
-        """
-        Run the module on a list of segments provided as input
+    def run(self, segments: list[Segment]) -> list[Segment]:
+        """Run the module on a list of segments provided as input
         and returns a new list of segments
 
         Parameters
         ----------
-        segments
+        segments : list of Segment
             List of segments to normalize
 
         Returns
         -------
-        List[~medkit.core.text.Segment]:
+        list of Segment
             List of normalized segments
         """
         return [norm_segment for segment in segments for norm_segment in self._normalize_segment_text(segment)]

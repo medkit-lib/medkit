@@ -4,7 +4,7 @@ __all__ = ["SyntagmaTokenizer"]
 
 import pathlib
 import re
-from typing import Iterator, List, Optional, Tuple
+from typing import Iterator
 
 import yaml
 
@@ -22,28 +22,27 @@ class SyntagmaTokenizer(SegmentationOperation):
 
     def __init__(
         self,
-        separators: Tuple[str, ...] = None,
+        separators: tuple[str, ...] | None = None,
         output_label: str = _DEFAULT_LABEL,
         strip_chars: str = _DEFAULT_STRIP_CHARS,
-        attrs_to_copy: Optional[List[str]] = None,
-        uid: Optional[str] = None,
+        attrs_to_copy: list[str] | None = None,
+        uid: str | None = None,
     ):
-        """
-        Instantiate the syntagma tokenizer
+        """Instantiate the syntagma tokenizer
 
         Parameters
         ----------
-        separators: Tuple[str, ...]
+        separators : tuple of str, optional
             The tuple of regular expressions corresponding to separators. If None
             provided, the rules in "default_syntagma_definitiion.yml" will be used.
-        output_label: str, Optional
+        output_label : str, optional
             The output label of the created annotations.
-        strip_chars
+        strip_chars : str, optional
             The list of characters to strip at the beginning of the returned segment.
-        attrs_to_copy:
+        attrs_to_copy : list of str, optional
             Labels of the attributes that should be copied from the input segment
             to the derived segment. For example, useful for propagating section name.
-        uid: str, Optional
+        uid : str, optional
             Identifier of the tokenizer
         """
         # Pass all arguments to super (remove self)
@@ -61,29 +60,29 @@ class SyntagmaTokenizer(SegmentationOperation):
             self.separators = self.load_syntagma_definition(_PATH_TO_DEFAULT_RULES, encoding="utf-8")
         self.attrs_to_copy = attrs_to_copy
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
-        """
-        Return syntagmes detected in `segments`.
+    def run(self, segments: list[Segment]) -> list[Segment]:
+        """Return syntagmes detected in `segments`.
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             List of segments into which to look for sentences
 
         Returns
         -------
-        List[Segments]:
+        list of Segment
             Syntagmas segments found in `segments`
         """
         return [syntagma for segment in segments for syntagma in self._find_syntagmas_in_segment(segment)]
 
     def _find_syntagmas_in_segment(self, segment: Segment) -> Iterator[Segment]:
         regex_rule = (
-            "(?P<blanks> *)"  # Blanks at the beginning of the syntagmas
-            + "(?P<syntagma>.+?)"  # Syntagma to detect
-            + "(?P<separator>"  # Separator
-            + "|".join(self.separators)
-            + "|$)"  # including the last syntagma without end separator
+            # Blanks at the beginning of the syntagmas
+            "(?P<blanks> *)"
+            # Syntagma to detect
+            "(?P<syntagma>.+?)"
+            # Separators including the last syntagma without end separator
+            "(?P<separator>" + "|".join(self.separators) + "|$)"
         )
         pattern = re.compile(regex_rule, flags=re.DOTALL)
 
@@ -143,24 +142,22 @@ class SyntagmaTokenizer(SegmentationOperation):
         return syntagma_tokenizer
 
     @staticmethod
-    def load_syntagma_definition(filepath: pathlib.Path, encoding: Optional[str] = None) -> Tuple[str, ...]:
-        """
-        Load the syntagma definition stored in yml file
+    def load_syntagma_definition(filepath: pathlib.Path, encoding: str | None = None) -> tuple[str, ...]:
+        """Load the syntagma definition stored in yml file
 
         Parameters
         ----------
-        filepath:
+        filepath : Path
             Path to a yml file containing the syntagma separators
-        encoding
+        encoding : str, optional
             Encoding of the file to open
 
         Returns
         -------
-        Tuple[str, ...]:
+        tuple of str
             Tuple containing the separators
         """
-
-        with open(filepath, mode="r", encoding=encoding) as f:
+        with open(filepath, encoding=encoding) as f:
             config = yaml.safe_load(f)
 
         syntagma_seps = tuple(str(sep) for sep in config["syntagmas"]["separators"])
@@ -169,20 +166,19 @@ class SyntagmaTokenizer(SegmentationOperation):
 
     @staticmethod
     def save_syntagma_definition(
-        syntagma_seps: Tuple[str, ...],
+        syntagma_seps: tuple[str, ...],
         filepath: pathlib.Path,
-        encoding: Optional[str] = None,
+        encoding: str | None = None,
     ):
-        """
-        Save syntagma yaml definition file
+        """Save syntagma yaml definition file
 
         Parameters
         ----------
-        syntagma_seps
+        syntagma_seps : tuple of str
             The tuple of regular expressions corresponding to separators
-        filepath
+        filepath : Path
             The path of the file to save
-        encoding
+        encoding : str, optional
             The encoding of the file. Default: None
         """
         data = {

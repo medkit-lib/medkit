@@ -23,7 +23,6 @@ def test_spans_for_segment():
 
 def test_normalization():
     """Test normalization helper"""
-
     entity = Entity(
         label="disease",
         spans=[Span(739, 755)],

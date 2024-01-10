@@ -57,16 +57,15 @@ class BratInputConverter(InputConverter):
         notes_label: str = "brat_note",
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        notes_label:
-            Label to use for attributes created from annotator notes.
-        detect_cuis_in_notes:
+        detect_cuis_in_notes : bool, default=True
             If `True`, strings looking like CUIs in annotator notes of entities
             will be converted to UMLS normalization attributes rather than creating
             an :class:`~.core.Attribute` with the whole note text as value.
-        uid:
+        notes_label : str, default="brat_note",
+            Label to use for attributes created from annotator notes.
+        uid : str, optional
             Identifier of the converter.
         """
         if uid is None:
@@ -94,23 +93,22 @@ class BratInputConverter(InputConverter):
         ann_ext: str = ANN_EXT,
         text_ext: str = TEXT_EXT,
     ) -> List[TextDocument]:
-        """
-        Create a list of TextDocuments from a folder containing text files
+        """Create a list of TextDocuments from a folder containing text files
         and associated brat annotations files.
 
         Parameters
         ----------
-        dir_path:
+        dir_path : str or Path
             The path to the directory containing the text files and the annotation
             files (.ann)
-        ann_ext:
+        ann_ext : str, optional
             The extension of the brat annotation file (e.g. .ann)
-        text_ext:
+        text_ext : str, optional
             The extension of the text file (e.g. .txt)
 
         Returns
         -------
-        List[TextDocument]
+        list of TextDocument
             The list of TextDocuments
         """
         documents = list()
@@ -130,7 +128,7 @@ class BratInputConverter(InputConverter):
 
             if not text_path.exists():
                 # ignore .ann without .txt
-                logging.warning(f"Didn't find corresponding .txt for '{ann_path}', ignoring" " document")
+                logging.warning("Didn't find corresponding .txt for '%s', ignoring document", ann_path)
                 continue
 
             if not ann_path.exists():
@@ -144,27 +142,25 @@ class BratInputConverter(InputConverter):
             documents.append(doc)
 
         if not documents:
-            logger.warning(f"Didn't load any document from dir {dir_path}")
+            logger.warning("Didn't load any document from dir '%s'", dir_path)
 
         return documents
 
     def load_doc(self, ann_path: Union[str, Path], text_path: Union[str, Path]) -> TextDocument:
-        """
-        Create a TextDocument from a .ann file and its associated .txt file
+        """Create a TextDocument from a .ann file and its associated .txt file
 
         Parameters
         ----------
-        text_path:
-            The path to the text document file.
-        ann_path:
+        ann_path : str or Path
             The path to the brat annotation file.
+        text_path : str or Path
+            The path to the text document file.
 
         Returns
         -------
         TextDocument
             The document containing the text and the annotations
         """
-
         ann_path = Path(ann_path)
         text_path = Path(text_path)
 
@@ -182,16 +178,19 @@ class BratInputConverter(InputConverter):
         return doc
 
     def load_annotations(self, ann_file: Union[str, Path]) -> List[TextAnnotation]:
-        """
-        Load a .ann file and return a list of
+        """Load a .ann file and return a list of
         :class:`~medkit.core.text.annotation.Annotation` objects.
 
         Parameters
         ----------
-        ann_file:
+        ann_file : str or Path
             Path to the .ann file.
-        """
 
+        Returns
+        -------
+        list of TextAnnotation
+            The list of text annotations
+        """
         ann_file = Path(ann_file)
 
         brat_doc = brat_utils.parse_file(ann_file)
@@ -216,10 +215,9 @@ class BratInputConverter(InputConverter):
                     text=brat_entity.text,
                     metadata=dict(brat_id=brat_entity.uid),
                 )
-            except Exception as err:
-                raise ValueError(
-                    "Impossible to create an entity from" f" '{ann_file.name}':{brat_entity.uid}."
-                ) from err
+            except AssertionError as err:
+                msg = f"Impossible to create an entity from '{ann_file.name}':{brat_entity.uid}."
+                raise ValueError(msg) from err
 
             anns_by_brat_id[brat_entity.uid] = entity
             if self._prov_tracer is not None:
@@ -288,43 +286,39 @@ class BratOutputConverter(OutputConverter):
         top_values_by_attr: int = 50,
         uid: Optional[str] = None,
     ):
-        """
-        Initialize the Brat output converter
+        """Initialize the Brat output converter
 
         Parameters
         ----------
-        anns_labels:
+        anns_labels : list of str, optional
             Labels of medkit annotations to convert into Brat annotations.
             If `None` (default) all the annotations will be converted
-        attrs:
+        attrs : list of str, optional
             Labels of medkit attributes to add in the annotations that will be included.
             If `None` (default) all medkit attributes found in the segments or relations
             will be converted to Brat attributes
-        notes_label:
+        notes_label : str, default="brat_note"
             Label of attributes that will be converted to annotator notes.
-        ignore_segments:
+        ignore_segments : bool, default=True
             If `True` medkit segments will be ignored. Only entities, attributes and relations
             will be converted to Brat annotations.  If `False` the medkit segments will be
             converted to Brat annotations as well.
-        convert_cuis_to_notes:
+        convert_cuis_to_notes : bool, default=True
             If `True`, UMLS normalization attributes will be converted to
             annotator notes rather than attributes. For entities with multiple
             UMLS attributes, CUIs will be separated by spaces (ex: "C0011849 C0004096").
-        create_config:
+        create_config : bool, default=True
             Whether to create a configuration file for the generated collection.
             This file defines the types of annotations generated, it is necessary for the correct
             visualization on Brat.
-        top_values_by_attr:
+        top_values_by_attr : int, default=50
             Defines the number of most common values by attribute to show in the configuration.
             This is useful when an attribute has a large number of values, only the 'top' ones
             will be in the config. By default, the top 50 of values by attr will be in the config.
-        uid:
+        uid : str, optional
             Identifier of the converter
         """
-        if uid is None:
-            uid = generate_id()
-
-        self.uid = uid
+        self.uid = uid or generate_id()
         self.anns_labels = anns_labels
         self.attrs = attrs
         self.notes_label = notes_label
@@ -356,18 +350,17 @@ class BratOutputConverter(OutputConverter):
 
         Parameters
         ----------
-        docs:
+        docs : list of TextDocument
             List of medkit doc objects to convert
-        dir_path:
+        dir_path : str or Path
             String or path object to save the generated files
-        doc_names:
+        doc_names : list of str, optional
             Optional list with the names for the generated files. If 'None', 'uid' will
             be used as the name. Where 'uid.txt' has the raw text of the document and
             'uid.ann' the Brat annotation file.
         """
-
-        if doc_names is not None:
-            assert len(doc_names) == len(docs)
+        if doc_names and len(doc_names) != len(docs):
+            raise ValueError("Size mismatch between names and docs")
 
         dir_path = Path(dir_path)
         dir_path.mkdir(parents=True, exist_ok=True)
@@ -414,23 +407,23 @@ class BratOutputConverter(OutputConverter):
         config: BratAnnConfiguration,
         raw_text: str,
     ) -> List[Union[BratEntity, BratAttribute, BratRelation, BratNote]]:
-        """
-        Convert Segments, Relations and Attributes into brat data structures
+        """Convert Segments, Relations and Attributes into brat data structures
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             Medkit segments to convert
-        relations:
+        relations : list of Relation
             Medkit relations to convert
-        config:
+        config : BratAnnConfiguration
             Optional `BratAnnConfiguration` structure, this object is updated
             with the types of the generated Brat annotations.
-        raw_text:
+        raw_text : str
             Text of reference to get the original text of the annotations
+
         Returns
         -------
-        List[Union[BratEntity, BratAttribute, BratRelation, BratNote]]
+        list of BratEntity or BratAttribute or BratRelation or BratNote
             A list of brat annotations
         """
         nb_segment, nb_relation, nb_attribute, nb_note = 1, 1, 1, 1
@@ -479,7 +472,7 @@ class BratOutputConverter(OutputConverter):
                     nb_attribute += 1
 
                 except TypeError as err:
-                    logger.warning(f"Ignore attribute {attr.uid}. {err}")
+                    logger.warning("Ignore attribute %s. %s", attr.uid, err)
 
             if self.convert_cuis_to_notes:
                 cuis = [attr.kb_id for attr in attrs if isinstance(attr, UMLSNormAttribute)]
@@ -512,7 +505,7 @@ class BratOutputConverter(OutputConverter):
                 config.add_relation_type(relation_config)
                 nb_relation += 1
             except ValueError as err:
-                logger.warning(f"Ignore relation {medkit_relation.uid}. {err}")
+                logger.warning("Ignore relation %s. %s", medkit_relation.uid, err)
                 continue
 
             # Note: it seems that brat does not support attributes for relations
@@ -539,7 +532,7 @@ class BratOutputConverter(OutputConverter):
                     config.add_attribute_type(attr_config)
                     nb_attribute += 1
                 except TypeError as err:
-                    logger.warning(f"Ignore attribute {attr.uid}. {err}")
+                    logger.warning("Ignore attribute %s. %s", attr.uid, err)
 
         return brat_anns
 
@@ -547,20 +540,21 @@ class BratOutputConverter(OutputConverter):
     def _ensure_text_and_spans(segment: Segment, raw_text: str) -> Tuple[str, List[Tuple[int, int]]]:
         """Ensure consistency between the segment and the raw text.
         The text of a BRAT annotation can't contain multiple white spaces (including a newline character).
-        This method clean the text of the fragments and adjust its spans to point to the same
-        location in the raw text.
+        This method cleans the fragments' text and adjust its spans to point to the same location in the raw text.
 
         Parameters
         ----------
-        segment:
+        segment : Segment
             Segment to ensure
-        raw_text:
+        raw_text : str
             Text of reference
 
         Returns
         -------
-        Tuple[str, List[Tuple[int, int]]]
-            A tuple with the text cleaned and its spans
+        text : str
+            The cleaned text
+        spans : list of tuple
+            The adjusted spans
         """
         pattern_to_clean = r"(\s*\n+\s*)"
         segment_spans = span_utils.normalize_spans(segment.spans)
@@ -588,28 +582,30 @@ class BratOutputConverter(OutputConverter):
         return text_brat, spans_brat
 
     def _convert_segment_to_brat(self, segment: Segment, nb_segment: int, raw_text: str) -> BratEntity:
-        """
-        Get a brat entity from a medkit segment
+        """Get a brat entity from a medkit segment
 
         Parameters
         ----------
-        segment:
+        segment : Segment
             A medkit segment to convert into brat format
-        nb_segment:
+        nb_segment : int
             The current counter of brat segments
-        raw_text:
+        raw_text : str
             Text of reference to get the original text of the segment
+
         Returns
         -------
         BratEntity
             The equivalent brat entity of the medkit segment
         """
-        assert nb_segment != 0
+        if nb_segment < 0:
+            raise ValueError(f"Number of segments {nb_segment} must be strictly positive")
+
         brat_id = f"T{nb_segment}"
         # brat does not support spaces in labels
-        type = segment.label.replace(" ", "_")
+        type_ = segment.label.replace(" ", "_")
         text, spans = self._ensure_text_and_spans(segment, raw_text)
-        return BratEntity(brat_id, type, spans, text)
+        return BratEntity(brat_id, type_, spans, text)
 
     @staticmethod
     def _convert_relation_to_brat(
@@ -617,23 +613,22 @@ class BratOutputConverter(OutputConverter):
         nb_relation: int,
         brat_entities_by_segment_id: Dict[str, BratEntity],
     ) -> Tuple[BratRelation, RelationConf]:
-        """
-        Get a brat relation from a medkit relation
+        """Get a brat relation from a medkit relation
 
         Parameters
         ----------
-        relation:
+        relation : Relation
             A medkit relation to convert into brat format
-        nb_relation:
+        nb_relation : int
             The current counter of brat relations
-        brat_entities_by_segment_id:
+        brat_entities_by_segment_id : dict of str to BratEntity
             A dict to map medkit ID to brat annotation
 
         Returns
         -------
-        BratRelation
+        relation : BratRelation
             The equivalent brat relation of the medkit relation
-        RelationConf
+        config : RelationConf
             Configuration of the brat attribute
 
         Raises
@@ -641,18 +636,20 @@ class BratOutputConverter(OutputConverter):
         ValueError
             When the source or target was not found in the mapping object
         """
-        assert nb_relation != 0
+        if nb_relation < 0:
+            raise ValueError(f"Number of relations {nb_relation} must be strictly positive")
+
         brat_id = f"R{nb_relation}"
         # brat does not support spaces in labels
-        type = relation.label.replace(" ", "_")
+        type_ = relation.label.replace(" ", "_")
         subj = brat_entities_by_segment_id.get(relation.source_id)
         obj = brat_entities_by_segment_id.get(relation.target_id)
 
         if subj is None or obj is None:
             raise ValueError("Entity target/source was not found.")
 
-        relation_conf = RelationConf(type, arg1=subj.type, arg2=obj.type)
-        return BratRelation(brat_id, type, subj.uid, obj.uid), relation_conf
+        relation_conf = RelationConf(type_, arg1=subj.type, arg2=obj.type)
+        return BratRelation(brat_id, type_, subj.uid, obj.uid), relation_conf
 
     @staticmethod
     def _convert_attribute_to_brat(
@@ -662,34 +659,35 @@ class BratOutputConverter(OutputConverter):
         target_brat_id: str,
         is_from_entity: bool,
     ) -> Tuple[BratAttribute, AttributeConf]:
-        """
-        Get a brat attribute from a medkit attribute
+        """Get a brat attribute from a medkit attribute
 
         Parameters
         ----------
-        label:
+        label : str
             Attribute label to convert into brat format
-        value:
+        value : str, optional
             Attribute value
-        nb_attribute:
+        nb_attribute : int
             The current counter of brat attributes
-        target_brat_id:
+        target_brat_id : str
             Corresponding target brat ID
 
         Returns
         -------
-        BratAttribute:
+        attribute : BratAttribute
             The equivalent brat attribute of the medkit attribute
-        AttributeConf:
+        config : AttributeConf
             Configuration of the brat attribute
         """
-        assert nb_attribute != 0
-        brat_id = f"A{nb_attribute}"
-        type = label.replace(" ", "_")
+        if nb_attribute < 0:
+            raise ValueError(f"Number of attributes {nb_attribute} must be strictly positive")
 
-        value: str = brat_utils.ensure_attr_value(value)
-        attr_conf = AttributeConf(from_entity=is_from_entity, type=type, value=value)
-        return BratAttribute(brat_id, type, target_brat_id, value), attr_conf
+        brat_id = f"A{nb_attribute}"
+        type_ = label.replace(" ", "_")
+
+        value = brat_utils.ensure_attr_value(value)
+        attr_conf = AttributeConf(from_entity=is_from_entity, type=type_, value=value)
+        return BratAttribute(brat_id, type_, target_brat_id, value), attr_conf
 
     @staticmethod
     def _convert_umls_attributes_to_brat_note(
@@ -697,24 +695,25 @@ class BratOutputConverter(OutputConverter):
         nb_note: int,
         target_brat_id: str,
     ) -> BratNote:
-        """
-        Get a brat note from a medkit umls norm attribute
+        """Get a brat note from a medkit umls norm attribute
 
         Parameters
         ----------
-        cui:
+        cuis : list of str
             CUI to convert to brat note
-        nb_note:
+        nb_note : int
             The current counter of brat notes
-        target_brat_id:
+        target_brat_id : str
             Corresponding target brat ID
 
         Returns
         -------
-        BratNote:
+        BratNote
             The equivalent brat note of the medkit umls attribute
         """
-        assert nb_note != 0
+        if nb_note < 0:
+            raise ValueError(f"Number of notes {nb_note} must be strictly positive")
+
         brat_id = f"#{nb_note}"
         return BratNote(uid=brat_id, target=target_brat_id, value=" ".join(cuis))
 
@@ -724,24 +723,25 @@ class BratOutputConverter(OutputConverter):
         nb_note: int,
         target_brat_id: str,
     ) -> BratNote:
-        """
-        Get a brat note from medkit attribute values
+        """Get a brat note from medkit attribute values
 
         Parameters
         ----------
-        values:
+        values : list of Any
             Attribute values
-        nb_note:
+        nb_note : int
             The current counter of brat notes
-        target_brat_id:
+        target_brat_id : str
             Corresponding target brat ID
 
         Returns
         -------
-        BratNote:
+        BratNote
             The equivalent brat note of the medkit attribute values
         """
-        assert nb_note != 0
+        if nb_note < 0:
+            raise ValueError(f"Number of notes {nb_note} must be strictly positive")
+
         brat_id = f"#{nb_note}"
         value = "\n".join(str(v) for v in values if v is not None)
         return BratNote(uid=brat_id, target=target_brat_id, value=value)

@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[umls-coder-normalizer]`.
 """
 
@@ -91,8 +90,7 @@ class UMLSCoderNormalizer(Operation):
         name: Optional[str] = None,
         uid: Optional[str] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         umls_mrconso_file:
             Path to the UMLS `MRCONSO.RRF` file.
@@ -207,7 +205,6 @@ class UMLSCoderNormalizer(Operation):
         entities:
             List of entities to add normalization attributes to
         """
-
         if len(entities) == 0:
             return
 
@@ -384,8 +381,7 @@ class _EmbeddingsPipeline(FeatureExtractionPipeline):
         self.normalize = normalize
 
     def _ensure_tensor_on_device(self, inputs, device):
-        """
-        Hack to force tensors to be kept on pipeline device. The base hugging
+        """Hack to force tensors to be kept on pipeline device. The base hugging
         face pipeline tries to move the model outputs back to the cpu before
         returning them but we want to keep them on the gpu if they are, because
         we want to still be on the gpu when doing big similarity matrix multiplication

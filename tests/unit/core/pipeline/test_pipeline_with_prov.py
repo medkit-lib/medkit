@@ -191,8 +191,7 @@ def test_multiple_steps():
 
 
 def test_step_with_attributes():
-    """
-    Pipeline with a step adding attributes to existing segments instead of returning
+    """Pipeline with a step adding attributes to existing segments instead of returning
     new segments
     """
     prefixer = _Prefixer(prefix="Hello! ")

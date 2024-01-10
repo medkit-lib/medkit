@@ -1,16 +1,15 @@
 __all__ = ["Annotation", "AnnotationType"]
 
-from typing import Set, TypeVar
+from typing import Set, TypeVar, runtime_checkable
 
-from typing_extensions import Protocol, runtime_checkable
+from typing_extensions import Protocol
 
 from medkit.core.attribute_container import AttributeContainer
 
 
 @runtime_checkable
 class Annotation(Protocol):
-    """
-    Base annotation protocol that must be implemented by annotations classes of all
+    """Base annotation protocol that must be implemented by annotations classes of all
     modalities (text, audio, etc).
 
     Annotations can be attached to :class:`~medkit.core.document.Document`

@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[metrics-diarization]`.
 """
 
@@ -17,7 +16,7 @@ from typing import Sequence
 # The bug seems to only happen when pandas is imported from pyannote, not if
 # we import pandas manually first.
 # So as a workaround, we always import pandas before importing something from pyannote
-import pandas  # noqa: F401
+import pandas as pd  # noqa: F401
 from pyannote.core.annotation import Annotation as PAAnnotation
 from pyannote.core.annotation import Segment as PASegment
 from pyannote.core.annotation import Timeline as PATimeline
@@ -30,25 +29,24 @@ logger = logging.getLogger(__name__)
 
 @dataclasses.dataclass(frozen=True)
 class DiarizationEvaluatorResult:
-    """
-    Results returned by :class:`~.DiarizationEvaluator`
+    """Results returned by :class:`~.DiarizationEvaluator`
 
     Attributes
     ----------
-    der:
+    der : float
         Diarization Error Rate, combination of confusion, false alarm and missed
         detection
-    confusion:
+    confusion : float
         Ratio of time detected as speech but attributed to a wrong speaker
         (over `total_speech`)
-    false_alarm:
+    false_alarm : float
         Ratio of time corresponding to non-speech mistakenly detected as
         speech (over `total_speech`)
-    missed_detection:
+    missed_detection : float
         Ratio of time corresponding to undetected speech (over `total_speech`)
-    total_speech:
+    total_speech : float
         Total duration of speech in the reference
-    support:
+    support : float
         Total duration of audio
     """
 
@@ -61,8 +59,7 @@ class DiarizationEvaluatorResult:
 
 
 class DiarizationEvaluator:
-    """
-    Diarization Error Rate (DER) computation based on `pyannote`.
+    """Diarization Error Rate (DER) computation based on `pyannote`.
 
     The DER is the ratio of time that is not attributed correctly because of
     one of the following errors:
@@ -88,17 +85,15 @@ class DiarizationEvaluator:
         speaker_label: str = "speaker",
         collar: float = 0.0,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        turn_label:
+        turn_label : str, default="turn"
             Label of the turn segments on the reference documents
-        speaker_label:
+        speaker_label : str, default="speaker"
             Label of the speaker attributes on the reference and predicted turn segments
-        collar:
+        collar : float, default=0.0
             Margin of error (in seconds) around start and end of reference segments
         """
-
         self.turn_label = turn_label
         self.speaker_label = speaker_label
         self.collar = collar
@@ -108,17 +103,16 @@ class DiarizationEvaluator:
         reference: Sequence[AudioDocument],
         predicted: Sequence[Sequence[Segment]],
     ) -> DiarizationEvaluatorResult:
-        """
-        Compute and return the DER for predicted speech turn segments, against
+        """Compute and return the DER for predicted speech turn segments, against
         reference annotated documents.
 
         Parameters
         ----------
-        reference:
+        reference : sequence of AudioDocument
             Reference documents containing speech turns segments with
             `turn_label` as label, each of them containing a speaker attribute
             with `speaker_label` as label.
-        predicted:
+        predicted : sequence of sequence of Segment
             Predicted segments containing each a speaker attribute with
             `speaker_label` as label. This is a list of list that must be of the
             same length and ordering as `reference`.
@@ -128,8 +122,8 @@ class DiarizationEvaluator:
         DiarizationEvaluatorResult
             Computed metrics
         """
-
-        assert len(reference) == len(predicted), "reference and predicted must have the same length"
+        if len(reference) != len(predicted):
+            raise ValueError("Reference and predicted must have the same length")
 
         # init pyannote metrics object into which results are accumulated
         pa_metric = GreedyDiarizationErrorRate(collar=self.collar)
@@ -164,8 +158,7 @@ class DiarizationEvaluator:
         )
 
     def _get_pa_annotation(self, segments: Sequence[Segment]) -> PAAnnotation:
-        """
-        Convert list of medkit speech turn segments with speaker attribute to
+        """Convert list of medkit speech turn segments with speaker attribute to
         pyannote annotation object
         """
         pa_ann = PAAnnotation()
@@ -175,9 +168,13 @@ class DiarizationEvaluator:
             speaker_attrs = seg.attrs.get(label=self.speaker_label)
 
             if not speaker_attrs:
-                raise ValueError(f"Attribute with label '{self.speaker_label}' not found on" " turn segment")
+                msg = f"Attribute with label '{self.speaker_label}' not found on turn segment"
+                raise ValueError(msg)
             if len(speaker_attrs) > 1:
-                logger.warning(f"Found several attributes with label '{self.speaker_label}'," " ignoring all but first")
+                logger.warning(
+                    "Found several attributes with label '%s' ignoring all but first",
+                    self.speaker_label,
+                )
             speaker = speaker_attrs[0].value
 
             # create pyannote segment object to hold boundaries

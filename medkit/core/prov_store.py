@@ -1,8 +1,8 @@
 __all__ = ["ProvStore", "create_prov_store"]
 
-from typing import Dict
+from typing import Dict, runtime_checkable
 
-from typing_extensions import Literal, Protocol, runtime_checkable
+from typing_extensions import Literal, Protocol
 
 from medkit.core.data_item import IdentifiableDataItem
 from medkit.core.operation_desc import OperationDescription

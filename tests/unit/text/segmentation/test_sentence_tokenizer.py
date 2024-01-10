@@ -55,7 +55,7 @@ TEST_CONFIG = [
         [
             ("Sentence testing the dot", [Span(start=0, end=24)]),
             (
-                ("We are testing the carriage return\rthis is the newline\n Test" " interrogation "),
+                ("We are testing the carriage return\rthis is the newline\n Test interrogation "),
                 [Span(start=26, end=101)],
             ),
             ("Now, testing semicolon", [Span(start=103, end=125)]),

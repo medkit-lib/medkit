@@ -12,7 +12,7 @@ def _extract_segment(segment, ranges, label, uid=None):
     return Segment(label=label, spans=spans, text=text, uid=uid)
 
 
-@pytest.fixture()
+@pytest.fixture
 def doc():
     doc = TextDocument("""Sa mère présente douleurs abdominales mais le patient n'a pas une maladie.""")
     sentence = _extract_segment(doc.raw_segment, [(0, 73)], "sentence")

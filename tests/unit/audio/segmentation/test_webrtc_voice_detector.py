@@ -2,18 +2,18 @@ import pytest
 
 pytest.importorskip(modname="webrtcvad", reason="webrtcvad is not installed")
 
-import math  # noqa: E402
-from pathlib import Path  # noqa: E402
+import math
+from pathlib import Path
 
-import numpy as np  # noqa: E402
-import soundfile as sf  # noqa: E402
+import numpy as np
+import soundfile as sf
 
-from medkit.audio.segmentation.webrtc_voice_detector import (  # noqa: E402
+from medkit.audio.segmentation.webrtc_voice_detector import (
     WebRTCVoiceDetector,
 )
-from medkit.core import ProvTracer  # noqa: E402
-from medkit.core.audio import MemoryAudioBuffer, Segment, Span  # noqa: E402
-from tests.audio_utils import generate_silence, signals_are_equal  # noqa: E402
+from medkit.core import ProvTracer
+from medkit.core.audio import MemoryAudioBuffer, Segment, Span
+from tests.audio_utils import generate_silence, signals_are_equal
 
 _PATH_TO_VOICE_FILE = Path("tests/data/audio/voice.ogg")
 _OUTPUT_LABEL = "voice"

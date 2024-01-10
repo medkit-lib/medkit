@@ -54,10 +54,10 @@ class MockTrainableComponent:
     def collate(self, batch):
         labels, inputs_ids, offsets = [], [], [0]
 
-        for input in batch:
-            inputs_ids.append(input["inputs_ids"])
-            offsets.append(input["inputs_ids"].size(0))
-            labels.append(input["labels"])
+        for input_ in batch:
+            inputs_ids.append(input_["inputs_ids"])
+            offsets.append(input_["inputs_ids"].size(0))
+            labels.append(input_["labels"])
 
         labels = torch.tensor(labels, dtype=torch.int64)
         offsets = torch.tensor(offsets[:-1]).cumsum(dim=0)

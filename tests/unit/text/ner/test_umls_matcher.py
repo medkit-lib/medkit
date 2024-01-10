@@ -2,9 +2,9 @@ from pathlib import Path
 
 import pytest
 
-from medkit.core import Attribute, ProvTracer  # noqa: E402
-from medkit.core.text import Segment, Span, UMLSNormAttribute  # noqa: E402
-from medkit.text.ner.umls_matcher import UMLSMatcher  # noqa: E402
+from medkit.core import Attribute, ProvTracer
+from medkit.core.text import Segment, Span, UMLSNormAttribute
+from medkit.text.ner.umls_matcher import UMLSMatcher
 
 _UMLS_DIR = Path(__file__).parent / "sample_umls_data/2021AB"
 
@@ -76,7 +76,6 @@ def test_multiple_matches(tmpdir):
 
 def test_cache(tmpdir):
     """Make sure we don't rebuild the database when cache can be used"""
-
     _ = UMLSMatcher(umls_dir=_UMLS_DIR, language="FRE", cache_dir=tmpdir)
     db_file = tmpdir / "simstring"
     print(dir(db_file.stat()))
@@ -89,7 +88,7 @@ def test_cache(tmpdir):
     # different params, cache can't be used, an error should be thrown
     with pytest.raises(
         Exception,
-        match=("Cache directory .* contains database pre-computed with different" " params: .*"),
+        match=("Cache directory .* contains database pre-computed with different params: .*"),
     ):
         _ = UMLSMatcher(umls_dir=_UMLS_DIR, language="FRE", cache_dir=tmpdir, normalize_unicode=True)
 

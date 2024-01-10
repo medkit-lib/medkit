@@ -1,5 +1,4 @@
-"""
-This package needs extra-dependencies not installed as core dependencies of medkit.
+"""This package needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[metrics-ner]`.
 """
 
@@ -24,7 +23,6 @@ def _compute_seqeval_from_dict(
     average: Literal["macro", "weighted"],
 ) -> Dict[str, Union[float, int]]:
     """Compute seqeval metrics using preprocessed data"""
-
     # internal configuration for seqeval
     # 'bilou' only works with 'strict' mode
     scheme = BILOU if tagging_scheme == "bilou" else IOB2
@@ -83,8 +81,7 @@ class SeqEvalEvaluator:
         tokenizer: Optional[Any] = None,
         labels_remapping: Optional[Dict[str, str]] = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         tagging_scheme:
             Scheme for tagging the tokens, it can be `bilou` or `iob2`
@@ -198,8 +195,7 @@ class SeqEvalMetricsComputer:
         return_metrics_by_label: bool = True,
         average: Literal["macro", "weighted"] = "macro",
     ):
-        """
-        id_to_label:
+        """id_to_label:
             Mapping integer value to label, it should be the same used in preprocess
         tagging_scheme:
             Scheme used for tagging the tokens, it can be `bilou` or `iob2`

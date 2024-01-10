@@ -32,7 +32,6 @@ def _get_segment(text="TNM: pTx N1 M1"):
 
 def test_basic():
     """Basic behavior"""
-
     matcher = EDSNLPTNMMatcher()
     seg = _get_segment()
     entities = matcher.run([seg])
@@ -64,7 +63,6 @@ def test_basic():
 
 def test_attrs_to_copy():
     """Copying of selected attributes from input segment to created entity"""
-
     seg = _get_segment()
     # copied attribute
     section_attr = Attribute(label="section", value="HISTORY")
@@ -87,7 +85,6 @@ def test_attrs_to_copy():
 
 def test_prov():
     """Generated provenance nodes"""
-
     seg = _get_segment()
 
     matcher = EDSNLPTNMMatcher()

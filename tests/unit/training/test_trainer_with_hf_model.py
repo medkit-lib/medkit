@@ -2,22 +2,20 @@ import shutil
 
 import pytest
 
-pytest.importorskip(modname="transformers", reason="transformers is not installed")
-pytest.importorskip(modname="torch", reason="torch is not installed")
+transformers = pytest.importorskip(modname="transformers", reason="transformers is not installed")
+torch = pytest.importorskip(modname="torch", reason="torch is not installed")
 
-import transformers  # noqa: E402
-
-from medkit.core.text import Entity, Span, TextDocument  # noqa: E402
-from medkit.text.ner.hf_entity_matcher import HFEntityMatcher  # noqa: E402
+from medkit.core.text import Entity, Span, TextDocument
+from medkit.text.ner.hf_entity_matcher import HFEntityMatcher
 from medkit.tools import modules_are_available
-from medkit.training import Trainer, TrainerConfig  # noqa: E402
+from medkit.training import Trainer, TrainerConfig
 
 _TOKENIZER_MAX_LENGTH = 24
 _MODEL_NER_CLINICAL = "samrawal/bert-base-uncased_clinical-ner"
 
 TEST_WITH_METRICS = modules_are_available(["seqeval"])
 if TEST_WITH_METRICS:
-    from medkit.text.metrics.ner import SeqEvalMetricsComputer  # noqa: E402
+    from medkit.text.metrics.ner import SeqEvalMetricsComputer
 
 
 # Creating a tiny model with the original vocabulary
@@ -52,7 +50,7 @@ def _create_tiny_data(pairs_text_entities):
     return docs
 
 
-@pytest.fixture()
+@pytest.fixture
 def train_data():
     return _create_tiny_data(
         [
@@ -64,7 +62,7 @@ def train_data():
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def eval_data():
     return _create_tiny_data(
         [
@@ -95,7 +93,7 @@ def test_trainer_default(train_data, eval_data, tmp_path):
     log_history = trainer.train()
     assert len(log_history) == config.nb_training_epochs
     assert log_history[0]["train"]["loss"] > log_history[-1]["train"]["loss"]
-    # we are just overfitting on the train data so there is no guarantee the eval loss will decrease
+    # we are just overfitting on the so there is no guarantee the eval loss will decrease
     eval_item = next(iter(trainer.eval_dataloader))
     assert list(eval_item["input_ids"].size()) == [1, 10]
 

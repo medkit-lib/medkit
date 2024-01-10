@@ -21,7 +21,7 @@ def _get_medkit_docs():
             " `tests/data/mtsamples` folder.\nThe file is not provided with medkit"
             " library. Please contact us to get this file."
         )
-    with open(path, "r") as fdata:
+    with open(path) as fdata:
         dataset = json.load(fdata)
 
     docs = []

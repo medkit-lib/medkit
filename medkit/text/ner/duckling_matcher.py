@@ -96,7 +96,7 @@ class DucklingMatcher(NEROperation):
             # 'dims=["time", "duration"]' but requests will encode it to 'dims=time&dims=duration'
             # also note that we must use double quotes, not single quotes
             payload["dims"] = str(self.dims).replace("'", '"')
-        api_result = requests.post(f"{self.url}/parse", data=payload)
+        api_result = requests.post(f"{self.url}/parse", data=payload, timeout=10)
 
         if api_result.status_code != 200:
             raise ConnectionError("Request response not correct : status code {res.status_code}")
@@ -139,6 +139,6 @@ class DucklingMatcher(NEROperation):
             yield entity
 
     def _test_connection(self):
-        api_result = requests.get(self.url)
+        api_result = requests.get(self.url, timeout=10)
         if api_result.status_code != 200:
             raise ConnectionError(f"The duckling server did not respond correctly at {self.url}")

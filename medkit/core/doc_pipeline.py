@@ -52,7 +52,6 @@ class DocPipeline(DocOperation, Generic[AnnotationType]):
             input), it is possible to use annotation with different labels for
             the same input key.
         """
-
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -76,7 +75,6 @@ class DocPipeline(DocOperation, Generic[AnnotationType]):
             annotations from each document, and all output annotations will also
             be added to each corresponding document.
         """
-
         for doc in docs:
             self._process_doc(doc)
 

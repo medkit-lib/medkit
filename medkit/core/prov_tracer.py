@@ -4,7 +4,6 @@ __all__ = ["ProvTracer", "Prov"]
 
 import collections
 import dataclasses
-from typing import List, Optional
 
 from medkit.core._prov_graph import ProvGraph, ProvNode
 from medkit.core.data_item import IdentifiableDataItem
@@ -18,21 +17,21 @@ class Prov:
 
     Parameters
     ----------
-    data_item:
+    data_item : IdentifiableDataItem
         Data item that was created (for instance an annotation or an
         attribute).
-    op_desc:
+    op_desc: OperationDescription, optional
         Description of the operation that created the data item.
-    source_data_items:
+    source_data_items : list of IdentifiableDataItem
         Data items that were used by the operation to create the data item.
-    derived_data_items:
+    derived_data_items : list of IdentifiableDataItem
         Data items that were created by other operations using this data item.
     """
 
     data_item: IdentifiableDataItem
-    op_desc: Optional[OperationDescription]
-    source_data_items: List[IdentifiableDataItem]
-    derived_data_items: List[IdentifiableDataItem]
+    op_desc: OperationDescription | None
+    source_data_items: list[IdentifiableDataItem]
+    derived_data_items: list[IdentifiableDataItem]
 
 
 class ProvTracer:
@@ -66,9 +65,8 @@ class ProvTracer:
     operations, leading to a tree-like structure of nested provenance tracers.
     """
 
-    def __init__(self, store: Optional[ProvStore] = None, _graph: Optional[ProvGraph] = None):
-        """
-        Parameters
+    def __init__(self, store: ProvStore | None = None, _graph: ProvGraph | None = None):
+        """Parameters
         ----------
         store:
             Store that will contain all traced data items.
@@ -85,18 +83,17 @@ class ProvTracer:
         self,
         data_item: IdentifiableDataItem,
         op_desc: OperationDescription,
-        source_data_items: List[IdentifiableDataItem],
+        source_data_items: list[IdentifiableDataItem],
     ):
-        """
-        Append provenance information about a specific data item.
+        """Append provenance information about a specific data item.
 
         Parameters
         ----------
-        data_item:
+        data_item : IdentifiableDataItem
             Data item that was created.
-        op_desc:
+        op_desc : OperationDescription
             Description of the operation that created the data item.
-        source_data_items:
+        source_data_items : list of IdentifiableDataItem
             Data items that were used by the operation to create the data item.
         """
         assert not self._graph.has_node(
@@ -115,7 +112,7 @@ class ProvTracer:
 
     def add_prov_from_sub_tracer(
         self,
-        data_items: List[IdentifiableDataItem],
+        data_items: list[IdentifiableDataItem],
         op_desc: OperationDescription,
         sub_tracer: ProvTracer,
     ):
@@ -125,12 +122,12 @@ class ProvTracer:
 
         Parameters
         ----------
-        data_items:
+        data_items : list of IdentifiableDataItem
             Data items created by the composite operation. Should not include
             internal intermediate data items, only the output of the operation.
-        op_desc:
+        op_desc : OperationDescription
             Description of the composite operation that created the data items.
-        sub_tracer:
+        sub_tracer : ProvTracer
             Internal sub-provenance tracer of the composite operation.
         """
         assert self.store is sub_tracer.store
@@ -190,12 +187,12 @@ class ProvTracer:
 
         Parameters
         ----------
-        data_item_id:
+        data_item_id : str
             Id of the data item.
 
         Returns
         -------
-        bool
+        bool:
             `True` if there is provenance info that can be retrieved with
             :meth:`~get_prov()`.
         """
@@ -206,12 +203,12 @@ class ProvTracer:
 
         Parameters
         ----------
-        data_item_id:
+        data_item_id : str
             Id of the data item.
 
         Returns
         -------
-        Prov
+        Prov:
             Provenance info about the data item.
         """
         if not self._graph.has_node(data_item_id):
@@ -224,7 +221,7 @@ class ProvTracer:
         node = self._graph.get_node(data_item_id)
         return self._build_prov_from_node(node)
 
-    def get_provs(self) -> List[Prov]:
+    def get_provs(self) -> list[Prov]:
         """Return all provenance information about all data items known to the tracer.
 
         .. note::
@@ -232,7 +229,7 @@ class ProvTracer:
 
         Returns
         -------
-        List[Prov]
+        list of Prov
             Provenance info about all known data items.
         """
         return [self._build_prov_from_node(node) for node in self._graph.get_nodes()]
@@ -247,8 +244,8 @@ class ProvTracer:
             in the hierarchy).
 
         Parameters
-        -----------
-        operation_id:
+        ----------
+        operation_id : str
             Id of the composite operation.
 
         Returns
@@ -264,7 +261,7 @@ class ProvTracer:
 
         Parameters
         ----------
-        operation_id:
+        operation_id : str
             Id of the composite operation.
 
         Returns
@@ -276,9 +273,8 @@ class ProvTracer:
         sub_graph = self._graph.get_sub_graph(operation_id)
         return ProvTracer(store=self.store, _graph=sub_graph)
 
-    def get_sub_prov_tracers(self) -> List[ProvTracer]:
-        """
-        Return all sub-provenance tracers of the provenance tracer.
+    def get_sub_prov_tracers(self) -> list[ProvTracer]:
+        """Return all sub-provenance tracers of the provenance tracer.
 
         .. note::
             This will not return sub-provenance tracers that are not direct

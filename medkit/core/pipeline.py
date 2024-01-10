@@ -7,9 +7,9 @@ __all__ = [
 ]
 
 import dataclasses
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Dict, List, Optional, Tuple, Union, cast, runtime_checkable
 
-from typing_extensions import Protocol, runtime_checkable
+from typing_extensions import Protocol
 
 from medkit.core.annotation import Annotation
 from medkit.core.data_item import IdentifiableDataItem, IdentifiableDataItemWithAttrs
@@ -21,8 +21,7 @@ from medkit.core.prov_tracer import ProvTracer
 @runtime_checkable
 class PipelineCompatibleOperation(Protocol):
     def run(self, *all_input_data: List[Any]) -> Union[None, List[Any], Tuple[List[Any], ...]]:
-        """
-        Parameters
+        """Parameters
         ----------
         all_input_data:
             One or several list of data items to process
@@ -160,7 +159,7 @@ class Pipeline:
         self._sub_prov_tracer = ProvTracer(prov_tracer.store)
         for step in self.steps:
             if not isinstance(step.operation, ProvCompatibleOperation):
-                raise TypeError("Some operations in the pipeline steps are not" " provenance-compatible")
+                raise TypeError("Some operations in the pipeline steps are not provenance-compatible")
             step.operation.set_prov_tracer(self._sub_prov_tracer)
 
     def run(self, *all_input_data: List[Any]) -> Union[None, List[Any], Tuple[List[Any], ...]]:

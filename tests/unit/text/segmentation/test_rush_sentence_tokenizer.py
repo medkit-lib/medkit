@@ -5,7 +5,7 @@ from medkit.core.text import ModifiedSpan, Segment, Span
 
 pytest.importorskip(modname="PyRuSH", reason="PyRuSH is not installed")
 
-from medkit.text.segmentation.rush_sentence_tokenizer import (  # noqa: E402
+from medkit.text.segmentation.rush_sentence_tokenizer import (
     RushSentenceTokenizer,
 )
 

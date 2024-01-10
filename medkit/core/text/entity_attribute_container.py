@@ -9,8 +9,7 @@ from medkit.core.text.entity_norm_attribute import EntityNormAttribute
 
 
 class EntityAttributeContainer(AttributeContainer):
-    """
-    Manage a list of attributes attached to a text entity.
+    """Manage a list of attributes attached to a text entity.
 
     This behaves more or less like a list: calling `len()` and iterating are
     supported. Additional filtering is available through the `get()` method.
@@ -37,6 +36,5 @@ class EntityAttributeContainer(AttributeContainer):
 
     def get_norms(self) -> List[EntityNormAttribute]:
         """Return a list of the normalization attributes of the annotation"""
-
         segments = [self.get_by_id(uid) for uid in self._norm_ids]
         return typing.cast(List[EntityNormAttribute], segments)
