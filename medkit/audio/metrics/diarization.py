@@ -123,7 +123,8 @@ class DiarizationEvaluator:
             Computed metrics
         """
         if len(reference) != len(predicted):
-            raise ValueError("Reference and predicted must have the same length")
+            msg = "Reference and predicted must have the same length"
+            raise ValueError(msg)
 
         # init pyannote metrics object into which results are accumulated
         pa_metric = GreedyDiarizationErrorRate(collar=self.collar)

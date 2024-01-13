@@ -83,11 +83,13 @@ class ProvGraph:
             # node is a "stub" node, otherwise it probably means that add_node()
             # has been called twice with the same data_item_id
             if node.operation_id is not None:
-                raise ValueError(f"Node with uid {data_item_id} already added to graph")
+                msg = f"Node with uid {data_item_id} already added to graph"
+                raise ValueError(msg)
             # check consistency of stub node: operation_id should be None, and
             # source_ids should be empty
             if len(node.source_ids) != 0:
-                raise ValueError("Inconsistent values for stub node: operation_id is None but source_ids is not empty")
+                msg = "Inconsistent values for stub node: operation_id is None but source_ids is not empty"
+                raise ValueError(msg)
             # we are now sure that the node is a stub node and that operation_id
             # and source_ids are empty and can be set to the provided values
             node.operation_id = operation_id
@@ -143,32 +145,35 @@ class ProvGraph:
     def check_sanity(self):
         for node_id, node in self._nodes_by_id.items():
             if node.source_ids and node.operation_id is None:
-                raise Exception(f"Node with identifier {node_id} has source ids but no operation")
+                msg = f"Node with identifier {node_id} has source ids but no operation"
+                raise Exception(msg)
             for source_id in node.source_ids:
                 source_node = self._nodes_by_id.get(source_id)
                 if source_node is None:
-                    raise Exception(
-                        f"Source identifier {source_id} in node with identifier {node_id} has no corresponding node"
-                    )
+                    msg = f"Source identifier {source_id} in node with identifier {node_id} has no corresponding node"
+                    raise Exception(msg)
                 if node_id not in source_node.derived_ids:
-                    raise Exception(
+                    msg = (
                         f"Node with identifier {node_id} has source item with"
                         f" identifier {source_id} but reciprocate derivation link does"
                         " not exists"
                     )
+                    raise Exception(msg)
             for derived_id in node.derived_ids:
                 derived_node = self._nodes_by_id.get(derived_id)
                 if derived_node is None:
-                    raise Exception(
+                    msg = (
                         f"Derived identifier {derived_id} in node with identifier"
                         f" {node_id} has no corresponding node"
                     )
+                    raise Exception(msg)
                 if node_id not in derived_node.source_ids:
-                    raise Exception(
+                    msg = (
                         f"Node with identifier {node_id} has derived item with"
                         f" identifier {derived_id} but reciprocate source link does not"
                         " exists"
                     )
+                    raise Exception(msg)
         for sub_graph in self._sub_graphs_by_op_id.values():
             sub_graph.check_sanity()
 

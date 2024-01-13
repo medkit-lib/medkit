@@ -143,11 +143,12 @@ class ProvTracer:
                 # check operation_id is consistent
                 node = self._graph.get_node(data_item.uid)
                 if node.operation_id != op_desc.uid:
-                    raise RuntimeError(
+                    msg = (
                         "Trying to add provenance for sub graph for data item with uid"
                         f" {data_item.uid} that already has a node, but with different"
                         " operation_id"
                     )
+                    raise RuntimeError(msg)
                 continue
             self._add_prov_from_sub_tracer_for_data_item(data_item.uid, op_desc.uid, sub_graph)
 
@@ -212,11 +213,12 @@ class ProvTracer:
             Provenance info about the data item.
         """
         if not self._graph.has_node(data_item_id):
-            raise ValueError(
+            msg = (
                 f"No provenance info available for data item with id {data_item_id}."
                 " Make sure the id is valid and provenance tracking was enabled for"
                 " the operation that generated it."
             )
+            raise ValueError(msg)
 
         node = self._graph.get_node(data_item_id)
         return self._build_prov_from_node(node)

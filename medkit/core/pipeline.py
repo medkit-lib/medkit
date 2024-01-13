@@ -159,7 +159,8 @@ class Pipeline:
         self._sub_prov_tracer = ProvTracer(prov_tracer.store)
         for step in self.steps:
             if not isinstance(step.operation, ProvCompatibleOperation):
-                raise TypeError("Some operations in the pipeline steps are not provenance-compatible")
+                msg = "Some operations in the pipeline steps are not provenance-compatible"
+                raise TypeError(msg)
             step.operation.set_prov_tracer(self._sub_prov_tracer)
 
     def run(self, *all_input_data: List[Any]) -> Union[None, List[Any], Tuple[List[Any], ...]]:
@@ -188,10 +189,11 @@ class Pipeline:
             doesn't have any output key, nothing (ie `None`) will be returned.
         """
         if len(all_input_data) != len(self.input_keys):
-            raise RuntimeError(
+            msg = (
                 f"Number of input ({len(all_input_data)}) does not match number of"
                 f" input keys ({len(self.input_keys)})"
             )
+            raise RuntimeError(msg)
 
         data_by_key = dict(zip(self.input_keys, all_input_data))
         for step in self.steps:
@@ -244,10 +246,11 @@ class Pipeline:
             all_output_data = (all_output_data,)
 
         if len(all_output_data) != len(step.output_keys):
-            raise RuntimeError(
+            msg = (
                 f"Number of outputs ({len(all_output_data)}) does not match number of"
                 f" output keys ({len(step.output_keys)})"
             )
+            raise RuntimeError(msg)
 
         # store output data
         for output_key, output_data in zip(step.output_keys, all_output_data):
@@ -294,24 +297,28 @@ class Pipeline:
         steps_input_keys = [k for s in self.steps for k in s.input_keys]
         for input_key in self.input_keys:
             if input_key not in steps_input_keys:
-                raise Exception(f"Pipeline input key {input_key} does not correspond to any" " step input key")
+                msg = f"Pipeline input key {input_key} does not correspond to any step input key"
+                raise Exception(msg)
 
         steps_output_keys = [k for s in self.steps for k in s.output_keys]
         for output_key in self.output_keys:
             if output_key not in steps_output_keys:
-                raise Exception(f"Pipeline output key {output_key} does not correspond to any" " step output key")
+                msg = f"Pipeline output key {output_key} does not correspond to any step output key"
+                raise Exception(msg)
 
         for step in self.steps:
             for input_key in step.input_keys:
                 if input_key not in steps_output_keys and input_key not in self.input_keys:
-                    raise Exception(
+                    msg = (
                         f"Step input key {input_key} does not correspond to any step"
                         " output key nor any pipeline input key"
                     )
+                    raise Exception(msg)
 
         available_keys = self.input_keys.copy()
         for step in self.steps:
             for input_key in step.input_keys:
                 if input_key not in available_keys:
-                    raise Exception(f"Step input key {input_key} is not available yet at this step")
+                    msg = f"Step input key {input_key} is not available yet at this step"
+                    raise Exception(msg)
             available_keys += step.output_keys

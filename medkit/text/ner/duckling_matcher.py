@@ -99,7 +99,8 @@ class DucklingMatcher(NEROperation):
         api_result = requests.post(f"{self.url}/parse", data=payload, timeout=10)
 
         if api_result.status_code != 200:
-            raise ConnectionError("Request response not correct : status code {res.status_code}")
+            msg = f"Request response not correct : status code {api_result.status_code}"
+            raise ConnectionError(msg)
 
         matches = api_result.json()
         for match in matches:
@@ -141,4 +142,5 @@ class DucklingMatcher(NEROperation):
     def _test_connection(self):
         api_result = requests.get(self.url, timeout=10)
         if api_result.status_code != 200:
-            raise ConnectionError(f"The duckling server did not respond correctly at {self.url}")
+            msg = f"The duckling server did not respond correctly at {self.url}"
+            raise ConnectionError(msg)

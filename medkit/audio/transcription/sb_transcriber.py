@@ -114,12 +114,14 @@ class SBTranscriber(Operation):
 
     def _transcribe_audios(self, audios: List[AudioBuffer]) -> List[str]:
         if not all(a.sample_rate == self._sample_rate for a in audios):
-            raise ValueError(
+            msg = (
                 "SBTranscriber received audio buffers with incompatible sample"
                 f" rates (model expected {self._sample_rate} Hz)"
             )
+            raise ValueError(msg)
         if not all(a.nb_channels == 1 for a in audios):
-            raise ValueError("SBTranscriber only supports mono audio buffers")
+            msg = "SBTranscriber only supports mono audio buffers"
+            raise ValueError(msg)
 
         texts = []
 

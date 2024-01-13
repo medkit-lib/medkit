@@ -322,11 +322,11 @@ class RegexpMatcher(NEROperation):
         """Check consistency of a set of rules"""
         if any(r.id is not None for r in rules):
             if not all(r.id is not None for r in rules):
-                raise ValueError(
-                    "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
-                )
+                msg = "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
+                raise ValueError(msg)
             if len({r.id for r in rules}) != len(rules):
-                raise ValueError("Some rules have the same id, each rule must have a unique id")
+                msg = "Some rules have the same id, each rule must have a unique id"
+                raise ValueError(msg)
 
     @staticmethod
     def save_rules(

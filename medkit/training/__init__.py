@@ -16,7 +16,8 @@ __all__ = [
 from medkit.core.utils import modules_are_available
 
 if not modules_are_available(["torch"]):
-    raise ImportError("Requires torch install for importing medkit.training module")
+    msg = "Requires torch install for importing medkit.training module"
+    raise ImportError(msg)
 
 from .callbacks import DefaultPrinterCallback, TrainerCallback
 from .trainable_component import TrainableComponent

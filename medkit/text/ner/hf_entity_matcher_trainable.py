@@ -63,11 +63,12 @@ class HFEntityMatcherTrainable:
             model_name_or_path, "token-classification", hf_auth_token=hf_auth_token
         )
         if not valid_model:
-            raise ValueError(
+            msg = (
                 f"Model {model_name_or_path} is not associated to a"
                 " token-classification/ner task and cannot be used with"
                 " HFEntityMatcher"
             )
+            raise ValueError(msg)
 
         self.model_name_or_path = model_name_or_path
         self.tagging_scheme = tagging_scheme
@@ -169,10 +170,11 @@ class HFEntityMatcherTrainable:
         )
 
         if not isinstance(tokenizer, transformers.PreTrainedTokenizerFast):
-            raise ValueError(
+            msg = (
                 "This operation only works with model that have a fast tokenizer. Check"
                 " the hugging face documentation to find the required tokenizer"
             )
+            raise ValueError(msg)
 
         # we intentionally do not pad at the encoding stage
         # so we disable this warning

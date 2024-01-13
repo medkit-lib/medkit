@@ -280,11 +280,12 @@ class UMLSCoderNormalizer(Operation):
             with open(params_file) as fp:
                 existing_params = _UMLSEmbeddingsParams(**yaml.safe_load(fp))
             if existing_params != params:
-                raise Exception(
+                msg = (
                     f"Cache directory {self.embeddings_cache_dir} contains UMLS"
                     f" embeddings pre-computed with different params: {params} vs"
                     f" {existing_params}"
                 )
+                raise Exception(msg)
 
             # nothing to do, embeddings have already been computed
             return

@@ -199,7 +199,8 @@ class RTTMInputConverter(InputConverter):
 
         file_id = rows[0]["file_id"]
         if not all(r["file_id"] == file_id for r in rows):
-            raise RuntimeError("Multi-file .rttm are not supported, all entries should have same file_id or <NA>")
+            msg = "Multi-file .rttm are not supported, all entries should have same file_id or <NA>"
+            raise RuntimeError(msg)
 
         return rows
 
@@ -265,7 +266,8 @@ class RTTMOutputConverter(OutputConverter):
 
         if doc_names is not None:
             if len(doc_names) != len(docs):
-                raise ValueError("doc_names must have the same length as docs when provided")
+                msg = "doc_names must have the same length as docs when provided"
+                raise ValueError(msg)
         else:
             doc_names = [doc.uid for doc in docs]
 
@@ -330,7 +332,8 @@ class RTTMOutputConverter(OutputConverter):
     def _build_rttm_row(self, turn_segment: Segment, rttm_doc_id: Optional[str]) -> Dict[str, Any]:
         speaker_attrs = turn_segment.attrs.get(label=self.speaker_label)
         if len(speaker_attrs) == 0:
-            raise RuntimeError(f"Found no attribute with label '{self.speaker_label}' on turn segment")
+            msg = f"Found no attribute with label '{self.speaker_label}' on turn segment"
+            raise RuntimeError(msg)
 
         speaker_attr = speaker_attrs[0]
         span = turn_segment.span

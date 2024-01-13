@@ -76,11 +76,12 @@ class TextAnnotation(abc.ABC, dict_conv.SubclassMapping):
     def from_dict(cls, ann_dict: dict[str, Any]) -> Self:
         subclass = cls.get_subclass_for_data_dict(ann_dict)
         if subclass is None:
-            raise NotImplementedError(
+            msg = (
                 "TextAnnotation is an abstract class. Its class method `from_dict` is"
                 " only used for calling the correct subclass `from_dict`. Subclass is"
                 f" {subclass}"
             )
+            raise NotImplementedError(msg)
         return subclass.from_dict(ann_dict)
 
     def to_dict(self) -> dict[str, Any]:

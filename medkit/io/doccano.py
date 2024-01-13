@@ -694,10 +694,11 @@ class DoccanoOutputConverter:
         attributes = medkit_doc.attrs.get(label=self.attr_label)
 
         if not attributes:
-            raise KeyError(
+            msg = (
                 "The attribute with the corresponding text class was not found. Check"
                 f" the 'attr_label' for this converter, {self.attr_label} was provided."
             )
+            raise KeyError(msg)
 
         metadata = medkit_doc.metadata if self.include_metadata else {}
         doccano_doc = _DoccanoDocTextClassification(

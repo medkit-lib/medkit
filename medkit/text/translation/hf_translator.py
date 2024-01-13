@@ -99,10 +99,11 @@ class HFTranslator(Operation):
         if isinstance(self.translation_model, str):
             task = transformers.pipelines.get_task(translation_model, token=hf_auth_token)
             if not task.startswith("translation"):
-                raise ValueError(
+                msg = (
                     f"Model {self.translation_model} is not associated to a translation"
                     " task and cannot be use with HFTranslator"
                 )
+                raise ValueError(msg)
 
         self._translation_pipeline = transformers.pipeline(
             task=task,

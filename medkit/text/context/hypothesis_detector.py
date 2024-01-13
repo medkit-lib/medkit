@@ -150,7 +150,8 @@ class HypothesisDetector(ContextOperation):
         super().__init__(**init_args)
 
         if (verbs is None) != (modes_and_tenses is None):
-            raise ValueError("'verbs' and 'modes_and_tenses' must be either both provided or both left empty")
+            msg = "'verbs' and 'modes_and_tenses' must be either both provided or both left empty"
+            raise ValueError(msg)
 
         if rules is None:
             rules = self.load_rules(_PATH_TO_DEFAULT_RULES, encoding="utf-8")
@@ -343,11 +344,11 @@ class HypothesisDetector(ContextOperation):
         """Check consistency of a set of rules"""
         if any(r.id is not None for r in rules):
             if not all(r.id is not None for r in rules):
-                raise ValueError(
-                    "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
-                )
+                msg = "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
+                raise ValueError(msg)
             if len({r.id for r in rules}) != len(rules):
-                raise ValueError("Some rules have the same uid, each rule must have a unique uid")
+                msg = "Some rules have the same uid, each rule must have a unique uid"
+                raise ValueError(msg)
 
     @staticmethod
     def save_rules(

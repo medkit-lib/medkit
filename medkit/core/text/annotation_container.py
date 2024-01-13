@@ -47,7 +47,8 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
 
     def add(self, ann: TextAnnotation):
         if ann.label == self.raw_segment.label:
-            raise RuntimeError(f"Cannot add annotation with reserved label {self.raw_segment.label}")
+            msg = f"Cannot add annotation with reserved label {self.raw_segment.label}"
+            raise RuntimeError(msg)
 
         super().add(ann)
 

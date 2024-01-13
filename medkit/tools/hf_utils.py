@@ -34,7 +34,8 @@ def check_model_for_task_hf(model: Union[str, Path], task: str, hf_auth_token: O
     try:
         config = transformers.AutoConfig.from_pretrained(model, token=hf_auth_token)
     except ValueError as err:
-        raise ValueError("Impossible to get the task from model") from err
+        msg = "Impossible to get the task from model"
+        raise ValueError(msg) from err
 
     valid_config_names = [
         config_class.__name__

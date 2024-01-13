@@ -218,7 +218,8 @@ class Trainer:
         model_output, loss = self.component.forward(inputs, return_loss=True, eval_mode=eval_mode)
 
         if loss is None:
-            raise ValueError("The component did not return a 'loss' from the input.")
+            msg = "The component did not return a 'loss' from the input."
+            raise ValueError(msg)
 
         return model_output, loss
 
@@ -231,10 +232,11 @@ class Trainer:
             name_metric_to_track_lr = self.config.metric_to_track_lr
             eval_metric = eval_metrics.get(name_metric_to_track_lr)
             if eval_metric is None:
-                raise ValueError(
+                msg = (
                     "Learning scheduler needs an eval metric to update the learning"
                     f" rate, '{name_metric_to_track_lr}' was not found"
                 )
+                raise ValueError(msg)
             self.lr_scheduler.step(eval_metric)
         else:
             self.lr_scheduler.step()
@@ -280,7 +282,8 @@ class Trainer:
             # checkpoint is the new best
             last_checkpoint_metric = metrics["eval"].get(self.config.checkpoint_metric)
             if last_checkpoint_metric is None:
-                raise ValueError(f"Checkpoint metric '{self.config.checkpoint_metric}' not found")
+                msg = f"Checkpoint metric '{self.config.checkpoint_metric}' not found"
+                raise ValueError(msg)
             if best_checkpoint_dir is None:
                 best_checkpoint_dir = last_checkpoint_dir
                 best_checkpoint_metric = last_checkpoint_metric

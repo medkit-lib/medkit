@@ -218,11 +218,11 @@ class NegationDetector(ContextOperation):
         """Check consistency of a set of rules"""
         if any(r.id is not None for r in rules):
             if not all(r.id is not None for r in rules):
-                raise ValueError(
-                    "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
-                )
+                msg = "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
+                raise ValueError(msg)
             if len({r.id for r in rules}) != len(rules):
-                raise ValueError("Some rules have the same uid, each rule must have a unique uid")
+                msg = "Some rules have the same uid, each rule must have a unique uid"
+                raise ValueError(msg)
 
     @staticmethod
     def save_rules(

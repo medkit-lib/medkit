@@ -132,7 +132,8 @@ class _DotWriter:
             for type_, formatter in formatters.items():
                 if isinstance(data_item, type_):
                     return formatter(data_item)
-        raise ValueError(f"Found no formatter for data item with type {type_(data_item)}, please" " provide one")
+        msg = f"Found no formatter for data item with type {type_(data_item)}, please provide one"
+        raise ValueError(msg)
 
     @staticmethod
     def _escape_quotes(text):

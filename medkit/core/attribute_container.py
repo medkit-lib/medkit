@@ -74,7 +74,8 @@ class AttributeContainer:
         """
         uid = attr.uid
         if uid in self._attr_ids:
-            raise ValueError(f"Attribute with uid {uid} already attached to annotation")
+            msg = f"Attribute with uid {uid} already attached to annotation"
+            raise ValueError(msg)
 
         self._attr_ids.append(uid)
         self._store.store_data_item(data_item=attr, parent_id=self._owner_id)
@@ -95,7 +96,8 @@ class AttributeContainer:
         """
         attr = self._store.get_data_item(uid)
         if attr is None:
-            raise ValueError(f"No known attribute with uid '{uid}'")
+            msg = f"No known attribute with uid '{uid}'"
+            raise ValueError(msg)
         return typing.cast(Attribute, attr)
 
     def __eq__(self, other: object) -> bool:

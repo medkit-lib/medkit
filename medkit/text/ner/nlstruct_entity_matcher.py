@@ -117,7 +117,8 @@ class NLStructEntityMatcher(NEROperation):
         checkpoint_filepaths = [filepath for pattern in _PYTORCH_FILES for filepath in checkpoint_dir.glob(pattern)]
 
         if not len(checkpoint_filepaths):
-            raise FileNotFoundError(f"There was no PyTorch file with a NLstruct checkpoint in '{checkpoint_dir.name}'")
+            msg = f"There was no PyTorch file with a NLstruct checkpoint in '{checkpoint_dir.name}'"
+            raise FileNotFoundError(msg)
 
         # BUGFIX: (nlstruct) The config created from nlstruct defines a filename
         # without a relative path. This means that the text file needs to be in
@@ -146,7 +147,8 @@ class NLStructEntityMatcher(NEROperation):
                     new_path = os.path.join(checkpoint_dir, Path(filename).name)
 
                     if not Path(new_path).exists():
-                        raise ValueError(f"The text file '{new_path}' with the fast text embeddings does not exist")
+                        msg = f"The text file '{new_path}' with the fast text embeddings does not exist"
+                        raise ValueError(msg)
 
                     # update the filename of the wordEmbeddings model
                     config["encoder"]["encoders"][key]["filename"] = new_path

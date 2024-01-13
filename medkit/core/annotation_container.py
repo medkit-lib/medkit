@@ -51,7 +51,8 @@ class AnnotationContainer(Generic[AnnotationType]):
         """
         uid = ann.uid
         if uid in self._ann_ids:
-            raise ValueError(f"Impossible to add this annotation.The uid {uid} already" " exists in the document")
+            msg = f"Impossible to add this annotation.The uid {uid} already exists in the document"
+            raise ValueError(msg)
 
         self._ann_ids.append(uid)
         self._store.store_data_item(data_item=ann, parent_id=self._doc_id)
@@ -133,7 +134,8 @@ class AnnotationContainer(Generic[AnnotationType]):
         """
         ann = self._store.get_data_item(uid)
         if ann is None:
-            raise ValueError(f"No known annotation with uid '{uid}'")
+            msg = f"No known annotation with uid '{uid}'"
+            raise ValueError(msg)
         return typing.cast(AnnotationType, ann)
 
     def __eq__(self, other: object) -> bool:

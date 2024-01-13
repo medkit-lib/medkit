@@ -105,12 +105,14 @@ class PASpeakerDetector(SegmentationOperation):
         torch_device = torch.device("cpu" if device < 0 else f"cuda:{device}")
         self._pipeline = Pipeline.from_pretrained(model, use_auth_token=hf_auth_token)
         if self._pipeline is None:
-            raise Exception(f"Could not instantiate pretrained pipeline with '{model}'")
+            msg = f"Could not instantiate pretrained pipeline with '{model}'"
+            raise Exception(msg)
         if not isinstance(self._pipeline, SpeakerDiarization):
-            raise Exception(
+            msg = (
                 f"'{model}' does not correspond to a SpeakerDiarization pipeline. Got"
                 f" object of type {type(self._pipeline)}"
             )
+            raise Exception(msg)
         self._pipeline.to(torch_device)
         self._pipeline.segmentation_batch_size = segmentation_batch_size
         self._pipeline.embedding_batch_size = embedding_batch_size
@@ -151,7 +153,8 @@ class PASpeakerDetector(SegmentationOperation):
             # trim original audio to turn start/end points
             # (allow pyannote's turn to be slighty over the total input duration)
             if turn.end > (audio.duration + _DURATION_MARGIN):
-                raise ValueError(f"Turn end {turn.end} exceeds audio duration {audio.duration}")
+                msg = f"Turn end {turn.end} exceeds audio duration {audio.duration}"
+                raise ValueError(msg)
 
             turn_end = min(turn.end, audio.duration)
             turn_audio = audio.trim_duration(turn.start, turn_end)

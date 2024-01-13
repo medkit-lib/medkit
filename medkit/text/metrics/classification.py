@@ -53,10 +53,11 @@ class TextClassificationEvaluator:
 
             attr_value = attrs[0].value
             if not isinstance(attr_value, (str, int, bool)):
-                raise ValueError(
+                msg = (
                     "The type of the attr value is not supported by this evaluator."
                     "Only str,int or bool are supported."
                 )
+                raise ValueError(msg)
 
             attr_values.append(attr_value)
         return attr_values
@@ -176,7 +177,8 @@ class TextClassificationEvaluator:
             absence of reliability.
         """
         if len(docs_annotators) < 2 or not isinstance(docs_annotators[0], list):
-            raise ValueError("'docs_annotators' should contain at least two list of TextDocuments to compare")
+            msg = "'docs_annotators' should contain at least two list of TextDocuments to compare"
+            raise ValueError(msg)
 
         all_annotators_data = []
 

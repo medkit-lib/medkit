@@ -65,7 +65,8 @@ class EntityNormAttribute(Attribute):
         uid: str | None = None,
     ):
         if kb_id is None and term is None:
-            raise ValueError("Must provide at least kb_id or term")
+            msg = "Must provide at least kb_id or term"
+            raise ValueError(msg)
 
         if kb_name and kb_id:
             value = f"{kb_name}:{kb_id}"

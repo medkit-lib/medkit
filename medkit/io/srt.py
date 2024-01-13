@@ -254,7 +254,8 @@ class SRTOutputConverter(OutputConverter):
 
         if doc_names is not None:
             if len(doc_names) != len(docs):
-                raise ValueError("doc_names must have the same length as docs when provided")
+                msg = "doc_names must have the same length as docs when provided"
+                raise ValueError(msg)
         else:
             doc_names = [doc.uid for doc in docs]
 

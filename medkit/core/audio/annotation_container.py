@@ -25,7 +25,8 @@ class AudioAnnotationContainer(AnnotationContainer[Segment]):
 
     def add(self, ann: Segment):
         if ann.label == self.raw_segment.label:
-            raise RuntimeError(f"Cannot add annotation with reserved label {self.raw_segment.label}")
+            msg = f"Cannot add annotation with reserved label {self.raw_segment.label}"
+            raise RuntimeError(msg)
 
         super().add(ann)
 

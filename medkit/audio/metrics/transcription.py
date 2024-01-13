@@ -139,7 +139,8 @@ class TranscriptionEvaluator:
             Computed metrics
         """
         if len(reference) != len(predicted):
-            raise ValueError("Reference and predicted must have the same length")
+            msg = "Reference and predicted must have the same length"
+            raise ValueError(msg)
 
         sb_wer_metric = ErrorRateStats()
         sb_cer_metric = ErrorRateStats(split_tokens=True)

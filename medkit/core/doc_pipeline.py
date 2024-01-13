@@ -84,10 +84,11 @@ class DocPipeline(DocOperation, Generic[AnnotationType]):
         if self.labels_by_input_key is None:
             # default to raw segment if no labels_by_input_key provided
             if len(self.pipeline.input_keys) > 1:
-                raise Exception(
+                msg = (
                     "Pipeline expects more than 1 input, you must provide a"
                     " labels_by_input_key mapping to the DocPipeline"
                 )
+                raise Exception(msg)
             all_input_anns = [[doc.raw_segment]]
         else:
             # retrieve annotations by their label(s) for each input key

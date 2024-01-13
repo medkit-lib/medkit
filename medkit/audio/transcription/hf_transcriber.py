@@ -86,11 +86,12 @@ class HFTranscriber(Operation):
         self.device = device
 
         task = transformers.pipelines.get_task(self.model_name, token=hf_auth_token)
-        if not task == "automatic-speech-recognition":
-            raise ValueError(
+        if task != "automatic-speech-recognition":
+            msg = (
                 f"Model {self.model_name} is not associated to a speech"
                 " recognition task and cannot be use with HFTranscriber"
             )
+            raise ValueError(msg)
 
         self._pipeline = transformers.pipeline(
             task=task,

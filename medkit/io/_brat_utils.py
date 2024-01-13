@@ -85,7 +85,8 @@ def ensure_attr_value(attr_value: Any) -> str:
         return ""
     if isinstance(attr_value, list):
         # list is not supported in Brat
-        raise TypeError("Its value is a list and this is not supported by Brat")
+        msg = "Its value is a list and this is not supported by Brat"
+        raise TypeError(msg)
     return str(attr_value)
 
 
@@ -419,7 +420,8 @@ def _parse_entity(entity_id: str, entity_content: str) -> BratEntity:
             spans.append((start, end))
         return BratEntity(entity_id.strip(), tag.strip(), spans, text)
     except ValueError as err:
-        raise ValueError("Impossible to parse entity.") from err
+        msg = "Impossible to parse entity."
+        raise ValueError(msg) from err
 
 
 def _parse_relation(relation_id: str, relation_content: str) -> BratRelation:
@@ -447,10 +449,12 @@ def _parse_relation(relation_id: str, relation_content: str) -> BratRelation:
         subj = subj.replace("Arg1:", "")
         obj = obj.replace("Arg2:", "")
     except ValueError as err:
-        raise ValueError("Impossible to parse the relation.") from err
+        msg = "Impossible to parse the relation."
+        raise ValueError(msg) from err
 
     if subj.startswith("E") or obj.startswith("E"):
-        raise ValueError("Impossible to parse the relation. Relations between events are not supported")
+        msg = "Impossible to parse the relation. Relations between events are not supported"
+        raise ValueError(msg)
 
     return BratRelation(relation_id.strip(), relation.strip(), subj.strip(), obj.strip())
 
@@ -477,7 +481,8 @@ def _parse_attribute(attribute_id: str, attribute_content: str) -> BratAttribute
     """
     attribute_arguments = attribute_content.strip().split(" ", maxsplit=2)
     if len(attribute_arguments) < 2:
-        raise ValueError("Impossible to parse the input attribute")
+        msg = "Impossible to parse the input attribute"
+        raise ValueError(msg)
 
     attribute_name = attribute_arguments[0]
     attribute_target = attribute_arguments[1]
@@ -516,12 +521,14 @@ def _parse_note(note_id: str, note_content: str) -> BratNote:
     """
     parts = note_content.split("\t", maxsplit=1)
     if len(parts) != 2:
-        raise ValueError("Impossible to parse the input note")
+        msg = "Impossible to parse the input note"
+        raise ValueError(msg)
     note_arguments, note_value = parts
 
     parts = note_arguments.split(" ", maxsplit=1)
     if len(parts) != 2:
-        raise ValueError("Impossible to parse the input note")
+        msg = "Impossible to parse the input note"
+        raise ValueError(msg)
     note_type, note_target = parts
 
     return BratNote(

@@ -241,6 +241,7 @@ line-length = 120
 indent-width = 4
 target-version = "py38"
 src = ["medkit", "tests"]
+unsafe-fixes = true
 
 [tool.ruff.lint]
 select = [
@@ -272,7 +273,7 @@ select = [
   # flake8-comprehensions
   #"C4",
   # flake8-errmsg
-  #"EM",
+  "EM",
   # flake8-future-annotations
   #"FA",
   # flake8-implicit-str-concat

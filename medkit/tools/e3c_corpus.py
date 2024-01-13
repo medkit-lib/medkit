@@ -124,7 +124,8 @@ def load_data_collection(
     """
     dir_path = Path(dir_path)
     if not dir_path.exists() or not dir_path.is_dir():
-        raise FileNotFoundError("%s is not a directory or does not exist", dir_path)
+        msg = "%s is not a directory or does not exist"
+        raise FileNotFoundError(msg, dir_path)
 
     filepaths = sorted(dir_path.glob("*.json"))
     if not filepaths:
@@ -286,7 +287,8 @@ def load_data_annotation(
     """
     dir_path = Path(dir_path)
     if not dir_path.exists() or not dir_path.is_dir():
-        raise FileNotFoundError("%s is not a directory or does not exist", dir_path)
+        msg = "%s is not a directory or does not exist"
+        raise FileNotFoundError(msg, dir_path)
 
     filepaths = sorted(dir_path.glob("*.xml"))
     if not filepaths:

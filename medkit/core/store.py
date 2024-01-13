@@ -60,11 +60,12 @@ class GlobalStore:
         if cls._store is None:
             cls._store = store
         else:
-            raise RuntimeError(
+            msg = (
                 "The global store has already been initialized. If it was not your"
                 " intention, please put this line at the beginning of your script to"
                 " make sure to set global store before any other initialization"
             )
+            raise RuntimeError(msg)
 
     @classmethod
     def get_store(cls) -> Store:

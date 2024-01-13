@@ -79,11 +79,12 @@ class HFEntityMatcher(NEROperation):
         valid_model = hf_utils.check_model_for_task_hf(self.model, "token-classification", hf_auth_token=hf_auth_token)
 
         if not valid_model:
-            raise ValueError(
+            msg = (
                 f"Model {self.model} is not associated to a"
                 " token-classification/ner task and cannot be used with"
                 " HFEntityMatcher"
             )
+            raise ValueError(msg)
 
         self._pipeline = transformers.pipeline(
             task="token-classification",

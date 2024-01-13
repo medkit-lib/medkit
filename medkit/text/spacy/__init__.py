@@ -14,7 +14,8 @@ __all__ = [
 from medkit.core.utils import modules_are_available
 
 if not modules_are_available(["spacy"]):
-    raise ImportError("Requires spacy install for importing medkit.text.spacy module")
+    msg = "Requires spacy install for importing medkit.text.spacy module"
+    raise ImportError(msg)
 
 from .doc_pipeline import SpacyDocPipeline
 from .pipeline import SpacyPipeline

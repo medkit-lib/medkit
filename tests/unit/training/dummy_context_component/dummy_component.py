@@ -45,7 +45,8 @@ class MockTrainableComponent:
         model_inputs["inputs_ids"] = torch.tensor(self.tokenizer(data_item.text), dtype=torch.int64)
         attribute = data_item.attrs.get(label=self.output_label)
         if not attribute:
-            raise ValueError(f"Attr '{self.output_label}' was not found in the corpus")
+            msg = f"Attr '{self.output_label}' was not found in the corpus"
+            raise ValueError(msg)
         value = self.label2id[attribute[0].value]
         model_inputs["labels"] = torch.tensor(value, dtype=torch.int64)
         model_inputs["offsets"] = torch.tensor([0])
@@ -73,7 +74,8 @@ class MockTrainableComponent:
         logits = self.model.forward(input_batch["inputs_ids"], input_batch["offsets"])
         if return_loss:
             if "labels" not in input_batch or len(input_batch["labels"]) == 0:
-                raise ValueError("Labels not in 'model_inputs', can not compute loss")
+                msg = "Labels not in 'model_inputs', can not compute loss"
+                raise ValueError(msg)
             loss = self.model.compute_loss(logits, input_batch["labels"])
         else:
             loss = None
@@ -86,7 +88,8 @@ class MockTrainableComponent:
     def load(self, path):
         model_path = os.path.join(path, PYTORCH_MODEL_NAME)
         if not os.path.isfile(model_path):
-            raise ValueError(f"Can't find a valid model at '{path}'")
+            msg = f"Can't find a valid model at '{path}'"
+            raise ValueError(msg)
 
         state_dict = torch.load(model_path)
         self.model.load_state_dict(state_dict)

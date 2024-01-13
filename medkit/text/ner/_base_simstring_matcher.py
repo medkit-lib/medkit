@@ -226,7 +226,8 @@ class BaseSimstringMatcher(NEROperation):
 
         if spacy_tokenization_language is not None:
             if spacy is None:
-                raise Exception("Spacy module must be installed to use the 'spacy_language_code' init parameter")
+                msg = "Spacy module must be installed to use the 'spacy_language_code' init parameter"
+                raise Exception(msg)
             if spacy_tokenization_language == "en":
                 spacy_model = "en_core_web_sm"
             else:

@@ -360,7 +360,8 @@ class BratOutputConverter(OutputConverter):
             'uid.ann' the Brat annotation file.
         """
         if doc_names and len(doc_names) != len(docs):
-            raise ValueError("Size mismatch between names and docs")
+            msg = "Size mismatch between names and docs"
+            raise ValueError(msg)
 
         dir_path = Path(dir_path)
         dir_path.mkdir(parents=True, exist_ok=True)
@@ -599,7 +600,8 @@ class BratOutputConverter(OutputConverter):
             The equivalent brat entity of the medkit segment
         """
         if nb_segment < 0:
-            raise ValueError(f"Number of segments {nb_segment} must be strictly positive")
+            msg = f"Number of segments {nb_segment} must be strictly positive"
+            raise ValueError(msg)
 
         brat_id = f"T{nb_segment}"
         # brat does not support spaces in labels
@@ -637,7 +639,8 @@ class BratOutputConverter(OutputConverter):
             When the source or target was not found in the mapping object
         """
         if nb_relation < 0:
-            raise ValueError(f"Number of relations {nb_relation} must be strictly positive")
+            msg = f"Number of relations {nb_relation} must be strictly positive"
+            raise ValueError(msg)
 
         brat_id = f"R{nb_relation}"
         # brat does not support spaces in labels
@@ -646,7 +649,8 @@ class BratOutputConverter(OutputConverter):
         obj = brat_entities_by_segment_id.get(relation.target_id)
 
         if subj is None or obj is None:
-            raise ValueError("Entity target/source was not found.")
+            msg = "Entity target/source was not found."
+            raise ValueError(msg)
 
         relation_conf = RelationConf(type_, arg1=subj.type, arg2=obj.type)
         return BratRelation(brat_id, type_, subj.uid, obj.uid), relation_conf
@@ -680,7 +684,8 @@ class BratOutputConverter(OutputConverter):
             Configuration of the brat attribute
         """
         if nb_attribute < 0:
-            raise ValueError(f"Number of attributes {nb_attribute} must be strictly positive")
+            msg = f"Number of attributes {nb_attribute} must be strictly positive"
+            raise ValueError(msg)
 
         brat_id = f"A{nb_attribute}"
         type_ = label.replace(" ", "_")
@@ -712,7 +717,8 @@ class BratOutputConverter(OutputConverter):
             The equivalent brat note of the medkit umls attribute
         """
         if nb_note < 0:
-            raise ValueError(f"Number of notes {nb_note} must be strictly positive")
+            msg = f"Number of notes {nb_note} must be strictly positive"
+            raise ValueError(msg)
 
         brat_id = f"#{nb_note}"
         return BratNote(uid=brat_id, target=target_brat_id, value=" ".join(cuis))
@@ -740,7 +746,8 @@ class BratOutputConverter(OutputConverter):
             The equivalent brat note of the medkit attribute values
         """
         if nb_note < 0:
-            raise ValueError(f"Number of notes {nb_note} must be strictly positive")
+            msg = f"Number of notes {nb_note} must be strictly positive"
+            raise ValueError(msg)
 
         brat_id = f"#{nb_note}"
         value = "\n".join(str(v) for v in values if v is not None)

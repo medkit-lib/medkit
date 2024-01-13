@@ -166,7 +166,8 @@ class UMLSMatcher(BaseSimstringMatcher):
         if semgroups is not None:
             for semgroup in semgroups:
                 if semgroup not in umls_utils.SEMGROUPS:
-                    raise ValueError(f"Unknown semgroup: {semgroup}. Should be one of {umls_utils.SEMGROUPS}")
+                    msg = f"Unknown semgroup: {semgroup}. Should be one of {umls_utils.SEMGROUPS}"
+                    raise ValueError(msg)
 
         cache_dir.mkdir(parents=True, exist_ok=True)
 
@@ -189,11 +190,12 @@ class UMLSMatcher(BaseSimstringMatcher):
             with open(cache_params_file) as fp:
                 existing_cache_params = _UMLSMatcherCacheParams(**yaml.safe_load(fp))
             if cache_params != existing_cache_params:
-                raise Exception(
+                msg = (
                     f"Cache directory {cache_dir} contains database pre-computed"
                     f" with different params: {existing_cache_params} vs"
                     f" {cache_params}"
                 )
+                raise Exception(msg)
         else:
             logger.info("Building simstring database from UMLS terms, this may take a while")
             rules = self._build_rules(
@@ -213,7 +215,8 @@ class UMLSMatcher(BaseSimstringMatcher):
         if spacy_tokenization:
             spacy_tokenization_language = _SPACY_LANGUAGE_MAP.get(language)
             if spacy_tokenization_language is None:
-                raise ValueError("Spacy tokenization not supported for language" f" '{spacy_tokenization_language}'")
+                msg = "Spacy tokenization not supported for language" f" '{spacy_tokenization_language}'"
+                raise ValueError(msg)
         else:
             spacy_tokenization_language = None
 
@@ -255,7 +258,8 @@ class UMLSMatcher(BaseSimstringMatcher):
         # check that the keys of output_labels are valid semgroup ids
         for semgroup in output_labels:
             if semgroup not in umls_utils.SEMGROUPS:
-                raise ValueError(f"Unknown semgroup: {semgroup}. Should be one of {umls_utils.SEMGROUPS}")
+                msg = f"Unknown semgroup: {semgroup}. Should be one of {umls_utils.SEMGROUPS}"
+                raise ValueError(msg)
 
         label_mapping = umls_utils.SEMGROUP_LABELS.copy()
         label_mapping.update(output_labels)

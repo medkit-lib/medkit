@@ -82,10 +82,11 @@ class SyntacticRelationExtractor(DocOperation):
         # load nlp object and validate it
         nlp = spacy.load(name_spacy_model, exclude=["tagger", "ner", "lemmatizer"])
         if not nlp("X").has_annotation("DEP"):
-            raise ValueError(
+            msg = (
                 f"Model `{name_spacy_model}` does not add syntax attributes"
                 " to documents and cannot be use with SyntacticRelationExtractor."
             )
+            raise ValueError(msg)
 
         self._nlp = nlp
         self.name_spacy_model = name_spacy_model

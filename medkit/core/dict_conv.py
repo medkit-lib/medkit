@@ -32,7 +32,8 @@ def add_class_name_to_data_dict(instance: object, data_dict: dict[str, Any]):
         The data dict on which to add the class name
     """
     if _CLASS_NAME_KEY in data_dict:
-        raise ValueError(f"Found pre-existing entry for key {_CLASS_NAME_KEY} in data dict")
+        msg = f"Found pre-existing entry for key {_CLASS_NAME_KEY} in data dict"
+        raise ValueError(msg)
     data_dict[_CLASS_NAME_KEY] = get_class_name(type(instance))
 
 
@@ -52,11 +53,12 @@ def get_class_name_from_data_dict(data_dict: dict[str, Any]):
     """
     class_name = data_dict.get(_CLASS_NAME_KEY, None)
     if class_name is None:
-        raise ValueError(
+        msg = (
             f"Data dict does not contain expected '{_CLASS_NAME_KEY}' key. Make"
             " sure it was created by a to_dict() method and that this method"
             " called the 'add_class_name_to_data_dict()' helper function"
         )
+        raise ValueError(msg)
     return class_name
 
 
@@ -106,11 +108,12 @@ class SubclassMapping:
         subclass_name = get_class_name(subclass)
         if subclass_name in cls._subclasses:
             other_subclass = cls._subclasses[subclass_name]
-            raise KeyError(
+            msg = (
                 f"Trying to register child class {subclass} of"
                 f" {get_class_name(cls)} with name {subclass_name}, but other child"
                 f" class {other_subclass} is already registered with identical name"
             )
+            raise KeyError(msg)
         cls._subclasses[subclass_name] = subclass
 
     @classmethod
@@ -136,8 +139,9 @@ class SubclassMapping:
         class_name = get_class_name_from_data_dict(data_dict)
         subclass = cls.get_subclass(class_name)
         if subclass is None and class_name != get_class_name(cls):
-            raise ValueError(
+            msg = (
                 "Received a data dict with class_name '{class_name}' that does not"
                 " correspond to {cls} or any of its subclasses"
             )
+            raise ValueError(msg)
         return subclass
