@@ -17,9 +17,12 @@ __all__ = [
 
 
 import re
+from typing import TYPE_CHECKING
 
 from medkit.core.text import span_utils
-from medkit.core.text.span import AnySpan
+
+if TYPE_CHECKING:
+    from medkit.core.text.span import AnySpan
 
 # Some strings for character classification
 _NUMERIC_CHARS = "0-9"

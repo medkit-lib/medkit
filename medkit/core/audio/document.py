@@ -3,9 +3,8 @@ from __future__ import annotations
 __all__ = ["AudioDocument"]
 
 import dataclasses
-import os
 from pathlib import Path
-from typing import Any, ClassVar, Sequence
+from typing import TYPE_CHECKING, Any, ClassVar, Sequence
 
 from typing_extensions import Self
 
@@ -20,6 +19,9 @@ from medkit.core.audio.audio_buffer import (
 )
 from medkit.core.audio.span import Span
 from medkit.core.id import generate_deterministic_id, generate_id
+
+if TYPE_CHECKING:
+    import os
 
 
 @dataclasses.dataclass(init=False)

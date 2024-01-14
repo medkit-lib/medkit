@@ -294,8 +294,6 @@ select = [
   "RSE",
   # flake8-return
   "RET",
-  # flake8-self
-  #"SLF",
   # flake8-slots
   "SLOT",
   # flake8-simplify
@@ -303,7 +301,7 @@ select = [
   # flake8-tidy-imports
   "TID",
   # flake8-type-checking
-  #"TCH",
+  "TCH",
   # flake8-unused-arguments
   #"ARG",
   # flake8-use-pathlib

@@ -2,14 +2,16 @@ from __future__ import annotations
 
 __all__ = ["SpacyDocPipeline"]
 
-from typing import Callable
-
-from spacy import Language
-from spacy.tokens import Span as SpacySpan
+from typing import TYPE_CHECKING, Callable
 
 from medkit.core import Attribute, DocOperation
-from medkit.core.text import TextDocument
 from medkit.text.spacy import spacy_utils
+
+if TYPE_CHECKING:
+    from spacy import Language
+    from spacy.tokens import Span as SpacySpan
+
+    from medkit.core.text import TextDocument
 
 
 class SpacyDocPipeline(DocOperation):

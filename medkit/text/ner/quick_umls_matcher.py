@@ -5,8 +5,7 @@ from __future__ import annotations
 
 __all__ = ["QuickUMLSMatcher"]
 
-from pathlib import Path
-from typing import ClassVar, Iterator, NamedTuple
+from typing import TYPE_CHECKING, ClassVar, Iterator, NamedTuple
 
 import quickumls.about
 import quickumls.constants
@@ -22,6 +21,9 @@ from medkit.core.text import (
     span_utils,
 )
 from medkit.text.ner import umls_utils
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 # workaround for https://github.com/Georgetown-IR-Lab/QuickUMLS/issues/68
 _spacy_language_map_fixed = False

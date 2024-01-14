@@ -3,9 +3,12 @@ from __future__ import annotations
 __all__ = ["PreprocessingOperation", "SegmentationOperation"]
 
 import abc
+from typing import TYPE_CHECKING
 
-from medkit.core.audio.annotation import Segment
 from medkit.core.operation import Operation
+
+if TYPE_CHECKING:
+    from medkit.core.audio.annotation import Segment
 
 
 class PreprocessingOperation(Operation):

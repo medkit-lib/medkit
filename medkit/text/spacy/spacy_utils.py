@@ -7,9 +7,8 @@ __all__ = [
 ]
 
 import warnings
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
-from spacy import Language
 from spacy.tokens import Doc
 from spacy.tokens import Span as SpacySpan
 from spacy.tokens.underscore import Underscore
@@ -18,6 +17,9 @@ from spacy.util import filter_spans
 from medkit.core import Attribute
 from medkit.core.text import AnySpan, Entity, Segment, Span, TextDocument, span_utils
 from medkit.io._common import get_anns_by_type
+
+if TYPE_CHECKING:
+    from spacy import Language
 
 _ATTR_MEDKIT_ID = "medkit_id"
 

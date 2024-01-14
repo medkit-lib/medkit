@@ -3,10 +3,12 @@ from __future__ import annotations
 import logging
 from collections import Counter, defaultdict
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple
 
 from smart_open import open
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 GROUPING_ENTITIES = frozenset(["And-Group", "Or-Group"])
 GROUPING_RELATIONS = frozenset(["And", "Or"])

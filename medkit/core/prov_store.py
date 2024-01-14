@@ -2,12 +2,13 @@ from __future__ import annotations
 
 __all__ = ["ProvStore", "create_prov_store"]
 
-from typing import runtime_checkable
+from typing import TYPE_CHECKING, runtime_checkable
 
 from typing_extensions import Literal, Protocol
 
-from medkit.core.data_item import IdentifiableDataItem
-from medkit.core.operation_desc import OperationDescription
+if TYPE_CHECKING:
+    from medkit.core.data_item import IdentifiableDataItem
+    from medkit.core.operation_desc import OperationDescription
 
 
 @runtime_checkable

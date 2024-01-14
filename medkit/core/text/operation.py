@@ -11,11 +11,13 @@ __all__ = [
 import abc
 from collections.abc import Iterable
 from enum import IntEnum
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 from medkit.core.operation import Operation
-from medkit.core.prov_tracer import ProvTracer
-from medkit.core.text.annotation import Entity, Segment
+
+if TYPE_CHECKING:
+    from medkit.core.prov_tracer import ProvTracer
+    from medkit.core.text.annotation import Entity, Segment
 
 
 class ContextOperation(Operation):

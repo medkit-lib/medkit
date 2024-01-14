@@ -2,13 +2,15 @@ from __future__ import annotations
 
 __all__ = ["DocPipeline"]
 
-from typing import Generic, List, Tuple, cast
+from typing import TYPE_CHECKING, Generic, List, Tuple, cast
 
 from medkit.core.annotation import AnnotationType
-from medkit.core.document import Document
 from medkit.core.operation import DocOperation
-from medkit.core.pipeline import Pipeline
-from medkit.core.prov_tracer import ProvTracer
+
+if TYPE_CHECKING:
+    from medkit.core.document import Document
+    from medkit.core.pipeline import Pipeline
+    from medkit.core.prov_tracer import ProvTracer
 
 
 class DocPipeline(DocOperation, Generic[AnnotationType]):

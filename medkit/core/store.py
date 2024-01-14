@@ -2,11 +2,12 @@ from __future__ import annotations
 
 __all__ = ["Store", "GlobalStore"]
 
-from typing import runtime_checkable
+from typing import TYPE_CHECKING, runtime_checkable
 
 from typing_extensions import Protocol
 
-from medkit.core.data_item import IdentifiableDataItem
+if TYPE_CHECKING:
+    from medkit.core.data_item import IdentifiableDataItem
 
 
 @runtime_checkable

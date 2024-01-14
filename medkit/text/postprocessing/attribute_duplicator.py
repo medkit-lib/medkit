@@ -2,9 +2,13 @@ from __future__ import annotations
 
 __all__ = ["AttributeDuplicator"]
 
+from typing import TYPE_CHECKING
+
 from medkit.core import Attribute, Operation
-from medkit.core.text import Segment
 from medkit.text.postprocessing import alignment_utils
+
+if TYPE_CHECKING:
+    from medkit.core.text import Segment
 
 
 class AttributeDuplicator(Operation):

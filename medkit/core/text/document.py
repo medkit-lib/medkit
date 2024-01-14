@@ -3,9 +3,8 @@ from __future__ import annotations
 __all__ = ["TextDocument"]
 
 import dataclasses
-import os
 from pathlib import Path
-from typing import Any, ClassVar, Sequence
+from typing import TYPE_CHECKING, Any, ClassVar, Sequence
 
 from typing_extensions import Self
 
@@ -15,6 +14,9 @@ from medkit.core.text import span_utils
 from medkit.core.text.annotation import Segment, TextAnnotation
 from medkit.core.text.annotation_container import TextAnnotationContainer
 from medkit.core.text.span import Span
+
+if TYPE_CHECKING:
+    import os
 
 
 @dataclasses.dataclass(init=False)

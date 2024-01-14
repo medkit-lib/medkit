@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 import torch
 from torch import nn
 
-from medkit.training import BatchData
+if TYPE_CHECKING:
+    from medkit.training import BatchData
 
 
 @dataclass

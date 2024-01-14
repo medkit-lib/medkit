@@ -5,8 +5,7 @@ from __future__ import annotations
 
 __all__ = ["PASpeakerDetector"]
 
-from pathlib import Path
-from typing import Iterator
+from typing import TYPE_CHECKING, Iterator
 
 # When pyannote and spacy are both installed, a conflict might occur between the
 # ujson library used by pandas (a pyannote dependency) and the ujson library used
@@ -23,6 +22,9 @@ from pyannote.audio.pipelines import SpeakerDiarization
 
 from medkit.core import Attribute
 from medkit.core.audio import Segment, SegmentationOperation, Span
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 # margin (in seconds) by which a turn segment
 # may overrun the input segment due to imprecision

@@ -6,15 +6,19 @@ from __future__ import annotations
 __all__ = ["SyntacticRelationExtractor"]
 
 import logging
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import spacy
-from spacy.tokens import Doc
-from spacy.tokens import Span as SpacySpan
 
 from medkit.core.operation import DocOperation
 from medkit.core.text import Relation, TextDocument
 from medkit.text.spacy import spacy_utils
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from spacy.tokens import Doc
+    from spacy.tokens import Span as SpacySpan
 
 logger = logging.getLogger(__name__)
 

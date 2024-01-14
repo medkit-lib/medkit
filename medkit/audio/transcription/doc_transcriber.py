@@ -2,14 +2,18 @@ from __future__ import annotations
 
 __all__ = ["DocTranscriber", "TranscriptionOperation"]
 
+from typing import TYPE_CHECKING
+
 from typing_extensions import Protocol
 
 from medkit.audio.transcription.transcribed_text_document import TranscribedTextDocument
 from medkit.core import Operation
-from medkit.core.audio import AudioDocument
-from medkit.core.audio import Segment as AudioSegment
 from medkit.core.text import Segment as TextSegment
 from medkit.core.text import Span as TextSpan
+
+if TYPE_CHECKING:
+    from medkit.core.audio import AudioDocument
+    from medkit.core.audio import Segment as AudioSegment
 
 
 class TranscriptionOperation(Protocol):

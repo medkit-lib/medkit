@@ -4,7 +4,7 @@ __all__ = ["TextAnnotation", "Segment", "Entity", "Relation"]
 
 import abc
 import dataclasses
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from typing_extensions import Self
 
@@ -12,9 +12,11 @@ from medkit.core import dict_conv
 from medkit.core.attribute import Attribute
 from medkit.core.attribute_container import AttributeContainer
 from medkit.core.id import generate_id
-from medkit.core.store import Store
 from medkit.core.text.entity_attribute_container import EntityAttributeContainer
 from medkit.core.text.span import AnySpan
+
+if TYPE_CHECKING:
+    from medkit.core.store import Store
 
 
 @dataclasses.dataclass(init=False)

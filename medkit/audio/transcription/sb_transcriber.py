@@ -6,12 +6,15 @@ from __future__ import annotations
 __all__ = ["SBTranscriber"]
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import speechbrain as sb
 
 import medkit.core.utils
 from medkit.core import Attribute, Operation
-from medkit.core.audio import AudioBuffer, Segment
+
+if TYPE_CHECKING:
+    from medkit.core.audio import AudioBuffer, Segment
 
 
 class SBTranscriber(Operation):

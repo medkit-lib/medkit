@@ -14,7 +14,7 @@ __all__ = [
     "DEFAULT_ATTRIBUTE_FACTORIES",
 ]
 
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
 from edsnlp.pipelines.misc.dates.models import AbsoluteDate as EDSNLP_AbsoluteDate
 from edsnlp.pipelines.misc.dates.models import Direction as EDSNLP_Direction
@@ -25,8 +25,6 @@ from edsnlp.pipelines.misc.measurements.measurements import (
 )
 from edsnlp.pipelines.ner.adicap.models import AdicapCode as EDSNLP_AdicapCode
 from edsnlp.pipelines.ner.tnm.model import TNM as EDSNLP_TNM
-from spacy import Language
-from spacy.tokens import Span as SpacySpan
 from spacy.tokens.underscore import Underscore
 
 from medkit.core import Attribute
@@ -39,6 +37,10 @@ from medkit.text.ner import (
 )
 from medkit.text.ner.tnm_attribute import TNMAttribute
 from medkit.text.spacy import SpacyDocPipeline, SpacyPipeline
+
+if TYPE_CHECKING:
+    from spacy import Language
+    from spacy.tokens import Span as SpacySpan
 
 
 def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:

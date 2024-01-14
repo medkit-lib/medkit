@@ -6,10 +6,14 @@ __all__ = [
     "convert_labels_to_tags",
 ]
 
-from transformers.tokenization_utils_fast import EncodingFast
+from typing import TYPE_CHECKING
+
 from typing_extensions import Literal
 
 from medkit.core.text import Entity, span_utils
+
+if TYPE_CHECKING:
+    from transformers.tokenization_utils_fast import EncodingFast
 
 SPECIAL_TAG_ID_HF: int = -100
 

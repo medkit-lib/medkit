@@ -9,7 +9,7 @@ import shutil
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
 import torch
@@ -18,9 +18,11 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader, Dataset
 
 from medkit.training.callbacks import DefaultPrinterCallback, TrainerCallback
-from medkit.training.trainable_component import TrainableComponent
-from medkit.training.trainer_config import TrainerConfig
-from medkit.training.utils import BatchData, MetricsComputer
+
+if TYPE_CHECKING:
+    from medkit.training.trainable_component import TrainableComponent
+    from medkit.training.trainer_config import TrainerConfig
+    from medkit.training.utils import BatchData, MetricsComputer
 
 # checkpoint constants
 OPTIMIZER_NAME = "optimizer.pt"

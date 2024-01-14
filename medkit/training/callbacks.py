@@ -3,10 +3,12 @@ from __future__ import annotations
 __all__ = ["TrainerCallback", "DefaultPrinterCallback"]
 
 import logging
+from typing import TYPE_CHECKING
 
 from tqdm import tqdm
 
-from medkit.training.trainer_config import TrainerConfig
+if TYPE_CHECKING:
+    from medkit.training.trainer_config import TrainerConfig
 
 
 class TrainerCallback:

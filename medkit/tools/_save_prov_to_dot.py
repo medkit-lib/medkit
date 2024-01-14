@@ -2,8 +2,7 @@ from __future__ import annotations
 
 __all__ = ["save_prov_to_dot"]
 
-from pathlib import Path
-from typing import Any, Callable, TextIO
+from typing import TYPE_CHECKING, Any, Callable, TextIO
 
 from medkit.core import (
     Attribute,
@@ -14,6 +13,9 @@ from medkit.core import (
     ProvTracer,
 )
 from medkit.core.text import Segment, TextDocument
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def save_prov_to_dot(

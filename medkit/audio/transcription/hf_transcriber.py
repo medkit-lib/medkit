@@ -5,13 +5,18 @@ from __future__ import annotations
 
 __all__ = ["HFTranscriber"]
 
-from pathlib import Path
+
+from typing import TYPE_CHECKING
 
 import transformers
 from transformers import AutomaticSpeechRecognitionPipeline
 
 from medkit.core import Attribute, Operation
-from medkit.core.audio import AudioBuffer, Segment
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from medkit.core.audio import AudioBuffer, Segment
 
 
 class HFTranscriber(Operation):

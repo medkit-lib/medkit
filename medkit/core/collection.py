@@ -2,11 +2,12 @@ from __future__ import annotations
 
 __all__ = ["Collection"]
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from medkit.core.audio import AudioDocument
-from medkit.core.document import Document
-from medkit.core.text import TextDocument
+if TYPE_CHECKING:
+    from medkit.core.audio import AudioDocument
+    from medkit.core.document import Document
+    from medkit.core.text import TextDocument
 
 
 class Collection:

@@ -7,8 +7,7 @@ from __future__ import annotations
 __all__ = ["HFTranslator"]
 
 from collections import defaultdict
-from pathlib import Path
-from typing import Iterator
+from typing import TYPE_CHECKING, Iterator
 
 import torch
 import transformers
@@ -17,6 +16,9 @@ from transformers import BertModel, BertTokenizerFast, TranslationPipeline
 import medkit.core.utils
 from medkit.core import Operation
 from medkit.core.text import ModifiedSpan, Segment, span_utils
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class HFTranslator(Operation):

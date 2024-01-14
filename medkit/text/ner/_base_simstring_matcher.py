@@ -11,8 +11,7 @@ import dataclasses
 import math
 import re
 import shelve
-from pathlib import Path
-from typing import Any, Iterable, Iterator
+from typing import TYPE_CHECKING, Any, Iterable, Iterator
 
 from anyascii import anyascii
 from pysimstring import simstring
@@ -32,6 +31,9 @@ from medkit.core.text import (
     UMLSNormAttribute,
     span_utils,
 )
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 _SIMILARITY_MAP = {
     "cosine": simstring.cosine,

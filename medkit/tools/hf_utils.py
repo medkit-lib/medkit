@@ -5,9 +5,13 @@ from __future__ import annotations
 
 __all__ = ["check_model_for_task_hf"]
 
-from pathlib import Path
+
+from typing import TYPE_CHECKING
 
 import transformers
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def check_model_for_task_hf(model: str | Path, task: str, hf_auth_token: str | None = None) -> bool:

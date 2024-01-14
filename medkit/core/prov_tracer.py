@@ -4,11 +4,14 @@ __all__ = ["ProvTracer", "Prov"]
 
 import collections
 import dataclasses
+from typing import TYPE_CHECKING
 
 from medkit.core._prov_graph import ProvGraph, ProvNode
-from medkit.core.data_item import IdentifiableDataItem
-from medkit.core.operation_desc import OperationDescription
 from medkit.core.prov_store import ProvStore, create_prov_store
+
+if TYPE_CHECKING:
+    from medkit.core.data_item import IdentifiableDataItem
+    from medkit.core.operation_desc import OperationDescription
 
 
 @dataclasses.dataclass

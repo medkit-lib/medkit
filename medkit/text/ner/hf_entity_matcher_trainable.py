@@ -6,17 +6,20 @@ from __future__ import annotations
 __all__ = ["HFEntityMatcherTrainable"]
 
 import logging
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import torch
 import transformers
 from typing_extensions import Literal
 
-from medkit.core.text import Entity, TextDocument
 from medkit.text.ner import hf_tokenization_utils
 from medkit.tools import hf_utils
 from medkit.training.utils import BatchData
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from medkit.core.text import Entity, TextDocument
 
 logger = logging.getLogger(__name__)
 

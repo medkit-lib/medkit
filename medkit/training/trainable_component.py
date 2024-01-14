@@ -2,13 +2,16 @@ from __future__ import annotations
 
 __all__ = ["TrainableComponent"]
 
-from pathlib import Path
-from typing import Any, runtime_checkable
+from typing import TYPE_CHECKING, Any, runtime_checkable
 
-import torch
 from typing_extensions import Protocol
 
-from medkit.training.utils import BatchData
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    import torch
+
+    from medkit.training.utils import BatchData
 
 
 @runtime_checkable

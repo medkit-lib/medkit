@@ -5,8 +5,8 @@ from __future__ import annotations
 
 __all__ = ["SpacyInputConverter", "SpacyOutputConverter"]
 
-from spacy import Language
-from spacy.tokens import Doc
+
+from typing import TYPE_CHECKING
 
 from medkit.core import OperationDescription, ProvTracer, generate_id
 from medkit.core.text import TextDocument
@@ -14,6 +14,10 @@ from medkit.text.spacy.spacy_utils import (
     build_spacy_doc_from_medkit_doc,
     extract_anns_and_attrs_from_spacy_doc,
 )
+
+if TYPE_CHECKING:
+    from spacy import Language
+    from spacy.tokens import Doc
 
 
 class SpacyInputConverter:

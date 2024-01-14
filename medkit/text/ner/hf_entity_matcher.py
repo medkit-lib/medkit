@@ -5,8 +5,7 @@ from __future__ import annotations
 
 __all__ = ["HFEntityMatcher"]
 
-from pathlib import Path
-from typing import Iterator
+from typing import TYPE_CHECKING, Iterator
 
 import transformers
 from transformers import TokenClassificationPipeline
@@ -16,6 +15,9 @@ from medkit.core import Attribute
 from medkit.core.text import Entity, NEROperation, Segment, span_utils
 from medkit.text.ner.hf_entity_matcher_trainable import HFEntityMatcherTrainable
 from medkit.tools import hf_utils
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class HFEntityMatcher(NEROperation):

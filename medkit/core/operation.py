@@ -3,11 +3,14 @@ from __future__ import annotations
 __all__ = ["Operation", "DocOperation"]
 
 import abc
+from typing import TYPE_CHECKING
 
-from medkit.core.document import Document
 from medkit.core.id import generate_id
 from medkit.core.operation_desc import OperationDescription
-from medkit.core.prov_tracer import ProvTracer
+
+if TYPE_CHECKING:
+    from medkit.core.document import Document
+    from medkit.core.prov_tracer import ProvTracer
 
 
 class Operation(abc.ABC):

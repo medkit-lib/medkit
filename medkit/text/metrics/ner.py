@@ -5,7 +5,7 @@ from __future__ import annotations
 
 __all__ = ["SeqEvalEvaluator", "SeqEvalMetricsComputer"]
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from seqeval.metrics import accuracy_score, classification_report
 from seqeval.scheme import BILOU, IOB2
@@ -13,7 +13,9 @@ from typing_extensions import Literal
 
 from medkit.core.text import Entity, TextDocument, span_utils
 from medkit.text.ner import hf_tokenization_utils
-from medkit.training.utils import BatchData
+
+if TYPE_CHECKING:
+    from medkit.training.utils import BatchData
 
 
 def _compute_seqeval_from_dict(

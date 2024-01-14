@@ -3,8 +3,10 @@ from __future__ import annotations
 __all__ = ["InputConverter", "OutputConverter"]
 
 import abc
+from typing import TYPE_CHECKING
 
-from medkit.core.document import Document
+if TYPE_CHECKING:
+    from medkit.core.document import Document
 
 
 class InputConverter:

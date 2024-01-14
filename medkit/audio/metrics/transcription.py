@@ -9,12 +9,14 @@ import dataclasses
 import functools
 import logging
 import string
-from typing import Sequence
+from typing import TYPE_CHECKING, Sequence
 
 from speechbrain.utils.metric_stats import ErrorRateStats
 
-from medkit.core.audio import AudioDocument, Segment
 from medkit.text.utils.decoding import get_ascii_from_unicode
+
+if TYPE_CHECKING:
+    from medkit.core.audio import AudioDocument, Segment
 
 logger = logging.getLogger(__name__)
 

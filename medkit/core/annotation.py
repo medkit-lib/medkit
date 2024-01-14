@@ -2,11 +2,12 @@ from __future__ import annotations
 
 __all__ = ["Annotation", "AnnotationType"]
 
-from typing import TypeVar, runtime_checkable
+from typing import TYPE_CHECKING, TypeVar, runtime_checkable
 
 from typing_extensions import Protocol
 
-from medkit.core.attribute_container import AttributeContainer
+if TYPE_CHECKING:
+    from medkit.core.attribute_container import AttributeContainer
 
 
 @runtime_checkable

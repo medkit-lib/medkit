@@ -6,12 +6,15 @@ from __future__ import annotations
 __all__ = ["TextClassificationEvaluator"]
 
 import logging
+from typing import TYPE_CHECKING
 
 from sklearn.metrics import classification_report, cohen_kappa_score
 from typing_extensions import Literal
 
-from medkit.core.text import TextDocument
 from medkit.text.metrics.irr_utils import krippendorff_alpha
+
+if TYPE_CHECKING:
+    from medkit.core.text import TextDocument
 
 logger = logging.getLogger(__name__)
 

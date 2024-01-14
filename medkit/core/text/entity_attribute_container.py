@@ -2,11 +2,13 @@ from __future__ import annotations
 
 __all__ = ["EntityAttributeContainer"]
 
-from typing import List, cast
+from typing import TYPE_CHECKING, List, cast
 
-from medkit.core.attribute import Attribute
 from medkit.core.attribute_container import AttributeContainer
 from medkit.core.text.entity_norm_attribute import EntityNormAttribute
+
+if TYPE_CHECKING:
+    from medkit.core.attribute import Attribute
 
 
 class EntityAttributeContainer(AttributeContainer):
