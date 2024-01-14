@@ -241,8 +241,7 @@ class UMLSCoderNormalizer(Operation):
 
     def _load_umls_embeddings(self, files: list[Path]) -> torch.Tensor:
         torch_device = "cpu" if self.device < 0 else f"cuda:{self.device}"
-        umls_embeddings = torch.cat([torch.load(file, map_location=torch_device) for file in files])
-        return umls_embeddings
+        return torch.cat([torch.load(file, map_location=torch_device) for file in files])
 
     def _normalize_entity(self, entity: Entity, match_indices: list[int], match_scores: list[float]):
         for match_index, match_score in zip(match_indices, match_scores):

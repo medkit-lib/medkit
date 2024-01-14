@@ -293,7 +293,7 @@ select = [
   # flake8-raise
   "RSE",
   # flake8-return
-  #"RET",
+  "RET",
   # flake8-self
   #"SLF",
   # flake8-slots

@@ -49,8 +49,7 @@ class _TrainerDataset(Dataset):
 
     def __getitem__(self, i):
         item = self.dataset[i]
-        processed = self.component.preprocess(item)
-        return processed
+        return self.component.preprocess(item)
 
 
 class Trainer:

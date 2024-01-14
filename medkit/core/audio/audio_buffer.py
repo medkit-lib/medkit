@@ -246,10 +246,7 @@ class MemoryAudioBuffer(AudioBuffer):
         self._signal = signal
 
     def read(self, copy: bool = False) -> np.ndarray:
-        if copy:
-            return self._signal.copy()
-        else:
-            return self._signal
+        return self._signal.copy() if copy else self._signal
 
     def trim(self, start: int | None = None, end: int | None = None) -> AudioBuffer:
         start = start or 0

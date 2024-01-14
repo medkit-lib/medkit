@@ -15,7 +15,7 @@ from tests.data_utils import get_path_hf_dummy_vocab
 
 
 def _get_document():
-    document = TextDocument(
+    return TextDocument(
         text="medkit is a python library",
         anns=[
             Entity(
@@ -30,13 +30,11 @@ def _get_document():
             ),
         ],
     )
-    return document
 
 
 @pytest.fixture
 def tokenizer():
-    tokenizer = BertTokenizerFast(get_path_hf_dummy_vocab())
-    return tokenizer
+    return BertTokenizerFast(get_path_hf_dummy_vocab())
 
 
 TEST_CONFIG = (

@@ -36,8 +36,7 @@ class DummyTextCat(nn.Module):
 
     def forward(self, inputs_ids: torch.FloatTensor, offsets: torch.FloatTensor) -> BatchData:
         embedded = self.embedding(inputs_ids, offsets)
-        logits = self.fc(embedded)
-        return logits
+        return self.fc(embedded)
 
     def compute_loss(self, logits: torch.FloatTensor, labels: torch.FloatTensor):
         return self.loss(logits, labels)

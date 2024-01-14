@@ -243,9 +243,8 @@ class DocumentSplitter(Operation):
 
     def _filter_attrs_from_ann(self, ann: TextAnnotation) -> list[Attribute]:
         """Filter attributes from an annotation using 'attr_labels'"""
-        attrs = (
+        return (
             ann.attrs.get()
             if self.attr_labels is None
             else [attr for label in self.attr_labels for attr in ann.attrs.get(label=label)]
         )
-        return attrs

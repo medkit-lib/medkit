@@ -38,22 +38,20 @@ def _create_model_and_tokenizer(tmp_path):
 
 @pytest.fixture
 def matcher(tmp_path):
-    hf_matcher = HFEntityMatcherTrainable(
+    return HFEntityMatcherTrainable(
         model_name_or_path=tmp_path / "dummy-bert",
         labels=["corporation"],
         tagging_scheme="iob2",
         tokenizer_max_length=8,
     )
-    return hf_matcher
 
 
 @pytest.fixture
 def input_data():
-    doc = TextDocument(
+    return TextDocument(
         text="a test medkit",
         anns=[Entity(text="medkit", label="corporation", spans=[Span(7, 13)])],
     )
-    return doc
 
 
 def test_preprocessing(matcher: HFEntityMatcherTrainable, input_data):

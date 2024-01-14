@@ -23,5 +23,4 @@ def generate_deterministic_id(reference_id: str) -> uuid.UUID:
         The UUID object
     """
     rng = random.Random(reference_id)
-    uid = uuid.UUID(int=rng.getrandbits(128))
-    return uid
+    return uuid.UUID(int=rng.getrandbits(128))

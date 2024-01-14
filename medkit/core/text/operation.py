@@ -135,8 +135,9 @@ class _CustomTextOperation(Operation):
             CustomTextOpType.EXTRACT_ONE_TO_N,
         ]:
             return self._run_one_to_n_function(all_input_data, self._function_type)
-        elif self._function_type == CustomTextOpType.FILTER:
+        elif self._function_type == CustomTextOpType.FILTER:  # noqa: RET505
             return self._run_filter_function(all_input_data)
+        return None
 
     def _run_one_to_n_function(self, all_input_data: list[Any], function_type: CustomTextOpType) -> list[Any]:
         all_output_data = []

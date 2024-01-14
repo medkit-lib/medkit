@@ -274,8 +274,7 @@ class HypothesisDetector(ContextOperation):
             text = text_unicode if rule.unicode_sensitive else text_ascii
             if pattern.search(text) and not (exclusion_pattern and exclusion_pattern.search(text)):
                 # return the rule uid or the rule index if no uid has been set
-                rule_id = rule.id if rule.id is not None else rule_index
-                return rule_id
+                return rule.id if rule.id is not None else rule_index
 
         return None
 
@@ -300,8 +299,7 @@ class HypothesisDetector(ContextOperation):
             can be used to init an `HypothesisDetector`
         """
         with open(path_to_verbs, encoding=encoding) as f:
-            verbs = yaml.safe_load(f)
-        return verbs
+            return yaml.safe_load(f)
 
     @staticmethod
     def load_rules(path_to_rules: Path, encoding: str | None = None) -> list[HypothesisDetectorRule]:
@@ -323,8 +321,7 @@ class HypothesisDetector(ContextOperation):
         """
         with open(path_to_rules, encoding=encoding) as f:
             rules_data = yaml.safe_load(f)
-        rules = [HypothesisDetectorRule(**d) for d in rules_data]
-        return rules
+        return [HypothesisDetectorRule(**d) for d in rules_data]
 
     @classmethod
     def get_example(cls) -> HypothesisDetector:

@@ -71,13 +71,12 @@ class _DoccanoEntity:
     label: str
 
     def to_dict(self) -> dict[str, Any]:
-        entity_dict = dict(
+        return dict(
             id=self.id,
             start_offset=self.start_offset,
             end_offset=self.end_offset,
             label=self.label,
         )
-        return entity_dict
 
 
 @dataclasses.dataclass()
@@ -98,13 +97,12 @@ class _DoccanoRelation:
     type: str
 
     def to_dict(self) -> dict[str, Any]:
-        relation_dict = dict(
+        return dict(
             id=self.id,
             from_id=self.from_id,
             to_id=self.to_id,
             type=self.type,
         )
-        return relation_dict
 
 
 @dataclasses.dataclass()
@@ -352,6 +350,7 @@ class DoccanoInputConverter:
             return self._parse_doc_line_text_classification(doc_line=doc_line)
         if self.task == DoccanoTask.SEQUENCE_LABELING:
             return self._parse_doc_line_seq_labeling(doc_line=doc_line)
+        return None
 
     def _parse_doc_line_relation_extraction(self, doc_line: dict[str, Any]) -> TextDocument:
         """Parse a dictionary and return a TextDocument with entities and relations
@@ -403,13 +402,11 @@ class DoccanoInputConverter:
                 self._prov_tracer.add_prov(relation, self.description, source_data_items=[])
 
         anns = list(ents_by_doccano_id.values()) + relations
-        doc = TextDocument(
+        return TextDocument(
             text=doccano_doc.text,
             anns=anns,
             metadata=doccano_doc.metadata,
         )
-
-        return doc
 
     def _parse_doc_line_seq_labeling(self, doc_line: dict[str, Any]) -> TextDocument:
         """Parse a dictionary and return a TextDocument with entities
@@ -446,12 +443,11 @@ class DoccanoInputConverter:
             if self._prov_tracer is not None:
                 self._prov_tracer.add_prov(entity, self.description, source_data_items=[])
 
-        doc = TextDocument(
+        return TextDocument(
             text=doccano_doc.text,
             anns=entities,
             metadata=doccano_doc.metadata,
         )
-        return doc
 
     def _parse_doc_line_text_classification(self, doc_line: dict[str, Any]) -> TextDocument:
         """Parse a dictionary and return a TextDocument with an attribute.
@@ -578,6 +574,7 @@ class DoccanoOutputConverter:
             return self._convert_doc_text_classification(medkit_doc=medkit_doc)
         if self.task == DoccanoTask.SEQUENCE_LABELING:
             return self._convert_doc_seq_labeling(medkit_doc=medkit_doc)
+        return None
 
     def _convert_doc_relation_extraction(self, medkit_doc: TextDocument) -> dict[str, Any]:
         """Convert a TextDocument to a doc_line compatible

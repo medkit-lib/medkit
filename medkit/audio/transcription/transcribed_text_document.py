@@ -90,13 +90,12 @@ class TranscribedTextDocument(TextDocument):
         """
         ann_text_spans = text_span_utils.normalize_spans(text_ann_spans)
         # TODO: use interval tree instead of nested iteration
-        audio_spans = [
+        return [
             audio_span
             for ann_text_span in ann_text_spans
             for text_span, audio_span in self.text_spans_to_audio_spans.items()
             if text_span.overlaps(ann_text_span)
         ]
-        return audio_spans
 
     def to_dict(self, with_anns: bool = True) -> dict[str, Any]:
         text_spans = [s.to_dict() for s in self.text_spans_to_audio_spans]

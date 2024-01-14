@@ -41,5 +41,4 @@ def filter_overlapping_entities(entities: list[Entity]) -> list[Entity]:
         if span_start not in seen_chars and span_end not in seen_chars:
             seen_chars.update(range(span_start, span_end))
             filtered_entities.append(ent)
-    filtered_entities = sorted(filtered_entities, key=lambda ent: ent.spans[0].start)
-    return filtered_entities
+    return sorted(filtered_entities, key=lambda ent: ent.spans[0].start)

@@ -93,8 +93,7 @@ class HFEntityMatcherTrainable:
     def configure_optimizer(self, lr: float) -> torch.optim.Optimizer:
         # todo: group_params optimizer_parameters = [{}]
         optimizer_parameters = self._model.parameters()
-        optimizer = torch.optim.AdamW(optimizer_parameters, lr=lr)
-        return optimizer
+        return torch.optim.AdamW(optimizer_parameters, lr=lr)
 
     def preprocess(self, data_item: TextDocument) -> dict[str, Any]:
         # tokenize each and compute corresponding labels for each tokens
@@ -130,8 +129,7 @@ class HFEntityMatcherTrainable:
             truncation=True,
             return_special_tokens_mask=True,
         )
-        encoding = text_tokenized.encodings[0]
-        return encoding
+        return text_tokenized.encodings[0]
 
     def collate(self, batch: list[dict[str, Any]]) -> BatchData:
         # rely on transformer's collator to handle padding

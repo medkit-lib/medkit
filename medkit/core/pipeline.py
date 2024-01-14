@@ -206,14 +206,9 @@ class Pipeline:
         if self._prov_tracer is not None:
             self._add_provenance(all_output_data)
 
-        if len(all_output_data) == 0:
-            # no output
-            return None
-        elif len(all_output_data) == 1:
-            # unwrap out of tuple if only 1 output
-            return all_output_data[0]
-        else:
-            return all_output_data
+        if all_output_data:
+            return all_output_data[0] if len(all_output_data) == 1 else all_output_data
+        return None
 
     def _perform_step(self, step: PipelineStep, data_by_key: dict[str, Any]):
         # find data to feed to operation

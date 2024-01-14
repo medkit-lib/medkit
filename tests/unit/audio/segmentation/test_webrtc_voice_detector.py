@@ -26,8 +26,7 @@ def _get_segment(voice_signal, sample_rate, silence_duration):
     silence = generate_silence(silence_duration, sample_rate, nb_channels)
     signal = np.concatenate((silence, voice_signal, silence, voice_signal, silence), axis=1)
     audio = MemoryAudioBuffer(signal, sample_rate)
-    segment = Segment(label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + audio.duration), audio=audio)
-    return segment
+    return Segment(label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + audio.duration), audio=audio)
 
 
 def _check_voice_segment(voice_seg, original_seg, expected_start, expected_end):

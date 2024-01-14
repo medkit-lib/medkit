@@ -138,8 +138,7 @@ class SyntagmaTokenizer(SegmentationOperation):
     def get_example(cls):
         config_path = _PATH_TO_DEFAULT_RULES
         separators = cls.load_syntagma_definition(config_path, encoding="utf-8")
-        syntagma_tokenizer = cls(separators=separators)
-        return syntagma_tokenizer
+        return cls(separators=separators)
 
     @staticmethod
     def load_syntagma_definition(filepath: pathlib.Path, encoding: str | None = None) -> tuple[str, ...]:
@@ -160,9 +159,7 @@ class SyntagmaTokenizer(SegmentationOperation):
         with open(filepath, encoding=encoding) as f:
             config = yaml.safe_load(f)
 
-        syntagma_seps = tuple(str(sep) for sep in config["syntagmas"]["separators"])
-
-        return syntagma_seps
+        return tuple(str(sep) for sep in config["syntagmas"]["separators"])
 
     @staticmethod
     def save_syntagma_definition(

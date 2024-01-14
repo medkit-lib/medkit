@@ -36,8 +36,7 @@ class MockTrainableComponent:
 
     def configure_optimizer(self, lr):
         parameters = self.model.parameters()
-        optimizer = torch.optim.SGD(parameters, lr=lr)
-        return optimizer
+        return torch.optim.SGD(parameters, lr=lr)
 
     def preprocess(self, data_item):
         model_inputs = {}

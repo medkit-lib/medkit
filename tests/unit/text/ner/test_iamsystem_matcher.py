@@ -29,8 +29,7 @@ def _get_first_entity(matcher: Matcher):
     text = "calcium blood level"
     medkit_matcher = IAMSystemMatcher(matcher=matcher)
     segment = Segment(label="raw_text", text=text, spans=[Span(0, len(text))])
-    entity = medkit_matcher.run([segment])[0]
-    return entity
+    return medkit_matcher.run([segment])[0]
 
 
 def test_matcher_window():

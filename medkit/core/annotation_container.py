@@ -85,8 +85,7 @@ class AnnotationContainer(Generic[AnnotationType]):
         """Add support for subscript access"""
         if isinstance(key, slice):
             return [self.get_by_id(uid) for uid in self._ann_ids[key]]
-        else:
-            return self.get_by_id(self._ann_ids[key])
+        return self.get_by_id(self._ann_ids[key])
 
     def get(self, *, label: str | None = None, key: str | None = None) -> list[AnnotationType]:
         """Return a list of the annotations of the document, optionally filtering

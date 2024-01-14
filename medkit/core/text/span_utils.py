@@ -435,8 +435,7 @@ def _move_in_spans(spans, range, destination):  # noqa: A002
     total_length = sum(s.length for s in spans)
     spans_after = _extract_in_spans(spans, [(destination, total_length)]) if destination < total_length else []
 
-    spans = spans_before + spans_to_move + spans_after
-    return spans
+    return spans_before + spans_to_move + spans_after
 
 
 def concatenate(texts: list[str], all_spans: list[list[AnySpan]]) -> tuple[str, list[AnySpan]]:

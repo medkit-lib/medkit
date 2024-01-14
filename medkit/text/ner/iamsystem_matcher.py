@@ -117,12 +117,11 @@ class IAMSystemMatcher(NEROperation):
         self.attrs_to_copy = attrs_to_copy
 
     def run(self, segments: list[Segment]) -> list[Entity]:
-        entities = [
+        return [
             self._create_entity_from_iamsystem_ann(ann, segment)
             for segment in segments
             for ann in self.matcher.annot_text(segment.text)
         ]
-        return entities
 
     def _create_entity_from_iamsystem_ann(self, ann: IS_Annotation, segment: Segment):
         ranges = []

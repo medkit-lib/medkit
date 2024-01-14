@@ -306,16 +306,13 @@ class RegexpMatcher(NEROperation):
                 if "id" in data:  # keep id for retro-compatibility
                     kb_id = data.pop("id")
                     return RegexpMatcherNormalization(kb_id=kb_id, **data)
-                else:
-                    return RegexpMatcherNormalization(**data)
-            else:
-                return RegexpMatcherRule(**data)
+                return RegexpMatcherNormalization(**data)
+            return RegexpMatcherRule(**data)
 
         Loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, construct_mapping)
 
         with open(path_to_rules, encoding=encoding) as f:
-            rules = yaml.safe_load(f, Loader=Loader)
-        return rules
+            return yaml.safe_load(f, Loader=Loader)
 
     @staticmethod
     def check_rules_sanity(rules: list[RegexpMatcherRule]):

@@ -185,8 +185,7 @@ class NegationDetector(ContextOperation):
             text = text_unicode if rule.unicode_sensitive else text_ascii
             if pattern.search(text) and not (exclusion_pattern and exclusion_pattern.search(text)):
                 # return the rule uid or the rule index if no uid has been set
-                rule_id = rule.id if rule.id is not None else rule_index
-                return rule_id
+                return rule.id if rule.id is not None else rule_index
 
         return None
 
@@ -210,8 +209,7 @@ class NegationDetector(ContextOperation):
         """
         with open(path_to_rules, encoding=encoding) as f:
             rules_data = yaml.safe_load(f)
-        rules = [NegationDetectorRule(**d) for d in rules_data]
-        return rules
+        return [NegationDetectorRule(**d) for d in rules_data]
 
     @staticmethod
     def check_rules_sanity(rules: list[NegationDetectorRule]):

@@ -43,8 +43,7 @@ class AttributeContainer:
         """Add support for subscript access"""
         if isinstance(key, slice):
             return [self.get_by_id(uid) for uid in self._attr_ids[key]]
-        else:
-            return self.get_by_id(self._attr_ids[key])
+        return self.get_by_id(self._attr_ids[key])
 
     def get(self, *, label: str | None = None) -> list[Attribute]:
         """Return a list of the attributes of the annotation, optionally filtering
@@ -60,10 +59,9 @@ class AttributeContainer:
         list of Attribute
             The list of all attributes of the annotation, filtered by label if specified.
         """
-        if label is None:
-            return list(iter(self))
-        else:
+        if label:
             return [self.get_by_id(uid) for uid in self._attr_ids_by_label.get(label, [])]
+        return list(iter(self))
 
     def add(self, attr: Attribute):
         """Attach an attribute to the annotation.

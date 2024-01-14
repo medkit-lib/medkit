@@ -217,13 +217,12 @@ class SyntacticRelationExtractor(DocOperation):
             )
             return None
 
-        relation = Relation(
+        return Relation(
             source_id=source_id,
             target_id=target_id,
             label=self.relation_label,
             metadata=metadata,
         )
-        return relation
 
     def _add_relations_to_document(self, medkit_doc: TextDocument, relations: list[Relation]):
         for relation in relations:

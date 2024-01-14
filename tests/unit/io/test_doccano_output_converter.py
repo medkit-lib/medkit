@@ -55,8 +55,7 @@ def _get_doc_by_task(task: DoccanoTask):
 
 def _load_json_file(filepath):
     with open(filepath) as fp:
-        data = json.load(fp)
-    return data
+        return json.load(fp)
 
 
 @pytest.mark.parametrize(

@@ -32,5 +32,4 @@ def get_text_document(name):
 def get_text(name):
     path = _PATH_TO_TEXT_DOCS / (name + ".txt")
     with open(path) as f:
-        text = f.read()
-    return text
+        return f.read()

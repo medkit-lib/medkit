@@ -184,8 +184,7 @@ class SRTInputConverter(InputConverter):
         srt_items = pysrt.open(str(srt_file))
         full_audio = FileAudioBuffer(path=audio_file)
 
-        segments = [self._build_segment(srt_item, full_audio) for srt_item in srt_items]
-        return segments
+        return [self._build_segment(srt_item, full_audio) for srt_item in srt_items]
 
     def _build_segment(self, srt_item: pysrt.SubRipItem, full_audio: FileAudioBuffer) -> Segment:
         # milliseconds to seconds

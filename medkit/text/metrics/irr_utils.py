@@ -149,5 +149,4 @@ def krippendorff_alpha(all_annotators_data: list[list[None | str | int]]) -> flo
     de = _compute_expected_disagreement(values_count)
     total_paried_values = np.sum(values_count[:, values_count.sum(0) > 1])
 
-    alpha = 1 - (total_paried_values - 1) * (do / de)
-    return alpha
+    return 1 - (total_paried_values - 1) * (do / de)

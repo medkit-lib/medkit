@@ -320,8 +320,7 @@ def parse_file(ann_path: str | Path, detect_groups: bool = False) -> BratDocumen
     """
     with open(ann_path, encoding="utf-8") as ann_file:
         ann_content = ann_file.read()
-    document = parse_string(ann_content, detect_groups)
-    return document
+    return parse_string(ann_content, detect_groups)
 
 
 def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:

@@ -46,7 +46,7 @@ def _get_trainer(output_dir, nb_epochs, minimize_metric, use_lr_scheduler, check
     def lr_scheduler_builder(optimizer):
         return torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.1)
 
-    trainer = Trainer(
+    return Trainer(
         mock_component,
         config=config,
         train_data=DUMMY_DATASETS["train"],
@@ -54,7 +54,6 @@ def _get_trainer(output_dir, nb_epochs, minimize_metric, use_lr_scheduler, check
         lr_scheduler_builder=lr_scheduler_builder if use_lr_scheduler else None,
         metrics_computer=DummyMetricsComputer(minimize=minimize_metric),
     )
-    return trainer
 
 
 def _check_checkpoint(path, use_lr_scheduler):

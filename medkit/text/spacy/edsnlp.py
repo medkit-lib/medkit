@@ -70,7 +70,7 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
             minute=value.minute,
             second=value.second,
         )
-    elif isinstance(value, EDSNLP_RelativeDate):
+    elif isinstance(value, EDSNLP_RelativeDate):  # noqa: RET505
         direction = (
             RelativeDateDirection.PAST if value.direction is EDSNLP_Direction.PAST else RelativeDateDirection.FUTURE
         )

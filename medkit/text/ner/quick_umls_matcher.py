@@ -254,6 +254,7 @@ class QuickUMLSMatcher(NEROperation):
             label_mapping = umls_utils.SEMGROUP_LABELS.copy()
             label_mapping.update(output_label)
             return label_mapping
+        return None
 
     def run(self, segments: list[Segment]) -> list[Entity]:
         """Return entities (with UMLS normalization attributes) for each match in `segments`

@@ -190,8 +190,7 @@ class RTTMInputConverter(InputConverter):
 
         rows = self._load_rows(rttm_file)
         full_audio = FileAudioBuffer(path=audio_file)
-        turn_segments = [self._build_turn_segment(row, full_audio) for row in rows]
-        return turn_segments
+        return [self._build_turn_segment(row, full_audio) for row in rows]
 
     @staticmethod
     def _load_rows(rttm_file: Path):
@@ -340,7 +339,7 @@ class RTTMOutputConverter(OutputConverter):
         speaker_attr = speaker_attrs[0]
         span = turn_segment.span
 
-        row = {
+        return {
             "type": "SPEAKER",
             "file_id": rttm_doc_id if rttm_doc_id is not None else "<NA>",
             "channel": "1",
@@ -352,4 +351,3 @@ class RTTMOutputConverter(OutputConverter):
             "na_3": "<NA>",
             "na_4": "<NA>",
         }
-        return row

@@ -177,11 +177,10 @@ class SectionTokenizer(SegmentationOperation):
     def get_example(cls):
         config_path = _PATH_TO_DEFAULT_RULES
         section_dict, section_rules = cls.load_section_definition(config_path, encoding="utf-8")
-        section_tokenizer = cls(
+        return cls(
             section_dict=section_dict,
             section_rules=section_rules,
         )
-        return section_tokenizer
 
     @staticmethod
     def load_section_definition(

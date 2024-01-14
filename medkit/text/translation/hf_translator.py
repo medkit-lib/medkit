@@ -309,14 +309,13 @@ class _Aligner:
         (useful for converting token back to words and CharSpans,
         but requires a TokenizerFast)
         """
-        encodings = self._tokenizer(
+        return self._tokenizer(
             text,
             return_tensors="pt",
             truncation=True,
             padding=True,
             max_length=self._tokenizer.model_max_length,
         )
-        return encodings
 
     def _token_alignment_to_word_alignment(
         self, token_alignment, source_encoding, target_encoding, batch_index

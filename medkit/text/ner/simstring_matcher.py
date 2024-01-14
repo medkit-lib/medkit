@@ -193,14 +193,12 @@ class SimstringMatcher(BaseSimstringMatcher):
             data = loader.construct_mapping(node)
             if "kb_name" in data:
                 return SimstringMatcherNormalization(**data)
-            else:
-                return SimstringMatcherRule(**data)
+            return SimstringMatcherRule(**data)
 
         _Loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _construct_mapping)
 
         with open(path_to_rules, encoding=encoding) as f:
-            rules = yaml.safe_load(f, Loader=_Loader)
-        return rules
+            return yaml.safe_load(f, Loader=_Loader)
 
     @staticmethod
     def save_rules(

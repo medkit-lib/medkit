@@ -260,8 +260,7 @@ def preprocess_term_to_match(
         term = _BRACKET_PATTERN.sub("", term)
     if clean_dashes:
         term = term.replace("-", " ")
-    term = " ".join([w for w in term.split() if w])
-    return term
+    return " ".join([w for w in term.split() if w])
 
 
 _ACRONYM_PATTERN = re.compile(r"^ *(?P<acronym>[^ \(\)]+) *\( *(?P<expanded>[^\(\)]+) *\) *$")

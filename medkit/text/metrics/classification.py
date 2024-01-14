@@ -147,12 +147,10 @@ class TextClassificationEvaluator:
         ann1_tags = self._extract_attr_values(docs_annotator_1)
         ann2_tags = self._extract_attr_values(docs_annotator_2)
 
-        scores = {
+        return {
             "cohen_kappa": cohen_kappa_score(y1=ann1_tags, y2=ann2_tags),
             "support": len(ann1_tags),
         }
-
-        return scores
 
     def compute_krippendorff_alpha(self, docs_annotators: list[list[TextDocument]]) -> dict[str, float | int]:
         """Compute the Krippendorff alpha score, an inter-rated agreement score between
@@ -186,10 +184,8 @@ class TextClassificationEvaluator:
         for docs in docs_annotators:
             annotator_tags = self._extract_attr_values(docs)
             all_annotators_data.append(annotator_tags)
-        scores = {
+        return {
             "krippendorff_alpha": krippendorff_alpha(all_annotators_data),
             "nb_annotators": len(all_annotators_data),
             "support": len(all_annotators_data[0]),
         }
-
-        return scores

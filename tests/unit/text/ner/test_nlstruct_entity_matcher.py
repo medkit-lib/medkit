@@ -23,7 +23,7 @@ class _MockedNLStructModel:
     def predict(self, doc):
         doc_id = (doc["doc_id"],)
         text = doc["text"]
-        mock_result = {
+        return {
             "doc_id": doc_id,
             "text": text,
             "entities": [
@@ -43,7 +43,6 @@ class _MockedNLStructModel:
                 }
             ],
         }
-        return mock_result
 
 
 @pytest.fixture(scope="module", autouse=True)

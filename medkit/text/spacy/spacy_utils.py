@@ -207,14 +207,13 @@ def build_spacy_doc_from_medkit_doc(
     annotations = get_anns_by_type(medkit_doc, anns_labels=labels_anns)
 
     # create a spacy doc
-    doc = build_spacy_doc_from_medkit_segment(
+    return build_spacy_doc_from_medkit_segment(
         nlp=nlp,
         segment=raw_segment,
         annotations=annotations["segments"] + annotations["entities"],
         attrs=attrs,
         include_medkit_info=include_medkit_info,
     )
-    return doc
 
 
 def build_spacy_doc_from_medkit_segment(
@@ -368,8 +367,7 @@ def _get_defined_spacy_attrs(include_medkit_attrs: bool = False) -> list[str]:
         return attrs
     # does not include medkit-defined attributes
     # remove attrs that have a medkit ID
-    attrs = [attr for attr in attrs if f"{attr}_{_ATTR_MEDKIT_ID}" not in available_attrs]
-    return attrs
+    return [attr for attr in attrs if f"{attr}_{_ATTR_MEDKIT_ID}" not in available_attrs]
 
 
 def _define_spacy_span_extension(custom_attr: str):
@@ -462,9 +460,7 @@ def _get_text_and_spans_from_span_spacy(
 
 
 def _get_ents_by_label(spacy_doc: Doc, entities: list[str] | None = None) -> list[SpacySpan]:
-    ents = [ent for ent in spacy_doc.ents if ent.label_ in entities] if entities else list(spacy_doc.ents)
-
-    return ents
+    return [ent for ent in spacy_doc.ents if ent.label_ in entities] if entities else list(spacy_doc.ents)
 
 
 def _get_spans_by_label(spacy_doc: Doc, span_groups: list[str] | None = None) -> dict[str, list[SpacySpan]]:

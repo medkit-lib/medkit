@@ -133,25 +133,23 @@ class SeqEvalEvaluator:
 
             true_tags_all.append(self._tag_text_with_entities(text=text, entities=true_entities))
             pred_tags_all.append(self._tag_text_with_entities(text=text, entities=pred_entities))
-        scores = _compute_seqeval_from_dict(
+        return _compute_seqeval_from_dict(
             y_true_all=true_tags_all,
             y_pred_all=pred_tags_all,
             tagging_scheme=self.tagging_scheme,
             return_metrics_by_label=self.return_metrics_by_label,
             average=self.average,
         )
-        return scores
 
     def _tag_text_with_entities(self, text: str, entities: list[Entity]):
         if self.tokenizer is not None:
             # tags tokenized text, creates one tag per token
             text_encoding = self.tokenizer(text).encodings[0]
-            tags = hf_tokenization_utils.transform_entities_to_tags(
+            return hf_tokenization_utils.transform_entities_to_tags(
                 text_encoding=text_encoding,
                 entities=entities,
                 tagging_scheme=self.tagging_scheme,
             )
-            return tags
 
         # tags untokenized text, create one tag per character
         tags = ["O"] * len(text)
@@ -266,11 +264,10 @@ class SeqEvalMetricsComputer:
         # extract and format data from all_data
         y_true_all = all_data.get("y_true", [])
         y_pred_all = all_data.get("y_pred", [])
-        scores = _compute_seqeval_from_dict(
+        return _compute_seqeval_from_dict(
             y_pred_all=y_pred_all,
             y_true_all=y_true_all,
             tagging_scheme=self.tagging_scheme,
             return_metrics_by_label=self.return_metrics_by_label,
             average=self.average,
         )
-        return scores

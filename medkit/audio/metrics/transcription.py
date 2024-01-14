@@ -208,8 +208,7 @@ class TranscriptionEvaluator:
             text = get_ascii_from_unicode(text, logger=logger)
 
         # split into words
-        words = [w for w in text.split(" ") if w]
-        return words
+        return [w for w in text.split(" ") if w]
 
 
 @functools.lru_cache

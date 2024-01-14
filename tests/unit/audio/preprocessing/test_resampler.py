@@ -36,8 +36,7 @@ def _check_resampled_segment(resampled_seg, original_seg):
 def _get_freqs(signal, sample_rate):
     fft = np.fft.fft(signal, axis=1)
     fft_freqs = np.fft.fftfreq(signal.shape[1], d=1 / sample_rate)
-    freqs = [abs(fft_freqs[i]) for i in np.argmax(fft, axis=1)]
-    return freqs
+    return [abs(fft_freqs[i]) for i in np.argmax(fft, axis=1)]
 
 
 def test_basic():

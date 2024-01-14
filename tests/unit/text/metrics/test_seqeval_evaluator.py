@@ -13,14 +13,13 @@ from tests.data_utils import get_path_hf_dummy_vocab
 
 @pytest.fixture
 def document():
-    document = TextDocument(
+    return TextDocument(
         text="medkit is a python library",
         anns=[
             Entity(label="corporation", spans=[Span(start=0, end=6)], text="medkit"),
             Entity(label="language", spans=[Span(start=12, end=18)], text="python"),
         ],
     )
-    return document
 
 
 _PREDICTED_ENTS_BY_CASE = {
