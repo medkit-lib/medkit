@@ -1,11 +1,12 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[quick-umls-matcher]`.
 """
+from __future__ import annotations
 
 __all__ = ["QuickUMLSMatcher"]
 
 from pathlib import Path
-from typing import ClassVar, Dict, Iterator, List, NamedTuple, Optional, Union
+from typing import ClassVar, Iterator, NamedTuple
 
 import quickumls.about
 import quickumls.constants
@@ -83,12 +84,12 @@ class QuickUMLSMatcher(NEROperation):
     on a different environment if a similar install is available.
     """
 
-    _install_paths: ClassVar[Dict[_QuickUMLSInstall, str]] = {}
+    _install_paths: ClassVar[dict[_QuickUMLSInstall, str]] = {}
 
     @classmethod
     def add_install(
         cls,
-        path: Union[str, Path],
+        path: str | Path,
         version: str,
         language: str,
         lowercase: bool = False,
@@ -99,16 +100,16 @@ class QuickUMLSMatcher(NEROperation):
 
         Parameters
         ----------
-        path:
+        path : str or Path
             The path to the destination folder passed to the install command
-        version:
+        version : str
             The version of the UMLS database, for instance "2021AB"
-        language:
+        language : str
             The language flag passed to the install command, for instance "ENG"
-        lowercase:
+        lowercase : bool, default=False
             Whether the --lowercase flag was passed to the install command
             (concepts are lowercased to increase recall)
-        normalize_unicode:
+        normalize_unicode : bool, default=False
             Whether the --normalize-unicode flag was passed to the install command
             (non-ASCII chars in concepts are converted to the closest ASCII chars)
         """
@@ -154,51 +155,51 @@ class QuickUMLSMatcher(NEROperation):
         threshold: float = 0.9,
         window: int = 5,
         similarity: Literal["dice", "jaccard", "cosine", "overlap"] = "jaccard",
-        accepted_semtypes: List[str] = quickumls.constants.ACCEPTED_SEMTYPES,
-        attrs_to_copy: Optional[List[str]] = None,
-        output_label: Optional[Union[str, Dict[str, str]]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        accepted_semtypes: list[str] = quickumls.constants.ACCEPTED_SEMTYPES,
+        attrs_to_copy: list[str] | None = None,
+        output_label: str | dict[str, str] | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
         """Instantiate the QuickUMLS matcher
 
         Parameters
         ----------
-        version:
+        version : str
             UMLS version of the QuickUMLS install to use, for instance "2021AB"
             Will be used to decide with QuickUMLS to use
-        language:
+        language : str
             Language flag of the QuickUMLS install to use, for instance "ENG".
             Will be used to decide with QuickUMLS to use
-        lowercase:
+        lowercase : bool, default=False
             Whether to use a QuickUMLS install with lowercased concepts
             Will be used to decide with QuickUMLS to use
-        normalize_unicode:
+        normalize_unicode : bool, default=False
             Whether to use a QuickUMLS install with non-ASCII chars concepts
             converted to the closest ASCII chars.
             Will be used to decide with QuickUMLS to use
-        overlapping:
+        overlapping : {"length", "score"}, default="length"
             Criteria for sorting multiple potential matches (cf QuickUMLS doc)
-        threshold:
+        threshold : float, default=0.9
             Minimum similarity (cf QuickUMLS doc)
-        window:
+        window : int, default=5
             Max number of tokens per match (cf QuickUMLS doc)
-        similarity:
+        similarity : {"dice", "jaccard", "cosine", "overlap"}, default="jaccard"
             Similarity measure to use (cf QuickUMLS doc)
-        accepted_semtypes:
+        accepted_semtypes : list of str, optional
             UMLS semantic types that matched concepts should belong to (cf QuickUMLS doc).
-        attrs_to_copy:
+        attrs_to_copy : list of str, optional
             Labels of the attributes that should be copied from the source segment
             to the created entity. Useful for propagating context attributes
             (negation, antecendent, etc)
-        output_label:
+        output_label : str or dict of str to str, optional
             By default, ~`medkit.text.ner.umls.SEMGROUP_LABELS` will be used as
             entity labels. Use this parameter to override them. Example:
             `{"DISO": "problem", "PROC": "test}`. If `output_labels_by_semgroup`
             is a string, all entities will use this string as label instead.
-        name:
+        name : str, optional
             Name describing the matcher (defaults to the class name)
-        uid:
+        uid : str, optional
             Identifier of the matcher
         """
         _fix_spacy_language_map()
@@ -241,7 +242,7 @@ class QuickUMLSMatcher(NEROperation):
         self.label_mapping = self._get_label_mapping(output_label)
 
     @staticmethod
-    def _get_label_mapping(output_label: Union[None, str, Dict[str, str]]) -> Dict[str, str]:
+    def _get_label_mapping(output_label: None | str | dict[str, str]) -> dict[str, str]:
         """Return label mapping according to `output_label`"""
         if output_label is None:
             return umls_utils.SEMGROUP_LABELS
@@ -249,22 +250,22 @@ class QuickUMLSMatcher(NEROperation):
         if isinstance(output_label, str):
             return {key: output_label for key in umls_utils.SEMGROUP_LABELS}
 
-        if isinstance(output_label, Dict):
+        if isinstance(output_label, dict):
             label_mapping = umls_utils.SEMGROUP_LABELS.copy()
             label_mapping.update(output_label)
             return label_mapping
 
-    def run(self, segments: List[Segment]) -> List[Entity]:
+    def run(self, segments: list[Segment]) -> list[Entity]:
         """Return entities (with UMLS normalization attributes) for each match in `segments`
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             List of segments into which to look for matches
 
         Returns
         -------
-        entities: List[Entity]
+        list of Entity
             Entities found in `segments`, with :class:`~UMLSNormAttribute` attributes.
         """
         return [entity for segment in segments for entity in self._find_matches_in_segment(segment)]

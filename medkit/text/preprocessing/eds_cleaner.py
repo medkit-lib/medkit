@@ -1,6 +1,6 @@
-__all__ = ["EDSCleaner"]
+from __future__ import annotations
 
-from typing import List
+__all__ = ["EDSCleaner"]
 
 from medkit.core import Operation
 from medkit.core.text import Segment, utils
@@ -73,7 +73,7 @@ class EDSCleaner(Operation):
         self.handle_parentheses_eds = handle_parentheses_eds
         self.handle_points_eds = handle_points_eds
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
+    def run(self, segments: list[Segment]) -> list[Segment]:
         """Run the module on a list of segments provided as input
         and returns a new list of segments.
 

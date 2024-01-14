@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 __all__ = ["TextAnnotationContainer"]
 
-import typing
-from typing import Dict, List, Optional
+from typing import List, cast
 
 from medkit.core.annotation_container import AnnotationContainer
 from medkit.core.text.annotation import Entity, Relation, Segment, TextAnnotation
@@ -25,23 +26,23 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         # and get_by_id()
         self.raw_segment = raw_segment
 
-        self._segment_ids: List[str] = []
-        self._entity_ids: List[str] = []
-        self._relation_ids: List[str] = []
-        self._relation_ids_by_source_id: Dict[str, List[str]] = {}
+        self._segment_ids: list[str] = []
+        self._entity_ids: list[str] = []
+        self._relation_ids: list[str] = []
+        self._relation_ids_by_source_id: dict[str, list[str]] = {}
 
     @property
-    def segments(self) -> List[Segment]:
+    def segments(self) -> list[Segment]:
         """Return the list of segments"""
         return self.get_segments()
 
     @property
-    def entities(self) -> List[Entity]:
+    def entities(self) -> list[Entity]:
         """Return the list of entities"""
         return self.get_entities()
 
     @property
-    def relations(self) -> List[Relation]:
+    def relations(self) -> list[Relation]:
         """Return the list of relations"""
         return self.get_relations()
 
@@ -63,7 +64,7 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
                 self._relation_ids_by_source_id[ann.source_id] = []
             self._relation_ids_by_source_id[ann.source_id].append(ann.uid)
 
-    def get(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[TextAnnotation]:
+    def get(self, *, label: str | None = None, key: str | None = None) -> list[TextAnnotation]:
         # inject raw segment
         if label == self.raw_segment.label and key is None:
             return [self.raw_segment]
@@ -75,15 +76,15 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
             return self.raw_segment
         return super().get_by_id(uid)
 
-    def get_segments(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[Segment]:
+    def get_segments(self, *, label: str | None = None, key: str | None = None) -> list[Segment]:
         """Return a list of the segments of the document (not including entities),
         optionally filtering by label or key.
 
         Parameters
         ----------
-        label:
+        label : str, optional
             Label to use to filter segments.
-        key:
+        key : str, optional
             Key to use to filter segments.
         """
         # get ids filtered by label/key
@@ -92,17 +93,17 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         uids = (uid for uid in uids if uid in self._segment_ids)
 
         segments = [self.get_by_id(uid) for uid in uids]
-        return typing.cast(List[Segment], segments)
+        return cast(List[Segment], segments)
 
-    def get_entities(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[Entity]:
+    def get_entities(self, *, label: str | None = None, key: str | None = None) -> list[Entity]:
         """Return a list of the entities of the document, optionally filtering
         by label or key.
 
         Parameters
         ----------
-        label:
+        label : str, optional
             Label to use to filter entities.
-        key:
+        key : str, optional
             Key to use to filter entities.
         """
         # get ids filtered by label/key
@@ -111,25 +112,25 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         uids = (uid for uid in uids if uid in self._entity_ids)
 
         entities = [self.get_by_id(uid) for uid in uids]
-        return typing.cast(List[Entity], entities)
+        return cast(List[Entity], entities)
 
     def get_relations(
         self,
         *,
-        label: Optional[str] = None,
-        key: Optional[str] = None,
-        source_id: Optional[str] = None,
-    ) -> List[Relation]:
+        label: str | None = None,
+        key: str | None = None,
+        source_id: str | None = None,
+    ) -> list[Relation]:
         """Return a list of the relations of the document, optionally filtering
         by label, key or source entity.
 
         Parameters
         ----------
-        label:
+        label : str, optional
             Label to use to filter relations.
-        key:
+        key : str, optional
             Key to use to filter relations.
-        source_id:
+        source_id : str, optional
             Identifier of the source entity to use to filter relations.
         """
         # get ids filtered by label/key
@@ -143,4 +144,4 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
             uids = (uid for uid in uids if uid in relation_ids)
 
         entities = [self.get_by_id(uid) for uid in uids]
-        return typing.cast(List[Relation], entities)
+        return cast(List[Relation], entities)

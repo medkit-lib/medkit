@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __all__ = [
     "MEDKIT_JSON_VERSION",
     "ContentType",
@@ -6,7 +8,7 @@ __all__ = [
 ]
 
 import enum
-from typing import Any, Dict
+from typing import Any
 
 MEDKIT_JSON_VERSION = "0.2"
 
@@ -20,7 +22,7 @@ class ContentType(enum.Enum):
     AUDIO_ANNOTATION_LIST = "audio_annotation_list"
 
 
-def build_header(content_type: ContentType) -> Dict[str, Any]:
+def build_header(content_type: ContentType) -> dict[str, Any]:
     return {
         "version": MEDKIT_JSON_VERSION,
         "content_type": content_type.value,

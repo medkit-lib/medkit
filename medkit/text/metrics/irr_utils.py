@@ -1,7 +1,7 @@
 """Metrics to assess inter-annotator agreement"""
+from __future__ import annotations
 
 __all__ = ["krippendorff_alpha"]
-from typing import List, Union
 
 import numpy as np
 
@@ -11,16 +11,16 @@ def _get_values_by_unit_matrix(reliability_data: np.ndarray, labels_set: np.ndar
 
     Parameters
     ----------
-    reliability_data : ndarray, with shape (m_annotators, n_samples)
+    reliability_data : ndarray
         numpy array with labels given to `n_samples` by `m_annotators`
         The missing labels are represented with `None`.
 
-    labels_set : ndarray, with shape (n_labels,)
+    labels_set : ndarray
         Possible labels the item can take.
 
     Returns
     -------
-    values_by_unit : ndarray, with shape (n_labels, n_samples)
+    ndarray
         Number of annotators that assigned a certain label by annotation.
         Where `n_labels` is the number of possible labels and `n_samples`
         is the number of annotations.
@@ -34,12 +34,12 @@ def _compute_observed_disagreement(values_by_unit_matrix: np.ndarray) -> float:
 
     Parameters
     ----------
-    values_by_unit_matrix : ndarray, with shape (n_labels, n_samples)
+    values_by_unit_matrix : ndarray
         Count of annotators that assigned a certain label by annotation.
 
     Returns
     -------
-    do : float
+    float
         observed disagreement among labels assigned to annotations
     """
     # select only units with disagreement
@@ -64,12 +64,12 @@ def _compute_expected_disagreement(values_by_unit_matrix: np.ndarray) -> float:
 
     Parameters
     ----------
-    values_by_unit_matrix : ndarray, with shape (n_labels, n_samples)
+    values_by_unit_matrix : ndarray
         Count of annotators that assigned a certain label by annotation.
 
     Returns
     -------
-    de : float
+    float
         expected disagreement annotators will have by chance
     """
     # all units with at least 1 value
@@ -83,7 +83,7 @@ def _compute_expected_disagreement(values_by_unit_matrix: np.ndarray) -> float:
     return de
 
 
-def krippendorff_alpha(all_annotators_data: List[List[Union[None, str, int]]]) -> float:
+def krippendorff_alpha(all_annotators_data: list[list[None | str | int]]) -> float:
     """Compute Krippendorff's alpha: a coefficient of agreement among many
     annotators.
 
@@ -103,13 +103,13 @@ def krippendorff_alpha(all_annotators_data: List[List[Union[None, str, int]]]) -
 
     Parameters
     ----------
-    all_annotators_data : array_like, (m_annotators,n_samples)
+    all_annotators_data : list of list of str or int or None
         Reliability_data, list or array of labels given to `n_samples` by `m_annotators`.
         Missing labels are represented with `None`
 
     Returns
     -------
-    alpha : float
+    float
         The alpha coefficient, a number between 0 and 1.
         A value of 0 indicates the absence of reliability, and
         a value of 1 indicates perfect reliability.

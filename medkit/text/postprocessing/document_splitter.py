@@ -1,6 +1,6 @@
+from __future__ import annotations
+
 __all__ = ["DocumentSplitter"]
-# functions to create minidocs from segments
-from typing import List, Optional
 
 from medkit.core import Attribute, Operation
 from medkit.core.text import (
@@ -28,30 +28,30 @@ class DocumentSplitter(Operation):
     def __init__(
         self,
         segment_label: str,
-        entity_labels: Optional[List[str]] = None,
-        attr_labels: Optional[List[str]] = None,
-        relation_labels: Optional[List[str]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        entity_labels: list[str] | None = None,
+        attr_labels: list[str] | None = None,
+        relation_labels: list[str] | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
         """Instantiate the document splitter
 
         Parameters
         ----------
-        segment_label:
+        segment_label : str
             Label of the segments to use as references for the splitter
-        entity_labels:
+        entity_labels : list of str, optional
             Labels of entities to be included in the mini documents.
             If None, all entities from the document will be included.
-        attr_labels:
+        attr_labels : list of str, optional
             Labels of the attributes to be included into the new annotations.
             If None, all attributes will be included.
-        relation_labels:
+        relation_labels : list of str, optional
             Labels of relations to be included in the mini documents.
             If None, all relations will be included.
-        name:
+        name : str, optional
             Name describing the splitter (default to the class name).
-        uid: str, Optional
+        uid : str, Optional
             Identifier of the operation
         """
         # Pass all arguments to super (remove self)
@@ -64,16 +64,17 @@ class DocumentSplitter(Operation):
         self.attr_labels = attr_labels
         self.relation_labels = relation_labels
 
-    def run(self, docs: List[TextDocument]) -> List[TextDocument]:
+    def run(self, docs: list[TextDocument]) -> list[TextDocument]:
         """Split docs into mini documents
 
         Parameters
         ----------
-        documents:
+        docs: list of TextDocument
             List of text documents to split
 
         Returns
         -------
+        list of TextDocument
             List of documents created from the selected segments
         """
         segment_docs = []
@@ -121,8 +122,8 @@ class DocumentSplitter(Operation):
     def _create_segment_doc(
         self,
         segment: Segment,
-        entities: List[Entity],
-        relations: List[Relation],
+        entities: list[Entity],
+        relations: list[Relation],
         doc_source: TextDocument,
     ) -> TextDocument:
         """Create a TextDocument from a segment and its entities.
@@ -130,13 +131,13 @@ class DocumentSplitter(Operation):
 
         Parameters
         ----------
-        segment:
+        segment : Segment
             Segment to use as reference for the new document
-        entities:
+        entities : list of Entity
             Entities inside the segment
-        relations:
+        relations : list of Relation
             Relations inside the segment
-        doc_source:
+        doc_source : TextDocument
             Initial document from which annotations where extracted
 
         Returns
@@ -240,7 +241,7 @@ class DocumentSplitter(Operation):
 
         return segment_doc
 
-    def _filter_attrs_from_ann(self, ann: TextAnnotation) -> List[Attribute]:
+    def _filter_attrs_from_ann(self, ann: TextAnnotation) -> list[Attribute]:
         """Filter attributes from an annotation using 'attr_labels'"""
         attrs = (
             ann.attrs.get()

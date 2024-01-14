@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 __all__ = ["PreprocessingOperation", "SegmentationOperation"]
 
 import abc
-from typing import List
 
 from medkit.core.audio.annotation import Segment
 from medkit.core.operation import Operation
@@ -15,7 +16,7 @@ class PreprocessingOperation(Operation):
     """
 
     @abc.abstractmethod
-    def run(self, segments: List[Segment]) -> List[Segment]:
+    def run(self, segments: list[Segment]) -> list[Segment]:
         raise NotImplementedError
 
 
@@ -28,5 +29,5 @@ class SegmentationOperation(Operation):
     """
 
     @abc.abstractmethod
-    def run(self, segments: List[Segment]) -> List[Segment]:
+    def run(self, segments: list[Segment]) -> list[Segment]:
         raise NotImplementedError

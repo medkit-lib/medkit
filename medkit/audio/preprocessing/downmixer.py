@@ -1,6 +1,6 @@
-__all__ = ["Downmixer"]
+from __future__ import annotations
 
-from typing import List, Optional
+__all__ = ["Downmixer"]
 
 import numpy as np
 
@@ -14,15 +14,15 @@ class Downmixer(PreprocessingOperation):
         self,
         output_label: str,
         prevent_clipping: bool = True,
-        uid: Optional[str] = None,
+        uid: str | None = None,
     ):
         """Parameters
         ----------
-        output_label:
+        output_label : str
             Label of output downmixed segments.
-        prevent_clipping:
+        prevent_clipping : bool, default=True
             If `True`, normalize downmixed signals by number of channels to prevent clipping.
-        uid:
+        uid : str, optional
             Identifier of the downmixer.
         """
         # Pass all arguments to super (remove self)
@@ -33,17 +33,17 @@ class Downmixer(PreprocessingOperation):
         self.output_label = output_label
         self.prevent_clipping = prevent_clipping
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
+    def run(self, segments: list[Segment]) -> list[Segment]:
         """Return a downmixed segment for each segment in `segments`.
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             Audio segments to downmix.
 
         Returns
         -------
-        List[~medkit.core.audio.Segment]:
+        list of Segment
             Downmixed segments, one per segment in `segments`.
         """
         return [self._downmix_segment(s) for s in segments]

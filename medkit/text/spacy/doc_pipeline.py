@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 __all__ = ["SpacyDocPipeline"]
 
-from typing import Callable, Dict, List, Optional
+from typing import Callable
 
 from spacy import Language
 from spacy.tokens import Span as SpacySpan
@@ -16,48 +18,48 @@ class SpacyDocPipeline(DocOperation):
     def __init__(
         self,
         nlp: Language,
-        medkit_labels_anns: Optional[List[str]] = None,
-        medkit_attrs: Optional[List[str]] = None,
-        spacy_entities: Optional[List[str]] = None,
-        spacy_span_groups: Optional[List[str]] = None,
-        spacy_attrs: Optional[List[str]] = None,
-        medkit_attribute_factories: Optional[Dict[str, Callable[[SpacySpan, str], Attribute]]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        medkit_labels_anns: list[str] | None = None,
+        medkit_attrs: list[str] | None = None,
+        spacy_entities: list[str] | None = None,
+        spacy_span_groups: list[str] | None = None,
+        spacy_attrs: list[str] | None = None,
+        medkit_attribute_factories: dict[str, Callable[[SpacySpan, str], Attribute]] | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
         """Initialize the pipeline
 
         Parameters
         ----------
-        nlp:
+        nlp : Language
             Language object with the loaded pipeline from Spacy
-        medkit_labels_anns:
+        medkit_labels_anns : list of str, optional
             Labels of medkit annotations to include in the spacy document.
             If `None` (default) all the annotations will be included.
-        medkit_attrs:
+        medkit_attrs : list of str, optional
             Labels of medkit attributes to add in the annotations that will be included.
             If `None` (default) all the attributes will be added as `custom attributes`
             in each annotation included.
-        spacy_entities:
+        spacy_entities : list of str, optional
             Labels of new spacy entities (`doc.ents`) to convert into medkit entities.
             If `None` (default) all the new spacy entities will be converted and added into
             its origin medkit document.
-        spacy_span_groups:
+        spacy_span_groups : list of str, optional
             Name of new spacy span groups (`doc.spans`) to convert into medkit segments.
             If `None` (default) new spacy span groups will be converted and added into
             its origin medkit document.
-        spacy_attrs:
+        spacy_attrs : list of str, optional
             Name of span extensions to convert into medkit attributes.
             If `None` (default) all non-None extensions will be added for each annotation with
             a medkit ID.
-        medkit_attribute_factories:
+        medkit_attribute_factories : dict of str to Callable, optional
             Mapping of factories in charge of converting spacy attributes to
             medkit attributes. Factories will receive a spacy span and an an
             attribute label when called. The key in the mapping is the attribute
             label.
-        name:
+        name : str, optional
             Name describing the pipeline (defaults to the class name).
-        uid:
+        uid : str, optional
             Identifier of the pipeline
 
         """
@@ -74,7 +76,7 @@ class SpacyDocPipeline(DocOperation):
         self.spacy_attrs = spacy_attrs
         self.medkit_attribute_factories = medkit_attribute_factories
 
-    def run(self, medkit_docs: List[TextDocument]) -> None:
+    def run(self, medkit_docs: list[TextDocument]) -> None:
         """Run a spacy pipeline on a list of medkit documents.
         Each medkit document is converted to spacy document (Doc object),
         with the selected annotations and attributes. Then, the spacy pipeline
@@ -83,7 +85,7 @@ class SpacyDocPipeline(DocOperation):
 
         Parameters
         ----------
-        medkit_docs:
+        medkit_docs : list of TextDocument
             List of TextDocuments on which to run the pipeline
         """
         for medkit_doc in medkit_docs:

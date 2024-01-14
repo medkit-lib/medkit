@@ -1,10 +1,11 @@
 """This package needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[metrics-ner]`.
 """
+from __future__ import annotations
 
 __all__ = ["SeqEvalEvaluator", "SeqEvalMetricsComputer"]
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from seqeval.metrics import accuracy_score, classification_report
 from seqeval.scheme import BILOU, IOB2
@@ -16,12 +17,12 @@ from medkit.training.utils import BatchData
 
 
 def _compute_seqeval_from_dict(
-    y_true_all: List[List[str]],
-    y_pred_all: List[List[str]],
+    y_true_all: list[list[str]],
+    y_pred_all: list[list[str]],
     tagging_scheme: Literal["bilou", "iob2"],
     return_metrics_by_label: bool,
     average: Literal["macro", "weighted"],
-) -> Dict[str, Union[float, int]]:
+) -> dict[str, float | int]:
     """Compute seqeval metrics using preprocessed data"""
     # internal configuration for seqeval
     # 'bilou' only works with 'strict' mode
@@ -78,24 +79,25 @@ class SeqEvalEvaluator:
         tagging_scheme: Literal["bilou", "iob2"] = "bilou",
         return_metrics_by_label: bool = True,
         average: Literal["macro", "weighted"] = "macro",
-        tokenizer: Optional[Any] = None,
-        labels_remapping: Optional[Dict[str, str]] = None,
+        tokenizer: Any | None = None,
+        labels_remapping: dict[str, str] | None = None,
     ):
-        """Parameters
+        """
+        Parameters
         ----------
-        tagging_scheme:
+        tagging_scheme : str, default="bilou"
             Scheme for tagging the tokens, it can be `bilou` or `iob2`
-        return_metrics_by_label:
+        return_metrics_by_label : bool, default=True
             If `True`, return the metrics by label in the output dictionary.
             If `False`, only global metrics are returned
-        average:
+        average : str, default="macro"
             Type of average to be performed in metrics.
             - `macro`, unweighted mean (default)
             - `weighted`, weighted average by support (number of true instances by label)
-        tokenizer:
+        tokenizer : Any, optional
             Optional Fast Tokenizer to convert text into tokens.
             If not provided, the text is tokenized by character.
-        labels_remapping:
+        labels_remapping : dict of str to str, optional
             Optional remapping of labels, useful when there is a mismatch
             between the predicted labels and the reference labels to evaluate
             against. If a label (of a reference of predicted entity) is found in
@@ -107,19 +109,19 @@ class SeqEvalEvaluator:
         self.average = average
         self.labels_remapping = labels_remapping
 
-    def compute(self, documents: List[TextDocument], predicted_entities: List[List[Entity]]) -> Dict[str, float]:
+    def compute(self, documents: list[TextDocument], predicted_entities: list[list[Entity]]) -> dict[str, float]:
         """Compute metrics of entity matching giving predictions.
 
         Parameters
         ----------
-        documents:
+        documents : list of TextDocuments
             Text documents containing entities of reference
-        predicted_entities:
+        predicted_entities : list of list of Entity
             List of predicted entities by document
 
         Returns
         -------
-        Dict[str, float]:
+        dict of str to float
             A dictionary with average and per type metrics if required. The metrics included are:
             accuracy, precision, recall and F1 score.
         """
@@ -140,7 +142,7 @@ class SeqEvalEvaluator:
         )
         return scores
 
-    def _tag_text_with_entities(self, text: str, entities: List[Entity]):
+    def _tag_text_with_entities(self, text: str, entities: list[Entity]):
         if self.tokenizer is not None:
             # tags tokenized text, creates one tag per token
             text_encoding = self.tokenizer(text).encodings[0]
@@ -190,42 +192,44 @@ class SeqEvalMetricsComputer:
 
     def __init__(
         self,
-        id_to_label: Dict[int, str],
+        id_to_label: dict[int, str],
         tagging_scheme: Literal["bilou", "iob2"] = "bilou",
         return_metrics_by_label: bool = True,
         average: Literal["macro", "weighted"] = "macro",
     ):
-        """id_to_label:
+        """
+        Parameters
+        ----------
+        id_to_label : dict of int to str
             Mapping integer value to label, it should be the same used in preprocess
-        tagging_scheme:
+        tagging_scheme : str, default="bilou"
             Scheme used for tagging the tokens, it can be `bilou` or `iob2`
-        return_metrics_by_label:
+        return_metrics_by_label : bool, default=True
             If `True`, return the metrics by label in the output dictionary.
             If `False`, only return average metrics
-        average:
+        average : str, default="macro"
             Type of average to be performed in metrics.
             - `macro`, unweighted mean (default)
             - `weighted`, weighted average by support (number of true instances by attr value)
-
         """
         self.id_to_label = id_to_label
         self.tagging_scheme = tagging_scheme
         self.return_metrics_by_label = return_metrics_by_label
         self.average = average
 
-    def prepare_batch(self, model_output: BatchData, input_batch: BatchData) -> Dict[str, List[List[str]]]:
+    def prepare_batch(self, model_output: BatchData, input_batch: BatchData) -> dict[str, list[list[str]]]:
         """Prepare a batch of tensors to compute the metric
 
         Parameters
         ----------
-        model_output:
+        model_output : BatchData
             A batch data including the `logits` predicted by the model
-        input_batch:
+        input_batch : BatchData
             A batch data including the `labels` of reference
 
         Returns
         -------
-        Dict[str, List[List[str]]]
+        dict of str to list of list of str
             A dictionary with the true and predicted tags representation of a batch data
         """
         predictions_ids = model_output["logits"].argmax(dim=-1).detach().to("cpu").numpy()
@@ -243,18 +247,18 @@ class SeqEvalMetricsComputer:
 
         return {"y_true": batch_true_tags, "y_pred": batch_pred_tags}
 
-    def compute(self, all_data: Dict[str, List[Any]]) -> Dict[str, float]:
+    def compute(self, all_data: dict[str, list[Any]]) -> dict[str, float]:
         """Compute metrics using the tag representation collected by batches
         during the training/evaluation loop.
 
         Parameters
         ----------
-        all_data:
+        all_data : dict of str to list of Any
             A dictionary with the true and predicted tags collected by batches
 
         Returns
         -------
-        Dict[str, float]:
+        dict of str to float
             A dictionary with average and per label metrics if required. The metrics
             included are : accuracy, precision, recall and F1 score.
 

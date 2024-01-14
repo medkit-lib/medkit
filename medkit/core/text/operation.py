@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __all__ = [
     "ContextOperation",
     "NEROperation",
@@ -9,7 +11,7 @@ __all__ = [
 import abc
 from collections.abc import Iterable
 from enum import IntEnum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable
 
 from medkit.core.operation import Operation
 from medkit.core.prov_tracer import ProvTracer
@@ -23,7 +25,7 @@ class ContextOperation(Operation):
     """
 
     @abc.abstractmethod
-    def run(self, segments: List[Segment]) -> None:
+    def run(self, segments: list[Segment]) -> None:
         raise NotImplementedError
 
 
@@ -33,7 +35,7 @@ class NEROperation(Operation):
     """
 
     @abc.abstractmethod
-    def run(self, segments: List[Segment]) -> List[Entity]:
+    def run(self, segments: list[Segment]) -> list[Entity]:
         raise NotImplementedError
 
 
@@ -43,7 +45,7 @@ class SegmentationOperation(Operation):
     """
 
     @abc.abstractmethod
-    def run(self, segments: List[Segment]) -> List[Segment]:
+    def run(self, segments: list[Segment]) -> list[Segment]:
         raise NotImplementedError
 
 
@@ -67,12 +69,12 @@ class _CustomTextOperation(Operation):
     It handles all provenance settings based on the function type.
     """
 
-    def __init__(self, name: str, uid: Optional[str] = None):
+    def __init__(self, name: str, uid: str | None = None):
         """Parameters
         ----------
-        name
+        name : str
             Name of the operation used for provenance info
-        uid
+        uid : str, optional
             Identifier of the operation
         """
         # Pass all arguments to super (remove self)
@@ -92,9 +94,9 @@ class _CustomTextOperation(Operation):
 
         Parameters
         ----------
-        function
+        function : Callable
             User-defined function to be used in `run` method
-        function_type
+        function_type : CustomTextOpType
             Type of function.
             Supported values are defined in :class:`~medkit.core.text.CustomTextOpType`
         **kwargs
@@ -110,7 +112,7 @@ class _CustomTextOperation(Operation):
         self.description.config["function_type"] = function_type.name
         # TODO: check signature according to type
 
-    def run(self, all_input_data: List[Any]) -> List[Any]:
+    def run(self, all_input_data: list[Any]) -> list[Any]:
         """Run the custom operation on a list of input data and outputs a list of data
 
         This method uses the user-defined function depending on its type on a
@@ -118,12 +120,12 @@ class _CustomTextOperation(Operation):
 
         Parameters
         ----------
-        all_input_data
+        all_input_data : list of Any
             List of input data
 
         Returns
         -------
-        List[Any]
+        list of Any
             Flat list of output data
         """
         assert self._function is not None
@@ -136,7 +138,7 @@ class _CustomTextOperation(Operation):
         elif self._function_type == CustomTextOpType.FILTER:
             return self._run_filter_function(all_input_data)
 
-    def _run_one_to_n_function(self, all_input_data: List[Any], function_type: CustomTextOpType) -> List[Any]:
+    def _run_one_to_n_function(self, all_input_data: list[Any], function_type: CustomTextOpType) -> list[Any]:
         all_output_data = []
         for input_data in all_input_data:
             output_data = self._function(input_data, **self._kwargs)
@@ -161,7 +163,7 @@ class _CustomTextOperation(Operation):
                     )
         return all_output_data
 
-    def _run_filter_function(self, all_input_data: List[Any]) -> List[Any]:
+    def _run_filter_function(self, all_input_data: list[Any]) -> list[Any]:
         all_output_data = []
         for input_data in all_input_data:
             checked = self._function(input_data, **self._kwargs)
@@ -173,26 +175,26 @@ class _CustomTextOperation(Operation):
 def create_text_operation(
     function: Callable,
     function_type: CustomTextOpType,
-    name: Optional[str] = None,
-    args: Optional[Dict] = None,
+    name: str | None = None,
+    args: dict | None = None,
 ) -> _CustomTextOperation:
     """Function for instantiating a custom test operation from a user-defined function
 
     Parameters
     ----------
-    function
+    function : Callable
         User-defined function
-    function_type
+    function_type : CustomTextOpType
         Type of function.
         Supported values are defined in :class:`~medkit.core.text.CustomTextOpType`
-    name
+    name : str, optional
         Name of the operation used for provenance info (default: function name)
-    args
+    args : str, optional
         Dictionary containing the arguments of the function if any.
 
     Returns
     -------
-    operation
+    _CustomTextOperation
         An instance of a custom text operation
     """
     if name is None:

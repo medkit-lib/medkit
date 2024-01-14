@@ -1,10 +1,10 @@
+from __future__ import annotations
+
 __all__ = [
     "transform_entities_to_tags",
     "align_and_map_tokens_with_tags",
     "convert_labels_to_tags",
 ]
-
-from typing import Dict, List
 
 from transformers.tokenization_utils_fast import EncodingFast
 from typing_extensions import Literal
@@ -15,9 +15,9 @@ SPECIAL_TAG_ID_HF: int = -100
 
 
 def convert_labels_to_tags(
-    labels: List[str],
+    labels: list[str],
     tagging_scheme: Literal["bilou", "iob2"] = "bilou",
-) -> Dict[str, int]:
+) -> dict[str, int]:
     """Convert a list of labels in a mapping of NER tags
 
     Parameters
@@ -50,21 +50,21 @@ def convert_labels_to_tags(
     return label_to_id
 
 
-def create_entity_tags(nb_tags: int, label: str, tagging_scheme: Literal["bilou", "iob2"]) -> List[str]:
+def create_entity_tags(nb_tags: int, label: str, tagging_scheme: Literal["bilou", "iob2"]) -> list[str]:
     """Create a list of tags representing one entity
 
     Parameters
     ----------
-    nb_tags:
+    nb_tags : int
         Total of tags to create
-    label:
+    label : str
         Entity label
-    tagging_scheme:
+    tagging_scheme : {"bilou", "iob2"}
         Scheme to use in the conversion, "iob2" follows the BIO scheme.
 
     Returns
     -------
-    tags: List[str]:
+    list of str:
         Tags representing the entity
 
     Examples
@@ -85,24 +85,24 @@ def create_entity_tags(nb_tags: int, label: str, tagging_scheme: Literal["bilou"
 
 def transform_entities_to_tags(
     text_encoding: EncodingFast,
-    entities: List[Entity],
+    entities: list[Entity],
     tagging_scheme: Literal["bilou", "iob2"] = "bilou",
-) -> List[str]:
+) -> list[str]:
     """Transform entities from a encoded document to a list of BILOU/IOB2 tags.
 
     Parameters
     ----------
-    text_encoding:
+    text_encoding : EncodingFast
         Encoding of the document of reference, this is created by a HuggingFace fast tokenizer.
         It contains a tokenized version of the document to tag.
-    entities:
+    entities : list of Entity
         The list of entities to transform
-    tagging_scheme:
+    tagging_scheme : {"bilou", "iob2"}, default="bilou"
         Scheme to tag the tokens, it can be `bilou` or `iob2`
 
     Returns
     -------
-    List[str]:
+    list of str
         A list describing the document with tags. By default the tags
         could be "B", "I", "L", "O","U", if `tagging_scheme` is `iob2`
         the tags could be "B", "I","O".
@@ -163,22 +163,22 @@ def transform_entities_to_tags(
 
 def align_and_map_tokens_with_tags(
     text_encoding: EncodingFast,
-    tags: List[str],
-    tag_to_id: Dict[str, int],
+    tags: list[str],
+    tag_to_id: dict[str, int],
     map_sub_tokens: bool = True,
-) -> List[int]:
+) -> list[int]:
     """Return a list of tags_ids aligned with the text encoding.
     Tags considered as special tokens will have the `SPECIAL_TAG_ID_HF`.
 
     Parameters
     ----------
-    text_encoding:
+    text_encoding : EncodingFast
         Text encoding after tokenization with a HuggingFace fast tokenizer
-    tags:
+    tags : list of str
         A list of tags i.e BILOU tags
-    tag_to_id:
+    tag_to_id : dict of str to int
         Mapping tag to id
-    map_sub_tokens:
+    map_sub_tokens : bool, default=True
         When a token is not in the vocabulary of the tokenizer, it could split
         the token into multiple subtokens.
         If `map_sub_tokens` is True, all tags inside a token will be converted.
@@ -187,7 +187,7 @@ def align_and_map_tokens_with_tags(
 
     Returns
     -------
-    List[int]:
+    list of int
         A list of tags ids
 
     Examples

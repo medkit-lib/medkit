@@ -1,11 +1,12 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[webrtc-voice-detector]`.
 """
+from __future__ import annotations
 
 __all__ = ["WebRTCVoiceDetector"]
 
 import collections
-from typing import Iterator, List, Optional
+from typing import Iterator
 
 import numpy as np
 import webrtcvad
@@ -32,24 +33,24 @@ class WebRTCVoiceDetector(SegmentationOperation):
         frame_duration: Literal[10, 20, 30] = 30,
         nb_frames_in_window: int = 10,
         switch_ratio: float = 0.9,
-        uid: Optional[str] = None,
+        uid: str | None = None,
     ):
         """Parameters
         ----------
-        output_label:
+        output_label : str
             Label of output speech segments.
-        aggressiveness:
+        aggressiveness : {0, 1, 2, 3}, default=2
             Aggressiveness param passed to `webrtcvad` (the higher, the more likely
             to detect speech).
-        frame_duration:
+        frame_duration : {10, 20, 30}, default=30
             Duration in milliseconds of frames passed to `webrtcvad`.
-        nb_frames_in_window:
+        nb_frames_in_window : int, default=10
             Number of frames in the sliding window used when aggregating per-frame VAD
             results.
-        switch_ratio:
+        switch_ratio : float, default=0.9
             Percentage of speech/non-speech frames required to switch the window speech
             state when aggregating per-frame VAD results.
-        uid:
+        uid : str, optional
             Identifier of the detector.
         """
         # Pass all arguments to super (remove self)
@@ -65,17 +66,17 @@ class WebRTCVoiceDetector(SegmentationOperation):
 
         self._vad = webrtcvad.Vad(aggressiveness)
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
+    def run(self, segments: list[Segment]) -> list[Segment]:
         """Return all speech segments detected for all input `segments`.
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             Audio segments on which to perform VAD.
 
         Returns
         -------
-        List[~medkit.core.audio.Segment]:
+        list of Segment
             Segments detected as containing speech activity.
         """
         return [voice_seg for seg in segments for voice_seg in self._detect_activity_in_segment(seg)]

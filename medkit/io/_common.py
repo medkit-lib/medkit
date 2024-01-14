@@ -1,12 +1,13 @@
+from __future__ import annotations
+
 import logging
-from typing import Dict, List, Optional
 
 from medkit.core.text import Entity, Relation, Segment, TextAnnotation, TextDocument
 
 logger = logging.getLogger(__name__)
 
 
-def get_anns_by_type(medkit_doc: TextDocument, anns_labels: Optional[List[str]] = None) -> Dict[str, TextAnnotation]:
+def get_anns_by_type(medkit_doc: TextDocument, anns_labels: list[str] | None = None) -> dict[str, TextAnnotation]:
     """Filter annotations by labels and return a dictionary by type of annotation.
 
     Parameters

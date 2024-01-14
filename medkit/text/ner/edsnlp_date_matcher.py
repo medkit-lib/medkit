@@ -1,10 +1,11 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[edsnlp]`.
 """
+from __future__ import annotations
 
 __all__ = ["EDSNLPDateMatcher"]
 
-from typing import Iterator, List, Optional
+from typing import Iterator
 
 import spacy
 
@@ -33,19 +34,19 @@ class EDSNLPDateMatcher(NEROperation):
     def __init__(
         self,
         output_label: str = "date",
-        attrs_to_copy: Optional[List[str]] = None,
-        uid: Optional[str] = None,
+        attrs_to_copy: list[str] | None = None,
+        uid: str | None = None,
     ):
         """Parameters
         ----------
-        output_label:
+        output_label : str, default="date"
             Label to use for date entities created (the label of the
             attributes will always be "date" or "duration")
-        attrs_to_copy:
+        attrs_to_copy : list of str, optional
             Labels of the attributes that should be copied from the input segment
             to the created date entity. Useful for propagating context attributes
             (negation, antecedent, etc).
-        uid:
+        uid : str, optional
             Identifier of the matcher
         """
         super().__init__(output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid)
@@ -59,17 +60,17 @@ class EDSNLPDateMatcher(NEROperation):
         self._edsnlp = spacy.blank("eds")
         self._edsnlp.add_pipe("eds.dates")
 
-    def run(self, segments: List[Segment]) -> List[Entity]:
+    def run(self, segments: list[Segment]) -> list[Entity]:
         """Find and return date entities for all `segments`
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             List of segments into which to look for date mentions
 
         Returns
         -------
-        entities: List[Entity]
+        list of Entity
             Date entities found in `segments`, with
             :class:`~medkit.text.ner.DateAttribute`,
             :class:`~medkit.text.ner.RelativeDateAttribute` or

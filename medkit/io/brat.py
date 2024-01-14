@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 __all__ = ["BratInputConverter", "BratOutputConverter"]
+
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 from smart_open import open
 
@@ -55,7 +58,7 @@ class BratInputConverter(InputConverter):
         self,
         detect_cuis_in_notes: bool = True,
         notes_label: str = "brat_note",
-        uid: Optional[str] = None,
+        uid: str | None = None,
     ):
         """Parameters
         ----------
@@ -74,7 +77,7 @@ class BratInputConverter(InputConverter):
         self.notes_label = notes_label
         self.detect_cuis_in_notes = detect_cuis_in_notes
         self.uid = uid
-        self._prov_tracer: Optional[ProvTracer] = None
+        self._prov_tracer: ProvTracer | None = None
 
     @property
     def description(self) -> OperationDescription:
@@ -89,10 +92,10 @@ class BratInputConverter(InputConverter):
 
     def load(
         self,
-        dir_path: Union[str, Path],
+        dir_path: str | Path,
         ann_ext: str = ANN_EXT,
         text_ext: str = TEXT_EXT,
-    ) -> List[TextDocument]:
+    ) -> list[TextDocument]:
         """Create a list of TextDocuments from a folder containing text files
         and associated brat annotations files.
 
@@ -146,7 +149,7 @@ class BratInputConverter(InputConverter):
 
         return documents
 
-    def load_doc(self, ann_path: Union[str, Path], text_path: Union[str, Path]) -> TextDocument:
+    def load_doc(self, ann_path: str | Path, text_path: str | Path) -> TextDocument:
         """Create a TextDocument from a .ann file and its associated .txt file
 
         Parameters
@@ -177,7 +180,7 @@ class BratInputConverter(InputConverter):
 
         return doc
 
-    def load_annotations(self, ann_file: Union[str, Path]) -> List[TextAnnotation]:
+    def load_annotations(self, ann_file: str | Path) -> list[TextAnnotation]:
         """Load a .ann file and return a list of
         :class:`~medkit.core.text.annotation.Annotation` objects.
 
@@ -277,14 +280,14 @@ class BratOutputConverter(OutputConverter):
 
     def __init__(
         self,
-        anns_labels: Optional[List[str]] = None,
-        attrs: Optional[List[str]] = None,
+        anns_labels: list[str] | None = None,
+        attrs: list[str] | None = None,
         notes_label: str = "brat_note",
         ignore_segments: bool = True,
         convert_cuis_to_notes: bool = True,
         create_config: bool = True,
         top_values_by_attr: int = 50,
-        uid: Optional[str] = None,
+        uid: str | None = None,
     ):
         """Initialize the Brat output converter
 
@@ -340,9 +343,9 @@ class BratOutputConverter(OutputConverter):
 
     def save(
         self,
-        docs: List[TextDocument],
-        dir_path: Union[str, Path],
-        doc_names: Optional[List[str]] = None,
+        docs: list[TextDocument],
+        dir_path: str | Path,
+        doc_names: list[str] | None = None,
     ):
         """Convert and save a collection or list of TextDocuments into a Brat collection.
         For each collection or list of documents, a folder is created with '.txt' and '.ann'
@@ -403,11 +406,11 @@ class BratOutputConverter(OutputConverter):
 
     def _convert_medkit_anns_to_brat(
         self,
-        segments: List[Segment],
-        relations: List[Relation],
+        segments: list[Segment],
+        relations: list[Relation],
         config: BratAnnConfiguration,
         raw_text: str,
-    ) -> List[Union[BratEntity, BratAttribute, BratRelation, BratNote]]:
+    ) -> list[BratEntity | BratAttribute | BratRelation | BratNote]:
         """Convert Segments, Relations and Attributes into brat data structures
 
         Parameters
@@ -538,7 +541,7 @@ class BratOutputConverter(OutputConverter):
         return brat_anns
 
     @staticmethod
-    def _ensure_text_and_spans(segment: Segment, raw_text: str) -> Tuple[str, List[Tuple[int, int]]]:
+    def _ensure_text_and_spans(segment: Segment, raw_text: str) -> tuple[str, list[tuple[int, int]]]:
         """Ensure consistency between the segment and the raw text.
         The text of a BRAT annotation can't contain multiple white spaces (including a newline character).
         This method cleans the fragments' text and adjust its spans to point to the same location in the raw text.
@@ -613,8 +616,8 @@ class BratOutputConverter(OutputConverter):
     def _convert_relation_to_brat(
         relation: Relation,
         nb_relation: int,
-        brat_entities_by_segment_id: Dict[str, BratEntity],
-    ) -> Tuple[BratRelation, RelationConf]:
+        brat_entities_by_segment_id: dict[str, BratEntity],
+    ) -> tuple[BratRelation, RelationConf]:
         """Get a brat relation from a medkit relation
 
         Parameters
@@ -658,11 +661,11 @@ class BratOutputConverter(OutputConverter):
     @staticmethod
     def _convert_attribute_to_brat(
         label: str,
-        value: Union[str, None],
+        value: str | None,
         nb_attribute: int,
         target_brat_id: str,
         is_from_entity: bool,
-    ) -> Tuple[BratAttribute, AttributeConf]:
+    ) -> tuple[BratAttribute, AttributeConf]:
         """Get a brat attribute from a medkit attribute
 
         Parameters
@@ -696,7 +699,7 @@ class BratOutputConverter(OutputConverter):
 
     @staticmethod
     def _convert_umls_attributes_to_brat_note(
-        cuis: List[str],
+        cuis: list[str],
         nb_note: int,
         target_brat_id: str,
     ) -> BratNote:
@@ -725,7 +728,7 @@ class BratOutputConverter(OutputConverter):
 
     @staticmethod
     def _convert_attributes_to_brat_note(
-        values: List[Any],
+        values: list[Any],
         nb_note: int,
         target_brat_id: str,
     ) -> BratNote:

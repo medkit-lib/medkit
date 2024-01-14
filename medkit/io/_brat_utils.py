@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import logging
 from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, NamedTuple, Set, Tuple, Union
+from typing import Any, NamedTuple
 
 from smart_open import open
 
@@ -18,7 +20,7 @@ class BratEntity:
 
     uid: str
     type: str
-    span: List[Tuple[int, int]]
+    span: list[tuple[int, int]]
     text: str
 
     @property
@@ -96,7 +98,7 @@ class Grouping:
 
     uid: str
     type: str
-    items: List[BratEntity]
+    items: list[BratEntity]
 
     @property
     def text(self):
@@ -109,11 +111,11 @@ class BratAugmentedEntity:
 
     uid: str
     type: str
-    span: Tuple[Tuple[int, int], ...]
+    span: tuple[tuple[int, int], ...]
     text: str
-    relations_from_me: Tuple[BratRelation, ...]
-    relations_to_me: Tuple[BratRelation, ...]
-    attributes: Tuple[BratAttribute, ...]
+    relations_from_me: tuple[BratRelation, ...]
+    relations_to_me: tuple[BratRelation, ...]
+    attributes: tuple[BratAttribute, ...]
 
     @property
     def start(self) -> int:
@@ -126,13 +128,13 @@ class BratAugmentedEntity:
 
 @dataclass
 class BratDocument:
-    entities: Dict[str, BratEntity]
-    relations: Dict[str, BratRelation]
-    attributes: Dict[str, BratAttribute]
-    notes: Dict[str, BratNote]
-    groups: Dict[str, Grouping] = None
+    entities: dict[str, BratEntity]
+    relations: dict[str, BratRelation]
+    attributes: dict[str, BratAttribute]
+    notes: dict[str, BratNote]
+    groups: dict[str, Grouping] = None
 
-    def get_augmented_entities(self) -> Dict[str, BratAugmentedEntity]:
+    def get_augmented_entities(self) -> dict[str, BratAugmentedEntity]:
         augmented_entities = {}
         for entity in self.entities.values():
             entity_relations_from_me = tuple(
@@ -181,31 +183,31 @@ class BratAnnConfiguration:
     """
 
     def __init__(self, top_values_by_attr: int = 50):
-        self._entity_types: Set[str] = set()
+        self._entity_types: set[str] = set()
         # key: relation type
-        self._rel_types_arg_1: Dict[str, Set[str]] = defaultdict(set)
+        self._rel_types_arg_1: dict[str, set[str]] = defaultdict(set)
         # key: relation type
-        self._rel_types_arg_2: Dict[str, Set[str]] = defaultdict(set)
+        self._rel_types_arg_2: dict[str, set[str]] = defaultdict(set)
         # key: attribute type
-        self._attr_entity_values: Dict[str, List[str]] = defaultdict(list)
-        self._attr_relation_values: Dict[str, List[str]] = defaultdict(list)
+        self._attr_entity_values: dict[str, list[str]] = defaultdict(list)
+        self._attr_relation_values: dict[str, list[str]] = defaultdict(list)
         # 'n' most common values by attr to be included in the conf file
         self.top_values_by_attr = top_values_by_attr
 
     # return sorted version of BratAnnotationConfiguration
     @property
-    def entity_types(self) -> List[str]:
+    def entity_types(self) -> list[str]:
         return sorted(self._entity_types)
 
     @property
-    def rel_types_arg_1(self) -> Dict[str, List[str]]:
+    def rel_types_arg_1(self) -> dict[str, list[str]]:
         rels = {}
         for rel_type, values in self._rel_types_arg_1.items():
             rels[rel_type] = sorted(values)
         return rels
 
     @property
-    def rel_types_arg_2(self) -> Dict[str, List[str]]:
+    def rel_types_arg_2(self) -> dict[str, list[str]]:
         rels = {}
         for rel_type, values in self._rel_types_arg_2.items():
             rels[rel_type] = sorted(values)
@@ -216,7 +218,7 @@ class BratAnnConfiguration:
     # We limit the number of different values of an attribute
     # to show in the configuration.
     @property
-    def attr_relation_values(self) -> Dict[str, List[str]]:
+    def attr_relation_values(self) -> dict[str, list[str]]:
         attrs = {}
         for attr_type, values in self._attr_relation_values.items():
             # get the 'n' most common values in the attr
@@ -225,7 +227,7 @@ class BratAnnConfiguration:
         return attrs
 
     @property
-    def attr_entity_values(self) -> Dict[str, List[str]]:
+    def attr_entity_values(self) -> dict[str, list[str]]:
         attrs = {}
         for attr_type, values in self._attr_entity_values.items():
             # get the 'n' most common values in the attr
@@ -285,19 +287,19 @@ class BratAnnConfiguration:
         return annotation_conf
 
     @staticmethod
-    def _attribute_to_str(type: str, values: List[str], from_entity: bool) -> str:
+    def _attribute_to_str(type: str, values: list[str], from_entity: bool) -> str:
         arg = "<ENTITY>" if from_entity else "<RELATION>"
         values_str = "|".join(values)
         return f"{type}\tArg:{arg}" if not values_str else f"{type}\tArg:{arg}, Value:{values_str}"
 
     @staticmethod
-    def _relation_to_str(type: str, arg_1_types: List[str], arg_2_types: List[str]) -> str:
+    def _relation_to_str(type: str, arg_1_types: list[str], arg_2_types: list[str]) -> str:
         arg_1_str = "|".join(arg_1_types)
         arg_2_str = "|".join(arg_2_types)
         return f"{type}\tArg1:{arg_1_str}, Arg2:{arg_2_str}"
 
 
-def parse_file(ann_path: Union[str, Path], detect_groups: bool = False) -> BratDocument:
+def parse_file(ann_path: str | Path, detect_groups: bool = False) -> BratDocument:
     """Read an annotation file to get the Entities, Relations and Attributes in it.
     All other lines are ignored.
 
@@ -373,7 +375,7 @@ def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
     # Process groups
     groups = None
     if detect_groups:
-        groups: Dict[str, Grouping] = dict()
+        groups: dict[str, Grouping] = dict()
         grouping_relations = {r.uid: r for r in relations.values() if r.type in GROUPING_RELATIONS}
 
         for entity in entities.values():
@@ -413,7 +415,7 @@ def _parse_entity(entity_id: str, entity_content: str) -> BratEntity:
 
         tag, spans_text = tag_and_spans.split(" ", maxsplit=1)
         span_list = spans_text.split(";")
-        spans: List[Tuple[int, int]] = []
+        spans: list[tuple[int, int]] = []
         for span in span_list:
             start_s, end_s = span.split()
             start, end = int(start_s), int(end_s)

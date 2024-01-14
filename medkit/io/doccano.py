@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __all__ = [
     "DoccanoTask",
     "DoccanoClientConfig",
@@ -11,7 +13,7 @@ import json
 import logging
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 from zipfile import ZipFile
 
 from typing_extensions import Self
@@ -68,7 +70,7 @@ class _DoccanoEntity:
     end_offset: int
     label: str
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         entity_dict = dict(
             id=self.id,
             start_offset=self.start_offset,
@@ -84,7 +86,7 @@ class _DoccanoEntityTuple:
     end_offset: int
     label: str
 
-    def to_tuple(self) -> Tuple[int, int, str]:
+    def to_tuple(self) -> tuple[int, int, str]:
         return (self.start_offset, self.end_offset, self.label)
 
 
@@ -95,7 +97,7 @@ class _DoccanoRelation:
     to_id: int
     type: str
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         relation_dict = dict(
             id=self.id,
             from_id=self.from_id,
@@ -108,12 +110,12 @@ class _DoccanoRelation:
 @dataclasses.dataclass()
 class _DoccanoDocRelationExtraction:
     text: str
-    entities: List[_DoccanoEntity]
-    relations: List[_DoccanoRelation]
-    metadata: Dict[str, Any]
+    entities: list[_DoccanoEntity]
+    relations: list[_DoccanoRelation]
+    metadata: dict[str, Any]
 
     @classmethod
-    def from_dict(cls, doc_line: Dict[str, Any], client_config: DoccanoClientConfig) -> Self:
+    def from_dict(cls, doc_line: dict[str, Any], client_config: DoccanoClientConfig) -> Self:
         text: str = doc_line.pop(client_config.column_text)
         entities = [_DoccanoEntity(**ann) for ann in doc_line.pop("entities")]
         relations = [_DoccanoRelation(**ann) for ann in doc_line.pop("relations")]
@@ -121,7 +123,7 @@ class _DoccanoDocRelationExtraction:
         metadata = doc_line
         return cls(text=text, entities=entities, relations=relations, metadata=metadata)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         doc_dict = dict(text=self.text)
         doc_dict["entities"] = [ent.to_dict() for ent in self.entities]
         doc_dict["relations"] = [rel.to_dict() for rel in self.relations]
@@ -132,18 +134,18 @@ class _DoccanoDocRelationExtraction:
 @dataclasses.dataclass()
 class _DoccanoDocSeqLabeling:
     text: str
-    entities: List[_DoccanoEntityTuple]
-    metadata: Dict[str, Any]
+    entities: list[_DoccanoEntityTuple]
+    metadata: dict[str, Any]
 
     @classmethod
-    def from_dict(cls, doc_line: Dict[str, Any], client_config: DoccanoClientConfig) -> Self:
+    def from_dict(cls, doc_line: dict[str, Any], client_config: DoccanoClientConfig) -> Self:
         text = doc_line.pop(client_config.column_text)
         entities = [_DoccanoEntityTuple(*ann) for ann in doc_line.pop(client_config.column_label)]
         # in doccano, metadata is what remains after removing key fields
         metadata = doc_line
         return cls(text=text, entities=entities, metadata=metadata)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         doc_dict = dict(text=self.text)
         doc_dict["label"] = [ent.to_tuple() for ent in self.entities]
         doc_dict.update(self.metadata)
@@ -154,10 +156,10 @@ class _DoccanoDocSeqLabeling:
 class _DoccanoDocTextClassification:
     text: str
     label: str
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
     @classmethod
-    def from_dict(cls, doc_line: Dict[str, Any], client_config: DoccanoClientConfig) -> Self:
+    def from_dict(cls, doc_line: dict[str, Any], client_config: DoccanoClientConfig) -> Self:
         text = doc_line.pop(client_config.column_text)
         label = doc_line.pop(client_config.column_label)[0]
 
@@ -171,7 +173,7 @@ class _DoccanoDocTextClassification:
         metadata = doc_line
         return cls(text=text, label=label, metadata=metadata)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         doc_dict = dict(text=self.text, label=[str(self.label)])
         doc_dict.update(self.metadata)
         return doc_dict
@@ -195,9 +197,9 @@ class DoccanoInputConverter:
     def __init__(
         self,
         task: DoccanoTask,
-        client_config: Optional[DoccanoClientConfig] = None,
+        client_config: DoccanoClientConfig | None = None,
         attr_label: str = "doccano_category",
-        uid: Optional[str] = None,
+        uid: str | None = None,
     ):
         """Parameters
         ----------
@@ -222,7 +224,7 @@ class DoccanoInputConverter:
         self.client_config = client_config
         self.task = task
         self.attr_label = attr_label
-        self._prov_tracer: Optional[ProvTracer] = None
+        self._prov_tracer: ProvTracer | None = None
 
     def set_prov_tracer(self, prov_tracer: ProvTracer):
         """Enable provenance tracing.
@@ -244,7 +246,7 @@ class DoccanoInputConverter:
             config=dict(task=self.task.value),
         )
 
-    def load_from_directory_zip(self, dir_path: Union[str, Path]) -> List[TextDocument]:
+    def load_from_directory_zip(self, dir_path: str | Path) -> list[TextDocument]:
         """Create a list of TextDocuments from zip files in a directory.
         The zip files should contain a JSONL file coming from doccano.
 
@@ -267,7 +269,7 @@ class DoccanoInputConverter:
 
         return documents
 
-    def load_from_zip(self, input_file: Union[str, Path]) -> List[TextDocument]:
+    def load_from_zip(self, input_file: str | Path) -> list[TextDocument]:
         """Create a list of TextDocuments from a zip file containing a JSONL file
         coming from doccano.
 
@@ -288,7 +290,7 @@ class DoccanoInputConverter:
                 zip_file.extract(filename, tmpdir)
             return self.load_from_file(unzipped_file)
 
-    def load_from_file(self, input_file: Union[str, Path]) -> List[TextDocument]:
+    def load_from_file(self, input_file: str | Path) -> list[TextDocument]:
         """Create a list of TextDocuments from a doccano JSONL file.
 
         Parameters
@@ -311,7 +313,7 @@ class DoccanoInputConverter:
         self._check_crlf_character(documents)
         return documents
 
-    def _check_crlf_character(self, documents: List[TextDocument]):
+    def _check_crlf_character(self, documents: list[TextDocument]):
         """Check if the list of converted documents contains the CRLF character.
         This character is the only indicator available to warn
         if there are alignment problems in the documents
@@ -331,7 +333,7 @@ class DoccanoInputConverter:
                     nb_docs_with_warning,
                 )
 
-    def _parse_doc_line(self, doc_line: Dict[str, Any]) -> TextDocument:
+    def _parse_doc_line(self, doc_line: dict[str, Any]) -> TextDocument:
         """Parse a doc_line into a TextDocument depending on the task
 
         Parameters
@@ -351,7 +353,7 @@ class DoccanoInputConverter:
         if self.task == DoccanoTask.SEQUENCE_LABELING:
             return self._parse_doc_line_seq_labeling(doc_line=doc_line)
 
-    def _parse_doc_line_relation_extraction(self, doc_line: Dict[str, Any]) -> TextDocument:
+    def _parse_doc_line_relation_extraction(self, doc_line: dict[str, Any]) -> TextDocument:
         """Parse a dictionary and return a TextDocument with entities and relations
 
         Parameters
@@ -409,7 +411,7 @@ class DoccanoInputConverter:
 
         return doc
 
-    def _parse_doc_line_seq_labeling(self, doc_line: Dict[str, Any]) -> TextDocument:
+    def _parse_doc_line_seq_labeling(self, doc_line: dict[str, Any]) -> TextDocument:
         """Parse a dictionary and return a TextDocument with entities
 
         Parameters
@@ -451,7 +453,7 @@ class DoccanoInputConverter:
         )
         return doc
 
-    def _parse_doc_line_text_classification(self, doc_line: Dict[str, Any]) -> TextDocument:
+    def _parse_doc_line_text_classification(self, doc_line: dict[str, Any]) -> TextDocument:
         """Parse a dictionary and return a TextDocument with an attribute.
 
         Parameters
@@ -492,11 +494,11 @@ class DoccanoOutputConverter:
     def __init__(
         self,
         task: DoccanoTask,
-        anns_labels: Optional[List[str]] = None,
-        attr_label: Optional[str] = None,
+        anns_labels: list[str] | None = None,
+        attr_label: str | None = None,
         ignore_segments: bool = True,
-        include_metadata: Optional[bool] = True,
-        uid: Optional[str] = None,
+        include_metadata: bool | None = True,
+        uid: str | None = None,
     ):
         """Parameters
         ----------
@@ -540,7 +542,7 @@ class DoccanoOutputConverter:
             config=dict(task=self.task.value),
         )
 
-    def save(self, docs: List[TextDocument], output_file: Union[str, Path]):
+    def save(self, docs: list[TextDocument], output_file: str | Path):
         """Convert and save a list of TextDocuments into a doccano file (.JSONL)
 
         Parameters
@@ -557,7 +559,7 @@ class DoccanoOutputConverter:
                 doc_line = self._convert_doc_by_task(medkit_doc)
                 fp.write(json.dumps(doc_line, ensure_ascii=False) + "\n")
 
-    def _convert_doc_by_task(self, medkit_doc: TextDocument) -> Dict[str, Any]:
+    def _convert_doc_by_task(self, medkit_doc: TextDocument) -> dict[str, Any]:
         """Convert a TextDocument into a dictionary depending on the task
 
         Parameters
@@ -577,7 +579,7 @@ class DoccanoOutputConverter:
         if self.task == DoccanoTask.SEQUENCE_LABELING:
             return self._convert_doc_seq_labeling(medkit_doc=medkit_doc)
 
-    def _convert_doc_relation_extraction(self, medkit_doc: TextDocument) -> Dict[str, Any]:
+    def _convert_doc_relation_extraction(self, medkit_doc: TextDocument) -> dict[str, Any]:
         """Convert a TextDocument to a doc_line compatible
         with the doccano relation extraction task
 
@@ -638,7 +640,7 @@ class DoccanoOutputConverter:
 
         return doccano_doc.to_dict()
 
-    def _convert_doc_seq_labeling(self, medkit_doc: TextDocument) -> Dict[str, Any]:
+    def _convert_doc_seq_labeling(self, medkit_doc: TextDocument) -> dict[str, Any]:
         """Convert a TextDocument to a doc_line compatible
         with the doccano sequence labeling task
 
@@ -676,7 +678,7 @@ class DoccanoOutputConverter:
 
         return doccano_doc.to_dict()
 
-    def _convert_doc_text_classification(self, medkit_doc: TextDocument) -> Dict[str, Any]:
+    def _convert_doc_text_classification(self, medkit_doc: TextDocument) -> dict[str, Any]:
         """Convert a TextDocument to a doc_line compatible with
         the doccano text classification task.
 

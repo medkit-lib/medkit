@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __all__ = [
     "load_text_document",
     "load_text_documents",
@@ -10,7 +12,7 @@ __all__ = [
 import json
 import warnings
 from pathlib import Path
-from typing import Iterable, Iterator, Optional, Union
+from typing import Iterable, Iterator
 
 from medkit.core.text import TextAnnotation, TextDocument
 from medkit.io.medkit_json._common import ContentType, build_header, check_header
@@ -19,21 +21,21 @@ _DOC_ANNS_SUFFIX = "_anns.jsonl"
 
 
 def load_text_document(
-    input_file: Union[str, Path],
-    anns_input_file: Optional[Union[str, Path]] = None,
-    encoding: Optional[str] = "utf-8",
+    input_file: str | Path,
+    anns_input_file: str | Path | None = None,
+    encoding: str | None = "utf-8",
 ) -> TextDocument:
     """Load a text document from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_text_document`.
 
     Parameters
     ----------
-    input_file:
+    input_file : str or Path
         Path to the medkit-json file containing the document
-    anns_input_file:
+    anns_input_file : str or Path, optional
         Optional medkit-json file containing separate annotations of the
         document.
-    encoding:
+    encoding : str, default="utf-8"
         Optional encoding of `input_file` and `anns_input_file`
 
     Returns
@@ -55,20 +57,20 @@ def load_text_document(
     return doc
 
 
-def load_text_documents(input_file: Union[str, Path], encoding: Optional[str] = "utf-8") -> Iterator[TextDocument]:
+def load_text_documents(input_file: str | Path, encoding: str | None = "utf-8") -> Iterator[TextDocument]:
     """Returns an iterator on text documents loaded from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_text_documents`
 
     Parameters
     ----------
-    input_file:
+    input_file : str or Path
         Path to the medkit-json file containing the documents
-    encoding:
+    encoding : str, default="utf-8"
         Optional encoding of `input_file`
 
     Returns
     -------
-    Iterator[TextDocument]
+    iterator of TextDocument
         An iterator to the text documents in the file
     """
     input_file = Path(input_file)
@@ -84,20 +86,20 @@ def load_text_documents(input_file: Union[str, Path], encoding: Optional[str] = 
             yield doc
 
 
-def load_text_anns(input_file: Union[str, Path], encoding: Optional[str] = "utf-8") -> Iterator[TextAnnotation]:
+def load_text_anns(input_file: str | Path, encoding: str | None = "utf-8") -> Iterator[TextAnnotation]:
     """Return an iterator on text annotations loaded from a medkit-json file generated with
     :func:`~medkit.io.medkit_json.save_text_anns`
 
     Parameters
     ----------
-    input_file:
+    input_file : str or Path
         Path to the medkit-json file containing the annotations
-    encoding:
+    encoding : str, default="utf-8"
         Optional encoding of `input_file`
 
     Returns
     -------
-    Iterator[TextAnnotation]
+    iterator of TextAnnotation
         An iterator to the text annotations in the file
     """
     input_file = Path(input_file)
@@ -115,26 +117,26 @@ def load_text_anns(input_file: Union[str, Path], encoding: Optional[str] = "utf-
 
 def save_text_document(
     doc: TextDocument,
-    output_file: Union[str, Path],
+    output_file: str | Path,
     split_anns: bool = False,
-    anns_output_file: Optional[Union[str, Path]] = None,
-    encoding: Optional[str] = "utf-8",
+    anns_output_file: str | Path | None = None,
+    encoding: str | None = "utf-8",
 ):
     """Save a text document into a medkit-json file.
 
     Parameters
     ----------
-    doc:
+    doc : TextDocument
         The text document to save
-    output_file:
+    output_file : str or Path
         Path of the generated medkit-json file
-    split_anns:
+    split_anns : bool, default=False
         If True, the annotations will be saved in a separate medkit-json file
         instead of being included in the main document file
-    anns_output_file:
+    anns_output_file : str or Path, optional
         Path of the medkit-json file storing the annotations if `split_anns` is True.
         If not provided, `output_file` will be used with an extra "_anns" suffix.
-    encoding:
+    encoding : str, default="utf-8"
         Optional encoding of `output_file` and `anns_output_file`
     """
     output_file = Path(output_file)
@@ -159,18 +161,18 @@ def save_text_document(
 
 def save_text_documents(
     docs: Iterable[TextDocument],
-    output_file: Union[str, Path],
-    encoding: Optional[str] = "utf-8",
+    output_file: str | Path,
+    encoding: str | None = "utf-8",
 ):
     """Save text documents into a medkit-json file.
 
     Parameters
     ----------
-    docs:
+    docs : iterable of TextDocument
         The text documents to save
-    output_file:
+    output_file : str or Path
         Path of the generated medkit-json file
-    encoding:
+    encoding : str, default="utf-8"
         Optional encoding of `output_file`
     """
     output_file = Path(output_file)
@@ -186,18 +188,18 @@ def save_text_documents(
 
 def save_text_anns(
     anns: Iterable[TextAnnotation],
-    output_file: Union[str, Path],
-    encoding: Optional[str] = "utf-8",
+    output_file: str | Path,
+    encoding: str | None = "utf-8",
 ):
     """Save text annotations into a medkit-json file.
 
     Parameters
     ----------
-    docs:
+    anns : iterable of TextAnnotation
         The text annotations to save
-    output_file:
+    output_file : str or Path
         Path of the generated medkit-json file
-    encoding:
+    encoding : str, default="utf-8"
         Optional encoding of `output_file`
     """
     output_file = Path(output_file)

@@ -1,11 +1,12 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[syntactic-relation-extractor]`.
 """
+from __future__ import annotations
 
 __all__ = ["SyntacticRelationExtractor"]
+
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Union
 
 import spacy
 from spacy.tokens import Doc
@@ -40,33 +41,33 @@ class SyntacticRelationExtractor(DocOperation):
 
     def __init__(
         self,
-        name_spacy_model: Union[str, Path] = _DEFAULT_NAME_SPACY_MODEL,
+        name_spacy_model: str | Path = _DEFAULT_NAME_SPACY_MODEL,
         relation_label: str = _DEFAULT_LABEL,
-        entities_source: Optional[List[str]] = None,
-        entities_target: Optional[List[str]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        entities_source: list[str] | None = None,
+        entities_target: list[str] | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
         """Initialize the syntactic relation extractor
 
         Parameters
         ----------
-        name_spacy_model: str
+        name_spacy_model : str, optional
             Name or path of a spacy pipeline to load, it should include a
             syntactic dependency parser. To obtain consistent results,
             the spacy model should have the same language as the documents
             in which relations should be found.
-        relation_label: str
+        relation_label : str, optional
             Label of identified relations
-        entities_source: List[str]
+        entities_source : list of str, optional
             Labels of medkit entities to use as source of the relation.
             If `None`, any entity can be used as source.
-        entities_target: List[str]
+        entities_target : list of str, optional
             Labels of medkit entities to use as target of the relation.
             If `None`, any entity can be used as target.
-        name:
+        name : str, optional
             Name describing the relation extractor (defaults to the class name)
-        uid:
+        uid : str, optional
             Identifier of the relation extractor
 
         Raises
@@ -99,12 +100,12 @@ class SyntacticRelationExtractor(DocOperation):
         else:
             self._entities_labels = None
 
-    def run(self, documents: List[TextDocument]):
+    def run(self, documents: list[TextDocument]):
         """Add relations to each document from `documents`
 
         Parameters
         ----------
-        documents:
+        documents : list of TextDocument
             List of text documents in which relations are to be found
 
         """
@@ -128,7 +129,7 @@ class SyntacticRelationExtractor(DocOperation):
 
         Parameters
         ----------
-        spacy_doc:
+        spacy_doc : Doc
             A spacy doc with medkit entities converted in spacy entities
 
         Returns
@@ -178,21 +179,21 @@ class SyntacticRelationExtractor(DocOperation):
             return target, source
         return source, target
 
-    def _create_relation(self, source: SpacySpan, target: SpacySpan, metadata: Dict[str, str]) -> Optional[Relation]:
+    def _create_relation(self, source: SpacySpan, target: SpacySpan, metadata: dict[str, str]) -> Relation | None:
         """Parse the spacy relation content into a Relation object.
 
         Parameters
         ----------
-        source:
+        source : SpacySpan
             Spacy entity source of the syntactic relation
-        target:
+        target : SpacySpan
             Spacy entity target of the syntactic relation
-        metadata:
+        metadata : dict of str to str
             Additional information of the relation
 
         Returns
         -------
-        Optional[Relation]
+        Relation, optional
             The Relation object representing the spacy relation
 
         """
@@ -224,7 +225,7 @@ class SyntacticRelationExtractor(DocOperation):
         )
         return relation
 
-    def _add_relations_to_document(self, medkit_doc: TextDocument, relations: List[Relation]):
+    def _add_relations_to_document(self, medkit_doc: TextDocument, relations: list[Relation]):
         for relation in relations:
             medkit_doc.anns.add(relation)
             if self._prov_tracer is not None:

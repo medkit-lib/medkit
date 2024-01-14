@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import List
 
 import torch
 from torch import nn
@@ -43,5 +44,5 @@ class DummyTextCat(nn.Module):
 
 
 class DummyTokenizer:
-    def __call__(self, text: str) -> List[int]:
+    def __call__(self, text: str) -> list[int]:
         return [ord(char) for char in text]

@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 __all__ = ["ADICAPNormAttribute"]
 
 import dataclasses
-from typing import Any, Dict, Optional
+from typing import Any
 
 from typing_extensions import Self
 
@@ -52,24 +54,24 @@ class ADICAPNormAttribute(EntityNormAttribute):
         Metadata of the attribute
     """
 
-    sampling_mode: Optional[str]
-    technic: Optional[str]
-    organ: Optional[str]
-    pathology: Optional[str]
-    pathology_type: Optional[str]
-    behaviour_type: Optional[str]
+    sampling_mode: str | None
+    technic: str | None
+    organ: str | None
+    pathology: str | None
+    pathology_type: str | None
+    behaviour_type: str | None
 
     def __init__(
         self,
         code: str,
-        sampling_mode: Optional[str] = None,
-        technic: Optional[str] = None,
-        organ: Optional[str] = None,
-        pathology: Optional[str] = None,
-        pathology_type: Optional[str] = None,
-        behaviour_type: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
+        sampling_mode: str | None = None,
+        technic: str | None = None,
+        organ: str | None = None,
+        pathology: str | None = None,
+        pathology_type: str | None = None,
+        behaviour_type: str | None = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
     ):
         super().__init__(kb_name="adicap", kb_id=code, metadata=metadata, uid=uid)
 
@@ -84,7 +86,7 @@ class ADICAPNormAttribute(EntityNormAttribute):
     def code(self) -> str:
         return self.kb_id
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         adicap_dict = dict(
             uid=self.uid,
             code=self.code,
@@ -100,7 +102,7 @@ class ADICAPNormAttribute(EntityNormAttribute):
         return adicap_dict
 
     @classmethod
-    def from_dict(cls, adicap_dict: Dict[str, Any]) -> Self:
+    def from_dict(cls, adicap_dict: dict[str, Any]) -> Self:
         return cls(
             uid=adicap_dict["uid"],
             code=adicap_dict["code"],

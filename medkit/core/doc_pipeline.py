@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 __all__ = ["DocPipeline"]
 
-from typing import Dict, Generic, List, Optional, Tuple, cast
+from typing import Generic, List, Tuple, cast
 
 from medkit.core.annotation import AnnotationType
 from medkit.core.document import Document
@@ -18,20 +20,20 @@ class DocPipeline(DocOperation, Generic[AnnotationType]):
     def __init__(
         self,
         pipeline: Pipeline,
-        labels_by_input_key: Optional[Dict[str, List[str]]] = None,
-        uid: Optional[str] = None,
+        labels_by_input_key: dict[str, list[str]] | None = None,
+        uid: str | None = None,
     ):
         """Initialize the pipeline
 
         Parameters
         ----------
-        pipeline:
+        pipeline : Pipeline
             Pipeline to execute on documents.
             Annotations given to `pipeline` (corresponding to its `input_keys`) will
             be retrieved from documents, according to `labels_by_input`.
             Annotations returned by `pipeline` (corresponding to its `output_keys`)
             will be added to documents.
-        labels_by_input_key:
+        labels_by_input_key : dict of str to list of str, optional
             Optional labels of existing annotations that should be retrieved from
             documents and passed to the pipeline as input. One list of labels
             per input key.
@@ -43,14 +45,15 @@ class DocPipeline(DocOperation, Generic[AnnotationType]):
             labelled as "SENTENCE", that we want to pass the "sentences" input
             key of the pipeline:
 
-            >>> doc_pipeline = DocPipeline(
-            >>>     pipeline,
-            >>>     labels_by_input={"sentences": ["SENTENCE"]},
-            >>> )
+        Examples
+        --------
+        >>> doc_pipeline = DocPipeline(
+        >>>     pipeline,
+        >>>     labels_by_input={"sentences": ["SENTENCE"]},
+        >>> )
 
-            Because the values of `labels_by_input_key` are lists (one per
-            input), it is possible to use annotation with different labels for
-            the same input key.
+        Because the values of `labels_by_input_key` are lists (one per input),
+        it is possible to use annotation with different labels for the same input key.
         """
         # Pass all arguments to super (remove self)
         init_args = locals()
@@ -58,18 +61,18 @@ class DocPipeline(DocOperation, Generic[AnnotationType]):
         super().__init__(**init_args)
 
         self.pipeline = pipeline
-        self.labels_by_input_key: Optional[Dict[str, List[str]]] = labels_by_input_key
+        self.labels_by_input_key: dict[str, list[str]] | None = labels_by_input_key
 
     def set_prov_tracer(self, prov_tracer: ProvTracer):
         self.pipeline.set_prov_tracer(prov_tracer)
 
-    def run(self, docs: List[Document[AnnotationType]]) -> None:
+    def run(self, docs: list[Document[AnnotationType]]) -> None:
         """Run the pipeline on a list of documents, adding
         the output annotations to each document
 
         Parameters
         ----------
-        docs:
+        docs : list of Document
             The documents on which to run the pipeline.
             Labels to input keys association will be used to retrieve existing
             annotations from each document, and all output annotations will also

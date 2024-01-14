@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import os
-from typing import Optional
 
 import torch
 
@@ -13,7 +14,7 @@ PYTORCH_MODEL_NAME = "pytorch_model.bin"
 class MockTrainableComponent:
     def __init__(
         self,
-        model_path: Optional[str] = None,
+        model_path: str | None = None,
         output_label: str = "category",
         device="cpu",
     ):

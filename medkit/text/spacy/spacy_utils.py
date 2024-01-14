@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 __all__ = [
     "extract_anns_and_attrs_from_spacy_doc",
     "build_spacy_doc_from_medkit_doc",
     "build_spacy_doc_from_medkit_segment",
 ]
+
 import warnings
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Callable
 
 from spacy import Language
 from spacy.tokens import Doc
@@ -21,13 +24,13 @@ _ATTR_MEDKIT_ID = "medkit_id"
 
 def extract_anns_and_attrs_from_spacy_doc(
     spacy_doc: Doc,
-    medkit_source_ann: Optional[Segment] = None,
-    entities: Optional[List[str]] = None,
-    span_groups: Optional[List[str]] = None,
-    attrs: Optional[List[str]] = None,
-    attribute_factories: Optional[Dict[str, Callable[[SpacySpan, str], Attribute]]] = None,
+    medkit_source_ann: Segment | None = None,
+    entities: list[str] | None = None,
+    span_groups: list[str] | None = None,
+    attrs: list[str] | None = None,
+    attribute_factories: dict[str, Callable[[SpacySpan, str], Attribute]] | None = None,
     rebuild_medkit_anns_and_attrs: bool = False,
-) -> Tuple[List[Segment], Dict[str, List[Attribute]]]:
+) -> tuple[list[Segment], dict[str, list[Attribute]]]:
     """Given a spacy document, convert selected entities or spans into Segments.
     Extract attributes for each annotation in the document.
 
@@ -167,8 +170,8 @@ def extract_anns_and_attrs_from_spacy_doc(
 def build_spacy_doc_from_medkit_doc(
     nlp: Language,
     medkit_doc: TextDocument,
-    labels_anns: Optional[List[str]] = None,
-    attrs: Optional[List[str]] = None,
+    labels_anns: list[str] | None = None,
+    attrs: list[str] | None = None,
     include_medkit_info: bool = True,
 ) -> Doc:
     """Create a Spacy Doc from a TextDocument.
@@ -217,8 +220,8 @@ def build_spacy_doc_from_medkit_doc(
 def build_spacy_doc_from_medkit_segment(
     nlp: Language,
     segment: Segment,
-    annotations: Optional[List[Segment]] = None,
-    attrs: Optional[List[str]] = None,
+    annotations: list[Segment] | None = None,
+    attrs: list[str] | None = None,
     include_medkit_info: bool = True,
 ) -> Doc:
     """Create a Spacy Doc from a Segment.
@@ -289,7 +292,7 @@ def build_spacy_doc_from_medkit_segment(
     return doc
 
 
-def _add_entities_in_spacy_doc(spacy_doc: Doc, entities: List[Entity], attrs: List[str], include_medkit_info: bool):
+def _add_entities_in_spacy_doc(spacy_doc: Doc, entities: list[Entity], attrs: list[str], include_medkit_info: bool):
     """Convert entities into spacy spans and modifies
     the entities in the Doc object (doc.ents)
     """
@@ -320,8 +323,8 @@ def _add_entities_in_spacy_doc(spacy_doc: Doc, entities: List[Entity], attrs: Li
 
 def _add_segments_in_spacy_doc(
     spacy_doc: Doc,
-    segments: List[Segment],
-    attrs: List[str],
+    segments: list[Segment],
+    attrs: list[str],
     include_medkit_info: bool,
 ):
     """Convert segments into a spacy spans and modifies
@@ -342,7 +345,7 @@ def _add_segments_in_spacy_doc(
             spacy_doc.spans[medkit_seg.label].append(spacy_span)
 
 
-def _get_defined_spacy_attrs(include_medkit_attrs: bool = False) -> List[str]:
+def _get_defined_spacy_attrs(include_medkit_attrs: bool = False) -> list[str]:
     """Returns the name of the custom attributes configured in spacy spans.
 
     Parameters
@@ -385,7 +388,7 @@ def _define_default_extensions():
     _define_spacy_span_extension(_ATTR_MEDKIT_ID)
 
 
-def _define_attrs_extensions(attrs_to_transfer: List[str]):
+def _define_attrs_extensions(attrs_to_transfer: list[str]):
     """Define attributes as span extensions in the Spacy context."""
     for attr in attrs_to_transfer:
         # `attr_medkit_id` is the medkit ID of the original attribute
@@ -393,9 +396,9 @@ def _define_attrs_extensions(attrs_to_transfer: List[str]):
         _define_spacy_span_extension(attr)
 
 
-def _get_span_boundaries(spans: List[AnySpan]) -> Tuple[int, int]:
+def _get_span_boundaries(spans: list[AnySpan]) -> tuple[int, int]:
     """Return boundaries (start,end) from a list of spans"""
-    spans_norm: List[Span] = span_utils.normalize_spans(spans)
+    spans_norm: list[Span] = span_utils.normalize_spans(spans)
     start = spans_norm[0].start
     end = spans_norm[-1].end
 
@@ -414,7 +417,7 @@ def _get_span_boundaries(spans: List[AnySpan]) -> Tuple[int, int]:
 def _segment_to_spacy_span(
     spacy_doc_target: Doc,
     medkit_segment: Segment,
-    attrs: List[str],
+    attrs: list[str],
     include_medkit_info: bool,
 ) -> Span:
     """Create a spacy span given a medkit segment."""
@@ -442,8 +445,8 @@ def _segment_to_spacy_span(
 
 
 def _get_text_and_spans_from_span_spacy(
-    span_spacy: SpacySpan, medkit_source_ann: Optional[Segment]
-) -> Tuple[str, List[AnySpan]]:
+    span_spacy: SpacySpan, medkit_source_ann: Segment | None
+) -> tuple[str, list[AnySpan]]:
     """Return text and spans depending on the origin of the spacy span"""
     if medkit_source_ann is None:
         text = span_spacy.text
@@ -458,13 +461,13 @@ def _get_text_and_spans_from_span_spacy(
     return text, spans
 
 
-def _get_ents_by_label(spacy_doc: Doc, entities: Optional[List[str]] = None) -> List[SpacySpan]:
+def _get_ents_by_label(spacy_doc: Doc, entities: list[str] | None = None) -> list[SpacySpan]:
     ents = [ent for ent in spacy_doc.ents if ent.label_ in entities] if entities else list(spacy_doc.ents)
 
     return ents
 
 
-def _get_spans_by_label(spacy_doc: Doc, span_groups: Optional[List[str]] = None) -> Dict[str, List[SpacySpan]]:
+def _get_spans_by_label(spacy_doc: Doc, span_groups: list[str] | None = None) -> dict[str, list[SpacySpan]]:
     if span_groups is None:
         spans = dict(spacy_doc.spans)
     else:
@@ -472,9 +475,7 @@ def _get_spans_by_label(spacy_doc: Doc, span_groups: Optional[List[str]] = None)
     return spans
 
 
-def _get_custom_attrs_by_label(
-    rebuild_medkit_anns_and_attrs: bool, attributes: Optional[List[str]] = None
-) -> List[str]:
+def _get_custom_attrs_by_label(rebuild_medkit_anns_and_attrs: bool, attributes: list[str] | None = None) -> list[str]:
     spacy_attrs = _get_defined_spacy_attrs(rebuild_medkit_anns_and_attrs)
     if attributes is not None:
         # filter attributes by label

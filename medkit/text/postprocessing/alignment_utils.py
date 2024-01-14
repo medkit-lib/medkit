@@ -1,25 +1,24 @@
+from __future__ import annotations
+
 __all__ = ["compute_nested_segments"]
-from typing import List, Tuple
 
 from intervaltree import IntervalTree
 
 from medkit.core.text import Segment, span_utils
 
 
-def _create_segments_tree(
-    target_segments: List[Segment],
-) -> IntervalTree:
+def _create_segments_tree(target_segments: list[Segment]) -> IntervalTree:
     """Use the normalized spans of the segments to create an interval tree
 
     Parameters
     ----------
-    target_segments:
+    target_segments : list of Segment
         List of segments to align
 
     Returns
     -------
     IntervalTree
-    Interval tree from the target segments
+        Interval tree from the target segments
     """
     tree = IntervalTree()
     for segment in target_segments:
@@ -37,21 +36,22 @@ def _create_segments_tree(
 
 
 def compute_nested_segments(
-    source_segments: List[Segment], target_segments: List[Segment]
-) -> List[Tuple[Segment, List[Segment]]]:
+    source_segments: list[Segment],
+    target_segments: list[Segment],
+) -> list[tuple[Segment, list[Segment]]]:
     """Return source segments aligned with its nested segments.
     Only nested segments fully contained in the `source_segments` are returned.
 
     Parameters
     ----------
-    source_segments:
+    source_segments : list of Segment
         List of source segments
-    target_segments:
+    target_segments : list of Segment
         List of segments to align
 
     Returns
     -------
-    List[Tuple[~medkit.core.text.Segment,List[~medkit.core.text.Segment]]]:
+    list of tuple
         List of aligned segments
     """
     tree = _create_segments_tree(target_segments)

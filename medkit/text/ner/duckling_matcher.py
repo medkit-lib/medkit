@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 __all__ = ["DucklingMatcher"]
 
 import warnings
-from typing import Iterator, List, Optional
+from typing import Iterator
 
 import requests
 
@@ -31,28 +33,30 @@ class DucklingMatcher(NEROperation):
         version: str,
         url: str = "http://localhost:8000",
         locale: str = "fr_FR",
-        dims: Optional[List[str]] = None,
-        attrs_to_copy: Optional[List[str]] = None,
-        uid: Optional[str] = None,
+        dims: list[str] | None = None,
+        attrs_to_copy: list[str] | None = None,
+        uid: str | None = None,
     ):
         """Instantiate the Duckling matcher
 
         Parameters
         ----------
-        version:
-            Version of the Duckling server.
-        output_label:
+        output_label : str
             Label to use for attributes created by this annotator.
-        url:
+        version : str
+            Version of the Duckling server.
+        url : str, optional
             URL of the server. Defaults to "http://localhost:8000"
-        locale:
+        locale : str, default="fr_FR"
             Language flag of the text to parse following ISO-639-1 standard, e.g. "fr_FR"
-        dims:
+        dims : list of str, optional
             List of dimensions to extract. If None, all available dimensions will be extracted.
-        attrs_to_copy:
+        attrs_to_copy : list of str, optional
             Labels of the attributes that should be copied from the source segment
             to the created entity. Useful for propagating context attributes
             (negation, antecendent, etc)
+        uid : str, optional
+            Identifier of the matcher
         """
         # Pass all arguments to super (remove self)
         init_args = locals()
@@ -66,22 +70,22 @@ class DucklingMatcher(NEROperation):
         self.version: str = version
         self.url: str = url
         self.locale: str = locale
-        self.dims: Optional[List[str]] = dims
-        self.attrs_to_copy: List[str] = attrs_to_copy
+        self.dims: list[str] | None = dims
+        self.attrs_to_copy: list[str] = attrs_to_copy
 
         self._test_connection()
 
-    def run(self, segments: List[Segment]) -> List[Entity]:
+    def run(self, segments: list[Segment]) -> list[Entity]:
         """Return entities for each match in `segments`
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             List of segments into which to look for matches
 
         Returns
         -------
-        entities: List[Entity]
+        list of Entity
             Entities found in `segments`
         """
         return [entity for segment in segments for entity in self._find_matches_in_segment(segment)]

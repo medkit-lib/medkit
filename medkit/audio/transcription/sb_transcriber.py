@@ -1,11 +1,11 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[sb-transcriber]`.
 """
+from __future__ import annotations
 
 __all__ = ["SBTranscriber"]
 
 from pathlib import Path
-from typing import List, Optional, Union
 
 import speechbrain as sb
 
@@ -26,42 +26,42 @@ class SBTranscriber(Operation):
 
     def __init__(
         self,
-        model: Union[str, Path],
+        model: str | Path,
         needs_decoder: bool,
         output_label: str = "transcribed_text",
         add_trailing_dot: bool = True,
         capitalize: bool = True,
-        cache_dir: Optional[Union[str, Path]] = None,
+        cache_dir: str | Path | None = None,
         device: int = -1,
         batch_size: int = 1,
-        uid: Optional[str] = None,
+        uid: str | None = None,
     ):
         """Parameters
         ----------
-        model:
+        model : str or Path
             Name of the model on the Hugging Face models hub, or local path.
-        output_label:
-            Label of the attribute containing the transcribed text that will be
-            attached to the input segments
-        needs_decoder:
+        needs_decoder : bool
             Whether the model should be used with the speechbrain
             `EncoderDecoderASR` class or the `EncoderASR` class. If unsure,
             check the code snippets on the model card on the hub.
-        add_trailing_dot:
+        output_label : str, default="transcribed_text"
+            Label of the attribute containing the transcribed text that will be
+            attached to the input segments
+        add_trailing_dot : bool, default=True
             If `True`, a dot will be added at the end of each transcription text.
-        capitalize:
+        capitalize : bool, default=True
             It `True`, the first letter of each transcription text will be
             uppercased and the rest lowercased.
-        cache_dir:
+        cache_dir : str or Path, optional
             Directory where to store the downloaded model. If `None`,
             speechbrain will use "pretrained_models/" and "model_checkpoints/"
             directories in the current working directory.
-        device:
+        device : int, default=-1
             Device to use for pytorch models. Follows the Hugging Face convention
             (`-1` for cpu and device number for gpu, for instance `0` for "cuda:0")
-        batch_size:
+        batch_size : int, default=1
             Number of segments in batches processed by the model.
-        uid:
+        uid : str, optional
             Identifier of the transcriber.
         """
         if cache_dir is not None:
@@ -94,13 +94,13 @@ class SBTranscriber(Operation):
 
         self._sample_rate = self._asr.audio_normalizer.sample_rate
 
-    def run(self, segments: List[Segment]):
+    def run(self, segments: list[Segment]):
         """Add a transcription attribute to each segment with a text value
         containing the transcribed text.
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             List of segments to transcribe
         """
         audios = [s.audio for s in segments]
@@ -112,7 +112,7 @@ class SBTranscriber(Operation):
             if self._prov_tracer is not None:
                 self._prov_tracer.add_prov(attr, self.description, [segment])
 
-    def _transcribe_audios(self, audios: List[AudioBuffer]) -> List[str]:
+    def _transcribe_audios(self, audios: list[AudioBuffer]) -> list[str]:
         if not all(a.sample_rate == self._sample_rate for a in audios):
             msg = (
                 "SBTranscriber received audio buffers with incompatible sample"

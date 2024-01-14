@@ -1,6 +1,7 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[metrics-transcription]`.
 """
+from __future__ import annotations
 
 __all__ = ["TranscriptionEvaluator", "TranscriptionEvaluatorResult"]
 
@@ -8,7 +9,7 @@ import dataclasses
 import functools
 import logging
 import string
-from typing import List, Sequence
+from typing import Sequence
 
 from speechbrain.utils.metric_stats import ErrorRateStats
 
@@ -171,7 +172,7 @@ class TranscriptionEvaluator:
             char_support=nb_chars,
         )
 
-    def _convert_speech_segs_to_words(self, segments: Sequence[Segment]) -> List[str]:
+    def _convert_speech_segs_to_words(self, segments: Sequence[Segment]) -> list[str]:
         """Convert list of speech segments with transcription attribute to list of
         words that can be passed to speechbrain metrics objects
         """

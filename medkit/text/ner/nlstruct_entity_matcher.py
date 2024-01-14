@@ -1,11 +1,13 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[nlstruct]`.
 """
+from __future__ import annotations
 
 __all__ = ["NLStructEntityMatcher"]
+
 import os
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Union
+from typing import Iterator
 
 import huggingface_hub
 import nlstruct
@@ -46,36 +48,36 @@ class NLStructEntityMatcher(NEROperation):
 
     def __init__(
         self,
-        model_name_or_dirpath: Union[str, Path],
-        attrs_to_copy: Optional[List[str]] = None,
+        model_name_or_dirpath: str | Path,
+        attrs_to_copy: list[str] | None = None,
         device: int = -1,
-        hf_auth_token: Optional[str] = None,
-        cache_dir: Optional[Union[str, Path]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        hf_auth_token: str | None = None,
+        cache_dir: str | Path | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
         """Parameters
         ----------
-        model_name_or_dirpath:
+        model_name_or_dirpath : str or Path
             Name (on the HuggingFace models hub) or dirpath of the NLstruct model.
             The model dir must contain a PyTorch file ('.cpkt','.pt') and a text file (.txt)
             representing the FastText embeddings if required.
-        attrs_to_copy:
+        attrs_to_copy : list of str, optional
             Labels of the attributes that should be copied from the input segment
             to the created entity. Useful for propagating context attributes
             (negation, antecendent, etc).
-        device:
+        device : int, default=-1
             Device to use for the NLstruct model. Follows the HuggingFace convention
             (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
-        hf_auth_token:
+        hf_auth_token : str, optional
             HuggingFace Authentication token (to access private models on the
             hub)
-        cache_dir:
+        cache_dir : str or Path, optional
             Directory where to store downloaded models. If not set, the default
             HuggingFace cache dir is used.
-        name:
+        name : str, optional
             Name describing the matcher (defaults to the class name).
-        uid:
+        uid : str, optional
             Identifier of the matcher.
         """
         # Pass all arguments to super (remove self and confidential hf_auth_token)
@@ -159,17 +161,17 @@ class NLStructEntityMatcher(NEROperation):
         model.load_state_dict(loaded["state_dict"], strict=False)
         return model
 
-    def run(self, segments: List[Segment]) -> List[Entity]:
+    def run(self, segments: list[Segment]) -> list[Entity]:
         """Return entities for each match in `segments`.
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             List of segments into which to look for matches.
 
         Returns
         -------
-        List[Entity]
+        list of Entity
             Entities found in `segments`.
         """
         # predict matches by segments
@@ -179,7 +181,7 @@ class NLStructEntityMatcher(NEROperation):
             entities.extend(self._matches_to_entities(matches, segment))
         return entities
 
-    def _matches_to_entities(self, matches: List[Dict], segment: Segment) -> Iterator[Entity]:
+    def _matches_to_entities(self, matches: list[dict], segment: Segment) -> Iterator[Entity]:
         for match in matches["entities"]:
             text_all, spans_all = [], []
 

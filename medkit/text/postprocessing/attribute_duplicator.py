@@ -1,6 +1,6 @@
-__all__ = ["AttributeDuplicator"]
+from __future__ import annotations
 
-from typing import List, Optional
+__all__ = ["AttributeDuplicator"]
 
 from medkit.core import Attribute, Operation
 from medkit.core.text import Segment
@@ -14,16 +14,16 @@ class AttributeDuplicator(Operation):
 
     def __init__(
         self,
-        attr_labels: List[str],
-        uid: Optional[str] = None,
+        attr_labels: list[str],
+        uid: str | None = None,
     ):
         """Instantiate the attribute duplicator
 
         Parameters
         ----------
-        attr_labels:
+        attr_labels : list of str
             Labels of the attributes to copy
-        uid:
+        uid : str, optional
             Identifier of the annotator
         """
         self.attr_labels = attr_labels
@@ -32,15 +32,15 @@ class AttributeDuplicator(Operation):
         init_args.pop("self")
         super().__init__(**init_args)
 
-    def run(self, source_segments: List[Segment], target_segments: List[Segment]):
+    def run(self, source_segments: list[Segment], target_segments: list[Segment]):
         """Add attributes from source segments to all nested segments.
         The nested segments are chosen among the `target_segments` based on their spans.
 
         Parameters
         ----------
-        source_segments:
+        source_segments : list of Segment
             List of segments with attributes to copy
-        target_segments:
+        target_segments : list of Segment
             List of segments target
         """
         nested = alignment_utils.compute_nested_segments(source_segments, target_segments)

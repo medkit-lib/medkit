@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 __all__ = ["Collection"]
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from medkit.core.audio import AudioDocument
 from medkit.core.document import Document
@@ -20,14 +22,14 @@ class Collection:
     def __init__(
         self,
         *,
-        text_docs: Optional[List[TextDocument]] = None,
-        audio_docs: Optional[List[AudioDocument]] = None,
+        text_docs: list[TextDocument] | None = None,
+        audio_docs: list[AudioDocument] | None = None,
     ):
         """Parameters
         ----------
-        text_docs:
+        text_docs : list of TextDocument, optional
             List of text documents
-        audio_docs:
+        audio_docs: list of TextDocument, optional
             List of audio documents
         """
         if text_docs is None and audio_docs is None:
@@ -43,13 +45,11 @@ class Collection:
         self.audio_docs = audio_docs
 
     @property
-    def all_docs(self) -> List[Document]:
-        """List of all the documents belonging to the document, whatever they
-        modality
-        """
+    def all_docs(self) -> list[Document]:
+        """List of all the documents belonging to the document, whatever they modality."""
         return self.text_docs + self.audio_docs
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         text_docs = [d.to_dict() for d in self.text_docs]
         audio_docs = [d.to_dict() for d in self.audio_docs]
         return dict(text_docs=text_docs, audio_docs=audio_docs)

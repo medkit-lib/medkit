@@ -1,12 +1,12 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[srt-io-convert]`.
 """
+from __future__ import annotations
 
 __all__ = ["SRTInputConverter", "SRTOutputConverter"]
 
 import logging
 from pathlib import Path
-from typing import List, Optional, Union
 
 import pysrt
 
@@ -42,15 +42,15 @@ class SRTInputConverter(InputConverter):
         self,
         turn_segment_label: str = "turn",
         transcription_attr_label: str = "transcribed_text",
-        converter_id: Optional[str] = None,
+        converter_id: str | None = None,
     ):
         """Parameters
         ----------
-        turn_segment_label:
+        turn_segment_label : str, default="turn"
             Label to use for segments representing turns in the .srt file.
-        transcription_attr_label:
+        transcription_attr_label : str, default="transcribed_text"
             Label to use for segments attributes containing the transcribed text.
-        converter_id:
+        converter_id : str, optional
             Identifier of the converter.
         """
         if converter_id is None:
@@ -60,7 +60,7 @@ class SRTInputConverter(InputConverter):
         self.turn_segment_label = turn_segment_label
         self.transcription_attr_label = transcription_attr_label
 
-        self._prov_tracer: Optional[ProvTracer] = None
+        self._prov_tracer: ProvTracer | None = None
 
     @property
     def description(self) -> OperationDescription:
@@ -80,17 +80,17 @@ class SRTInputConverter(InputConverter):
 
         Parameters
         ----------
-        prov_tracer:
+        prov_tracer : ProvTracer
             The provenance tracer used to trace the provenance.
         """
         self._prov_tracer = prov_tracer
 
     def load(
         self,
-        srt_dir: Union[str, Path],
-        audio_dir: Optional[Union[str, Path]] = None,
+        srt_dir: str | Path,
+        audio_dir: str | Path | None = None,
         audio_ext: str = ".wav",
-    ) -> List[AudioDocument]:
+    ) -> list[AudioDocument]:
         """Load all .srt files in a directory into a list of
         :class:`~medkit.core.audio.document.AudioDocument` objects.
 
@@ -100,17 +100,17 @@ class SRTInputConverter(InputConverter):
 
         Parameters
         ----------
-        srt_dir:
+        srt_dir : str or Path
             Directory containing the .srt files.
-        audio_dir:
+        audio_dir : str or Path, optional
             Directory containing the audio files corresponding to the .srt files,
             if they are not in `srt_dir`.
-        audio_ext:
+        audio_ext : str, default=".wav"
             File extension to use for audio files.
 
         Returns
         -------
-        List[AudioDocument]
+        list of AudioDocument
             List of generated documents.
         """
         srt_dir = Path(srt_dir)
@@ -132,21 +132,21 @@ class SRTInputConverter(InputConverter):
 
         return docs
 
-    def load_doc(self, srt_file: Union[str, Path], audio_file: Union[str, Path]) -> AudioDocument:
+    def load_doc(self, srt_file: str | Path, audio_file: str | Path) -> AudioDocument:
         """Load a single .srt file into an
         :class:`~medkit.core.audio.document.AudioDocument` containing
         turn segments with transcription attributes.
 
         Parameters
         ----------
-        srt_file:
+        srt_file : str or Path
             Path to the .srt file.
-        audio_file:
+        audio_file : str or Path
             Path to the corresponding audio file.
 
         Returns
         -------
-        AudioDocument:
+        AudioDocument
             Generated document.
         """
         audio_file = Path(audio_file)
@@ -161,21 +161,21 @@ class SRTInputConverter(InputConverter):
 
         return doc
 
-    def load_segments(self, srt_file: Union[str, Path], audio_file: Union[str, Path]) -> List[Segment]:
+    def load_segments(self, srt_file: str | Path, audio_file: str | Path) -> list[Segment]:
         """Load a .srt file and return a list of
         :class:`~medkit.core.audio.annotation.Segment` objects corresponding to
         turns, with transcription attributes.
 
         Parameters
         ----------
-        srt_file:
+        srt_file : str or Path
             Path to the .srt file.
-        audio_file:
+        audio_file : str or Path
             Path to the corresponding audio file.
 
         Returns
         -------
-        List[:class:`~medkit.core.audio.annotation.Segment`]:
+        list of Segment
             Turn segments as found in the .srt file, with transcription
             attributes attached.
         """
@@ -221,9 +221,9 @@ class SRTOutputConverter(OutputConverter):
     ):
         """Parameters
         ----------
-        segment_turn_label:
+        segment_turn_label : str, default="turn"
             Label of segments representing turns in the audio documents.
-        transcription_attr_label:
+        transcription_attr_label : str, default="transcribed_text"
             Label of segments attributes containing the transcribed text.
         """
         super().__init__()
@@ -233,20 +233,20 @@ class SRTOutputConverter(OutputConverter):
 
     def save(
         self,
-        docs: List[AudioDocument],
-        srt_dir: Union[str, Path],
-        doc_names: Optional[List[str]] = None,
+        docs: list[AudioDocument],
+        srt_dir: str | Path,
+        doc_names: list[str] | None = None,
     ):
         """Save :class:`~medkit.core.audio.document.AudioDocument` instances as
         .srt files in a directory.
 
         Parameters
         ----------
-        docs:
+        docs : list of AudioDocument
             List of audio documents to save.
-        str_dir:
+        srt_dir : str or Path
             Directory into which the generated .str files will be stored.
-        doc_names:
+        doc_names : list of str, optional
             Optional list of names to use as basenames for the generated .srt
             files.
         """
@@ -268,16 +268,16 @@ class SRTOutputConverter(OutputConverter):
     def save_doc(
         self,
         doc: AudioDocument,
-        srt_file: Union[str, Path],
+        srt_file: str | Path,
     ):
         """Save a single :class:`~medkit.core.audio.document.AudioDocument` as a
         .srt file.
 
         Parameters
         ----------
-        doc:
+        doc : AudioDocument
             Audio document to save.
-        srt_file:
+        srt_file : str or Path
             Path of the generated .srt file.
         """
         srt_file = Path(srt_file)
@@ -285,15 +285,15 @@ class SRTOutputConverter(OutputConverter):
         segments = doc.anns.get(label=self.segment_turn_label)
         self.save_segments(segments, srt_file)
 
-    def save_segments(self, segments: List[Segment], srt_file: Union[str, Path]):
+    def save_segments(self, segments: list[Segment], srt_file: str | Path):
         """Save :class:`~medkit.core.audio.annotation.Segment` objects representing
         turns into a .srt file.
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             Turn segments to save.
-        srt_file:
+        srt_file : str or Path
             Path of the generated .srt file.
         """
         srt_items = pysrt.SubRipFile(path=str(srt_file))

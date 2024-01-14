@@ -1,30 +1,27 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[hf-utils]`.
 """
+from __future__ import annotations
 
 __all__ = ["check_model_for_task_hf"]
 
 from pathlib import Path
-from typing import Optional, Union
 
 import transformers
 
 
-def check_model_for_task_hf(model: Union[str, Path], task: str, hf_auth_token: Optional[str] = None) -> bool:
+def check_model_for_task_hf(model: str | Path, task: str, hf_auth_token: str | None = None) -> bool:
     """Check compatibility of a model with a task HuggingFace.
     The model could be in the HuggingFace hub or in local files.
 
     Parameters
     ----------
-    model:
+    model : str or Path
         Name (on the HuggingFace models hub) or path of the model.
-
-    task:
+    task : str
         A string representing the HF task to check i.e : 'token-classification'
-
-    hf_auth_token:
-        HuggingFace Authentication token (to access private models on the
-        hub)
+    hf_auth_token : str, optional
+        HuggingFace Authentication token (to access private models on the hub)
 
     Returns
     -------

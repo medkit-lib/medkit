@@ -1,11 +1,12 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[pa-speaker-detector]`.
 """
+from __future__ import annotations
 
 __all__ = ["PASpeakerDetector"]
 
 from pathlib import Path
-from typing import Iterator, List, Optional, Union
+from typing import Iterator
 
 # When pyannote and spacy are both installed, a conflict might occur between the
 # ujson library used by pandas (a pyannote dependency) and the ujson library used
@@ -51,44 +52,44 @@ class PASpeakerDetector(SegmentationOperation):
 
     def __init__(
         self,
-        model: Union[str, Path],
+        model: str | Path,
         output_label: str,
-        min_nb_speakers: Optional[int] = None,
-        max_nb_speakers: Optional[int] = None,
+        min_nb_speakers: int | None = None,
+        max_nb_speakers: int | None = None,
         min_duration: float = 0.1,
         device: int = -1,
         segmentation_batch_size: int = 1,
         embedding_batch_size: int = 1,
-        hf_auth_token: Optional[str] = None,
-        uid: Optional[str] = None,
+        hf_auth_token: str | None = None,
+        uid: str | None = None,
     ):
         """Parameters
         ----------
-        model:
+        model : str or Path
             Name (on the HuggingFace models hub) or path of a pretrained
             pipeline. When a path, should point to the .yaml file containing the
             pipeline configuration.
-        output_label:
+        output_label : str
             Label of generated turn segments.
-        min_nb_speakers:
+        min_nb_speakers : int, optional
             Minimum number of speakers expected to be found.
-        max_nb_speakers:
+        max_nb_speakers : int, optional
             Maximum number of speakers expected to be found.
-        min_duration:
+        min_duration : float, default=0.1
             Minimum duration of speech segments, in seconds (short segments will
             be discarded).
-        device:
+        device : int, default=-1
             Device to use for pytorch models. Follows the Hugging Face
             convention (`-1` for cpu and device number for gpu, for instance `0`
             for "cuda:0").
-        segmentation_batch_size:
+        segmentation_batch_size : int, default=1
             Number of input segments in batches processed by segmentation model.
-        embedding_batch_size:
+        embedding_batch_size : int, default=1
             Number of pre-segmented audios in batches processed by embedding model.
-        hf_auth_token:
+        hf_auth_token : str, optional
             HuggingFace Authentication token (to access private models on the
             hub)
-        uid:
+        uid : str, optional
             Identifier of the detector.
         """
         # Pass all arguments to super (remove self and confidential hf_auth_token)
@@ -117,17 +118,17 @@ class PASpeakerDetector(SegmentationOperation):
         self._pipeline.segmentation_batch_size = segmentation_batch_size
         self._pipeline.embedding_batch_size = embedding_batch_size
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
+    def run(self, segments: list[Segment]) -> list[Segment]:
         """Return all turn segments detected for all input `segments`.
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             Audio segments on which to perform diarization.
 
         Returns
         -------
-        List[~medkit.core.audio.Segment]:
+        list of Segment
             Segments detected as containing speech activity (with speaker
             attributes)
         """

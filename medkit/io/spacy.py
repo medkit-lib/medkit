@@ -1,10 +1,9 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[spacy]`.
 """
+from __future__ import annotations
 
 __all__ = ["SpacyInputConverter", "SpacyOutputConverter"]
-
-from typing import List, Optional
 
 from spacy import Language
 from spacy.tokens import Doc
@@ -22,10 +21,10 @@ class SpacyInputConverter:
 
     def __init__(
         self,
-        entities: Optional[List[str]] = None,
-        span_groups: Optional[List[str]] = None,
-        attrs: Optional[List[str]] = None,
-        uid: Optional[str] = None,
+        entities: list[str] | None = None,
+        span_groups: list[str] | None = None,
+        attrs: list[str] | None = None,
+        uid: str | None = None,
     ):
         """Initialize the spacy input converter
 
@@ -49,7 +48,7 @@ class SpacyInputConverter:
             uid = generate_id()
 
         self.uid = uid
-        self._prov_tracer: Optional[ProvTracer] = None
+        self._prov_tracer: ProvTracer | None = None
 
         self.entities = entities
         self.span_groups = span_groups
@@ -73,7 +72,7 @@ class SpacyInputConverter:
     def set_prov_tracer(self, prov_tracer: ProvTracer):
         self._prov_tracer = prov_tracer
 
-    def load(self, spacy_docs: List[Doc]) -> List[TextDocument]:
+    def load(self, spacy_docs: list[Doc]) -> list[TextDocument]:
         """Create a list of TextDocuments from a list of spacy Doc objects.
         Depending on the configuration of the converted, the selected annotations
         and attributes are included in the documents.
@@ -134,9 +133,9 @@ class SpacyOutputConverter:
         self,
         nlp: Language,
         apply_nlp_spacy: bool = False,
-        labels_anns: Optional[List[str]] = None,
-        attrs: Optional[List[str]] = None,
-        uid: Optional[str] = None,
+        labels_anns: list[str] | None = None,
+        attrs: list[str] | None = None,
+        uid: str | None = None,
     ):
         """Initialize the spacy output converter
 
@@ -165,7 +164,7 @@ class SpacyOutputConverter:
             uid = generate_id()
 
         self.uid = uid
-        self._prov_tracer: Optional[ProvTracer] = None
+        self._prov_tracer: ProvTracer | None = None
 
         self.nlp = nlp
         self.labels_anns = labels_anns
@@ -184,7 +183,7 @@ class SpacyOutputConverter:
         )
         return OperationDescription(uid=self.uid, class_name=self.__class__.__name__, config=config)
 
-    def convert(self, medkit_docs: List[TextDocument]) -> List[Doc]:
+    def convert(self, medkit_docs: list[TextDocument]) -> list[Doc]:
         """Convert a list of TextDocuments into a list of spacy Doc objects.
         Depending on the configuration of the converted, the selected annotations
         and attributes are included in the documents.

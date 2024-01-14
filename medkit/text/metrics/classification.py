@@ -1,10 +1,11 @@
 """This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[metrics-text-classification]`.
 """
+from __future__ import annotations
 
 __all__ = ["TextClassificationEvaluator"]
+
 import logging
-from typing import Dict, List, Union
 
 from sklearn.metrics import classification_report, cohen_kappa_score
 from typing_extensions import Literal
@@ -28,7 +29,7 @@ class TextClassificationEvaluator:
         """
         self.attr_label = attr_label
 
-    def _extract_attr_values(self, docs: List[TextDocument]) -> List[Union[str, int, bool]]:
+    def _extract_attr_values(self, docs: list[TextDocument]) -> list[str | int | bool]:
         """Prepare docs attrs to compute the metric
 
         Parameters
@@ -64,11 +65,11 @@ class TextClassificationEvaluator:
 
     def compute_classification_report(
         self,
-        true_docs: List[TextDocument],
-        predicted_docs: List[TextDocument],
+        true_docs: list[TextDocument],
+        predicted_docs: list[TextDocument],
         metrics_by_attr_value: bool = True,
         average: Literal["macro", "weighted"] = "macro",
-    ) -> Dict[str, Union[float, int]]:
+    ) -> dict[str, float | int]:
         """Compute classification metrics of document attributes giving annotated documents.
         This method uses `sklearn.metrics.classification_report` to compute
         precision, recall and F1-score for value of the attribute.
@@ -120,8 +121,8 @@ class TextClassificationEvaluator:
         return scores
 
     def compute_cohen_kappa(
-        self, docs_annotator_1: List[TextDocument], docs_annotator_2: List[TextDocument]
-    ) -> Dict[str, Union[float, int]]:
+        self, docs_annotator_1: list[TextDocument], docs_annotator_2: list[TextDocument]
+    ) -> dict[str, float | int]:
         """Compute the cohen's kappa score, an inter-rated agreement score between two annotators.
         This method uses 'sklearn' as backend to compute the level of agreement.
 
@@ -153,7 +154,7 @@ class TextClassificationEvaluator:
 
         return scores
 
-    def compute_krippendorff_alpha(self, docs_annotators: List[List[TextDocument]]) -> Dict[str, Union[float, int]]:
+    def compute_krippendorff_alpha(self, docs_annotators: list[list[TextDocument]]) -> dict[str, float | int]:
         """Compute the Krippendorff alpha score, an inter-rated agreement score between
         multiple annotators.
 

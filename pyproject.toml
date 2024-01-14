@@ -275,7 +275,7 @@ select = [
   # flake8-errmsg
   "EM",
   # flake8-future-annotations
-  #"FA",
+  "FA",
   # flake8-implicit-str-concat
   "ISC",
   # flake8-import-conventions

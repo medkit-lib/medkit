@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 __all__ = ["AttributeContainer"]
 
 import typing
-from typing import Dict, Iterator, List, Optional, Union
+from typing import Iterator
 
 from medkit.core.attribute import Attribute
 from medkit.core.store import GlobalStore, Store
@@ -24,8 +26,8 @@ class AttributeContainer:
     def __init__(self, owner_id: str):
         self._store: Store = GlobalStore.get_store()
         self._owner_id = owner_id
-        self._attr_ids: List[str] = []
-        self._attr_ids_by_label: Dict[str, List[str]] = {}
+        self._attr_ids: list[str] = []
+        self._attr_ids_by_label: dict[str, list[str]] = {}
 
     def __len__(self) -> int:
         """Add support for calling `len()`"""
@@ -37,21 +39,26 @@ class AttributeContainer:
         """
         return iter(self.get_by_id(uid) for uid in self._attr_ids)
 
-    def __getitem__(self, key: Union[int, slice]) -> Union[Attribute, List[Attribute]]:
+    def __getitem__(self, key: int | slice) -> Attribute | list[Attribute]:
         """Add support for subscript access"""
         if isinstance(key, slice):
             return [self.get_by_id(uid) for uid in self._attr_ids[key]]
         else:
             return self.get_by_id(self._attr_ids[key])
 
-    def get(self, *, label: Optional[str] = None) -> List[Attribute]:
+    def get(self, *, label: str | None = None) -> list[Attribute]:
         """Return a list of the attributes of the annotation, optionally filtering
         by label.
 
         Parameters
         ----------
-        label:
+        label : str, optional
             Label to use to filter attributes.
+
+        Returns
+        -------
+        list of Attribute
+            The list of all attributes of the annotation, filtered by label if specified.
         """
         if label is None:
             return list(iter(self))
@@ -63,7 +70,7 @@ class AttributeContainer:
 
         Parameters
         ----------
-        attr:
+        attr : Attribute
             Attribute to add.
 
         Raises
@@ -91,8 +98,13 @@ class AttributeContainer:
 
         Parameters
         ----------
-        uid:
+        uid : str
             Identifier of the attribute to return.
+
+        Returns
+        -------
+        Attribute
+            The attribute corresponding to the identifier
         """
         attr = self._store.get_data_item(uid)
         if attr is None:
