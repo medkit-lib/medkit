@@ -17,8 +17,8 @@ if not modules_are_available(["spacy"]):
     msg = "Requires spacy install for importing medkit.text.spacy module"
     raise ImportError(msg)
 
-from .doc_pipeline import SpacyDocPipeline
-from .pipeline import SpacyPipeline
+from medkit.text.spacy.doc_pipeline import SpacyDocPipeline
+from medkit.text.spacy.pipeline import SpacyPipeline
 
 if modules_are_available(["edsnlp"]):
     __all__ += ["edsnlp"]

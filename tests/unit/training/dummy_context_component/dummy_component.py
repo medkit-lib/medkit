@@ -3,10 +3,9 @@ from __future__ import annotations
 import os
 
 import torch
+from tests.unit.training.dummy_model import DummyTextCat, DummyTextCatConfig, DummyTokenizer
 
 from medkit.training import BatchData
-
-from .dummy_model import DummyTextCat, DummyTextCatConfig, DummyTokenizer
 
 PYTORCH_MODEL_NAME = "pytorch_model.bin"
 

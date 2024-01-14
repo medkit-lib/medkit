@@ -8,11 +8,8 @@ from medkit.training.trainer import (
     OPTIMIZER_NAME,
     SCHEDULER_NAME,
 )
-
-from .dummy_context_component.dummy_component import (
-    MockTrainableComponent,
-)
-from .dummy_context_component.dummy_corpus import DUMMY_DATASETS
+from tests.unit.training.dummy_context_component.dummy_component import MockTrainableComponent
+from tests.unit.training.dummy_context_component.dummy_corpus import DUMMY_DATASETS
 
 
 class DummyMetricsComputer:

@@ -18,28 +18,18 @@ __all__ = [
 ]
 
 from medkit.core.utils import modules_are_available
-
-from .adicap_norm_attribute import ADICAPNormAttribute
-from .date_attribute import (
+from medkit.text.ner.adicap_norm_attribute import ADICAPNormAttribute
+from medkit.text.ner.date_attribute import (
     DateAttribute,
     DurationAttribute,
     RelativeDateAttribute,
     RelativeDateDirection,
 )
-from .duckling_matcher import DucklingMatcher
-from .iamsystem_matcher import IAMSystemMatcher, MedkitKeyword
-from .regexp_matcher import (
-    RegexpMatcher,
-    RegexpMatcherNormalization,
-    RegexpMatcherRule,
-    RegexpMetadata,
-)
-from .simstring_matcher import (
-    SimstringMatcher,
-    SimstringMatcherNormalization,
-    SimstringMatcherRule,
-)
-from .umls_matcher import UMLSMatcher
+from medkit.text.ner.duckling_matcher import DucklingMatcher
+from medkit.text.ner.iamsystem_matcher import IAMSystemMatcher, MedkitKeyword
+from medkit.text.ner.regexp_matcher import RegexpMatcher, RegexpMatcherNormalization, RegexpMatcherRule, RegexpMetadata
+from medkit.text.ner.simstring_matcher import SimstringMatcher, SimstringMatcherNormalization, SimstringMatcherRule
+from medkit.text.ner.umls_matcher import UMLSMatcher
 
 # quick_umls module
 if modules_are_available(["packaging", "quickumls"]):

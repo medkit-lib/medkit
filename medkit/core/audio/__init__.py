@@ -10,9 +10,9 @@ __all__ = [
     "Span",
 ]
 
-from .annotation import Segment
-from .annotation_container import AudioAnnotationContainer
-from .audio_buffer import AudioBuffer, FileAudioBuffer, MemoryAudioBuffer
-from .document import AudioDocument
-from .operation import PreprocessingOperation, SegmentationOperation
-from .span import Span
+from medkit.core.audio.annotation import Segment
+from medkit.core.audio.annotation_container import AudioAnnotationContainer
+from medkit.core.audio.audio_buffer import AudioBuffer, FileAudioBuffer, MemoryAudioBuffer
+from medkit.core.audio.document import AudioDocument
+from medkit.core.audio.operation import PreprocessingOperation, SegmentationOperation
+from medkit.core.audio.span import Span

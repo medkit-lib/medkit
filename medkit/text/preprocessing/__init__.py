@@ -13,8 +13,8 @@ __all__ = [
     "SPACE_RULES",
 ]
 
-from .char_replacer import CharReplacer
-from .char_rules import (
+from medkit.text.preprocessing.char_replacer import CharReplacer
+from medkit.text.preprocessing.char_rules import (
     ALL_CHAR_RULES,
     DOT_RULES,
     FRACTION_RULES,
@@ -23,6 +23,6 @@ from .char_rules import (
     SIGN_RULES,
     SPACE_RULES,
 )
-from .duplicate_finder import DuplicateFinder, DuplicationAttribute
-from .eds_cleaner import EDSCleaner
-from .regexp_replacer import RegexpReplacer
+from medkit.text.preprocessing.duplicate_finder import DuplicateFinder, DuplicationAttribute
+from medkit.text.preprocessing.eds_cleaner import EDSCleaner
+from medkit.text.preprocessing.regexp_replacer import RegexpReplacer

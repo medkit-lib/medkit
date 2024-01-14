@@ -3,11 +3,8 @@ import pytest
 torch = pytest.importorskip(modname="torch", reason="torch is not installed")
 
 from medkit.training import Trainer, TrainerConfig
-
-from .dummy_context_component.dummy_component import (
-    MockTrainableComponent,
-)
-from .dummy_context_component.dummy_corpus import DUMMY_DATASETS
+from tests.unit.training.dummy_context_component.dummy_component import MockTrainableComponent
+from tests.unit.training.dummy_context_component.dummy_corpus import DUMMY_DATASETS
 
 
 class DummyMetricsComputer:

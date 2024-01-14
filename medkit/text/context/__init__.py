@@ -11,11 +11,11 @@ __all__ = [
     "NegationMetadata",
 ]
 
-from .family_detector import FamilyDetector, FamilyDetectorRule, FamilyMetadata
-from .hypothesis_detector import (
+from medkit.text.context.family_detector import FamilyDetector, FamilyDetectorRule, FamilyMetadata
+from medkit.text.context.hypothesis_detector import (
     HypothesisDetector,
     HypothesisDetectorRule,
     HypothesisRuleMetadata,
     HypothesisVerbMetadata,
 )
-from .negation_detector import NegationDetector, NegationDetectorRule, NegationMetadata
+from medkit.text.context.negation_detector import NegationDetector, NegationDetectorRule, NegationMetadata
