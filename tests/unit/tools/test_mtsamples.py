@@ -5,11 +5,11 @@ from medkit.tools.mtsamples import convert_mtsamples_to_medkit, load_mtsamples
 
 
 @pytest.mark.parametrize(
-    "translated,expected_header",
-    (
+    ("translated", "expected_header"),
+    [
         (True, "SUBJECTIF :, Cette femme blanche de 23 ans"),
         (False, "SUBJECTIVE:,  This 23-year-old"),
-    ),
+    ],
     ids=[
         "french_mtsamples",
         "english_mtsamples",

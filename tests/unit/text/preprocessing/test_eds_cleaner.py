@@ -84,7 +84,7 @@ def _get_raw_segment(text):
 
 
 @pytest.mark.parametrize(
-    "text,expected_text,expected_spans",
+    ("text", "expected_text", "expected_spans"),
     TEST_DEFAULT_CONFIG,
     ids=[
         "replace_points_keywords_fr",
@@ -185,7 +185,7 @@ TEST_PARAMS_CONFIG = [
 
 
 @pytest.mark.parametrize(
-    "cleaner,text,expected_text,expected_spans",
+    ("cleaner", "text", "expected_text", "expected_spans"),
     TEST_PARAMS_CONFIG,
     ids=[
         "keep_endlines_true",

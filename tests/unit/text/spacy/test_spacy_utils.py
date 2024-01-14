@@ -251,7 +251,9 @@ def test_spacy_to_medkit_with_custom_attr_value(nlp_spacy):
 
     attr = attrs[anns[0].uid][0]
     assert isinstance(attr, _DateAttribute)
-    assert attr.year == 2001 and attr.month == 11 and attr.day == 18
+    assert attr.year == 2001
+    assert attr.month == 11
+    assert attr.day == 18
 
     # teardown
     nlp_spacy.remove_pipe("entity_ruler")

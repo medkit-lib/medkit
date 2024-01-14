@@ -326,7 +326,8 @@ def test_step_with_no_output():
     for segment in sentence_segs:
         assert len(segment.attrs) == 1
         attr = segment.attrs[0]
-        assert attr.label == "validated" and attr.value is True
+        assert attr.label == "validated"
+        assert attr.value is True
 
 
 def test_step_with_different_output_length():

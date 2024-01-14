@@ -34,7 +34,7 @@ class _MockPipeline:
 def _mocked_pipeline(module_mocker):
     module_mocker.patch(
         "transformers.pipelines.get_task",
-        lambda m, token=None: "automatic-speech-recognition",
+        return_value="automatic-speech-recognition",
     )
     module_mocker.patch("transformers.pipeline", _MockPipeline)
 

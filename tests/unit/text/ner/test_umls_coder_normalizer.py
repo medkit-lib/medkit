@@ -134,7 +134,7 @@ def test_max_nb_matches(embeddings_cache_dir):
 
 
 @pytest.mark.parametrize(
-    "input_size,batch_size",
+    ("input_size", "batch_size"),
     [(12, 1), (1, 12), (24, 12)],
 )
 def test_batch(embeddings_cache_dir, input_size, batch_size):

@@ -80,7 +80,7 @@ _TEST_PARAMS = [
 ]
 
 
-@pytest.mark.parametrize("nb_channels,duration,sample_rate", _TEST_PARAMS)
+@pytest.mark.parametrize(("nb_channels", "duration", "sample_rate"), _TEST_PARAMS)
 def test_memory_buffer_basic(nb_channels, duration, sample_rate):
     """Basic behavior of MemoryAudioBuffer"""
     signal = generate_sin_signal(duration, sample_rate, nb_channels)
@@ -104,7 +104,7 @@ def test_memory_buffer_trim():
     _test_trim_duration(audio)
 
 
-@pytest.mark.parametrize("nb_channels,duration,sample_rate", _TEST_PARAMS)
+@pytest.mark.parametrize(("nb_channels", "duration", "sample_rate"), _TEST_PARAMS)
 def test_file_buffer_basic(tmp_path, nb_channels, duration, sample_rate):
     """Basic behavior of FileAudioBuffer"""
     signal = generate_sin_signal(duration, sample_rate, nb_channels)

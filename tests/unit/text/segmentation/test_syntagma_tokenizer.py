@@ -54,7 +54,7 @@ def _get_segment_from_text(text):
     )
 
 
-@pytest.mark.parametrize("syntagma_tokenizer, text, expected_syntagmas", TEST_CONFIG)
+@pytest.mark.parametrize(("syntagma_tokenizer", "text", "expected_syntagmas"), TEST_CONFIG)
 def test_run(syntagma_tokenizer, text, expected_syntagmas):
     segment = _get_segment_from_text(text)
 

@@ -44,7 +44,7 @@ def test__parse__entity_discontinued_span():
 def test__parse_entity_error():
     brat_entity = "T1	medication 36 46 Lisinopril"
     entity_id, entity_content = brat_entity.split("\t", maxsplit=1)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Impossible to parse entity."):
         _parse_entity(entity_id, entity_content)
 
 
@@ -61,14 +61,14 @@ def test__parse_relation():
 def test__parse_relation_error():
     brat_relation = "R1	treats  Arg1:T1\t"
     relation_id, relation_content = brat_relation.split("\t", maxsplit=1)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Impossible to parse relation."):
         _parse_relation(relation_id, relation_content)
 
 
 def test__parse_relation_in_events_error():
     brat_relation = "R1	treats Arg1:E1 Arg2:T1"
     relation_id, relation_content = brat_relation.split("\t", maxsplit=1)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Relations between events are not supported."):
         _parse_relation(relation_id, relation_content)
 
 
@@ -91,7 +91,7 @@ def test__parse_attribute_value():
 def test__parse_attribute_error():
     brat_attribute = "A2	severity "
     attribute_id, attribute_content = brat_attribute.split("\t", maxsplit=1)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Impossible to parse attribute."):
         _parse_attribute(attribute_id, attribute_content)
 
 
@@ -223,7 +223,7 @@ TEST_CONFIG = [
 
 
 @pytest.mark.parametrize(
-    "top_values_by_attr,expected_values,expected_str",
+    ("top_values_by_attr", "expected_values", "expected_str"),
     TEST_CONFIG,
     ids=["no_values", "max_2_values", "all_values"],
 )

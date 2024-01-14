@@ -11,8 +11,8 @@ from medkit.text.ner.tnm_attribute import TNMAttribute
 
 
 # EDSNLP uses spacy which might add new extensions globally
-@pytest.fixture(scope="function", autouse=True)
-def reset_spacy_extensions():
+@pytest.fixture(autouse=True)
+def _reset_spacy_extensions():
     yield
     Underscore.doc_extensions = {}
     Underscore.span_extensions = {}
@@ -48,17 +48,15 @@ def test_basic():
     assert isinstance(attr, TNMAttribute)
     assert attr.value == "pTxN1M1"
     # testing for values shown at https://aphp.github.io/edsnlp/v0.9.1/pipelines/ner/tnm/
-    assert (
-        attr.prefix.value == "p"
-        and attr.tumour is None
-        and attr.tumour_specification.value == "x"
-        and attr.node.value == "1"
-        and attr.node_specification is None
-        and attr.metastasis.value == "1"
-        and attr.resection_completeness is None
-        and attr.version is None
-        and attr.version_year is None
-    )
+    assert attr.prefix.value == "p"
+    assert attr.tumour is None
+    assert attr.tumour_specification.value == "x"
+    assert attr.node.value == "1"
+    assert attr.node_specification is None
+    assert attr.metastasis.value == "1"
+    assert attr.resection_completeness is None
+    assert attr.version is None
+    assert attr.version_year is None
 
 
 def test_attrs_to_copy():

@@ -52,7 +52,7 @@ TEST_CONFIG = (
 
 
 @pytest.mark.parametrize(
-    "tagging_scheme,expected_tags",
+    ("tagging_scheme", "expected_tags"),
     TEST_CONFIG,
     ids=[
         "transform_bilou",

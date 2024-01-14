@@ -109,7 +109,7 @@ def test_warnings(tmp_path, caplog):
         converter.save(medkit_docs, output_file=output_file)
         assert "Entity source/target was no found" in caplog.text
 
-    with pytest.raises(KeyError, match="The attribute with the corresponding .*"):
+    with pytest.raises(KeyError, match="The attribute with the corresponding .*"):  # noqa: PT012
         # the attr_label is header not is_negated
         task = DoccanoTask.TEXT_CLASSIFICATION
         medkit_docs = [_get_doc_by_task(task)]

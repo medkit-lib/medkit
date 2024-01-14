@@ -232,7 +232,7 @@ class QuickUMLSMatcher(NEROperation):
             similarity_name=similarity,
             accepted_semtypes=accepted_semtypes,
         )
-        assert (
+        assert (  # noqa: PT018
             self._matcher.language_flag == language
             and self._matcher.to_lowercase_flag == lowercase
             and self._matcher.normalize_unicode_flag == normalize_unicode

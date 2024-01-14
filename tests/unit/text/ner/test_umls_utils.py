@@ -53,7 +53,7 @@ _LOAD_TEST_PARAMS = [
 
 
 @pytest.mark.parametrize(
-    "sources,languages,expected_entries",
+    ("sources", "languages", "expected_entries"),
     _LOAD_TEST_PARAMS,
 )
 def test_load_umls_entries(sources, languages, expected_entries):
@@ -73,7 +73,7 @@ _PREPROCESS_TEST_PARAMS = [
 
 
 @pytest.mark.parametrize(
-    "term,expected_result,lowercase,normalize_unicode",
+    ("term", "expected_result", "lowercase", "normalize_unicode"),
     _PREPROCESS_TEST_PARAMS,
 )
 def test_preprocess_term_to_match(term, expected_result, lowercase, normalize_unicode):
@@ -93,7 +93,7 @@ _ACRONYM_TEST_PARAMS = [
 
 
 @pytest.mark.parametrize(
-    "term,expected_result",
+    ("term", "expected_result"),
     _ACRONYM_TEST_PARAMS,
 )
 def test_acronym(term, expected_result):

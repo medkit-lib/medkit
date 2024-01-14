@@ -33,7 +33,7 @@ TEST_METRICS = [
 
 
 @pytest.mark.parametrize(
-    "metrics_computer,do_metrics_in_training,expected_train_metrics,expected_eval_metrics",
+    ("metrics_computer", "do_metrics_in_training", "expected_train_metrics", "expected_eval_metrics"),
     TEST_METRICS,
     ids=["default_metrics", "more_metrics_in_eval", "more_metrics_train_eval"],
 )
@@ -86,7 +86,7 @@ TEST_SCHEDULER = [
 
 
 @pytest.mark.parametrize(
-    "lr_scheduler_builder,metric_to_track_lr",
+    ("lr_scheduler_builder", "metric_to_track_lr"),
     TEST_SCHEDULER,
     ids=[
         "default_no_lr_scheduler",

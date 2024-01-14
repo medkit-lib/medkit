@@ -28,7 +28,7 @@ def test_add_annotation(init_data):
     doc.anns.add(ent1)
     assert ent1 in doc.anns.get_entities()
     # Test exception when adding the same annotation
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Impossible to add this annotation."):
         doc.anns.add(ent1)
     # Test segment addition
     doc.anns.add(segment)

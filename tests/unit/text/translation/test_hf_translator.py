@@ -112,7 +112,7 @@ def test_translator_with_matcher(translator):
 
 
 @pytest.mark.parametrize(
-    "input_size,batch_size",
+    ("input_size", "batch_size"),
     [(12, 1), (1, 12), (24, 12)],
 )
 def test_batch(input_size, batch_size):

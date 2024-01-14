@@ -85,7 +85,7 @@ TEST_DATA = [
 
 
 @pytest.mark.parametrize(
-    "mock_pred_labels_ids,expected_tags,expected_metrics",
+    ("mock_pred_labels_ids", "expected_tags", "expected_metrics"),
     TEST_DATA,
     ids=[
         "perfect_prediction",

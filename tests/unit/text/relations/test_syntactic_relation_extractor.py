@@ -12,7 +12,7 @@ from medkit.text.relations.syntactic_relation_extractor import (
 
 
 @pytest.fixture(scope="module", autouse=True)
-def setup():
+def _setup():
     # download french spacy model
     if not spacy.util.is_package("fr_core_news_sm"):
         spacy.cli.download("fr_core_news_sm")
@@ -46,7 +46,7 @@ TEST_CONFIG = (
 
 
 @pytest.mark.parametrize(
-    "entities_source,entities_target,exp_source_target",
+    ("entities_source", "entities_target", "exp_source_target"),
     TEST_CONFIG,
     ids=[
         "between_all_entities",

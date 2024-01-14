@@ -59,7 +59,7 @@ TEST_ENTS_TO_SPACY = [
 
 
 @pytest.mark.parametrize(
-    "labels_ents_to_transfer,expected_nb_ents,expected_label_ents",
+    ("labels_ents_to_transfer", "expected_nb_ents", "expected_label_ents"),
     TEST_ENTS_TO_SPACY,
     ids=["all_ents", "no_annotations", "entity_by_label"],
 )
@@ -97,7 +97,7 @@ TEST_ATTR_TRANSFER = [
 
 
 @pytest.mark.parametrize(
-    "attrs_to_transfer,should_have_severity_attr,should_have_family_attr",
+    ("attrs_to_transfer", "should_have_severity_attr", "should_have_family_attr"),
     TEST_ATTR_TRANSFER,
     ids=["default", "no_attrs", "only_family_attr"],
 )

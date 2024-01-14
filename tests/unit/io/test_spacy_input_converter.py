@@ -32,7 +32,7 @@ TEST_ENTS_FROM_SPACY = [(None, 2), ([], 0), (["PERSON"], 1)]
 
 
 @pytest.mark.parametrize(
-    "labels_ents_to_transfer,expected_nb_ents",
+    ("labels_ents_to_transfer", "expected_nb_ents"),
     TEST_ENTS_FROM_SPACY,
     ids=["default", "no_annotations", "entity_by_label"],
 )
@@ -80,7 +80,7 @@ TEST_ATTR_FROM_SPACY = [
 
 
 @pytest.mark.parametrize(
-    "attrs_to_transfer,expected_nb_attrs,expected_values_attr_date",
+    ("attrs_to_transfer", "expected_nb_attrs", "expected_values_attr_date"),
     TEST_ATTR_FROM_SPACY,
     ids=["default", "no_attributes", "attr_by_label"],
 )
@@ -199,7 +199,7 @@ TEST_SEGMENTS_FROM_SPACY = [
 
 
 @pytest.mark.parametrize(
-    "name_spans_to_transfer,expected_labels_in_segments,expected_total_annotations",
+    ("name_spans_to_transfer", "expected_labels_in_segments", "expected_total_annotations"),
     TEST_SEGMENTS_FROM_SPACY,
     ids=["default", "no_attributes", "attr_by_label"],
 )

@@ -63,7 +63,7 @@ def _get_clean_text_segment(text):
 
 
 @pytest.mark.parametrize(
-    "text,sentence_tokenizer,expected_sentences",
+    ("text", "sentence_tokenizer", "expected_sentences"),
     TEST_CONFIG,
     ids=["default", "keep_newlines"],
 )

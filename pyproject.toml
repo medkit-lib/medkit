@@ -287,7 +287,7 @@ select = [
   # flake8-pyi
   "PYI",
   # flake8-pytest-style
-  #"PT",
+  "PT",
   # flake8-quotes
   "Q",
   # flake8-raise

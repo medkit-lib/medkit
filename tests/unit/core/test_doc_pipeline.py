@@ -193,7 +193,8 @@ def test_no_output():
     sentence_anns = doc.anns.get(label="sentence")
     for ann in sentence_anns:
         attrs = ann.attrs.get(label="validated")
-        assert len(attrs) == 1 and attrs[0].value is True
+        assert len(attrs) == 1
+        assert attrs[0].value is True
 
 
 def test_multiple_outputs():

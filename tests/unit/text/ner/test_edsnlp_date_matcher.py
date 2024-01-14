@@ -16,8 +16,8 @@ from medkit.text.ner.edsnlp_date_matcher import EDSNLPDateMatcher
 
 
 # EDSNLP uses spacy which might add new extensions globally
-@pytest.fixture(scope="function", autouse=True)
-def reset_spacy_extensions():
+@pytest.fixture(autouse=True)
+def _reset_spacy_extensions():
     yield
     Underscore.doc_extensions = {}
     Underscore.span_extensions = {}
@@ -52,7 +52,9 @@ def test_absolute_date():
     attr = attrs[0]
     assert isinstance(attr, DateAttribute)
     assert attr.value == "2012-10-25"
-    assert attr.year == 2012 and attr.month == 10 and attr.day == 25
+    assert attr.year == 2012
+    assert attr.month == 10
+    assert attr.day == 25
 
 
 def test_relative_date():

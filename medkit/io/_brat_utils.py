@@ -451,11 +451,11 @@ def _parse_relation(relation_id: str, relation_content: str) -> BratRelation:
         subj = subj.replace("Arg1:", "")
         obj = obj.replace("Arg2:", "")
     except ValueError as err:
-        msg = "Impossible to parse the relation."
+        msg = "Impossible to parse relation."
         raise ValueError(msg) from err
 
     if subj.startswith("E") or obj.startswith("E"):
-        msg = "Impossible to parse the relation. Relations between events are not supported"
+        msg = "Relations between events are not supported."
         raise ValueError(msg)
 
     return BratRelation(relation_id.strip(), relation.strip(), subj.strip(), obj.strip())
@@ -483,7 +483,7 @@ def _parse_attribute(attribute_id: str, attribute_content: str) -> BratAttribute
     """
     attribute_arguments = attribute_content.strip().split(" ", maxsplit=2)
     if len(attribute_arguments) < 2:
-        msg = "Impossible to parse the input attribute"
+        msg = "Impossible to parse attribute."
         raise ValueError(msg)
 
     attribute_name = attribute_arguments[0]

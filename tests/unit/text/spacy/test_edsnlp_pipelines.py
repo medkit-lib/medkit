@@ -23,8 +23,8 @@ def _get_segment(text):
     return Segment(label="sentence", text=text, spans=[Span(0, len(text))])
 
 
-@pytest.fixture(scope="function", autouse=True)
-def reset_spacy_extensions():
+@pytest.fixture(autouse=True)
+def _reset_spacy_extensions():
     yield
     Underscore.doc_extensions = {}
     Underscore.span_extensions = {}
@@ -50,7 +50,9 @@ def test_dates_pipeline():
     date_attr = date_attrs[0]
     assert isinstance(date_attr, DateAttribute)
     assert date_attr.value == "2012-10-25"
-    assert date_attr.year == 2012 and date_attr.month == 10 and date_attr.day == 25
+    assert date_attr.year == 2012
+    assert date_attr.month == 10
+    assert date_attr.day == 25
 
     # relative date
     seg = _get_segment("Hospitalisé il y a 2 mois")
@@ -143,12 +145,14 @@ def test_family_pipeline():
     assert entity_1.label == "problem"
     assert entity_1.text == "tumeur"
     family_attrs_1 = entity_1.attrs.get(label="family")
-    assert len(family_attrs_1) == 1 and family_attrs_1[0].value is False
+    assert len(family_attrs_1) == 1
+    assert family_attrs_1[0].value is False
 
     entity_2 = anns[1]
     assert entity_2.text == "cancer"
     family_attrs_2 = entity_2.attrs.get(label="family")
-    assert len(family_attrs_2) == 1 and family_attrs_2[0].value is True
+    assert len(family_attrs_2) == 1
+    assert family_attrs_2[0].value is True
 
 
 def test_negation_pipeline():
@@ -186,7 +190,8 @@ def test_custom_attribute_factory():
     anns = edsnlp_pipeline.run([seg])
     date_seg = anns[0]
     date_attr = date_seg.attrs.get(label="date")[0]
-    assert type(date_attr) is Attribute and date_attr.value == "2012-10-25"
+    assert type(date_attr) is Attribute
+    assert date_attr.value == "2012-10-25"
 
 
 def test_doc_pipeline():
@@ -209,7 +214,8 @@ def test_doc_pipeline():
     entity_attrs = list(entity.attrs)
     assert len(entity_attrs) == 1
     entity_attr = entity_attrs[0]
-    assert entity_attr.label == "hypothesis" and entity_attr.value is True
+    assert entity_attr.label == "hypothesis"
+    assert entity_attr.value is True
 
     segs = doc.anns.segments
     assert len(segs) == 1
@@ -219,4 +225,5 @@ def test_doc_pipeline():
     date_attrs = date_seg.attrs.get(label="date")
     assert len(date_attrs) == 1
     entity_attr = date_attrs[0]
-    assert isinstance(entity_attr, DateAttribute) and entity_attr.year == 2012
+    assert isinstance(entity_attr, DateAttribute)
+    assert entity_attr.year == 2012

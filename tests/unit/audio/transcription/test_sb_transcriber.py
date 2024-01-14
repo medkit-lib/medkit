@@ -30,8 +30,10 @@ class _MockSpeechbrainASR:
         return cls()
 
     def transcribe_batch(self, wavs, wav_lengths):
-        assert isinstance(wavs, torch.Tensor) and wavs.ndim == 2
-        assert isinstance(wav_lengths, torch.Tensor) and wav_lengths.ndim == 1
+        assert isinstance(wavs, torch.Tensor)
+        assert wavs.ndim == 2
+        assert isinstance(wav_lengths, torch.Tensor)
+        assert wav_lengths.ndim == 1
 
         # for each wav in batch, return string containing sample count (allows
         # us to check that each audio input has corresponding output)

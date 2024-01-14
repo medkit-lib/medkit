@@ -73,7 +73,7 @@ TEST_DATA = [
 
 
 @pytest.mark.parametrize(
-    "predicted_entities,expected_metrics",
+    ("predicted_entities", "expected_metrics"),
     TEST_DATA,
     ids=[
         "perfect_prediction",
@@ -93,7 +93,7 @@ def test_evaluator_bio(document, predicted_entities, expected_metrics):
 
 
 @pytest.mark.parametrize(
-    "tagging_scheme,expected_accuracy",
+    ("tagging_scheme", "expected_accuracy"),
     [("iob2", 0.80), ("bilou", 0.76)],
 )
 def test_evaluator_with_entities_all_schemes(document, tagging_scheme, expected_accuracy):
@@ -125,7 +125,7 @@ def test_evaluator_with_entities_all_schemes(document, tagging_scheme, expected_
 
 
 @pytest.mark.parametrize(
-    "tagging_scheme,expected_accuracy",
+    ("tagging_scheme", "expected_accuracy"),
     [("iob2", 0.75), ("bilou", 0.75)],
 )
 def test_evaluator_with_bert_tokenizer(document, tagging_scheme, expected_accuracy):

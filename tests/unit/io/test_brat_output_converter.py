@@ -134,7 +134,7 @@ A1\tfrom_umls R1
 
 
 @pytest.mark.parametrize(
-    "ann_labels,attrs,ignore_segments,create_config,expected_ann",
+    ("ann_labels", "attrs", "ignore_segments", "create_config", "expected_ann"),
     TEST_DATA,
     ids=[
         "all_anns_all_attrs",

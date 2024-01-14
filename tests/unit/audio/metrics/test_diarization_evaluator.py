@@ -127,7 +127,7 @@ _TEST_DATA = {
 }
 
 
-@pytest.mark.parametrize("turns_data,params,expected_result", _TEST_DATA.values(), ids=_TEST_DATA.keys())
+@pytest.mark.parametrize(("turns_data", "params", "expected_result"), _TEST_DATA.values(), ids=_TEST_DATA.keys())
 def test_diarization_evaluator(turns_data, params, expected_result):
     pred_segs = [
         Segment(

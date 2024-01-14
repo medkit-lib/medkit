@@ -77,7 +77,7 @@ def _check_checkpoint(path, use_lr_scheduler):
 
 
 @pytest.mark.parametrize(
-    "use_lr_scheduler,minimize_metric,overfit",
+    ("use_lr_scheduler", "minimize_metric", "overfit"),
     [
         # no scheduler, minimize metric, overfit
         (False, True, True),

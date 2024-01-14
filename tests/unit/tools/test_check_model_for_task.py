@@ -24,7 +24,7 @@ def test_with_local_file(tmpdir):
 
 
 @pytest.mark.parametrize(
-    "model,task,expected_value",
+    ("model", "task", "expected_value"),
     [
         ("samrawal/bert-base-uncased_clinical-ner", "token-classification", True),
         ("samrawal/bert-base-uncased_clinical-ner", "translation", False),

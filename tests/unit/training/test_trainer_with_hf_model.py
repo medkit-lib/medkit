@@ -20,7 +20,7 @@ if TEST_WITH_METRICS:
 
 # Creating a tiny model with the original vocabulary
 @pytest.fixture(autouse=True)
-def create_model_and_tokenizer(tmp_path):
+def _create_model_and_tokenizer(tmp_path):
     tokenizer = transformers.BertTokenizerFast.from_pretrained(
         _MODEL_NER_CLINICAL, model_max_length=32
     )  # modify the original config to make a tiny model with the original vocab

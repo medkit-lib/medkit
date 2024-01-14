@@ -191,7 +191,8 @@ def test_empty_segment():
     detector.run(syntagmas)
     for syntagma in syntagmas:
         attrs = syntagma.attrs.get(label=_OUTPUT_LABEL)
-        assert len(attrs) == 1 and attrs[0].value is False
+        assert len(attrs) == 1
+        assert attrs[0].value is False
 
 
 def test_prov():

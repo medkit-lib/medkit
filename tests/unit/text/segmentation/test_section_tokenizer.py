@@ -46,7 +46,7 @@ def _get_clean_text_segment(filepath):
     )
 
 
-@pytest.mark.parametrize("filepath,expected_sections", TEST_CONFIG)
+@pytest.mark.parametrize(("filepath", "expected_sections"), TEST_CONFIG)
 def test_run(filepath, expected_sections):
     clean_text_segment = _get_clean_text_segment(filepath)
 

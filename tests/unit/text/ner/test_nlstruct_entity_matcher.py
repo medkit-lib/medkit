@@ -50,11 +50,11 @@ class _MockedNLStructModel:
 def _mocked_nlstruct_modules(module_mocker):
     module_mocker.patch(
         "medkit.text.ner.nlstruct_entity_matcher.NLStructEntityMatcher._load_from_checkpoint_dir",
-        lambda self, c, d: _MockedNLStructModel(),
+        return_value=_MockedNLStructModel(),
     )
     module_mocker.patch(
         "medkit.text.ner.nlstruct_entity_matcher.huggingface_hub.snapshot_download",
-        lambda repo_id, cache_dir, allow_patterns, token: ".",
+        return_value=".",
     )
 
 

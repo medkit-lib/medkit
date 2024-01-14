@@ -43,7 +43,7 @@ class _MockedPipeline:
 def _mocked_pipeline(module_mocker):
     module_mocker.patch(
         "medkit.text.ner.hf_entity_matcher.hf_utils.check_model_for_task_HF",
-        lambda m, t, hf_auth_token=None: True,
+        return_value=True,
     )
     module_mocker.patch("transformers.pipeline", _MockedPipeline)
 

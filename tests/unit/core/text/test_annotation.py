@@ -12,13 +12,14 @@ def test_spans_for_segment():
         text="asthme",
         spans=[Span(0, 1), ModifiedSpan(length=5, replaced_spans=[Span(1, 6)])],
     )  # correct mixed spans
-    with pytest.raises(AssertionError):  # wrong spans
-        Entity(label="disease", text="asthme", spans=[Span(0, 1)])  # wrong span
+    with pytest.raises(AssertionError):  # wrong span
+        Entity(label="disease", text="asthme", spans=[Span(0, 1)])
+    with pytest.raises(AssertionError):  # wrong mixed span
         Entity(
             label="disease",
             text="asthme",
             spans=[Span(0, 1), ModifiedSpan(length=1, replaced_spans=[Span(1, 3)])],
-        )  # wrong mixed span
+        )
 
 
 def test_normalization():

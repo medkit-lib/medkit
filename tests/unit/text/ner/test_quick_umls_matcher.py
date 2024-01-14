@@ -40,7 +40,7 @@ _DIABETES_CUI = "C0011854"
 
 
 @pytest.fixture(scope="module", autouse=True)
-def setup():
+def _setup():
     # register QuickUMLS installs
     QuickUMLSMatcher.add_install(
         _PATH_TO_QUICK_UMLS_INSTALL_EN,
@@ -245,7 +245,7 @@ TEST_OUTPUT_LABEL = [
 
 
 @pytest.mark.parametrize(
-    "output_label,expected_label",
+    ("output_label", "expected_label"),
     TEST_OUTPUT_LABEL,
     ids=["default_label", "label_str", "label_dict"],
 )

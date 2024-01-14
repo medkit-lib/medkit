@@ -15,7 +15,7 @@ from tests.data_utils import get_path_hf_dummy_vocab
 
 
 @pytest.fixture(autouse=True)
-def create_model_and_tokenizer(tmp_path):
+def _create_model_and_tokenizer(tmp_path):
     tokenizer = transformers.BertTokenizerFast(get_path_hf_dummy_vocab(), model_max_length=32)
     config = transformers.BertConfig(
         vocab_size=tokenizer.vocab_size,
@@ -76,7 +76,8 @@ def test_collate_and_forward(matcher: HFEntityMatcherTrainable, input_data):
     assert "logits" in model_output
     assert isinstance(model_output["logits"], torch.Tensor)
     assert model_output["logits"].size() == torch.Size([4, 6, 3])
-    assert loss is not None and isinstance(loss, torch.Tensor)
+    assert loss is not None
+    assert isinstance(loss, torch.Tensor)
 
     # without loss
     model_output, loss = matcher.forward(collated_data, return_loss=False, eval_mode=True)

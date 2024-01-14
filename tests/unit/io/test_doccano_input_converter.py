@@ -109,7 +109,7 @@ TEST_PROV_BY_TASK = [
 
 
 @pytest.mark.parametrize(
-    "task,check_prov_entity",
+    ("task", "check_prov_entity"),
     TEST_PROV_BY_TASK,
 )
 def test_prov(tmp_path, task, check_prov_entity):

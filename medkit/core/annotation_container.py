@@ -53,7 +53,7 @@ class AnnotationContainer(Generic[AnnotationType]):
         """
         uid = ann.uid
         if uid in self._ann_ids:
-            msg = f"Impossible to add this annotation.The uid {uid} already exists in the document"
+            msg = f"Impossible to add this annotation. The uid {uid} already exists in the document."
             raise ValueError(msg)
 
         self._ann_ids.append(uid)

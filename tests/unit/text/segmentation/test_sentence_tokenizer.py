@@ -110,7 +110,7 @@ TEST_CONFIG = [
 
 
 @pytest.mark.parametrize(
-    "sentence_tokenizer,text,expected_sentences",
+    ("sentence_tokenizer", "text", "expected_sentences"),
     TEST_CONFIG,
     ids=[
         "default",

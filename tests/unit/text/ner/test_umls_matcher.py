@@ -227,7 +227,7 @@ TEST_OUTPUT_LABELS = [
 
 
 @pytest.mark.parametrize(
-    "output_labels,expected_label",
+    ("output_labels", "expected_label"),
     TEST_OUTPUT_LABELS,
     ids=["default_label", "label_str", "label_dict"],
 )
