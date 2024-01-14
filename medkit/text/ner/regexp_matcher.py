@@ -311,8 +311,8 @@ class RegexpMatcher(NEROperation):
 
         Loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, construct_mapping)
 
-        with open(path_to_rules, encoding=encoding) as f:
-            return yaml.safe_load(f, Loader=Loader)
+        with Path(path_to_rules).open(encoding=encoding) as fp:
+            return yaml.safe_load(fp, Loader=Loader)
 
     @staticmethod
     def check_rules_sanity(rules: list[RegexpMatcherRule]):
@@ -326,11 +326,7 @@ class RegexpMatcher(NEROperation):
                 raise ValueError(msg)
 
     @staticmethod
-    def save_rules(
-        rules: list[RegexpMatcherRule],
-        path_to_rules: Path,
-        encoding: str | None = None,
-    ):
+    def save_rules(rules: list[RegexpMatcherRule], path_to_rules: Path, encoding: str | None = None):
         """Store rules in a yml file
 
         Parameters
@@ -342,6 +338,6 @@ class RegexpMatcher(NEROperation):
         encoding: str, optional
             Encoding of the .yml file
         """
-        with open(path_to_rules, mode="w", encoding=encoding) as f:
+        with Path(path_to_rules).open(mode="w", encoding=encoding) as fp:
             rules_data = [dataclasses.asdict(r) for r in rules]
-            yaml.safe_dump(rules_data, f)
+            yaml.safe_dump(rules_data, fp)

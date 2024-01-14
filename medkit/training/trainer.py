@@ -3,7 +3,6 @@ from __future__ import annotations
 __all__ = ["Trainer"]
 
 import datetime
-import os
 import random
 import shutil
 import time
@@ -98,7 +97,7 @@ class Trainer:
             set_seed(config.seed)
 
         self.output_dir = Path(config.output_dir)
-        os.makedirs(self.output_dir, exist_ok=True)
+        self.output_dir.mkdir(exist_ok=True)
 
         self.component = component
         self.batch_size = config.batch_size
@@ -304,26 +303,26 @@ class Trainer:
 
         Parameters
         ----------
-        epoch:
+        epoch : int
             Epoch corresponding of the current training state (will be included
             in the checkpoint name)
 
         Returns
         -------
-        Path:
+        str
             Path of the checkpoint saved
         """
         current_date = datetime.datetime.now().strftime("%d-%m-%Y_%H:%M")
         name = f"checkpoint_{epoch:03d}_{current_date}"
 
-        checkpoint_dir = os.path.join(self.output_dir, name)
-        self.callback.on_save(checkpoint_dir=checkpoint_dir)
+        checkpoint_dir = Path(self.output_dir) / name
+        self.callback.on_save(checkpoint_dir=str(checkpoint_dir))
 
-        os.makedirs(checkpoint_dir)
+        checkpoint_dir.mkdir()
 
         # save config
-        config_path = os.path.join(checkpoint_dir, CONFIG_NAME)
-        with open(str(config_path), mode="w") as fp:
+        config_path = checkpoint_dir / CONFIG_NAME
+        with config_path.open(mode="w") as fp:
             yaml.safe_dump(
                 self.config.to_dict(),
                 fp,
@@ -332,14 +331,11 @@ class Trainer:
                 sort_keys=False,
             )
 
-        torch.save(self.optimizer.state_dict(), os.path.join(checkpoint_dir, OPTIMIZER_NAME))
+        torch.save(self.optimizer.state_dict(), checkpoint_dir / OPTIMIZER_NAME)
 
         if self.lr_scheduler is not None:
-            torch.save(
-                self.lr_scheduler.state_dict(),
-                os.path.join(checkpoint_dir, SCHEDULER_NAME),
-            )
+            torch.save(self.lr_scheduler.state_dict(), checkpoint_dir / SCHEDULER_NAME)
 
         self.component.save(checkpoint_dir)
 
-        return checkpoint_dir
+        return str(checkpoint_dir)

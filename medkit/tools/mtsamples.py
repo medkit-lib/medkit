@@ -63,13 +63,10 @@ def load_mtsamples(
 
     if not cache_file.exists():
         cache_file.parent.mkdir(exist_ok=True, parents=True)
-        urllib.request.urlretrieve(  # noqa: S310
-            mtsamples_url,
-            cache_file,
-        )
+        urllib.request.urlretrieve(mtsamples_url, cache_file)  # noqa: S310
 
-    with open(cache_file) as f:
-        mtsamples = json.load(f) if translated else list(csv.DictReader(f))
+    with cache_file.open() as fp:
+        mtsamples = json.load(fp) if translated else list(csv.DictReader(fp))
 
         if nb_max is not None:
             mtsamples = mtsamples[:nb_max]

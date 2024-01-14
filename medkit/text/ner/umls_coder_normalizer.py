@@ -276,7 +276,7 @@ class UMLSCoderNormalizer(Operation):
         params_file = self.embeddings_cache_dir / _PARAMS_FILENAME
         if params_file.exists():
             # check consistency of params
-            with open(params_file) as fp:
+            with params_file.open() as fp:
                 existing_params = _UMLSEmbeddingsParams(**yaml.safe_load(fp))
             if existing_params != params:
                 msg = (
@@ -351,7 +351,7 @@ class UMLSCoderNormalizer(Operation):
             print("Done")
 
         # store params into yaml
-        with open(params_file, mode="w") as fp:
+        with params_file.open(mode="w") as fp:
             yaml.safe_dump(
                 params.to_dict(),
                 fp,

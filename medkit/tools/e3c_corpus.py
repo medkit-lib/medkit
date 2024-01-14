@@ -77,10 +77,7 @@ class E3CDocument:
         return dict_repr
 
 
-def load_document(
-    filepath: str | Path,
-    encoding: str = "utf-8",
-) -> TextDocument:
+def load_document(filepath: str | Path, encoding: str = "utf-8") -> TextDocument:
     """Load a E3C corpus document (json document) as medkit text document.
     For example, one in data collection folder.
     Document id is always kept in medkit document metadata.
@@ -97,17 +94,14 @@ def load_document(
     TextDocument
         The corresponding medkit text document
     """
-    with open(filepath, encoding=encoding) as f:
+    with Path(filepath).open(encoding=encoding) as f:
         doc = E3CDocument(**json.load(f))
 
         uid = str(generate_deterministic_id(doc.id))
         return TextDocument(text=doc.text, uid=uid, metadata=doc.extract_metadata())
 
 
-def load_data_collection(
-    dir_path: Path | str,
-    encoding: str = "utf-8",
-) -> Iterator[TextDocument]:
+def load_data_collection(dir_path: Path | str, encoding: str = "utf-8") -> Iterator[TextDocument]:
     """Load the E3C corpus data collection as medkit text documents
 
     Parameters
@@ -139,11 +133,7 @@ def load_data_collection(
         yield load_document(filepath, encoding=encoding)
 
 
-def convert_data_collection_to_medkit(
-    dir_path: Path | str,
-    output_file: str | Path,
-    encoding: str | None = "utf-8",
-):
+def convert_data_collection_to_medkit(dir_path: Path | str, output_file: str | Path, encoding: str | None = "utf-8"):
     """Convert E3C corpus data collection to medkit jsonl file
 
     Parameters
@@ -160,11 +150,7 @@ def convert_data_collection_to_medkit(
     save_text_documents(docs=docs, output_file=output_file, encoding=encoding)
 
 
-def load_annotated_document(
-    filepath: str | Path,
-    encoding: str = "utf-8",
-    keep_sentences=False,
-) -> TextDocument:
+def load_annotated_document(filepath: str | Path, encoding: str = "utf-8", keep_sentences=False) -> TextDocument:
     """Load a E3C corpus annotated document (xml document) as medkit text document.
     For example, one in data annotation folder.
     Each annotation id is always kept in corresponding medkit element metadata.

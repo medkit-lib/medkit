@@ -2,8 +2,8 @@ from __future__ import annotations
 
 __all__ = ["SyntagmaTokenizer"]
 
-import pathlib
 import re
+from pathlib import Path
 from typing import Iterator
 
 import yaml
@@ -11,7 +11,7 @@ import yaml
 from medkit.core.text import Segment, SegmentationOperation, span_utils
 from medkit.core.text.utils import lstrip, rstrip
 
-_PATH_TO_DEFAULT_RULES = pathlib.Path(__file__).parent / "default_syntagma_definition.yml"
+_PATH_TO_DEFAULT_RULES = Path(__file__).parent / "default_syntagma_definition.yml"
 
 
 class SyntagmaTokenizer(SegmentationOperation):
@@ -141,7 +141,7 @@ class SyntagmaTokenizer(SegmentationOperation):
         return cls(separators=separators)
 
     @staticmethod
-    def load_syntagma_definition(filepath: pathlib.Path, encoding: str | None = None) -> tuple[str, ...]:
+    def load_syntagma_definition(filepath: Path, encoding: str | None = None) -> tuple[str, ...]:
         """Load the syntagma definition stored in yml file
 
         Parameters
@@ -156,17 +156,13 @@ class SyntagmaTokenizer(SegmentationOperation):
         tuple of str
             Tuple containing the separators
         """
-        with open(filepath, encoding=encoding) as f:
-            config = yaml.safe_load(f)
+        with Path(filepath).open(encoding=encoding) as fp:
+            config = yaml.safe_load(fp)
 
         return tuple(str(sep) for sep in config["syntagmas"]["separators"])
 
     @staticmethod
-    def save_syntagma_definition(
-        syntagma_seps: tuple[str, ...],
-        filepath: pathlib.Path,
-        encoding: str | None = None,
-    ):
+    def save_syntagma_definition(syntagma_seps: tuple[str, ...], filepath: Path, encoding: str | None = None):
         """Save syntagma yaml definition file
 
         Parameters
@@ -184,5 +180,5 @@ class SyntagmaTokenizer(SegmentationOperation):
         for sep in syntagma_seps:
             data["syntagmas"]["separators"].append(sep)
 
-        with open(filepath, "w", encoding=encoding) as f:
-            yaml.safe_dump(data, f, allow_unicode=True)
+        with Path(filepath).open(mode="w", encoding=encoding) as fp:
+            yaml.safe_dump(data, fp, allow_unicode=True)

@@ -5,7 +5,6 @@ from __future__ import annotations
 
 __all__ = ["NLStructEntityMatcher"]
 
-import os
 from pathlib import Path
 from typing import Iterator
 
@@ -146,14 +145,14 @@ class NLStructEntityMatcher(NEROperation):
                 # if 'filename' is empty, pretrained without embeddings (c.f nlstruct)
                 # keep the same config
                 if filename:
-                    new_path = os.path.join(checkpoint_dir, Path(filename).name)
+                    new_path = checkpoint_dir / Path(filename).name
 
-                    if not Path(new_path).exists():
+                    if not new_path.exists():
                         msg = f"The text file '{new_path}' with the fast text embeddings does not exist"
                         raise ValueError(msg)
 
                     # update the filename of the wordEmbeddings model
-                    config["encoder"]["encoders"][key]["filename"] = new_path
+                    config["encoder"]["encoders"][key]["filename"] = str(new_path)
 
         # similar to nlstruct load pretrained
         # create the model using modified config

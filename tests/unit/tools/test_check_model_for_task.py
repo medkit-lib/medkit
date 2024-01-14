@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import pytest
 
@@ -13,8 +14,8 @@ def test_with_local_file(tmpdir):
         "architectures": ["BertForTokenClassification"],
         "model_type": "bert",
     }
-    with open(tmpdir / "config.json", "w") as file:
-        json.dump(config_dict, file)
+    with (Path(tmpdir) / "config.json").open(mode="w") as fp:
+        json.dump(config_dict, fp)
 
     task = check_model_for_task_hf(tmpdir, "token-classification")
     assert task

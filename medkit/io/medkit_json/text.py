@@ -43,9 +43,7 @@ def load_text_document(
     TextDocument
         The text document in the file
     """
-    input_file = Path(input_file)
-
-    with open(input_file, encoding=encoding) as fp:
+    with Path(input_file).open(encoding=encoding) as fp:
         data = json.load(fp)
     check_header(data, ContentType.TEXT_DOCUMENT)
     doc = TextDocument.from_dict(data["content"])
@@ -73,9 +71,7 @@ def load_text_documents(input_file: str | Path, encoding: str | None = "utf-8") 
     iterator of TextDocument
         An iterator to the text documents in the file
     """
-    input_file = Path(input_file)
-
-    with open(input_file, encoding=encoding) as fp:
+    with Path(input_file).open(encoding=encoding) as fp:
         line = fp.readline()
         data = json.loads(line)
         check_header(data, ContentType.TEXT_DOCUMENT_LIST)
@@ -102,9 +98,7 @@ def load_text_anns(input_file: str | Path, encoding: str | None = "utf-8") -> It
     iterator of TextAnnotation
         An iterator to the text annotations in the file
     """
-    input_file = Path(input_file)
-
-    with open(input_file, encoding=encoding) as fp:
+    with Path(input_file).open(encoding=encoding) as fp:
         line = fp.readline()
         data = json.loads(line)
         check_header(data, ContentType.TEXT_ANNOTATION_LIST)
@@ -150,7 +144,7 @@ def save_text_document(
 
     data = build_header(content_type=ContentType.TEXT_DOCUMENT)
     data["content"] = doc.to_dict(with_anns=not split_anns)
-    with open(output_file, mode="w", encoding=encoding) as fp:
+    with output_file.open(mode="w", encoding=encoding) as fp:
         json.dump(data, fp, ensure_ascii=False, indent=4)
 
     if split_anns:
@@ -175,10 +169,8 @@ def save_text_documents(
     encoding : str, default="utf-8"
         Optional encoding of `output_file`
     """
-    output_file = Path(output_file)
-
     header = build_header(content_type=ContentType.TEXT_DOCUMENT_LIST)
-    with open(output_file, mode="w", encoding=encoding) as fp:
+    with Path(output_file).open(mode="w", encoding=encoding) as fp:
         fp.write(json.dumps(header, ensure_ascii=False) + "\n")
 
         for doc in docs:
@@ -202,10 +194,8 @@ def save_text_anns(
     encoding : str, default="utf-8"
         Optional encoding of `output_file`
     """
-    output_file = Path(output_file)
-
     header = build_header(content_type=ContentType.TEXT_ANNOTATION_LIST)
-    with open(output_file, mode="w", encoding=encoding) as fp:
+    with Path(output_file).open(mode="w", encoding=encoding) as fp:
         fp.write(json.dumps(header, ensure_ascii=False) + "\n")
 
         for ann in anns:

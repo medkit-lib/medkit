@@ -125,7 +125,7 @@ def load_umls_entries(
         semtypes_by_cui = None
         semgroups_by_semtype = None
 
-    with open(mrconso_file, encoding="utf-8") as fp:
+    with mrconso_file.open(encoding="utf-8") as fp:
         lines_iter = fp
 
         if show_progress:
@@ -182,10 +182,9 @@ def load_semtypes_by_cui(mrsty_file: str | Path) -> dict[str, list[str]]:
     dict of str to list of str
         Mapping between CUIs and associated semtypes
     """
-    mrsty_file = Path(mrsty_file)
     semtypes_by_cui = defaultdict(list)
 
-    with open(mrsty_file) as fp:
+    with Path(mrsty_file).open() as fp:
         for line in fp:
             row = line.strip().split("|")
             cui = row[0]
@@ -213,7 +212,7 @@ def load_semgroups_by_semtype() -> dict[str, str]:
     global _SEMGROUPS_BY_SEMTYPE
     if _SEMGROUPS_BY_SEMTYPE is None:
         _SEMGROUPS_BY_SEMTYPE = {}
-        with open(_UMLS_SEMGROUPS_FILE) as fp:
+        with Path(_UMLS_SEMGROUPS_FILE).open() as fp:
             for line in fp:
                 semgroup, _, semtype, _ = line.split("|")
                 _SEMGROUPS_BY_SEMTYPE[semtype] = semgroup

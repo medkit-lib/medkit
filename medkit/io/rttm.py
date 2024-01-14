@@ -194,7 +194,7 @@ class RTTMInputConverter(InputConverter):
 
     @staticmethod
     def _load_rows(rttm_file: Path):
-        with open(rttm_file) as fp:
+        with Path(rttm_file).open() as fp:
             csv_reader = csv.DictReader(fp, fieldnames=_RTTM_FIELDS, delimiter=" ")
             rows = list(csv_reader)
 
@@ -321,12 +321,10 @@ class RTTMOutputConverter(OutputConverter):
         rttm_doc_id : str, optional
             File uid to use for the generated .rttm file (2d column).
         """
-        rttm_file = Path(rttm_file)
-
         rows = [self._build_rttm_row(s, rttm_doc_id) for s in turn_segments]
         rows.sort(key=lambda r: r["onset"])
 
-        with open(rttm_file, mode="w", encoding="utf-8") as fp:
+        with Path(rttm_file).open(mode="w", encoding="utf-8") as fp:
             csv_writer = csv.DictWriter(fp, fieldnames=_RTTM_FIELDS, delimiter=" ")
             csv_writer.writerows(rows)
 

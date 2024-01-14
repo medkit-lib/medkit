@@ -2,7 +2,8 @@ from __future__ import annotations
 
 __all__ = ["save_prov_to_dot"]
 
-from typing import TYPE_CHECKING, Any, Callable, TextIO
+from pathlib import Path
+from typing import Any, Callable, TextIO
 
 from medkit.core import (
     Attribute,
@@ -13,9 +14,6 @@ from medkit.core import (
     ProvTracer,
 )
 from medkit.core.text import Segment, TextDocument
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 
 def save_prov_to_dot(
@@ -52,7 +50,7 @@ def save_prov_to_dot(
         attached to (not strictly provenance but can make things easier to
         understand).
     """
-    with open(file, mode="w") as fp:
+    with Path(file).open(mode="w") as fp:
         writer = _DotWriter(
             fp,
             data_item_formatters,

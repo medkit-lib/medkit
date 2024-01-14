@@ -197,15 +197,11 @@ class SimstringMatcher(BaseSimstringMatcher):
 
         _Loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _construct_mapping)
 
-        with open(path_to_rules, encoding=encoding) as f:
-            return yaml.safe_load(f, Loader=_Loader)
+        with Path(path_to_rules).open(encoding=encoding) as fp:
+            return yaml.safe_load(fp, Loader=_Loader)
 
     @staticmethod
-    def save_rules(
-        rules: list[SimstringMatcherRule],
-        path_to_rules: Path,
-        encoding: str | None = None,
-    ):
+    def save_rules(rules: list[SimstringMatcherRule], path_to_rules: Path, encoding: str | None = None):
         """Store rules in a yml file
 
         Parameters
@@ -217,6 +213,6 @@ class SimstringMatcher(BaseSimstringMatcher):
         encoding: str, optional
             The encoding of the yml file
         """
-        with open(path_to_rules, mode="w", encoding=encoding) as f:
+        with Path(path_to_rules).open(mode="w", encoding=encoding) as fp:
             rules_data = [dataclasses.asdict(r) for r in rules]
-            yaml.safe_dump(rules_data, f)
+            yaml.safe_dump(rules_data, fp)

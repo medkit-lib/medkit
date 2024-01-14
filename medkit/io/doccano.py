@@ -302,7 +302,7 @@ class DoccanoInputConverter:
             A list of TextDocuments
         """
         documents = []
-        with open(Path(input_file), encoding="utf-8") as fp:
+        with Path(input_file).open(encoding="utf-8") as fp:
             for line in fp:
                 doc_line = json.loads(line)
                 doc = self._parse_doc_line(doc_line)
@@ -545,12 +545,10 @@ class DoccanoOutputConverter:
         ----------
         docs : list of TextDocument
             List of medkit doc objects to convert
-        output_file : str or Pathg
+        output_file : str or Path
             Path or string of the JSONL file where to save the converted documents
         """
-        output_file = Path(output_file)
-
-        with open(output_file, mode="w", encoding="utf-8") as fp:
+        with Path(output_file).open(mode="w", encoding="utf-8") as fp:
             for medkit_doc in docs:
                 doc_line = self._convert_doc_by_task(medkit_doc)
                 fp.write(json.dumps(doc_line, ensure_ascii=False) + "\n")

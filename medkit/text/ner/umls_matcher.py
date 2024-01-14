@@ -187,7 +187,7 @@ class UMLSMatcher(BaseSimstringMatcher):
         rules_db_file = cache_dir / _RULES_DB_FILENAME
 
         if cache_params_file.exists():
-            with open(cache_params_file) as fp:
+            with cache_params_file.open() as fp:
                 existing_cache_params = _UMLSMatcherCacheParams(**yaml.safe_load(fp))
             if cache_params != existing_cache_params:
                 msg = (
@@ -209,7 +209,7 @@ class UMLSMatcher(BaseSimstringMatcher):
 
             build_simstring_matcher_databases(simstring_db_file, rules_db_file, rules)
 
-            with open(cache_params_file, mode="w") as fp:
+            with cache_params_file.open(mode="w") as fp:
                 yaml.safe_dump(dataclasses.asdict(cache_params), fp)
 
         if spacy_tokenization:

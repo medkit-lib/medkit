@@ -54,7 +54,9 @@ def _get_doc_by_task(task: DoccanoTask):
 
 
 def _load_json_file(filepath):
-    with open(filepath) as fp:
+    from pathlib import Path
+
+    with Path(filepath).open() as fp:
         return json.load(fp)
 
 

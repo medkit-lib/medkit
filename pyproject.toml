@@ -305,7 +305,7 @@ select = [
   # flake8-unused-arguments
   #"ARG",
   # flake8-use-pathlib
-  #"PTH",
+  "PTH",
   # pandas-vet
   "PD",
   # Pylint

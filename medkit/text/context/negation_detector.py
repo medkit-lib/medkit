@@ -207,8 +207,8 @@ class NegationDetector(ContextOperation):
             List of all the rules in `path_to_rules`,
             can be used to init a `NegationDetector`
         """
-        with open(path_to_rules, encoding=encoding) as f:
-            rules_data = yaml.safe_load(f)
+        with Path(path_to_rules).open(encoding=encoding) as fp:
+            rules_data = yaml.safe_load(fp)
         return [NegationDetectorRule(**d) for d in rules_data]
 
     @staticmethod
@@ -223,11 +223,7 @@ class NegationDetector(ContextOperation):
                 raise ValueError(msg)
 
     @staticmethod
-    def save_rules(
-        rules: list[NegationDetectorRule],
-        path_to_rules: Path,
-        encoding: str | None = None,
-    ):
+    def save_rules(rules: list[NegationDetectorRule], path_to_rules: Path, encoding: str | None = None):
         """Store rules in a yml file
 
         Parameters
@@ -239,6 +235,6 @@ class NegationDetector(ContextOperation):
         encoding : str, optional
             Encoding of the .yml file
         """
-        with open(path_to_rules, mode="w", encoding=encoding) as f:
+        with Path(path_to_rules).open(mode="w", encoding=encoding) as fp:
             rules_data = [dataclasses.asdict(r) for r in rules]
-            rules = yaml.safe_dump(rules_data, f)
+            yaml.safe_dump(rules_data, fp)

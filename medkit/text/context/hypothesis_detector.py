@@ -298,8 +298,8 @@ class HypothesisDetector(ContextOperation):
             List of verb forms in `path_to_verbs`,
             can be used to init an `HypothesisDetector`
         """
-        with open(path_to_verbs, encoding=encoding) as f:
-            return yaml.safe_load(f)
+        with Path(path_to_verbs).open(encoding=encoding) as fp:
+            return yaml.safe_load(fp)
 
     @staticmethod
     def load_rules(path_to_rules: Path, encoding: str | None = None) -> list[HypothesisDetectorRule]:
@@ -319,8 +319,8 @@ class HypothesisDetector(ContextOperation):
             List of all the rules in `path_to_rules`,
             can be used to init an `HypothesisDetector`
         """
-        with open(path_to_rules, encoding=encoding) as f:
-            rules_data = yaml.safe_load(f)
+        with Path(path_to_rules).open(encoding=encoding) as fp:
+            rules_data = yaml.safe_load(fp)
         return [HypothesisDetectorRule(**d) for d in rules_data]
 
     @classmethod
@@ -364,6 +364,6 @@ class HypothesisDetector(ContextOperation):
         encoding : str, optional
             Encoding of the .yml file
         """
-        with open(path_to_rules, mode="w", encoding=encoding) as f:
+        with Path(path_to_rules).open(mode="w", encoding=encoding) as fp:
             rules_data = [dataclasses.asdict(r) for r in rules]
-            yaml.safe_dump(rules_data, f)
+            yaml.safe_dump(rules_data, fp)

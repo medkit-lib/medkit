@@ -214,8 +214,8 @@ class FamilyDetector(ContextOperation):
             List of all the rules in `path_to_rules`,
             can be used to init a `FamilyDetector`
         """
-        with open(path_to_rules, encoding=encoding) as f:
-            rules_data = yaml.safe_load(f)
+        with Path(path_to_rules).open(encoding=encoding) as fp:
+            rules_data = yaml.safe_load(fp)
         return [FamilyDetectorRule(**d) for d in rules_data]
 
     @staticmethod
@@ -246,6 +246,6 @@ class FamilyDetector(ContextOperation):
         encoding : str, optional
             Encoding of the .yml file
         """
-        with open(path_to_rules, mode="w", encoding=encoding) as f:
+        with Path(path_to_rules).open(mode="w", encoding=encoding) as fp:
             rules_data = [dataclasses.asdict(r) for r in rules]
-            rules = yaml.safe_dump(rules_data, f)
+            yaml.safe_dump(rules_data, fp)

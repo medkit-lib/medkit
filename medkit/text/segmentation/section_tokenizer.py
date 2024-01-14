@@ -3,7 +3,7 @@ from __future__ import annotations
 __all__ = ["SectionModificationRule", "SectionTokenizer"]
 
 import dataclasses
-import pathlib
+from pathlib import Path
 from typing import Iterable
 
 import yaml
@@ -14,7 +14,7 @@ from medkit.core import Attribute
 from medkit.core.text import Segment, SegmentationOperation, span_utils
 from medkit.core.text.utils import lstrip, rstrip
 
-_PATH_TO_DEFAULT_RULES = pathlib.Path(__file__).parent / "default_section_definition.yml"
+_PATH_TO_DEFAULT_RULES = Path(__file__).parent / "default_section_definition.yml"
 
 
 @dataclasses.dataclass
@@ -184,7 +184,7 @@ class SectionTokenizer(SegmentationOperation):
 
     @staticmethod
     def load_section_definition(
-        filepath: pathlib.Path, encoding: str | None = None
+        filepath: Path, encoding: str | None = None
     ) -> tuple[dict[str, list[str]], tuple[SectionModificationRule, ...]]:
         """Load the sections definition stored in a yml file
 
@@ -204,8 +204,8 @@ class SectionTokenizer(SegmentationOperation):
             - the list of section modification rules.
             These rules allow to rename some sections according their order
         """
-        with open(filepath, encoding=encoding) as f:
-            config = yaml.safe_load(f)
+        with Path(filepath).open(encoding=encoding) as fp:
+            config = yaml.safe_load(fp)
 
         section_dict = config["sections"]
         section_rules = tuple(SectionModificationRule(**rule) for rule in config["rules"])
@@ -216,7 +216,7 @@ class SectionTokenizer(SegmentationOperation):
     def save_section_definition(
         section_dict: dict[str, list[str]],
         section_rules: Iterable[SectionModificationRule],
-        filepath: pathlib.Path,
+        filepath: Path,
         encoding: str | None = None,
     ):
         """Save section yaml definition file
@@ -234,8 +234,8 @@ class SectionTokenizer(SegmentationOperation):
         encoding : str, optional
             File encoding
         """
-        with open(filepath, mode="w", encoding=encoding) as f:
+        with Path(filepath).open(mode="w", encoding=encoding) as fp:
             data = {"sections": section_dict, "rules": []}
             for rule in section_rules:
                 data["rules"].append(dataclasses.asdict(rule))
-            yaml.safe_dump(data, f, allow_unicode=True, encoding=encoding)
+            yaml.safe_dump(data, fp, allow_unicode=True, encoding=encoding)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import os
+from pathlib import Path
 
 import torch
 from tests.unit.training.dummy_model import DummyTextCat, DummyTextCatConfig, DummyTokenizer
@@ -81,12 +81,12 @@ class MockTrainableComponent:
         return BatchData(logits=logits), loss
 
     def save(self, path):
-        output_path = os.path.join(path, PYTORCH_MODEL_NAME)
-        torch.save(self.model.state_dict(), output_path)
+        model_path = Path(path) / PYTORCH_MODEL_NAME
+        torch.save(self.model.state_dict(), model_path)
 
     def load(self, path):
-        model_path = os.path.join(path, PYTORCH_MODEL_NAME)
-        if not os.path.isfile(model_path):
+        model_path = Path(path) / PYTORCH_MODEL_NAME
+        if not model_path.is_file():
             msg = f"Can't find a valid model at '{path}'"
             raise ValueError(msg)
 

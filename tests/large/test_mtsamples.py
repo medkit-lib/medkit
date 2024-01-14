@@ -22,8 +22,8 @@ def _get_medkit_docs():
             " library. Please contact us to get this file."
         )
         raise FileNotFoundError(msg)
-    with open(path) as fdata:
-        dataset = json.load(fdata)
+    with Path(path).open() as fp:
+        dataset = json.load(fp)
 
     docs = []
     for data in dataset:
