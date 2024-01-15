@@ -53,4 +53,4 @@ class Collection:
     def to_dict(self) -> dict[str, Any]:
         text_docs = [d.to_dict() for d in self.text_docs]
         audio_docs = [d.to_dict() for d in self.audio_docs]
-        return dict(text_docs=text_docs, audio_docs=audio_docs)
+        return {"text_docs": text_docs, "audio_docs": audio_docs}

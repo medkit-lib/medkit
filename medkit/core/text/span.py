@@ -54,7 +54,7 @@ class Span(AnySpan):
         return self.end - self.start
 
     def to_dict(self) -> dict[str, Any]:
-        span_dict = dict(start=self.start, end=self.end)
+        span_dict = {"start": self.start, "end": self.end}
         dict_conv.add_class_name_to_data_dict(self, span_dict)
         return span_dict
 
@@ -91,10 +91,10 @@ class ModifiedSpan(AnySpan):
 
     def to_dict(self) -> dict[str, Any]:
         replaced_spans = [s.to_dict() for s in self.replaced_spans]
-        span_dict = dict(
-            length=self.length,
-            replaced_spans=replaced_spans,
-        )
+        span_dict = {
+            "length": self.length,
+            "replaced_spans": replaced_spans,
+        }
         dict_conv.add_class_name_to_data_dict(self, span_dict)
         return span_dict
 

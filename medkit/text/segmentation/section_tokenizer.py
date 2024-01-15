@@ -131,7 +131,7 @@ class SectionTokenizer(SegmentationOperation):
             )
 
             # add section name in metadata
-            metadata = dict(name=name)
+            metadata = {"name": name}
             section = Segment(
                 label=self.output_label,
                 spans=spans,

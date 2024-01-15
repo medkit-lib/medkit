@@ -135,7 +135,7 @@ def test_family_pipeline():
 
     nlp = spacy.blank("eds")
     nlp.add_pipe("eds.sentences")
-    nlp.add_pipe("eds.matcher", config=dict(terms={"problem": ["cancer", "tumeur"]}))
+    nlp.add_pipe("eds.matcher", config={"terms": {"problem": ["cancer", "tumeur"]}})
     nlp.add_pipe("eds.family")
     edsnlp_pipeline = EDSNLPPipeline(nlp)
     anns = edsnlp_pipeline.run([seg])
@@ -161,7 +161,7 @@ def test_negation_pipeline():
     nlp = spacy.blank("eds")
     nlp.add_pipe("eds.sentences")
     # Dummy matcher (we need an entity to attach negation attributes to)
-    nlp.add_pipe("eds.matcher", config=dict(terms=dict(fracture="fracture")))
+    nlp.add_pipe("eds.matcher", config={"terms": {"fracture": "fracture"}})
     nlp.add_pipe("eds.negation")
     edsnlp_pipeline = EDSNLPPipeline(nlp)
     anns = edsnlp_pipeline.run([seg])
@@ -199,7 +199,7 @@ def test_doc_pipeline():
 
     nlp = spacy.blank("eds")
     nlp.add_pipe("eds.sentences")
-    nlp.add_pipe("eds.matcher", config=dict(terms={"problem": ["tumeur"]}))
+    nlp.add_pipe("eds.matcher", config={"terms": {"problem": ["tumeur"]}})
     nlp.add_pipe("eds.hypothesis")
     nlp.add_pipe("eds.dates")
 

@@ -144,7 +144,7 @@ class HFEntityMatcher(NEROperation):
             score_attr = Attribute(
                 label="score",
                 value=float(match["score"]),
-                metadata=dict(model=self.model),
+                metadata={"model": self.model},
             )
             entity.attrs.add(score_attr)
 

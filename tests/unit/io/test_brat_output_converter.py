@@ -296,7 +296,7 @@ def test__convert_relation():
     relation = Relation(label="rel1", source_id=ent_1.uid, target_id=ent_2.uid)
 
     # create entities brat and save them in a dict
-    entities_by_medkit_id = dict()
+    entities_by_medkit_id = {}
     entities_by_medkit_id[ent_1.uid] = brat_converter._convert_segment_to_brat(ent_1, nb_segment=1, raw_text=ent_1.text)
     entities_by_medkit_id[ent_2.uid] = brat_converter._convert_segment_to_brat(ent_2, nb_segment=2, raw_text=ent_2.text)
 

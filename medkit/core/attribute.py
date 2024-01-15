@@ -57,12 +57,12 @@ class Attribute(dict_conv.SubclassMapping):
         super().__init_subclass__()
 
     def to_dict(self) -> dict[str, Any]:
-        attribute_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            value=self.value,
-            metadata=self.metadata,
-        )
+        attribute_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "value": self.value,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, attribute_dict)
         return attribute_dict
 

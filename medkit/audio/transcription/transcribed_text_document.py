@@ -100,14 +100,14 @@ class TranscribedTextDocument(TextDocument):
     def to_dict(self, with_anns: bool = True) -> dict[str, Any]:
         text_spans = [s.to_dict() for s in self.text_spans_to_audio_spans]
         audio_spans = [s.to_dict() for s in self.text_spans_to_audio_spans.values()]
-        doc_dict = dict(
-            uid=self.uid,
-            text=self.text,
-            metadata=self.metadata,
-            text_spans=text_spans,
-            audio_spans=audio_spans,
-            audio_doc_id=self.audio_doc_id,
-        )
+        doc_dict = {
+            "uid": self.uid,
+            "text": self.text,
+            "metadata": self.metadata,
+            "text_spans": text_spans,
+            "audio_spans": audio_spans,
+            "audio_doc_id": self.audio_doc_id,
+        }
         if with_anns:
             doc_dict["anns"] = [a.to_dict() for a in self.anns]
 

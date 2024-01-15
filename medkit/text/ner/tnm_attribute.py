@@ -129,21 +129,21 @@ class TNMAttribute(Attribute):
         return self.value
 
     def to_dict(self) -> dict[str, Any]:
-        tnm_dict = dict(
-            uid=self.uid,
-            prefix=self.prefix,
-            tumour=self.tumour,
-            tumour_suffix=self.tumour_suffix,
-            tumour_specification=self.tumour_specification,
-            node=self.node,
-            node_specification=self.node_specification,
-            node_suffix=self.node_suffix,
-            metastasis=self.metastasis,
-            resection_completeness=self.resection_completeness,
-            version=self.version,
-            version_year=self.version_year,
-            metadata=self.metadata,
-        )
+        tnm_dict = {
+            "uid": self.uid,
+            "prefix": self.prefix,
+            "tumour": self.tumour,
+            "tumour_suffix": self.tumour_suffix,
+            "tumour_specification": self.tumour_specification,
+            "node": self.node,
+            "node_specification": self.node_specification,
+            "node_suffix": self.node_suffix,
+            "metastasis": self.metastasis,
+            "resection_completeness": self.resection_completeness,
+            "version": self.version,
+            "version_year": self.version_year,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, tnm_dict)
         return tnm_dict
 

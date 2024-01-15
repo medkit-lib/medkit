@@ -208,11 +208,11 @@ class FileAudioBuffer(AudioBuffer):
         return FileAudioBuffer(self.path, new_trim_start, new_trim_end, self._sf_info)
 
     def to_dict(self) -> dict[str, Any]:
-        buffer_dict = dict(
-            path=str(self.path),
-            trim_start=self._trim_start,
-            trim_end=self._trim_end,
-        )
+        buffer_dict = {
+            "path": str(self.path),
+            "trim_start": self._trim_start,
+            "trim_end": self._trim_end,
+        }
         dict_conv.add_class_name_to_data_dict(self, buffer_dict)
         return buffer_dict
 
@@ -309,11 +309,11 @@ class PlaceholderAudioBuffer(AudioBuffer):
         raise NotImplementedError(msg)
 
     def to_dict(self) -> dict[str, Any]:
-        buffer_dict = dict(
-            sample_rate=self.sample_rate,
-            nb_samples=self.nb_samples,
-            nb_channels=self.nb_channels,
-        )
+        buffer_dict = {
+            "sample_rate": self.sample_rate,
+            "nb_samples": self.nb_samples,
+            "nb_channels": self.nb_channels,
+        }
         dict_conv.add_class_name_to_data_dict(self, buffer_dict)
         return buffer_dict
 

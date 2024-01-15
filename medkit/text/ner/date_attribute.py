@@ -86,17 +86,17 @@ class DateAttribute(Attribute):
         return self.value
 
     def to_dict(self) -> dict[str, Any]:
-        date_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            year=self.year,
-            month=self.month,
-            day=self.day,
-            hour=self.hour,
-            minute=self.minute,
-            second=self.second,
-            metadata=self.metadata,
-        )
+        date_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "year": self.year,
+            "month": self.month,
+            "day": self.day,
+            "hour": self.hour,
+            "minute": self.minute,
+            "second": self.second,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, date_dict)
         return date_dict
 
@@ -186,18 +186,18 @@ class DurationAttribute(Attribute):
         return self.value
 
     def to_dict(self) -> dict[str, Any]:
-        duration_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            years=self.years,
-            months=self.months,
-            weeks=self.weeks,
-            days=self.days,
-            hours=self.hours,
-            minutes=self.minutes,
-            seconds=self.seconds,
-            metadata=self.metadata,
-        )
+        duration_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "years": self.years,
+            "months": self.months,
+            "weeks": self.weeks,
+            "days": self.days,
+            "hours": self.hours,
+            "minutes": self.minutes,
+            "seconds": self.seconds,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, duration_dict)
         return duration_dict
 
@@ -304,19 +304,19 @@ class RelativeDateAttribute(Attribute):
         return self.value
 
     def to_dict(self) -> dict[str, Any]:
-        date_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            direction=self.direction.value,
-            years=self.years,
-            months=self.months,
-            weeks=self.weeks,
-            days=self.days,
-            hours=self.hours,
-            minutes=self.minutes,
-            seconds=self.seconds,
-            metadata=self.metadata,
-        )
+        date_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "direction": self.direction.value,
+            "years": self.years,
+            "months": self.months,
+            "weeks": self.weeks,
+            "days": self.days,
+            "hours": self.hours,
+            "minutes": self.minutes,
+            "seconds": self.seconds,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, date_dict)
         return date_dict
 

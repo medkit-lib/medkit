@@ -40,15 +40,15 @@ class _UMLSEmbeddingsParams(NamedTuple):
     normalize_unicode: bool
 
     def to_dict(self) -> dict[str, Any]:
-        return dict(
-            umls_version=self.umls_version,
-            language=self.language,
-            model=self.model,
-            summary_method=self.summary_method,
-            normalize_embeddings=self.normalize_embeddings,
-            lowercase=self.lowercase,
-            normalize_unicode=self.normalize_unicode,
-        )
+        return {
+            "umls_version": self.umls_version,
+            "language": self.language,
+            "model": self.model,
+            "summary_method": self.summary_method,
+            "normalize_embeddings": self.normalize_embeddings,
+            "lowercase": self.lowercase,
+            "normalize_unicode": self.normalize_unicode,
+        }
 
 
 class UMLSCoderNormalizer(Operation):

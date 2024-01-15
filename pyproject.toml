@@ -271,7 +271,7 @@ select = [
   # flake8-commas
   "COM",
   # flake8-comprehensions
-  #"C4",
+  "C4",
   # flake8-errmsg
   "EM",
   # flake8-future-annotations

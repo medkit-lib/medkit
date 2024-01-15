@@ -87,17 +87,17 @@ class ADICAPNormAttribute(EntityNormAttribute):
         return self.kb_id
 
     def to_dict(self) -> dict[str, Any]:
-        adicap_dict = dict(
-            uid=self.uid,
-            code=self.code,
-            sampling_mode=self.sampling_mode,
-            technic=self.technic,
-            organ=self.organ,
-            pathology=self.pathology,
-            pathology_type=self.pathology_type,
-            behaviour_type=self.behaviour_type,
-            metadata=self.metadata,
-        )
+        adicap_dict = {
+            "uid": self.uid,
+            "code": self.code,
+            "sampling_mode": self.sampling_mode,
+            "technic": self.technic,
+            "organ": self.organ,
+            "pathology": self.pathology,
+            "pathology_type": self.pathology_type,
+            "behaviour_type": self.behaviour_type,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(adicap_dict, self)
         return adicap_dict
 

@@ -62,14 +62,14 @@ class DuplicationAttribute(Attribute):
         self.source_doc_date = source_doc_date
 
     def to_dict(self) -> dict[str, Any]:
-        attr_dict = dict(
-            uid=self.uid,
-            value=self.value,
-            source_doc_id=self.source_doc_id,
-            source_spans=self.source_spans,
-            source_doc_date=self.source_doc_date,
-            metadata=self.metadata,
-        )
+        attr_dict = {
+            "uid": self.uid,
+            "value": self.value,
+            "source_doc_id": self.source_doc_id,
+            "source_spans": self.source_spans,
+            "source_doc_date": self.source_doc_date,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, attr_dict)
         return attr_dict
 

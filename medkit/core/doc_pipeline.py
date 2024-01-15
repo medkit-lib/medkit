@@ -110,7 +110,7 @@ class DocPipeline(DocOperation, Generic[AnnotationType]):
         # operations with single output may return a
         # single list instead of a tuple of lists)
         if all_output_anns is None:
-            all_output_anns = tuple()
+            all_output_anns = ()
         elif not isinstance(all_output_anns, tuple):
             all_output_anns = (all_output_anns,)
 

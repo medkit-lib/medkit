@@ -90,16 +90,16 @@ class EntityNormAttribute(Attribute):
         return self.value
 
     def to_dict(self) -> dict[str, Any]:
-        norm_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            kb_name=self.kb_name,
-            kb_id=self.kb_id,
-            kb_version=self.kb_version,
-            term=self.term,
-            score=self.score,
-            metadata=self.metadata,
-        )
+        norm_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "kb_name": self.kb_name,
+            "kb_id": self.kb_id,
+            "kb_version": self.kb_version,
+            "term": self.term,
+            "score": self.score,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, norm_dict)
         return norm_dict
 

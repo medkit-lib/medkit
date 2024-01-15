@@ -113,11 +113,11 @@ class AudioDocument(dict_conv.SubclassMapping):
             audio = placeholder.to_dict()
         else:
             audio = self.audio.to_dict()
-        doc_dict: dict[str, Any] = dict(
-            uid=self.uid,
-            audio=audio,
-            metadata=self.metadata,
-        )
+        doc_dict: dict[str, Any] = {
+            "uid": self.uid,
+            "audio": audio,
+            "metadata": self.metadata,
+        }
         if with_anns:
             doc_dict["anns"] = [a.to_dict() for a in self.anns]
         if self.attrs:

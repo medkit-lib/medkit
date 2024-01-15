@@ -71,12 +71,12 @@ class _DoccanoEntity:
     label: str
 
     def to_dict(self) -> dict[str, Any]:
-        return dict(
-            id=self.id,
-            start_offset=self.start_offset,
-            end_offset=self.end_offset,
-            label=self.label,
-        )
+        return {
+            "id": self.id,
+            "start_offset": self.start_offset,
+            "end_offset": self.end_offset,
+            "label": self.label,
+        }
 
 
 @dataclasses.dataclass()
@@ -97,12 +97,12 @@ class _DoccanoRelation:
     type: str
 
     def to_dict(self) -> dict[str, Any]:
-        return dict(
-            id=self.id,
-            from_id=self.from_id,
-            to_id=self.to_id,
-            type=self.type,
-        )
+        return {
+            "id": self.id,
+            "from_id": self.from_id,
+            "to_id": self.to_id,
+            "type": self.type,
+        }
 
 
 @dataclasses.dataclass()
@@ -122,7 +122,7 @@ class _DoccanoDocRelationExtraction:
         return cls(text=text, entities=entities, relations=relations, metadata=metadata)
 
     def to_dict(self) -> dict[str, Any]:
-        doc_dict = dict(text=self.text)
+        doc_dict = {"text": self.text}
         doc_dict["entities"] = [ent.to_dict() for ent in self.entities]
         doc_dict["relations"] = [rel.to_dict() for rel in self.relations]
         doc_dict.update(self.metadata)
@@ -144,7 +144,7 @@ class _DoccanoDocSeqLabeling:
         return cls(text=text, entities=entities, metadata=metadata)
 
     def to_dict(self) -> dict[str, Any]:
-        doc_dict = dict(text=self.text)
+        doc_dict = {"text": self.text}
         doc_dict["label"] = [ent.to_tuple() for ent in self.entities]
         doc_dict.update(self.metadata)
         return doc_dict
@@ -172,7 +172,7 @@ class _DoccanoDocTextClassification:
         return cls(text=text, label=label, metadata=metadata)
 
     def to_dict(self) -> dict[str, Any]:
-        doc_dict = dict(text=self.text, label=[str(self.label)])
+        doc_dict = {"text": self.text, "label": [str(self.label)]}
         doc_dict.update(self.metadata)
         return doc_dict
 
@@ -241,7 +241,7 @@ class DoccanoInputConverter:
             uid=self.uid,
             name=self.__class__.__name__,
             class_name=self.__class__.__name__,
-            config=dict(task=self.task.value),
+            config={"task": self.task.value},
         )
 
     def load_from_directory_zip(self, dir_path: str | Path) -> list[TextDocument]:
@@ -374,7 +374,7 @@ class DoccanoInputConverter:
             )
             raise ValueError(msg) from err
 
-        ents_by_doccano_id = dict()
+        ents_by_doccano_id = {}
         relations = []
         for doccano_entity in doccano_doc.entities:
             text = doccano_doc.text[doccano_entity.start_offset : doccano_entity.end_offset]
@@ -382,7 +382,7 @@ class DoccanoInputConverter:
                 text=text,
                 label=doccano_entity.label,
                 spans=[Span(doccano_entity.start_offset, doccano_entity.end_offset)],
-                metadata=dict(doccano_id=doccano_entity.id),
+                metadata={"doccano_id": doccano_entity.id},
             )
             ents_by_doccano_id[doccano_entity.id] = entity
 
@@ -394,7 +394,7 @@ class DoccanoInputConverter:
                 label=doccano_relation.type,
                 source_id=ents_by_doccano_id[doccano_relation.from_id].uid,
                 target_id=ents_by_doccano_id[doccano_relation.to_id].uid,
-                metadata=dict(doccano_id=doccano_relation.id),
+                metadata={"doccano_id": doccano_relation.id},
             )
             relations.append(relation)
 
@@ -535,7 +535,7 @@ class DoccanoOutputConverter:
             uid=self.uid,
             name=self.__class__.__name__,
             class_name=self.__class__.__name__,
-            config=dict(task=self.task.value),
+            config={"task": self.task.value},
         )
 
     def save(self, docs: list[TextDocument], output_file: str | Path):
@@ -588,7 +588,7 @@ class DoccanoOutputConverter:
         dict of str to Any
             Dictionary with doccano annotation. It may contain text, entities and relations.
         """
-        doccano_ents_by_medkit_uid = dict()
+        doccano_ents_by_medkit_uid = {}
         doccano_relations = []
 
         anns_by_type = get_anns_by_type(medkit_doc, self.anns_labels)

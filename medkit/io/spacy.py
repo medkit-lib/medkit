@@ -60,11 +60,11 @@ class SpacyInputConverter:
 
     @property
     def description(self) -> OperationDescription:
-        config = dict(
-            entities=self.entities,
-            span_groups=self.span_groups,
-            attrs=self.attrs,
-        )
+        config = {
+            "entities": self.entities,
+            "span_groups": self.span_groups,
+            "attrs": self.attrs,
+        }
 
         return OperationDescription(
             uid=self.uid,
@@ -179,12 +179,12 @@ class SpacyOutputConverter:
     def description(self) -> OperationDescription:
         # medkit does not support serialisation of nlp objects,
         # however version information like model name, author etc. is stored
-        config = dict(
-            nlp_metadata=self.nlp.meta,
-            labels_anns=self.labels_anns,
-            attrs=self.attrs,
-            apply_nlp_spacy=self.apply_nlp_spacy,
-        )
+        config = {
+            "nlp_metadata": self.nlp.meta,
+            "labels_anns": self.labels_anns,
+            "attrs": self.attrs,
+            "apply_nlp_spacy": self.apply_nlp_spacy,
+        }
         return OperationDescription(uid=self.uid, class_name=self.__class__.__name__, config=config)
 
     def convert(self, medkit_docs: list[TextDocument]) -> list[Doc]:

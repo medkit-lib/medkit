@@ -147,14 +147,14 @@ class Segment(TextAnnotation):
     def to_dict(self) -> dict[str, Any]:
         spans = [s.to_dict() for s in self.spans]
         attrs = [a.to_dict() for a in self.attrs]
-        segment_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            text=self.text,
-            spans=spans,
-            attrs=attrs,
-            metadata=self.metadata,
-        )
+        segment_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "text": self.text,
+            "spans": spans,
+            "attrs": attrs,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, segment_dict)
         return segment_dict
 
@@ -269,14 +269,14 @@ class Relation(TextAnnotation):
 
     def to_dict(self) -> dict[str, Any]:
         attrs = [a.to_dict() for a in self.attrs]
-        relation_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            source_id=self.source_id,
-            target_id=self.target_id,
-            attrs=attrs,
-            metadata=self.metadata,
-        )
+        relation_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "source_id": self.source_id,
+            "target_id": self.target_id,
+            "attrs": attrs,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, relation_dict)
         return relation_dict
 

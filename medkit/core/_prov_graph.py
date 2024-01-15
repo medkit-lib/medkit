@@ -14,12 +14,12 @@ class ProvNode:
     derived_ids: list[str]
 
     def to_dict(self) -> dict[str, Any]:
-        return dict(
-            data_item_id=self.data_item_id,
-            operation_id=self.operation_id,
-            source_ids=self.source_ids,
-            derived_ids=self.derived_ids,
-        )
+        return {
+            "data_item_id": self.data_item_id,
+            "operation_id": self.operation_id,
+            "source_ids": self.source_ids,
+            "derived_ids": self.derived_ids,
+        }
 
 
 class ProvGraph:
@@ -180,4 +180,4 @@ class ProvGraph:
     def to_dict(self) -> dict[str, Any]:
         nodes = [n.to_dict() for n in self._nodes_by_id.values()]
         sub_graphs_by_op_id = {uid: s.to_dict() for uid, s in self._sub_graphs_by_op_id.items()}
-        return dict(nodes=nodes, sub_graphs_by_op_id=sub_graphs_by_op_id)
+        return {"nodes": nodes, "sub_graphs_by_op_id": sub_graphs_by_op_id}

@@ -114,7 +114,7 @@ class BratInputConverter(InputConverter):
         list of TextDocument
             The list of TextDocuments
         """
-        documents = list()
+        documents = []
         dir_path = Path(dir_path)
 
         # find all base paths with at least a corresponding text or ann file
@@ -137,7 +137,7 @@ class BratInputConverter(InputConverter):
             if not ann_path.exists():
                 # directly load .txt without .ann
                 text = text_path.read_text(encoding="utf-8")
-                metadata = dict(path_to_text=str(text_path))
+                metadata = {"path_to_text": str(text_path)}
                 doc = TextDocument(text=text, metadata=metadata)
             else:
                 # load both .txt and .ann
@@ -172,7 +172,7 @@ class BratInputConverter(InputConverter):
 
         anns = self.load_annotations(ann_path)
 
-        metadata = dict(path_to_text=str(text_path), path_to_ann=str(ann_path))
+        metadata = {"path_to_text": str(text_path), "path_to_ann": str(ann_path)}
 
         doc = TextDocument(text=text, metadata=metadata)
         for ann in anns:
@@ -197,7 +197,7 @@ class BratInputConverter(InputConverter):
         ann_file = Path(ann_file)
 
         brat_doc = brat_utils.parse_file(ann_file)
-        anns_by_brat_id = dict()
+        anns_by_brat_id = {}
 
         # First convert entities, then relations, finally attributes
         # because new annotation identifier is needed
@@ -216,7 +216,7 @@ class BratInputConverter(InputConverter):
                     label=brat_entity.type,
                     spans=spans,
                     text=brat_entity.text,
-                    metadata=dict(brat_id=brat_entity.uid),
+                    metadata={"brat_id": brat_entity.uid},
                 )
             except AssertionError as err:
                 msg = f"Impossible to create an entity from '{ann_file.name}':{brat_entity.uid}."
@@ -231,7 +231,7 @@ class BratInputConverter(InputConverter):
                 label=brat_relation.type,
                 source_id=anns_by_brat_id[brat_relation.subj].uid,
                 target_id=anns_by_brat_id[brat_relation.obj].uid,
-                metadata=dict(brat_id=brat_relation.uid),
+                metadata={"brat_id": brat_relation.uid},
             )
             anns_by_brat_id[brat_relation.uid] = relation
             if self._prov_tracer is not None:
@@ -241,7 +241,7 @@ class BratInputConverter(InputConverter):
             attribute = Attribute(
                 label=brat_attribute.type,
                 value=brat_attribute.value,
-                metadata=dict(brat_id=brat_attribute.uid),
+                metadata={"brat_id": brat_attribute.uid},
             )
             anns_by_brat_id[brat_attribute.target].attrs.add(attribute)
             if self._prov_tracer is not None:
@@ -332,13 +332,13 @@ class BratOutputConverter(OutputConverter):
 
     @property
     def description(self) -> OperationDescription:
-        config = dict(
-            anns_labels=self.anns_labels,
-            attrs=self.attrs,
-            ignore_segments=self.ignore_segments,
-            create_config=self.create_config,
-            top_values_by_attr=self.top_values_by_attr,
-        )
+        config = {
+            "anns_labels": self.anns_labels,
+            "attrs": self.attrs,
+            "ignore_segments": self.ignore_segments,
+            "create_config": self.create_config,
+            "top_values_by_attr": self.top_values_by_attr,
+        }
         return OperationDescription(uid=self.uid, class_name=self.__class__.__name__, config=config)
 
     def save(
@@ -431,7 +431,7 @@ class BratOutputConverter(OutputConverter):
             A list of brat annotations
         """
         nb_segment, nb_relation, nb_attribute, nb_note = 1, 1, 1, 1
-        brat_entities_by_medkit_id = dict()
+        brat_entities_by_medkit_id = {}
         brat_anns = []
 
         # First convert segments then relations including its attributes

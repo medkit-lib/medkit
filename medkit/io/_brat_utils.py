@@ -344,10 +344,10 @@ def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
     Document
         The dataclass object containing entities, relations and attributes
     """
-    entities = dict()
-    relations = dict()
-    attributes = dict()
-    notes = dict()
+    entities = {}
+    relations = {}
+    attributes = {}
+    notes = {}
 
     annotations = ann_string.split("\n")
     for i, ann in enumerate(annotations):
@@ -376,7 +376,7 @@ def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
     # Process groups
     groups = None
     if detect_groups:
-        groups: dict[str, Grouping] = dict()
+        groups: dict[str, Grouping] = {}
         grouping_relations = {r.uid: r for r in relations.values() if r.type in GROUPING_RELATIONS}
 
         for entity in entities.values():

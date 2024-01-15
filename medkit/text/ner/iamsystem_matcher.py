@@ -140,9 +140,9 @@ class IAMSystemMatcher(NEROperation):
 
         tokens_algos = [dict(token.__dict__, algos=algos) for token, algos in ann.get_tokens_algos()]
 
-        metadata = dict(
-            tokens_algos=tokens_algos,
-        )
+        metadata = {
+            "tokens_algos": tokens_algos,
+        }
         ent_label = self.label_provider(ann.keywords)
         if ent_label is None:
             ent_label = ann.keywords[0].label

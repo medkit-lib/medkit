@@ -111,11 +111,11 @@ class TextDocument(dict_conv.SubclassMapping):
         super().__init_subclass__()
 
     def to_dict(self, with_anns: bool = True) -> dict[str, Any]:
-        doc_dict = dict(
-            uid=self.uid,
-            text=self.text,
-            metadata=self.metadata,
-        )
+        doc_dict = {
+            "uid": self.uid,
+            "text": self.text,
+            "metadata": self.metadata,
+        }
         if with_anns:
             doc_dict["anns"] = [a.to_dict() for a in self.anns]
 

@@ -93,7 +93,7 @@ def extract_anns_and_attrs_from_spacy_doc(
     spacy_attrs = _get_custom_attrs_by_label(rebuild_medkit_anns_and_attrs, attrs)
 
     annotations = []
-    attributes_by_ann = dict()
+    attributes_by_ann = {}
 
     # convert spacy entities
     for entity_spacy in spacy_entities:

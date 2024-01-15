@@ -156,7 +156,7 @@ class SyntacticRelationExtractor(DocOperation):
                     relation = self._create_relation(
                         source=source,
                         target=target,
-                        metadata=dict(dep_tag=e2.root.dep_, dep_direction="left_to_right"),
+                        metadata={"dep_tag": e2.root.dep_, "dep_direction": "left_to_right"},
                     )
                     if relation is not None:
                         relations.append(relation)
@@ -168,7 +168,7 @@ class SyntacticRelationExtractor(DocOperation):
                     relation = self._create_relation(
                         source=source,
                         target=target,
-                        metadata=dict(dep_tag=e1.root.dep_, dep_direction="right_to_left"),
+                        metadata={"dep_tag": e1.root.dep_, "dep_direction": "right_to_left"},
                     )
                     if relation is not None:
                         relations.append(relation)

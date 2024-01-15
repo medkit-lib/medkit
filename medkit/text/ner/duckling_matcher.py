@@ -131,9 +131,9 @@ class DucklingMatcher(NEROperation):
             norm_attr = Attribute(
                 label=self.output_label,
                 value=match["value"],
-                metadata=dict(
-                    version=self.version,
-                ),
+                metadata={
+                    "version": self.version,
+                },
             )
             entity.attrs.add(norm_attr)
 

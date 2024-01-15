@@ -79,12 +79,12 @@ class PipelineStep:
 
     def to_dict(self) -> dict[str, Any]:
         operation = self.operation.description if isinstance(self.operation, DescribableOperation) else None
-        return dict(
-            operation=operation,
-            input_keys=self.input_keys,
-            output_keys=self.output_keys,
-            aggregate_input_keys=self.aggregate_input_keys,
-        )
+        return {
+            "operation": operation,
+            "input_keys": self.input_keys,
+            "output_keys": self.output_keys,
+            "aggregate_input_keys": self.aggregate_input_keys,
+        }
 
 
 class Pipeline:
@@ -139,11 +139,11 @@ class Pipeline:
     @property
     def description(self) -> OperationDescription:
         steps = [s.to_dict() for s in self.steps]
-        config = dict(
-            steps=steps,
-            input_keys=self.input_keys,
-            output_keys=self.output_keys,
-        )
+        config = {
+            "steps": steps,
+            "input_keys": self.input_keys,
+            "output_keys": self.output_keys,
+        }
         return OperationDescription(
             uid=self.uid,
             class_name=self.__class__.__name__,
@@ -233,7 +233,7 @@ class Pipeline:
         # operations with single output may return a
         # single list instead of a tuple of lists)
         if all_output_data is None:
-            all_output_data = tuple()
+            all_output_data = ()
         elif not isinstance(all_output_data, tuple):
             all_output_data = (all_output_data,)
 

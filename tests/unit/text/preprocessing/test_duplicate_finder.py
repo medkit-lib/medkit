@@ -13,12 +13,12 @@ LINES = [
 
 def _get_docs():
     text_0 = "\n".join([LINES[0], LINES[1], LINES[2]])
-    doc_0 = TextDocument(text_0, metadata=dict(creation_date="2022-02-27"))
+    doc_0 = TextDocument(text_0, metadata={"creation_date": "2022-02-27"})
 
     text_1 = "\n".join([LINES[0], LINES[2], LINES[3]])
-    doc_1 = TextDocument(text_1, metadata=dict(creation_date="2022-04-10"))
+    doc_1 = TextDocument(text_1, metadata={"creation_date": "2022-04-10"})
     text_2 = "\n".join([LINES[0], LINES[2], LINES[4]])
-    doc_2 = TextDocument(text_2, metadata=dict(creation_date="2022-09-29"))
+    doc_2 = TextDocument(text_2, metadata={"creation_date": "2022-09-29"})
     return [doc_0, doc_1, doc_2]
 
 

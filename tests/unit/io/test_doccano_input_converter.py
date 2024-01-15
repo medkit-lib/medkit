@@ -21,7 +21,7 @@ def create_doccano_zip_files_disk(tmp_path, filename):
 def test_relation_extraction_converter(tmp_path):
     task = DoccanoTask.RELATION_EXTRACTION
     create_doccano_zip_files_disk(tmp_path, filename=task.value)
-    expected_metadata = dict(custom_metadata="custom", doc_id=1234)
+    expected_metadata = {"custom_metadata": "custom", "doc_id": 1234}
 
     converter = DoccanoInputConverter(task=task)
     documents = converter.load_from_directory_zip(dir_path=f"{tmp_path}/{task.value}")

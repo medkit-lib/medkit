@@ -76,15 +76,15 @@ class UMLSNormAttribute(EntityNormAttribute):
         return self.kb_version
 
     def to_dict(self) -> dict[str, Any]:
-        norm_dict = dict(
-            uid=self.uid,
-            cui=self.cui,
-            umls_version=self.umls_version,
-            term=self.term,
-            score=self.score,
-            sem_types=self.sem_types,
-            metadata=self.metadata,
-        )
+        norm_dict = {
+            "uid": self.uid,
+            "cui": self.cui,
+            "umls_version": self.umls_version,
+            "term": self.term,
+            "score": self.score,
+            "sem_types": self.sem_types,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, norm_dict)
         return norm_dict
 

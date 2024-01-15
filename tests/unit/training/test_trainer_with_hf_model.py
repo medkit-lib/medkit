@@ -26,14 +26,14 @@ def _create_model_and_tokenizer(tmp_path):
     )  # modify the original config to make a tiny model with the original vocab
     config = transformers.BertConfig.from_pretrained(_MODEL_NER_CLINICAL)
     config.update(
-        dict(
-            vocab_size=tokenizer.vocab_size,
-            hidden_size=20,
-            num_hidden_layers=1,
-            num_attention_heads=1,
-            intermediate_size=10,
-            max_position_embeddings=32,
-        )
+        {
+            "vocab_size": tokenizer.vocab_size,
+            "hidden_size": 20,
+            "num_hidden_layers": 1,
+            "num_attention_heads": 1,
+            "intermediate_size": 10,
+            "max_position_embeddings": 32,
+        }
     )
 
     model = transformers.BertForTokenClassification(config=config)

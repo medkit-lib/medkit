@@ -95,14 +95,14 @@ class Segment(dict_conv.SubclassMapping):
 
         span = self.span.to_dict()
         attrs = [a.to_dict() for a in self.attrs]
-        segment_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            audio=audio,
-            span=span,
-            attrs=attrs,
-            metadata=self.metadata,
-        )
+        segment_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "audio": audio,
+            "span": span,
+            "attrs": attrs,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, segment_dict)
         return segment_dict
 

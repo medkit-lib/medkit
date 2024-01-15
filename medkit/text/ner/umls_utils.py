@@ -69,12 +69,12 @@ class UMLSEntry:
     semgroups: list[str] | None = None
 
     def to_dict(self):
-        return dict(
-            cui=self.cui,
-            term=self.term,
-            semtypes=self.semtypes,
-            semgroups=self.semgroups,
-        )
+        return {
+            "cui": self.cui,
+            "term": self.term,
+            "semtypes": self.semtypes,
+            "semgroups": self.semgroups,
+        }
 
 
 # based on https://github.com/GanjinZero/CODER/blob/master/coderpp/test/load_umls.py
