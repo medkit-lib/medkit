@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from medkit.core import ProvTracer
 from medkit.core.text import ModifiedSpan, Span, UMLSNormAttribute
 from medkit.io.brat import BratInputConverter
@@ -16,7 +18,7 @@ def test_load():
     assert "path_to_ann" in doc.metadata
 
     path_to_text = doc.metadata["path_to_text"]
-    with open(path_to_text) as file:
+    with Path(path_to_text).open() as file:
         text = file.read()
     assert doc.text == text
 

@@ -1,5 +1,4 @@
-"""
-This package needs extra-dependencies not installed as core dependencies of medkit.
+"""This package needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[spacy]`.
 """
 
@@ -15,10 +14,11 @@ __all__ = [
 from medkit.core.utils import modules_are_available
 
 if not modules_are_available(["spacy"]):
-    raise ImportError("Requires spacy install for importing medkit.text.spacy module")
+    msg = "Requires spacy install for importing medkit.text.spacy module"
+    raise ImportError(msg)
 
-from .doc_pipeline import SpacyDocPipeline  # noqa: E402, F401
-from .pipeline import SpacyPipeline  # noqa: E402, F401
+from medkit.text.spacy.doc_pipeline import SpacyDocPipeline
+from medkit.text.spacy.pipeline import SpacyPipeline
 
 if modules_are_available(["edsnlp"]):
-    __all__.append("edsnlp")
+    __all__ += ["edsnlp"]

@@ -199,7 +199,6 @@ def test_medkit_segments_to_spacy_docs(nlp_spacy):
 
 def test_normalization_attr(nlp_spacy):
     """Conversion of normalization objects to strings"""
-
     text = "Le patient souffre d'asthme"
     doc = TextDocument(text=text)
     entity = Entity(label="maladie", text="asthme", spans=[Span(21, 27)])
@@ -252,7 +251,9 @@ def test_spacy_to_medkit_with_custom_attr_value(nlp_spacy):
 
     attr = attrs[anns[0].uid][0]
     assert isinstance(attr, _DateAttribute)
-    assert attr.year == 2001 and attr.month == 11 and attr.day == 18
+    assert attr.year == 2001
+    assert attr.month == 11
+    assert attr.day == 18
 
     # teardown
     nlp_spacy.remove_pipe("entity_ruler")

@@ -1,5 +1,4 @@
-"""
-This module aims to provide facilities for accessing data from e3c corpus.
+"""This module aims to provide facilities for accessing data from e3c corpus.
 
 **Version** : 2.0.0
 **License**: The E3C corpus is released under Creative Commons NonCommercial license
@@ -15,6 +14,7 @@ In Proceedings of the Seventh Italian Conference on Computational Linguistics, B
 Italy, December.
 Associazione Italiana di Linguistica Computazionale.
 """
+from __future__ import annotations
 
 __all__ = [
     "load_document",
@@ -31,7 +31,7 @@ import json
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Union
+from typing import Iterator
 from xml.etree import ElementTree
 
 from medkit.core import generate_deterministic_id
@@ -53,12 +53,11 @@ Label used by medkit for annotated clinical entities of E3C corpus
 
 @dataclass
 class E3CDocument:
-    """
-    Represents the data structure of a json document
+    """Represents the data structure of a json document
     in data collection folder of the E3C corpus
     """
 
-    authors: List[Dict]  # list of {'author': '<name>'}
+    authors: list[dict]  # list of {'author': '<name>'}
     doi: str
     publication_date: str
     id: str
@@ -78,20 +77,16 @@ class E3CDocument:
         return dict_repr
 
 
-def load_document(
-    filepath: Union[str, Path],
-    encoding: str = "utf-8",
-) -> TextDocument:
-    """
-    Load a E3C corpus document (json document) as medkit text document.
+def load_document(filepath: str | Path, encoding: str = "utf-8") -> TextDocument:
+    """Load a E3C corpus document (json document) as medkit text document.
     For example, one in data collection folder.
     Document id is always kept in medkit document metadata.
 
     Parameters
     ----------
-    filepath
+    filepath : str or Path
         The path to the json file of the E3C corpus
-    encoding
+    encoding : str, default="utf-8"
         The encoding of the file. Default: 'utf-8'
 
     Returns
@@ -99,36 +94,33 @@ def load_document(
     TextDocument
         The corresponding medkit text document
     """
-    with open(filepath, encoding=encoding) as f:
+    with Path(filepath).open(encoding=encoding) as f:
         doc = E3CDocument(**json.load(f))
 
         uid = str(generate_deterministic_id(doc.id))
         return TextDocument(text=doc.text, uid=uid, metadata=doc.extract_metadata())
 
 
-def load_data_collection(
-    dir_path: Union[Path, str],
-    encoding: str = "utf-8",
-) -> Iterator[TextDocument]:
-    """
-    Load the E3C corpus data collection as medkit text documents
+def load_data_collection(dir_path: Path | str, encoding: str = "utf-8") -> Iterator[TextDocument]:
+    """Load the E3C corpus data collection as medkit text documents
 
     Parameters
     ----------
-    dir_path
+    dir_path : str or Path
         The path to the E3C corpus data collection directory containing the json files
         (e.g., /tmp/E3C-Corpus-2.0.0/data_collection/French/layer1)
-    encoding
+    encoding : str, default="utf-8"
         The encoding of the files. Default: 'utf-8'
 
     Returns
     -------
-    Iterator[TextDocument]
+    iterator of TextDocument
         An iterator on corresponding medkit text documents
     """
     dir_path = Path(dir_path)
     if not dir_path.exists() or not dir_path.is_dir():
-        raise FileNotFoundError("%s is not a directory or does not exist", dir_path)
+        msg = "%s is not a directory or does not exist"
+        raise FileNotFoundError(msg, dir_path)
 
     filepaths = sorted(dir_path.glob("*.json"))
     if not filepaths:
@@ -141,35 +133,25 @@ def load_data_collection(
         yield load_document(filepath, encoding=encoding)
 
 
-def convert_data_collection_to_medkit(
-    dir_path: Union[Path, str],
-    output_file: Union[str, Path],
-    encoding: Optional[str] = "utf-8",
-):
-    """
-    Convert E3C corpus data collection to medkit jsonl file
+def convert_data_collection_to_medkit(dir_path: Path | str, output_file: str | Path, encoding: str | None = "utf-8"):
+    """Convert E3C corpus data collection to medkit jsonl file
 
     Parameters
     ----------
-    dir_path
+    dir_path : str or Path
         The path to the E3C corpus data collection directory containing the json files
         (e.g., /tmp/E3C-Corpus-2.0.0/data_collection/French/layer1)
-    output_file
+    output_file : str or Path
         The medkit jsonl output file which will contain medkit text documents
-    encoding
+    encoding : str, default="utf-8"
         The encoding of the files. Default: 'utf-8'
     """
     docs = load_data_collection(dir_path=dir_path, encoding=encoding)
     save_text_documents(docs=docs, output_file=output_file, encoding=encoding)
 
 
-def load_annotated_document(
-    filepath: Union[str, Path],
-    encoding: str = "utf-8",
-    keep_sentences=False,
-) -> TextDocument:
-    """
-    Load a E3C corpus annotated document (xml document) as medkit text document.
+def load_annotated_document(filepath: str | Path, encoding: str = "utf-8", keep_sentences=False) -> TextDocument:
+    """Load a E3C corpus annotated document (xml document) as medkit text document.
     For example, one in data annotation folder.
     Each annotation id is always kept in corresponding medkit element metadata.
 
@@ -178,11 +160,11 @@ def load_annotated_document(
 
     Parameters
     ----------
-    filepath
+    filepath : str | Path
         The path to the xml file of the E3C corpus
-    encoding
+    encoding : str, default="utf-8"
         The encoding of the file. Default: 'utf-8'
-    keep_sentences
+    keep_sentences : bool, default=False
         Whether to load sentences into medkit documents.
 
     Returns
@@ -260,7 +242,7 @@ def load_annotated_document(
             medkit_entity.attrs.add(attr)
 
         else:
-            logger.debug(f"no cui for {medkit_entity}")
+            logger.debug("no cui for %s", medkit_entity)
 
         # attach medkit entity to medkit document
         medkit_doc.anns.add(medkit_entity)
@@ -269,32 +251,31 @@ def load_annotated_document(
 
 
 def load_data_annotation(
-    dir_path: Union[Path, str],
+    dir_path: Path | str,
     encoding: str = "utf-8",
     keep_sentences: bool = False,
 ) -> Iterator[TextDocument]:
-    """
-    Load the E3C corpus data annotation as medkit text documents.
+    """Load the E3C corpus data annotation as medkit text documents.
 
     Parameters
     ----------
-    dir_path
+    dir_path : str or Path
         The path to the E3C corpus data annotation directory containing the xml files
         (e.g., /tmp/E3C-Corpus-2.0.0/data_annotation/French/layer1)
-    encoding
+    encoding : str, default="utf-8"
         The encoding of the files. Default: 'utf-8'
-    keep_sentences
+    keep_sentences : bool, default=False
         Whether to load sentences into medkit documents.
 
     Returns
     -------
-    Iterator[TextDocument]
+    iterator of TextDocument
         An iterator on corresponding medkit text documents
     """
-
     dir_path = Path(dir_path)
     if not dir_path.exists() or not dir_path.is_dir():
-        raise FileNotFoundError("%s is not a directory or does not exist", dir_path)
+        msg = "%s is not a directory or does not exist"
+        raise FileNotFoundError(msg, dir_path)
 
     filepaths = sorted(dir_path.glob("*.xml"))
     if not filepaths:
@@ -308,24 +289,23 @@ def load_data_annotation(
 
 
 def convert_data_annotation_to_medkit(
-    dir_path: Union[Path, str],
-    output_file: Union[str, Path],
-    encoding: Optional[str] = "utf-8",
+    dir_path: Path | str,
+    output_file: str | Path,
+    encoding: str | None = "utf-8",
     keep_sentences: bool = False,
 ):
-    """
-    Convert E3C corpus data annotation to medkit jsonl file.
+    """Convert E3C corpus data annotation to medkit jsonl file.
 
     Parameters
     ----------
-    dir_path
+    dir_path : str or Path
         The path to the E3C corpus data collection directory containing the json files
         (e.g., /tmp/E3C-Corpus-2.0.0/data_collection/French/layer1)
-    output_file
+    output_file : str or Path
         The medkit jsonl output file which will contain medkit text documents
-    encoding
+    encoding : str, default="utf-8"
         The encoding of the files. Default: 'utf-8'
-    keep_sentences
+    keep_sentences : bool, default=False
         Whether to load sentences into medkit documents.
     """
     docs = load_data_annotation(

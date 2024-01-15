@@ -1,11 +1,11 @@
-__all__ = ["filter_overlapping_entities"]
+from __future__ import annotations
 
-from typing import List
+__all__ = ["filter_overlapping_entities"]
 
 from medkit.core.text import Entity, span_utils
 
 
-def filter_overlapping_entities(entities: List[Entity]) -> List[Entity]:
+def filter_overlapping_entities(entities: list[Entity]) -> list[Entity]:
     """Filter a list of entities and remove overlaps. This method may be
     useful for the creation of data for named entity recognition, where
     a part of text can only contain one entity per 'word'.
@@ -13,12 +13,12 @@ def filter_overlapping_entities(entities: List[Entity]) -> List[Entity]:
 
     Parameters
     ----------
-    entities:
+    entities : list of Entity
         Entities to filter
 
     Returns
     -------
-    List[Entity]
+    list of Entity
         Filtered entities
     """
     # concat normalize spans and entities to keep the relation after sorting
@@ -41,5 +41,4 @@ def filter_overlapping_entities(entities: List[Entity]) -> List[Entity]:
         if span_start not in seen_chars and span_end not in seen_chars:
             seen_chars.update(range(span_start, span_end))
             filtered_entities.append(ent)
-    filtered_entities = sorted(filtered_entities, key=lambda ent: ent.spans[0].start)
-    return filtered_entities
+    return sorted(filtered_entities, key=lambda ent: ent.spans[0].start)

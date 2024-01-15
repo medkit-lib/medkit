@@ -1,10 +1,10 @@
-from iamsystem import Entity as Term  # noqa: E402
+from iamsystem import Entity as Term
 from iamsystem import Matcher
 
-from medkit.core import Attribute  # noqa: E402
-from medkit.core.text import ModifiedSpan, Segment, Span  # noqa: E402
-from medkit.text.ner import IAMSystemMatcher  # noqa: E402
-from medkit.text.ner.iamsystem_matcher import MedkitKeyword  # noqa: E402
+from medkit.core import Attribute
+from medkit.core.text import ModifiedSpan, Segment, Span
+from medkit.text.ner import IAMSystemMatcher
+from medkit.text.ner.iamsystem_matcher import MedkitKeyword
 
 
 def test_simple_matcher():
@@ -29,8 +29,7 @@ def _get_first_entity(matcher: Matcher):
     text = "calcium blood level"
     medkit_matcher = IAMSystemMatcher(matcher=matcher)
     segment = Segment(label="raw_text", text=text, spans=[Span(0, len(text))])
-    entity = medkit_matcher.run([segment])[0]
-    return entity
+    return medkit_matcher.run([segment])[0]
 
 
 def test_matcher_window():
@@ -79,7 +78,8 @@ def test_matcher_userkw_ent_label():
 
 def test_matcher_userkw_multiple_ent_label():
     """When multiple ent_labels, the entity label is the first keyword's
-    ent_label (if set)."""
+    ent_label (if set).
+    """
     matcher = Matcher.build(
         keywords=[
             UserKeyword(label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label="first one"),
@@ -97,7 +97,8 @@ def test_matcher_userkw_multiple_ent_label():
 
 def test_matcher_userkw_multiple_ent_label_first_none():
     """When multiple ent_labels, the entity label is the first keyword's
-    ent_label that is not None."""
+    ent_label that is not None.
+    """
     matcher = Matcher.build(
         keywords=[
             UserKeyword(label="calcium", kb_id="LOINC-2", kb_name="UMLS", ent_label=None),
@@ -124,7 +125,8 @@ def test_matcher_userkw_ent_label_none():
 def test_matcher_userkw_len_norm_attr():
     """When one iamsystem's annotation has 4 keywords (e.g. Keywords have the
     same label), IAMSystemMatcher create 3 norm attributes
-    because first one do not have kb_id or kb_name values."""
+    because first one do not have kb_id or kb_name values.
+    """
     matcher = Matcher.build(
         keywords=[
             "calcium",
@@ -157,9 +159,7 @@ def test_matcher_kb_name_kb_id():
 
 
 def provide_umls_label(keywords):
-    """
-    Return first UMLS ent label or None.
-    """
+    """Return first UMLS ent label or None."""
     for kw in keywords:
         if kw.kb_name == "UMLS":
             return kw.ent_label
@@ -168,7 +168,6 @@ def provide_umls_label(keywords):
 
 def test_matcher_custom_label_provider():
     """Test overriding default label_provider."""
-
     matcher = Matcher.build(
         keywords=[
             MedkitKeyword(label="calcium", kb_id=None, kb_name="WIKIPEDIA", ent_label="compound"),
@@ -189,7 +188,6 @@ def test_matcher_custom_label_provider():
 
 def test_attrs_to_copy():
     """Copying of selected attributes from input segment to created entity"""
-
     text = "The patient has asthma"
     sentence = Segment(label="sentence", text=text, spans=[Span(0, len(text))])
     # copied attribute

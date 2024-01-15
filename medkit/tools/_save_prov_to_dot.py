@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 __all__ = ["save_prov_to_dot"]
 
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, TextIO, Type, Union
+from typing import Any, Callable, TextIO
 
 from medkit.core import (
     Attribute,
@@ -16,10 +18,10 @@ from medkit.core.text import Segment, TextDocument
 
 def save_prov_to_dot(
     prov_tracer: ProvTracer,
-    file: Union[str, Path],
-    data_item_formatters: Optional[Dict[Type, Callable[[Any], str]]] = None,
-    op_formatter: Optional[Callable[[OperationDescription], str]] = None,
-    max_sub_prov_depth: Optional[int] = None,
+    file: str | Path,
+    data_item_formatters: dict[type, Callable[[Any], str]] | None = None,
+    op_formatter: Callable[[OperationDescription], str] | None = None,
+    max_sub_prov_depth: int | None = None,
     show_attr_links: bool = True,
 ):
     """Generate a graphviz-compatible .dot file from a
@@ -27,29 +29,28 @@ def save_prov_to_dot(
 
     Parameters
     ----------
-    prov_tracer:
+    prov_tracer : ProvTracer
         Provenance tracer holding the provenance information to save.
-    file:
+    file : str or Path
         Path to the .dot file.
-    data_item_formatters:
+    data_item_formatters : dict of type to Callable, optional
         Dict mapping data items types with callback functions returning the text
         to display for each data item of this type.
         Some default formatters are available for common data item such as text
         annotations. Use `data_item_formatters` to override them or to add support
         for other types.
-    op_formatter:
+    op_formatter : Callable, optional
         Callback function returning the text to display for each operation.
         If none provided, the operation name is used.
-    max_sub_prov_depth:
+    max_sub_prov_depth : int, optional
         When there are nested provenance tracers for some operations, how
         deep should we go when displaying their contents.
-    show_attr_links:
+    show_attr_links : bool, default=True
         Whether to show links between attributes and the data items they are
         attached to (not strictly provenance but can make things easier to
         understand).
     """
-
-    with open(file, mode="w") as fp:
+    with Path(file).open(mode="w") as fp:
         writer = _DotWriter(
             fp,
             data_item_formatters,
@@ -71,9 +72,9 @@ class _DotWriter:
     def __init__(
         self,
         fp: TextIO,
-        data_item_formatters: Optional[Dict[Type, Callable[[Any], str]]],
-        op_formatter: Optional[Callable[[OperationDescription], str]],
-        max_sub_prov_depth: Optional[int],
+        data_item_formatters: dict[type, Callable[[Any], str]] | None,
+        op_formatter: Callable[[OperationDescription], str] | None,
+        max_sub_prov_depth: int | None,
         show_attr_links: bool = True,
     ):
         if data_item_formatters is None:
@@ -128,10 +129,11 @@ class _DotWriter:
         # (can't merge the two in same dict, this might create unexpected
         # behavior when there a subtypes)
         for formatters in [self._data_item_formatters, _DEFAULT_DATA_ITEMS_FORMATTERS]:
-            for type, formatter in formatters.items():
-                if isinstance(data_item, type):
+            for type_, formatter in formatters.items():
+                if isinstance(data_item, type_):
                     return formatter(data_item)
-        raise ValueError(f"Found no formatter for data item with type {type(data_item)}, please" " provide one")
+        msg = f"Found no formatter for data item with type {type_(data_item)}, please provide one"
+        raise ValueError(msg)
 
     @staticmethod
     def _escape_quotes(text):

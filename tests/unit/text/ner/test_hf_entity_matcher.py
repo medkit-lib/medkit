@@ -5,9 +5,9 @@ import pytest
 pytest.importorskip(modname="torch", reason="torch is not installed")
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 
-from medkit.core import Attribute, ProvTracer  # noqa: E402
-from medkit.core.text import Segment, Span  # noqa: E402
-from medkit.text.ner.hf_entity_matcher import HFEntityMatcher  # noqa: E402
+from medkit.core import Attribute, ProvTracer
+from medkit.core.text import Segment, Span
+from medkit.text.ner.hf_entity_matcher import HFEntityMatcher
 
 _SPAN_OFFSET = 10
 
@@ -24,17 +24,16 @@ class _MockedPipeline:
     def __call__(self, texts):
         all_match_dicts = []
         for text in texts:
-            match_dicts = []
-            for regexp, label in self._regexps_and_labels:
-                for match in regexp.finditer(text):
-                    match_dicts.append(
-                        {
-                            "start": match.start(),
-                            "end": match.end(),
-                            "entity_group": label,
-                            "score": 1.0,
-                        }
-                    )
+            match_dicts = [
+                {
+                    "start": match.start(),
+                    "end": match.end(),
+                    "entity_group": label,
+                    "score": 1.0,
+                }
+                for regexp, label in self._regexps_and_labels
+                for match in regexp.finditer(text)
+            ]
             all_match_dicts.append(match_dicts)
 
         return all_match_dicts
@@ -44,7 +43,7 @@ class _MockedPipeline:
 def _mocked_pipeline(module_mocker):
     module_mocker.patch(
         "medkit.text.ner.hf_entity_matcher.hf_utils.check_model_for_task_HF",
-        lambda m, t, hf_auth_token=None: True,
+        return_value=True,
     )
     module_mocker.patch("transformers.pipeline", _MockedPipeline)
 
@@ -59,7 +58,6 @@ def _get_sentence_segment(text):
 
 def test_single_match():
     """Basic behavior, single match in one input segment"""
-
     sentence = _get_sentence_segment("The patient has asthma.")
     matcher = HFEntityMatcher(model="mock-model")
     entities = matcher.run([sentence])
@@ -81,7 +79,6 @@ def test_single_match():
 
 def test_multiple_matches():
     """Basic behavior, multiple matches in multiple input segments"""
-
     sentence_1 = _get_sentence_segment("The patient has asthma and is using ventoline.")
     sentence_2 = _get_sentence_segment("The patient has diabetes.")
     sentences = [sentence_1, sentence_2]
@@ -110,7 +107,6 @@ def test_multiple_matches():
 
 def test_attrs_to_copy():
     """Copying of selected attributes from input segment to created entity"""
-
     sentence = _get_sentence_segment("The patient has asthma.")
     # copied attribute
     neg_attr = Attribute(label="negation", value=False)
@@ -135,7 +131,6 @@ def test_attrs_to_copy():
 
 def test_prov():
     """Generated provenance nodes"""
-
     # use file containing voice signal
     sentence_1 = _get_sentence_segment("The patient has asthma and is using ventoline.")
     sentence_2 = _get_sentence_segment("The patient has diabetes.")

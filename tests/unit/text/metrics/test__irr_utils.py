@@ -22,14 +22,14 @@ def test_krippendorff_alpha():
     assert alpha == krippendorff_alpha([annotator2, annotator1])
 
     # nominal data, any number of annotators, missing data
-    A = [1, 2, 3, 3, 2, 1, 4, 1, 2, None, None, None]
-    B = [1, 2, 3, 3, 2, 2, 4, 1, 2, 5, None, 3]
-    C = [None, 3, 3, 3, 2, 3, 4, 2, 2, 5, 1, None]
-    D = [1, 2, 3, 3, 2, 4, 4, 1, 2, 5, 1, None]
-    alpha = krippendorff_alpha([A, B, C, D])
+    a = [1, 2, 3, 3, 2, 1, 4, 1, 2, None, None, None]
+    b = [1, 2, 3, 3, 2, 2, 4, 1, 2, 5, None, 3]
+    c = [None, 3, 3, 3, 2, 3, 4, 2, 2, 5, 1, None]
+    d = [1, 2, 3, 3, 2, 4, 4, 1, 2, 5, 1, None]
+    alpha = krippendorff_alpha([a, b, c, d])
     assert_almost_equal(alpha, 0.743, decimal=3)
-    assert alpha == krippendorff_alpha([D, C, B, A])
-    assert alpha == krippendorff_alpha([D, A, C, B])
+    assert alpha == krippendorff_alpha([d, c, b, a])
+    assert alpha == krippendorff_alpha([d, a, c, b])
 
     # testing exceptions
     with pytest.raises(AssertionError, match="Number of labels should be the same for all .*"):

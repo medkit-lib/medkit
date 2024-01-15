@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 __all__ = ["RTTMInputConverter", "RTTMOutputConverter"]
 
 import csv
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from medkit.core import (
     Attribute,
@@ -51,19 +53,17 @@ class RTTMInputConverter(InputConverter):
         self,
         turn_label: str = "turn",
         speaker_label: str = "speaker",
-        converter_id: Optional[str] = None,
+        converter_id: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        turn_label:
+        turn_label : str, default="turn"
             Label of segments representing turns in the .rttm file.
-        speaker_label:
+        speaker_label : str, default="speaker"
             Label of speaker attributes to add to each segment.
-        converter_id:
+        converter_id : str, optional
             Identifier of the converter.
         """
-
         if converter_id is None:
             converter_id = generate_id()
 
@@ -71,7 +71,7 @@ class RTTMInputConverter(InputConverter):
         self.turn_label = turn_label
         self.speaker_label = speaker_label
 
-        self._prov_tracer: Optional[ProvTracer] = None
+        self._prov_tracer: ProvTracer | None = None
 
     @property
     def description(self) -> OperationDescription:
@@ -90,17 +90,15 @@ class RTTMInputConverter(InputConverter):
         prov_tracer:
             The provenance tracer used to trace the provenance.
         """
-
         self._prov_tracer = prov_tracer
 
     def load(
         self,
-        rttm_dir: Union[str, Path],
-        audio_dir: Optional[Union[str, Path]] = None,
+        rttm_dir: str | Path,
+        audio_dir: str | Path | None = None,
         audio_ext: str = ".wav",
-    ) -> List[AudioDocument]:
-        """
-        Load all .rttm files in a directory into a list of
+    ) -> list[AudioDocument]:
+        """Load all .rttm files in a directory into a list of
         :class:`~medkit.core.audio.document.AudioDocument` objects.
 
         For each .rttm file, they must be a corresponding audio file with the
@@ -109,20 +107,19 @@ class RTTMInputConverter(InputConverter):
 
         Parameters
         ----------
-        rttm_dir:
+        rttm_dir : str or Path
             Directory containing the .rttm files.
-        audio_dir:
+        audio_dir : str or Path, optional
             Directory containing the audio files corresponding to the .rttm files,
             if they are not in `rttm_dir`.
-        audio_ext:
+        audio_ext : str, default=".wav"
             File extension to use for audio files.
 
         Returns
         -------
-        List[AudioDocument]
+        list of AudioDocument
             List of generated documents.
         """
-
         rttm_dir = Path(rttm_dir)
         if audio_dir is not None:
             audio_dir = Path(audio_dir)
@@ -131,36 +128,34 @@ class RTTMInputConverter(InputConverter):
         for rttm_file in sorted(rttm_dir.glob("*.rttm")):
             # corresponding audio file must have same base name with audio extension,
             # either in the same directory or in audio_dir if provided
-            if audio_dir:
-                audio_file = (audio_dir / rttm_file.stem).with_suffix(audio_ext)
-            else:
-                audio_file = rttm_file.with_suffix(audio_ext)
+            audio_file = (
+                (audio_dir / rttm_file.stem).with_suffix(audio_ext) if audio_dir else rttm_file.with_suffix(audio_ext)
+            )
 
             doc = self.load_doc(rttm_file, audio_file)
             docs.append(doc)
 
         if len(docs) == 0:
-            logger.warning(f"No .rttm found in '{rttm_dir}'")
+            logger.warning("No .rttm found in '%s'", rttm_dir)
 
         return docs
 
-    def load_doc(self, rttm_file: Union[str, Path], audio_file: Union[str, Path]) -> AudioDocument:
+    def load_doc(self, rttm_file: str | Path, audio_file: str | Path) -> AudioDocument:
         """Load a single .rttm file into an
         :class:`~medkit.core.audio.document.AudioDocument`.
 
         Parameters
         ----------
-        rttm_file:
+        rttm_file : str or Path
             Path to the .rttm file.
-        audio_file:
+        audio_file : str or Path
             Path to the corresponding audio file.
 
         Returns
         -------
-        AudioDocument:
+        AudioDocument
             Generated document.
         """
-
         rttm_file = Path(rttm_file)
         audio_file = Path(audio_file)
 
@@ -174,44 +169,43 @@ class RTTMInputConverter(InputConverter):
 
         return doc
 
-    def load_turns(self, rttm_file: Union[str, Path], audio_file: Union[str, Path]) -> List[Segment]:
+    def load_turns(self, rttm_file: str | Path, audio_file: str | Path) -> list[Segment]:
         """Load a .rttm file and return a list of
         :class:`~medkit.core.audio.annotation.Segment` objects.
 
         Parameters
         ----------
-        rttm_file:
+        rttm_file : str or Path
             Path to the .rttm file.
-        audio_file:
+        audio_file : str or Path
             Path to the corresponding audio file.
 
         Returns
         -------
-        List[:class:`~medkit.core.audio.annotation.Segment`]:
+        list of Segment
             Turn segments as found in the .rttm file.
         """
-
         rttm_file = Path(rttm_file)
         audio_file = Path(audio_file)
 
         rows = self._load_rows(rttm_file)
         full_audio = FileAudioBuffer(path=audio_file)
-        turn_segments = [self._build_turn_segment(row, full_audio) for row in rows]
-        return turn_segments
+        return [self._build_turn_segment(row, full_audio) for row in rows]
 
     @staticmethod
     def _load_rows(rttm_file: Path):
-        with open(rttm_file) as fp:
+        with Path(rttm_file).open() as fp:
             csv_reader = csv.DictReader(fp, fieldnames=_RTTM_FIELDS, delimiter=" ")
             rows = list(csv_reader)
 
         file_id = rows[0]["file_id"]
         if not all(r["file_id"] == file_id for r in rows):
-            raise RuntimeError("Multi-file .rttm are not supported, all entries should have same" " file_id or <NA>")
+            msg = "Multi-file .rttm are not supported, all entries should have same file_id or <NA>"
+            raise RuntimeError(msg)
 
         return rows
 
-    def _build_turn_segment(self, row: Dict[str, Any], full_audio: FileAudioBuffer) -> Segment:
+    def _build_turn_segment(self, row: dict[str, Any], full_audio: FileAudioBuffer) -> Segment:
         start = float(row["onset"])
         end = start + float(row["duration"])
         audio = full_audio.trim_duration(start, end)
@@ -237,15 +231,13 @@ class RTTMOutputConverter(OutputConverter):
     """
 
     def __init__(self, turn_label: str = "turn", speaker_label: str = "speaker"):
-        """
-        Parameters
+        """Parameters
         ----------
-        turn_label:
+        turn_label : str, default="turn"
             Label of segments representing turns in the audio documents.
-        speaker_label:
+        speaker_label : str, default="speaker"
             Label of speaker attributes attached to each turn segment.
         """
-
         super().__init__()
 
         self.turn_label = turn_label
@@ -253,30 +245,30 @@ class RTTMOutputConverter(OutputConverter):
 
     def save(
         self,
-        docs: List[AudioDocument],
-        rttm_dir: Union[str, Path],
-        doc_names: Optional[List[str]] = None,
+        docs: list[AudioDocument],
+        rttm_dir: str | Path,
+        doc_names: list[str] | None = None,
     ):
         """Save :class:`~medkit.core.audio.document.AudioDocument` instances as
         .rttm files in a directory.
 
         Parameters
         ----------
-        docs:
+        docs : list of AudioDocument
             List of audio documents to save.
-        rttm_dir:
+        rttm_dir : str or Path
             Directory into which the generated .rttm files will be stored.
-        doc_names:
+        doc_names : list of str, optional
             Optional list of names to use as basenames and file ids for the
             generated .rttm files (2d column). If none provided, the document
             ids will be used.
         """
-
         rttm_dir = Path(rttm_dir)
 
         if doc_names is not None:
             if len(doc_names) != len(docs):
-                raise ValueError("doc_names must have the same length as docs when provided")
+                msg = "doc_names must have the same length as docs when provided"
+                raise ValueError(msg)
         else:
             doc_names = [doc.uid for doc in docs]
 
@@ -289,23 +281,22 @@ class RTTMOutputConverter(OutputConverter):
     def save_doc(
         self,
         doc: AudioDocument,
-        rttm_file: Union[str, Path],
-        rttm_doc_id: Optional[str] = None,
+        rttm_file: str | Path,
+        rttm_doc_id: str | None = None,
     ):
         """Save a single :class:`~medkit.core.audio.document.AudioDocument` as a
         .rttm file.
 
         Parameters
         ----------
-        doc:
+        doc : AudioDocument
             Audio document to save.
-        rttm_file:
+        rttm_file : str or Path
             Path of the generated .rttm file.
-        rttm_doc_id:
+        rttm_doc_id : str, optional
             File uid to use for the generated .rttm file (2d column). If none
             provided, the document uid will be used.
         """
-
         rttm_file = Path(rttm_file)
         if rttm_doc_id is None:
             rttm_doc_id = doc.uid
@@ -315,40 +306,38 @@ class RTTMOutputConverter(OutputConverter):
 
     def save_turn_segments(
         self,
-        turn_segments: List[Segment],
-        rttm_file: Union[str, Path],
-        rttm_doc_id: Optional[str],
+        turn_segments: list[Segment],
+        rttm_file: str | Path,
+        rttm_doc_id: str | None,
     ):
         """Save :class:`~medkit.core.audio.annotation.Segment` objects into a .rttm file.
 
         Parameters
         ----------
-        turn_segments:
+        turn_segments : list of Segment
             Turn segments to save.
-        rttm_file:
+        rttm_file : str or Path
             Path of the generated .rttm file.
-        rttm_doc_id:
+        rttm_doc_id : str, optional
             File uid to use for the generated .rttm file (2d column).
         """
-
-        rttm_file = Path(rttm_file)
-
         rows = [self._build_rttm_row(s, rttm_doc_id) for s in turn_segments]
         rows.sort(key=lambda r: r["onset"])
 
-        with open(rttm_file, mode="w", encoding="utf-8") as fp:
+        with Path(rttm_file).open(mode="w", encoding="utf-8") as fp:
             csv_writer = csv.DictWriter(fp, fieldnames=_RTTM_FIELDS, delimiter=" ")
             csv_writer.writerows(rows)
 
-    def _build_rttm_row(self, turn_segment: Segment, rttm_doc_id: Optional[str]) -> Dict[str, Any]:
+    def _build_rttm_row(self, turn_segment: Segment, rttm_doc_id: str | None) -> dict[str, Any]:
         speaker_attrs = turn_segment.attrs.get(label=self.speaker_label)
         if len(speaker_attrs) == 0:
-            raise RuntimeError(f"Found no attribute with label '{self.speaker_label}' on turn segment")
+            msg = f"Found no attribute with label '{self.speaker_label}' on turn segment"
+            raise RuntimeError(msg)
 
         speaker_attr = speaker_attrs[0]
         span = turn_segment.span
 
-        row = {
+        return {
             "type": "SPEAKER",
             "file_id": rttm_doc_id if rttm_doc_id is not None else "<NA>",
             "channel": "1",
@@ -360,4 +349,3 @@ class RTTMOutputConverter(OutputConverter):
             "na_3": "<NA>",
             "na_4": "<NA>",
         }
-        return row

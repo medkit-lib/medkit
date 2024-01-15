@@ -16,13 +16,14 @@ _PATH_TO_MTSAMPLES = Path(__file__).parent / ".." / "data" / "mtsamples"
 def _get_medkit_docs():
     path = _PATH_TO_MTSAMPLES / "mtsamples_translated.json"
     if not path.exists():
-        raise FileNotFoundError(
+        msg = (
             "For running this test, you need to have mtsamples_translated.json file in"
             " `tests/data/mtsamples` folder.\nThe file is not provided with medkit"
             " library. Please contact us to get this file."
         )
-    with open(path, "r") as fdata:
-        dataset = json.load(fdata)
+        raise FileNotFoundError(msg)
+    with Path(path).open() as fp:
+        dataset = json.load(fp)
 
     docs = []
     for data in dataset:

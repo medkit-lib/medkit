@@ -3,13 +3,12 @@ from __future__ import annotations
 __all__ = ["Trainer"]
 
 import datetime
-import os
 import random
 import shutil
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
 import torch
@@ -18,9 +17,11 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader, Dataset
 
 from medkit.training.callbacks import DefaultPrinterCallback, TrainerCallback
-from medkit.training.trainable_component import TrainableComponent
-from medkit.training.trainer_config import TrainerConfig
-from medkit.training.utils import BatchData, MetricsComputer
+
+if TYPE_CHECKING:
+    from medkit.training.trainable_component import TrainableComponent
+    from medkit.training.trainer_config import TrainerConfig
+    from medkit.training.utils import BatchData, MetricsComputer
 
 # checkpoint constants
 OPTIMIZER_NAME = "optimizer.pt"
@@ -49,8 +50,7 @@ class _TrainerDataset(Dataset):
 
     def __getitem__(self, i):
         item = self.dataset[i]
-        processed = self.component.preprocess(item)
-        return processed
+        return self.component.preprocess(item)
 
 
 class Trainer:
@@ -64,12 +64,11 @@ class Trainer:
         config: TrainerConfig,
         train_data: Any,
         eval_data: Any,
-        metrics_computer: Optional[MetricsComputer] = None,
-        lr_scheduler_builder: Optional[Callable[[torch.optim.Optimizer], Any]] = None,
-        callback: Optional[TrainerCallback] = None,
+        metrics_computer: MetricsComputer | None = None,
+        lr_scheduler_builder: Callable[[torch.optim.Optimizer], Any] | None = None,
+        callback: TrainerCallback | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
         component:
             The component to train, the component must implement the `TrainableComponent` protocol.
@@ -98,7 +97,7 @@ class Trainer:
             set_seed(config.seed)
 
         self.output_dir = Path(config.output_dir)
-        os.makedirs(self.output_dir, exist_ok=True)
+        self.output_dir.mkdir(exist_ok=True)
 
         self.component = component
         self.batch_size = config.batch_size
@@ -125,7 +124,8 @@ class Trainer:
 
     def get_dataloader(self, data: any, shuffle: bool) -> DataLoader:
         """Return a DataLoader with transformations defined
-        in the component to train"""
+        in the component to train
+        """
         dataset = _TrainerDataset(data, self.component)
         collate_fn = self.component.collate
         return DataLoader(
@@ -138,9 +138,8 @@ class Trainer:
             pin_memory=self.dataloader_pin_memory,
         )
 
-    def training_epoch(self) -> Dict[str, float]:
-        """
-        Perform an epoch using the training data.
+    def training_epoch(self) -> dict[str, float]:
+        """Perform an epoch using the training data.
 
         When the config enabled metrics in training ('do_metrics_in_training' is True),
         the additional metrics are prepared per batch.
@@ -182,9 +181,8 @@ class Trainer:
             metrics.update(self.metrics_computer.compute(dict(data_for_metrics)))
         return metrics
 
-    def evaluation_epoch(self, eval_dataloader) -> Dict[str, float]:
-        """
-        Perform an epoch using the evaluation data.
+    def evaluation_epoch(self, eval_dataloader) -> dict[str, float]:
+        """Perform an epoch using the evaluation data.
 
         The additional metrics are prepared per batch.
         Return a dictionary with metrics.
@@ -214,17 +212,18 @@ class Trainer:
             metrics.update(self.metrics_computer.compute(dict(data_for_metrics)))
         return metrics
 
-    def make_forward_pass(self, inputs: BatchData, eval_mode: bool) -> Tuple[BatchData, torch.Tensor]:
+    def make_forward_pass(self, inputs: BatchData, eval_mode: bool) -> tuple[BatchData, torch.Tensor]:
         """Run forward safely, same device as the component"""
         inputs = inputs.to_device(self.device)
         model_output, loss = self.component.forward(inputs, return_loss=True, eval_mode=eval_mode)
 
         if loss is None:
-            raise ValueError("The component did not return a 'loss' from the input.")
+            msg = "The component did not return a 'loss' from the input."
+            raise ValueError(msg)
 
         return model_output, loss
 
-    def update_learning_rate(self, eval_metrics: Dict[str, float]):
+    def update_learning_rate(self, eval_metrics: dict[str, float]):
         """Call the learning rate scheduler if defined"""
         if self.lr_scheduler is None:
             return
@@ -233,17 +232,17 @@ class Trainer:
             name_metric_to_track_lr = self.config.metric_to_track_lr
             eval_metric = eval_metrics.get(name_metric_to_track_lr)
             if eval_metric is None:
-                raise ValueError(
+                msg = (
                     "Learning scheduler needs an eval metric to update the learning"
                     f" rate, '{name_metric_to_track_lr}' was not found"
                 )
+                raise ValueError(msg)
             self.lr_scheduler.step(eval_metric)
         else:
             self.lr_scheduler.step()
 
-    def train(self) -> List[Dict]:
-        """
-        Main training method. Call the training / eval loop.
+    def train(self) -> list[dict]:
+        """Main training method. Call the training / eval loop.
 
         Return a list with the metrics per epoch.
         """
@@ -283,7 +282,8 @@ class Trainer:
             # checkpoint is the new best
             last_checkpoint_metric = metrics["eval"].get(self.config.checkpoint_metric)
             if last_checkpoint_metric is None:
-                raise ValueError(f"Checkpoint metric '{self.config.checkpoint_metric}' not found")
+                msg = f"Checkpoint metric '{self.config.checkpoint_metric}' not found"
+                raise ValueError(msg)
             if best_checkpoint_dir is None:
                 best_checkpoint_dir = last_checkpoint_dir
                 best_checkpoint_metric = last_checkpoint_metric
@@ -298,33 +298,31 @@ class Trainer:
         return log_history
 
     def save(self, epoch: int) -> str:
-        """
-        Save a checkpoint (trainer configuration, model weights, optimizer and
+        """Save a checkpoint (trainer configuration, model weights, optimizer and
         scheduler)
 
         Parameters
         ----------
-        epoch:
+        epoch : int
             Epoch corresponding of the current training state (will be included
             in the checkpoint name)
 
         Returns
         -------
-        Path:
+        str
             Path of the checkpoint saved
         """
-
         current_date = datetime.datetime.now().strftime("%d-%m-%Y_%H:%M")
         name = f"checkpoint_{epoch:03d}_{current_date}"
 
-        checkpoint_dir = os.path.join(self.output_dir, name)
-        self.callback.on_save(checkpoint_dir=checkpoint_dir)
+        checkpoint_dir = Path(self.output_dir) / name
+        self.callback.on_save(checkpoint_dir=str(checkpoint_dir))
 
-        os.makedirs(checkpoint_dir)
+        checkpoint_dir.mkdir()
 
         # save config
-        config_path = os.path.join(checkpoint_dir, CONFIG_NAME)
-        with open(str(config_path), mode="w") as fp:
+        config_path = checkpoint_dir / CONFIG_NAME
+        with config_path.open(mode="w") as fp:
             yaml.safe_dump(
                 self.config.to_dict(),
                 fp,
@@ -333,14 +331,11 @@ class Trainer:
                 sort_keys=False,
             )
 
-        torch.save(self.optimizer.state_dict(), os.path.join(checkpoint_dir, OPTIMIZER_NAME))
+        torch.save(self.optimizer.state_dict(), checkpoint_dir / OPTIMIZER_NAME)
 
         if self.lr_scheduler is not None:
-            torch.save(
-                self.lr_scheduler.state_dict(),
-                os.path.join(checkpoint_dir, SCHEDULER_NAME),
-            )
+            torch.save(self.lr_scheduler.state_dict(), checkpoint_dir / SCHEDULER_NAME)
 
         self.component.save(checkpoint_dir)
 
-        return checkpoint_dir
+        return str(checkpoint_dir)

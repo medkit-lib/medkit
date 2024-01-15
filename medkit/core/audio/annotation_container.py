@@ -1,14 +1,13 @@
-__all__ = ["AudioAnnotationContainer"]
+from __future__ import annotations
 
-from typing import List, Optional
+__all__ = ["AudioAnnotationContainer"]
 
 from medkit.core.annotation_container import AnnotationContainer
 from medkit.core.audio.annotation import Segment
 
 
 class AudioAnnotationContainer(AnnotationContainer[Segment]):
-    """
-    Manage a list of audio annotations belonging to an audio document.
+    """Manage a list of audio annotations belonging to an audio document.
 
     This behaves more or less like a list: calling `len()` and iterating are
     supported. Additional filtering is available through the `get()` method.
@@ -26,11 +25,12 @@ class AudioAnnotationContainer(AnnotationContainer[Segment]):
 
     def add(self, ann: Segment):
         if ann.label == self.raw_segment.label:
-            raise RuntimeError(f"Cannot add annotation with reserved label {self.raw_segment.label}")
+            msg = f"Cannot add annotation with reserved label {self.raw_segment.label}"
+            raise RuntimeError(msg)
 
         super().add(ann)
 
-    def get(self, *, label: Optional[str] = None, key: Optional[str] = None) -> List[Segment]:
+    def get(self, *, label: str | None = None, key: str | None = None) -> list[Segment]:
         # inject raw segment
         if label == self.raw_segment.label and key is None:
             return [self.raw_segment]

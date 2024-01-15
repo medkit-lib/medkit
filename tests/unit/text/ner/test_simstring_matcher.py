@@ -33,7 +33,6 @@ def _get_sentence_segment(text=_TEXT):
 
 def test_basic():
     """Basic behavior"""
-
     sentence = _get_sentence_segment()
 
     rule = SimstringMatcherRule(term="diabète", label="problem")
@@ -49,7 +48,6 @@ def test_basic():
 
 def test_multiple_matches():
     """Multiple matches in same segment"""
-
     sentence = _get_sentence_segment()
 
     rule_1 = SimstringMatcherRule(term="diabète", label="problem")
@@ -82,7 +80,6 @@ def test_multiple_matches():
 
 def test_approximate_match():
     """Fuzzy matching"""
-
     rule = SimstringMatcherRule(term="diabète", label="problem")
     matcher = SimstringMatcher(rules=[rule], threshold=0.1)
 
@@ -96,7 +93,6 @@ def test_approximate_match():
 
 def test_empty_segment():
     """Handling of segment with zero tokens"""
-
     sentence = _get_sentence_segment(text="")
 
     rule = SimstringMatcherRule(term="diabète", label="problem")
@@ -130,7 +126,6 @@ def test_normalization():
 
 def test_case_sensitive():
     """Rule term and entity in text have different case, but are matched anyway"""
-
     sentence = _get_sentence_segment()
     sentence.text = sentence.text.replace("asthme", "Asthme")
 
@@ -191,7 +186,6 @@ def test_spacy_tokenization():
 
 def test_blacklist():
     """Ignore blacklisted exact matches"""
-
     sentence = _get_sentence_segment("Il est possible que le patient ait subi un AVC")
 
     rule = SimstringMatcherRule(term="AIT", label="problem")
@@ -210,7 +204,6 @@ def test_blacklist():
 
 def test_same_beginning():
     """Ignore matches with different start"""
-
     sentence = _get_sentence_segment("On constate une inactivation virale")
 
     rule = SimstringMatcherRule(term="activation virale", label="phenomena")
@@ -229,7 +222,6 @@ def test_same_beginning():
 
 def test_candidates_with_regexp():
     """Test internal function tokenizing the text and building candidates"""
-
     ranges = _build_candidate_ranges_with_regexp(_TEXT, min_length=3, max_length=15)
     candidates = [_TEXT[start:end] for start, end in ranges]
     assert candidates == [
@@ -254,7 +246,6 @@ def test_candidates_with_regexp():
 @pytest.mark.skipif(spacy is None, reason="spacy not available")
 def test_candidates_with_spacy():
     """Test internal function tokenizing the text and building candidates"""
-
     spacy_lang = spacy.load(
         "fr_core_news_sm",
         # only keep tok2vec and morphologizer to get POS tags

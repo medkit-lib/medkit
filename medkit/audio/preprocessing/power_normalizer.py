@@ -1,6 +1,6 @@
-__all__ = ["PowerNormalizer"]
+from __future__ import annotations
 
-from typing import List, Optional
+__all__ = ["PowerNormalizer"]
 
 import numpy as np
 
@@ -17,22 +17,20 @@ class PowerNormalizer(PreprocessingOperation):
         output_label: str,
         target_value: float = 1.0,
         channel_wise: bool = False,
-        uid: Optional[str] = None,
+        uid: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        output_label:
+        output_label : str
             Label of output normalized segments.
-        target_value:
+        target_value : float, default=1.0
             Value to set the RMS power of each segment to.
-        channel_wise:
+        channel_wise : bool, default=False
             If `True`, the normalization is performed per-channel, thus modifying
             the balance of multichannel signals.
-        uid:
+        uid : str, optional
             Identifier of the normalizer.
         """
-
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -42,17 +40,17 @@ class PowerNormalizer(PreprocessingOperation):
         self.channel_wise = channel_wise
         self.target_value = target_value
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
+    def run(self, segments: list[Segment]) -> list[Segment]:
         """Return a normalized segment for each segment in `segments`.
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             Audio segments to normalize.
 
         Returns
         -------
-        List[~medkit.core.audio.Segment]:
+        list of Segment
             Power-normalized segments, one per segment in `segments`.
         """
         return [self._normalize_segment(s) for s in segments]

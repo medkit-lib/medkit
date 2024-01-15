@@ -9,7 +9,7 @@ __all__ = [
 
 import abc
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any
 
 import numpy as np
 import soundfile as sf
@@ -23,8 +23,7 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
 
     @abc.abstractmethod
     def __init__(self, sample_rate: int, nb_samples: int, nb_channels: int):
-        """
-        Parameters
+        """Parameters
         ----------
         sample_rate:
             Sample rate of the signal, in samples per second.
@@ -56,18 +55,17 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
         np.ndarray:
             Raw audio samples
         """
-        pass
 
     @abc.abstractmethod
-    def trim(self, start: Optional[int], end: Optional[int]) -> AudioBuffer:
+    def trim(self, start: int | None, end: int | None) -> AudioBuffer:
         """Return a new audio buffer pointing to portion of the signal in the original buffer,
         using boundaries in samples.
 
         Parameters
         ----------
-        start:
+        start: int, optional
             Start sample of the new buffer (defaults to `0`).
-        end:
+        end: int, optional
             End sample of the new buffer, excluded (default to full duration).
 
         Returns
@@ -76,9 +74,8 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
             Trimmed audio buffer with new start and end samples, of same type as
             original audio buffer.
         """
-        pass
 
-    def trim_duration(self, start_time: Optional[float] = None, end_time: Optional[float] = None) -> AudioBuffer:
+    def trim_duration(self, start_time: float | None = None, end_time: float | None = None) -> AudioBuffer:
         """Return a new audio buffer pointing to a portion of the signal in the original buffer,
         using boundaries in seconds. Since `start_time` and `end_time` are in seconds, the exact
         trim boundaries will be rounded to the nearest sample and will therefore depend on the sampling
@@ -86,9 +83,9 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
 
         Parameters
         ----------
-        start_time:
+        start_time: float, optional
             Start time of the new buffer (defaults to `0.0`).
-        end_time:
+        end_time: float, optional
             End time of thew new buffer, excluded (default to full duration).
 
         Returns
@@ -97,7 +94,9 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
             Trimmed audio buffer with new start and end samples, of same type as
             original audio buffer.
         """
-        assert end_time is None or end_time <= self.duration
+        if end_time and end_time > self.duration:
+            msg = f"End time {end_time} exceeds duration {self.duration}"
+            raise ValueError(msg)
         start = round(start_time * self.sample_rate) if start_time is not None else None
         end = min(round(end_time * self.sample_rate), self.nb_samples) if end_time is not None else None
         return self.trim(start, end)
@@ -107,19 +106,20 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
         super().__init_subclass__()
 
     @classmethod
-    def from_dict(cls, data_dict: Dict[str, Any]) -> Self:
+    def from_dict(cls, data_dict: dict[str, Any]) -> Self:
         subclass = cls.get_subclass_for_data_dict(data_dict)
         if subclass is None:
-            raise NotImplementedError(
+            msg = (
                 "AudioBuffer is an abstract class. Its class method `from_dict` is"
                 " only used for calling the correct subclass `from_dict`."
             )
+            raise NotImplementedError(msg)
 
         return subclass.from_dict(data_dict)
 
     @abc.abstractmethod
-    def to_dict(self) -> Dict[str, Any]:
-        raise NotImplementedError()
+    def to_dict(self) -> dict[str, Any]:
+        raise NotImplementedError
 
     @abc.abstractmethod
     def __eq__(self, other: object) -> bool:
@@ -127,8 +127,7 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
 
 
 class FileAudioBuffer(AudioBuffer):
-    """
-    Audio buffer giving access to audio files stored on the filesystem (to use
+    """Audio buffer giving access to audio files stored on the filesystem (to use
     when manipulating unmodified raw audio).
 
     Supports all file formats handled by `libsndfile`
@@ -137,34 +136,35 @@ class FileAudioBuffer(AudioBuffer):
 
     def __init__(
         self,
-        path: Union[str, Path],
-        trim_start: Optional[int] = None,
-        trim_end: Optional[int] = None,
-        sf_info: Optional[Any] = None,
+        path: str | Path,
+        trim_start: int | None = None,
+        trim_end: int | None = None,
+        sf_info: Any | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        path:
+        path: str or Path
             Path to the audio file.
-        trim_start:
+        trim_start: int, optional
             First sample of audio file to consider.
-        trim_end:
+        trim_end: int, optional
             First sample of audio file to exclude.
-        sf_info:
+        sf_info: Any, optional
             Optional metadata dict returned by soundfile.
         """
         path = Path(path)
         if sf_info is None:
             sf_info = sf.info(path)
 
-        assert trim_start is None or 0 <= trim_start <= sf_info.frames
-        assert trim_end is None or 0 <= trim_end <= sf_info.frames
+        trim_start = trim_start or 0
+        if trim_start not in range(sf_info.frames + 1):
+            msg = f"Start of trimming {trim_start} out of range"
+            raise ValueError(msg)
 
-        if trim_start is None:
-            trim_start = 0
-        if trim_end is None:
-            trim_end = sf_info.frames
+        trim_end = trim_end or sf_info.frames
+        if trim_end not in range(sf_info.frames + 1):
+            msg = f"End of trimming {trim_end} out of range"
+            raise ValueError(msg)
 
         sample_rate = sf_info.samplerate
         nb_samples = trim_end - trim_start
@@ -187,32 +187,37 @@ class FileAudioBuffer(AudioBuffer):
         )
         return signal.T
 
-    def trim(self, start: Optional[int] = None, end: Optional[int] = None) -> AudioBuffer:
-        assert start is None or 0 <= start <= self.nb_samples
-        assert end is None or 0 <= end <= self.nb_samples
+    def trim(self, start: int | None = None, end: int | None = None) -> AudioBuffer:
+        start = start or 0
+        if start not in range(self.nb_samples + 1):
+            msg = f"Start of trimming {start} out of range"
+            raise ValueError(msg)
 
-        if start is not None:
-            new_trim_start = self._trim_start + start
-        else:
-            new_trim_start = self._trim_start
-        if end is not None:
-            new_trim_end = self._trim_start + end
-        else:
-            new_trim_end = self._trim_end
-        assert new_trim_start <= new_trim_end
+        end = end or 0
+        if end not in range(self.nb_samples + 1):
+            msg = f"End of trimming {end} out of range"
+            raise ValueError(msg)
+
+        new_trim_start = self._trim_start + start
+        new_trim_end = self._trim_start + end if end else self._trim_end
+
+        if new_trim_start > new_trim_end:
+            msg = f"Start of trimming {new_trim_start} exceeds end of trimming {new_trim_end}"
+            raise ValueError(msg)
+
         return FileAudioBuffer(self.path, new_trim_start, new_trim_end, self._sf_info)
 
-    def to_dict(self) -> Dict[str, Any]:
-        buffer_dict = dict(
-            path=str(self.path),
-            trim_start=self._trim_start,
-            trim_end=self._trim_end,
-        )
+    def to_dict(self) -> dict[str, Any]:
+        buffer_dict = {
+            "path": str(self.path),
+            "trim_start": self._trim_start,
+            "trim_end": self._trim_end,
+        }
         dict_conv.add_class_name_to_data_dict(self, buffer_dict)
         return buffer_dict
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> Self:
+    def from_dict(cls, data: dict[str, Any]) -> Self:
         return cls(path=data["path"], trim_start=data["trim_start"], trim_end=data["trim_end"])
 
     def __eq__(self, other: object) -> bool:
@@ -223,15 +228,15 @@ class FileAudioBuffer(AudioBuffer):
 
 class MemoryAudioBuffer(AudioBuffer):
     """Audio buffer giving access to signals stored in memory
-    (to use when reading/writing a modified audio signal)."""
+    (to use when reading/writing a modified audio signal).
+    """
 
     def __init__(self, signal: np.ndarray, sample_rate: int):
-        """
-        Parameters
+        """Parameters
         ----------
-        signal:
+        signal: ndarray
             Samples constituting the audio signal, with shape `(nb_channel, nb_samples)`.
-        sample_rate:
+        sample_rate: int
             Sample rate of the signal, in samples per second.
         """
         nb_channels, nb_samples = signal.shape
@@ -241,28 +246,33 @@ class MemoryAudioBuffer(AudioBuffer):
         self._signal = signal
 
     def read(self, copy: bool = False) -> np.ndarray:
-        if copy:
-            return self._signal.copy()
-        else:
-            return self._signal
+        return self._signal.copy() if copy else self._signal
 
-    def trim(self, start: Optional[int] = None, end: Optional[int] = None) -> AudioBuffer:
-        assert start is None or 0 <= start <= self.nb_samples
-        assert end is None or 0 <= end <= self.nb_samples
+    def trim(self, start: int | None = None, end: int | None = None) -> AudioBuffer:
+        start = start or 0
+        if start not in range(self.nb_samples + 1):
+            msg = f"Start of trimming {start} out of range"
+            raise ValueError(msg)
 
-        if start is None:
-            start = 0
-        if end is None:
-            end = self.nb_samples
-        assert start <= end
+        end = end or self.nb_samples
+        if end not in range(self.nb_samples + 1):
+            msg = f"End of trimming {end} out of range"
+            raise ValueError(msg)
+
+        if start > end:
+            msg = f"Start of trimming {start} exceeds end of trimming {end}"
+            raise ValueError(msg)
+
         return MemoryAudioBuffer(self._signal[:, start:end], self.sample_rate)
 
-    def to_dict(self) -> Dict[str, Any]:
-        raise NotImplementedError("MemoryBuffer can't be converted to dict")
+    def to_dict(self) -> dict[str, Any]:
+        msg = "MemoryBuffer can't be converted to dict"
+        raise NotImplementedError(msg)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> Self:
-        raise NotImplementedError("MemoryBuffer can't be instantiated from dict")
+    def from_dict(cls, data: dict[str, Any]) -> Self:
+        msg = "MemoryBuffer can't be instantiated from dict"
+        raise NotImplementedError(msg)
 
     def __eq__(self, other: object) -> bool:
         if type(other) is not self.__class__:
@@ -291,22 +301,24 @@ class PlaceholderAudioBuffer(AudioBuffer):
         )
 
     def read(self, copy: bool = False) -> np.ndarray:
-        raise NotImplementedError("Cannot call read() on a PlaceholderAudioBuffer, signal is unknown")
+        msg = "Cannot call read() on a PlaceholderAudioBuffer, signal is unknown"
+        raise NotImplementedError(msg)
 
-    def trim(self, start: Optional[int], end: Optional[int]) -> AudioBuffer:
-        raise NotImplementedError("Cannot call trim() on a PlaceholderAudioBuffer, signal is unknown")
+    def trim(self, start: int | None, end: int | None) -> AudioBuffer:
+        msg = "Cannot call trim() on a PlaceholderAudioBuffer, signal is unknown"
+        raise NotImplementedError(msg)
 
-    def to_dict(self) -> Dict[str, Any]:
-        buffer_dict = dict(
-            sample_rate=self.sample_rate,
-            nb_samples=self.nb_samples,
-            nb_channels=self.nb_channels,
-        )
+    def to_dict(self) -> dict[str, Any]:
+        buffer_dict = {
+            "sample_rate": self.sample_rate,
+            "nb_samples": self.nb_samples,
+            "nb_channels": self.nb_channels,
+        }
         dict_conv.add_class_name_to_data_dict(self, buffer_dict)
         return buffer_dict
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> Self:
+    def from_dict(cls, data: dict[str, Any]) -> Self:
         return cls(
             sample_rate=data["sample_rate"],
             nb_samples=data["nb_samples"],

@@ -2,24 +2,23 @@ from __future__ import annotations
 
 __all__ = ["BatchData", "MetricsComputer"]
 
-from typing import Any, Dict, List, Union
+from typing import Any, runtime_checkable
 
 import torch
-from typing_extensions import Protocol, runtime_checkable
+from typing_extensions import Protocol, Self
 
 
 class BatchData(dict):
     """A BatchData pack data allowing both column and row access"""
 
-    def __getitem__(self, index: int) -> Dict[str, Union[List[Any], torch.Tensor]]:
+    def __getitem__(self, index: int) -> dict[str, list[Any] | torch.Tensor]:
         if isinstance(index, str):
             inner_dict = dict(self.items())
             return inner_dict[index]
         return {key: values[index] for key, values in self.items()}
 
-    def to_device(self, device: torch.device) -> BatchData:
-        """
-        Ensure that Tensors in the BatchData object are on the specified `device`
+    def to_device(self, device: torch.device) -> Self:
+        """Ensure that Tensors in the BatchData object are on the specified `device`
 
         Parameters
         ----------
@@ -45,7 +44,7 @@ class BatchData(dict):
 class MetricsComputer(Protocol):
     "A MetricsComputer is the base protocol to compute metrics in training"
 
-    def prepare_batch(self, model_output: BatchData, input_batch: BatchData) -> Dict[str, List[Any]]:
+    def prepare_batch(self, model_output: BatchData, input_batch: BatchData) -> dict[str, list[Any]]:
         """Prepare a batch of data to compute the metrics
 
         Parameters
@@ -57,23 +56,21 @@ class MetricsComputer(Protocol):
 
         Returns
         -------
-        Dict[str, List[Any]]
+        dict[str, List[Any]]
             A dictionary with the required data to calculate the metric
         """
-        pass
 
-    def compute(self, all_data: Dict[str, List[Any]]) -> Dict[str, float]:
+    def compute(self, all_data: dict[str, list[Any]]) -> dict[str, float]:
         """Compute metrics using 'all_data'
 
         Parameters
         ----------
-        all_data: Dict[str, List[Any]]
+        all_data: dict[str, List[Any]]
             A dictionary to compute the metrics.
             i.e. A dictionary with a list of 'references' and a list of 'predictions'.
 
         Returns
         -------
-        Dict[str, float]
+        dict[str, float]
             A dictionary with the results
         """
-        pass

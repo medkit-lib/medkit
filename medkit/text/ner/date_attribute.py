@@ -9,7 +9,7 @@ __all__ = [
 
 import dataclasses
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
 
 from typing_extensions import Self
 
@@ -18,8 +18,7 @@ from medkit.core import Attribute, dict_conv
 
 @dataclasses.dataclass
 class DateAttribute(Attribute):
-    """
-    Attribute representing an absolute date or time associated to a segment or
+    """Attribute representing an absolute date or time associated to a segment or
     entity.
 
     The date or time can be incomplete: each date/time component is optional but
@@ -27,48 +26,48 @@ class DateAttribute(Attribute):
 
     Attributes
     ----------
-    uid:
+    uid : str
         Identifier of the attribute
-    label:
+    label : str
         Label of the attribute
-    value:
+    value : Any, optional
         String representation of the date with YYYY-MM-DD format for the date
         part and HH:MM:SS for the time part, if present. Missing components are
         replaced with question marks.
-    year:
+    year : int, optional
         Year component of the date
-    month:
+    month : int, optional
         Month component of the date
-    day:
+    day : int, optional
         Day component of the date
-    hour:
+    hour : int, optional
         Hour component of the time
-    minute:
+    minute : int, optional
         Minute component of the time
-    second:
+    second : int, optional
         Second component of the time
-    metadata:
+    metadata : dict of str to Any
         Metadata of the attribute
     """
 
-    year: Optional[int]
-    month: Optional[int]
-    day: Optional[int]
-    hour: Optional[int]
-    minute: Optional[int]
-    second: Optional[int]
+    year: int | None
+    month: int | None
+    day: int | None
+    hour: int | None
+    minute: int | None
+    second: int | None
 
     def __init__(
         self,
         label: str,
-        year: Optional[int] = None,
-        month: Optional[int] = None,
-        day: Optional[int] = None,
-        hour: Optional[int] = None,
-        minute: Optional[int] = None,
-        second: Optional[int] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
+        year: int | None = None,
+        month: int | None = None,
+        day: int | None = None,
+        hour: int | None = None,
+        minute: int | None = None,
+        second: int | None = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
     ):
         value = _format_date(year, month, day, hour, minute, second)
         super().__init__(label=label, value=value, metadata=metadata, uid=uid)
@@ -86,23 +85,23 @@ class DateAttribute(Attribute):
     def to_spacy(self) -> str:
         return self.value
 
-    def to_dict(self) -> Dict[str, Any]:
-        date_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            year=self.year,
-            month=self.month,
-            day=self.day,
-            hour=self.hour,
-            minute=self.minute,
-            second=self.seconds,
-            metadata=self.metadata,
-        )
+    def to_dict(self) -> dict[str, Any]:
+        date_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "year": self.year,
+            "month": self.month,
+            "day": self.day,
+            "hour": self.hour,
+            "minute": self.minute,
+            "second": self.second,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, date_dict)
         return date_dict
 
     @classmethod
-    def from_dict(cls, date_dict: Dict[str, Any]) -> Self:
+    def from_dict(cls, date_dict: dict[str, Any]) -> Self:
         return cls(
             uid=date_dict["uid"],
             label=date_dict["label"],
@@ -118,37 +117,33 @@ class DateAttribute(Attribute):
 
 @dataclasses.dataclass
 class DurationAttribute(Attribute):
-    """
-    Attribute representing a time quantity associated to a segment or entity.
+    """Attribute representing a time quantity associated to a segment or entity.
 
     Each date/time component is optional but at least one must be provided.
 
     Attributes
     ----------
-    uid:
+    uid : str
         Identifier of the attribute
-    label:
+    label : str
         Label of the attribute
-    value:
+    value : Any, optional
         String representation of the duration (ex: "1 year 10 months 2 days")
-    direction:
-        Direction the relative date. Ex: "2 years ago" correspond to the `PAST`
-        direction and "in 2 weeks" to the `FUTURE` direction.
-    years:
+    years : int
         Year component of the date quantity
-    months:
+    months : int
         Month component of the date quantity
-    weeks:
+    weeks : int
         Week component of the date quantity
-    days:
+    days : int
         Day component of the date quantity
-    hours:
+    hours : int
         Hour component of the time quantity
-    minutes:
+    minutes : int
         Minute component of the time quantity
-    seconds:
+    seconds : int
         Second component of the time quantity
-    metadata:
+    metadata : dict of str to Any
         Metadata of the attribute
     """
 
@@ -170,8 +165,8 @@ class DurationAttribute(Attribute):
         hours: int = 0,
         minutes: int = 0,
         seconds: int = 0,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
     ):
         value = _format_duration(years, months, weeks, days, hours, minutes, seconds)
         super().__init__(label=label, value=value, metadata=metadata, uid=uid)
@@ -190,24 +185,24 @@ class DurationAttribute(Attribute):
     def to_spacy(self) -> str:
         return self.value
 
-    def to_dict(self) -> Dict[str, Any]:
-        duration_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            years=self.years,
-            months=self.months,
-            weeks=self.weeks,
-            days=self.days,
-            hours=self.hours,
-            minutes=self.minutes,
-            seconds=self.seconds,
-            metadata=self.metadata,
-        )
+    def to_dict(self) -> dict[str, Any]:
+        duration_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "years": self.years,
+            "months": self.months,
+            "weeks": self.weeks,
+            "days": self.days,
+            "hours": self.hours,
+            "minutes": self.minutes,
+            "seconds": self.seconds,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, duration_dict)
         return duration_dict
 
     @classmethod
-    def from_dict(cls, duration_dict: Dict[str, Any]) -> Self:
+    def from_dict(cls, duration_dict: dict[str, Any]) -> Self:
         return cls(
             uid=duration_dict["uid"],
             label=duration_dict["label"],
@@ -231,8 +226,7 @@ class RelativeDateDirection(Enum):
 
 @dataclasses.dataclass
 class RelativeDateAttribute(Attribute):
-    """
-    Attribute representing a relative date or time associated to a segment or
+    """Attribute representing a relative date or time associated to a segment or
     entity, ie a date/time offset from an (unknown) reference date/time, with a
     direction.
 
@@ -240,31 +234,31 @@ class RelativeDateAttribute(Attribute):
 
     Attributes
     ----------
-    uid:
+    uid : str
         Identifier of the attribute
-    label:
+    label : str
         Label of the attribute
-    value:
+    value : Any, optional
         String representation of the relative date (ex: "+ 1 year 10 months 2
         days")
-    direction:
+    direction : RelativeDateDirection
         Direction the relative date. Ex: "2 years ago" corresponds to the `PAST`
         direction and "in 2 weeks" to the `FUTURE` direction.
-    years:
+    years : int
         Year component of the date offset
-    months:
+    months : int
         Month component of the date offset
-    weeks:
+    weeks : int
         Week component of the date offset
-    days:
+    days : int
         Day component of the date offset
-    hours:
+    hours : int
         Hour component of the time offset
-    minutes:
+    minutes : int
         Minute component of the time offset
-    seconds:
+    seconds : int
         Second component of the time offset
-    metadata:
+    metadata : dict of str to Any
         Metadata of the attribute
     """
 
@@ -288,8 +282,8 @@ class RelativeDateAttribute(Attribute):
         hours: int = 0,
         minutes: int = 0,
         seconds: int = 0,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
     ):
         value = _format_relative_date(direction, years, months, weeks, days, hours, minutes, seconds)
         super().__init__(label=label, value=value, metadata=metadata, uid=uid)
@@ -309,25 +303,25 @@ class RelativeDateAttribute(Attribute):
     def to_spacy(self) -> str:
         return self.value
 
-    def to_dict(self) -> Dict[str, Any]:
-        date_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            direction=self.direction.value,
-            years=self.years,
-            months=self.months,
-            weeks=self.weeks,
-            days=self.days,
-            hours=self.hours,
-            minutes=self.minutes,
-            seconds=self.seconds,
-            metadata=self.metadata,
-        )
+    def to_dict(self) -> dict[str, Any]:
+        date_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "direction": self.direction.value,
+            "years": self.years,
+            "months": self.months,
+            "weeks": self.weeks,
+            "days": self.days,
+            "hours": self.hours,
+            "minutes": self.minutes,
+            "seconds": self.seconds,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, date_dict)
         return date_dict
 
     @classmethod
-    def from_dict(cls, date_dict: Dict[str, Any]) -> Self:
+    def from_dict(cls, date_dict: dict[str, Any]) -> Self:
         return cls(
             uid=date_dict["uid"],
             label=date_dict["label"],
@@ -344,19 +338,17 @@ class RelativeDateAttribute(Attribute):
 
 
 def _format_date(
-    year: Optional[int],
-    month: Optional[int],
-    day: Optional[int],
-    hour: Optional[int],
-    minute: Optional[int],
-    second: Optional[int],
+    year: int | None,
+    month: int | None,
+    day: int | None,
+    hour: int | None,
+    minute: int | None,
+    second: int | None,
 ) -> str:
-    """
-    Return a string representation of a date with format YYYY-MM-DD for the date
+    """Return a string representation of a date with format YYYY-MM-DD for the date
     part and HH:MM:SS for the time part, if present. Missing components are
     replaced with question marks
     """
-
     formatted = ""
     if year is not None or month is not None or day is not None:
         if year is not None:
@@ -394,20 +386,18 @@ def _format_date(
 
 
 def _format_duration(
-    years: Optional[int],
-    months: Optional[int],
-    weeks: Optional[int],
-    days: Optional[int],
-    hours: Optional[int],
-    minutes: Optional[int],
-    seconds: Optional[int],
+    years: int | None,
+    months: int | None,
+    weeks: int | None,
+    days: int | None,
+    hours: int | None,
+    minutes: int | None,
+    seconds: int | None,
 ) -> str:
-    """
-    Return a string representation of a date/time offset.
+    """Return a string representation of a date/time offset.
 
     Ex: "1 year 10 months 2 days"
     """
-
     parts = []
     if years:
         parts.append(str(years) + (" year" if years == 1 else " years"))
@@ -429,18 +419,16 @@ def _format_duration(
 
 def _format_relative_date(
     direction: RelativeDateDirection,
-    years: Optional[int],
-    months: Optional[int],
-    weeks: Optional[int],
-    days: Optional[int],
-    hours: Optional[int],
-    minutes: Optional[int],
-    seconds: Optional[int],
+    years: int | None,
+    months: int | None,
+    weeks: int | None,
+    days: int | None,
+    hours: int | None,
+    minutes: int | None,
+    seconds: int | None,
 ) -> str:
-    """
-    Return a string representation of a the date/time offset with a direction
+    """Return a string representation of a the date/time offset with a direction
     Ex: "+ 1 year 10 months 2 days"
     """
-
     prefix = "+ " if direction is RelativeDateDirection.FUTURE else "- "
     return prefix + _format_duration(years, months, weeks, days, hours, minutes, seconds)

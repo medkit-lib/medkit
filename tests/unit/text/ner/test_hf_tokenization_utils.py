@@ -2,20 +2,20 @@ import pytest
 
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 
-from transformers import BertTokenizerFast  # noqa: E402
+from transformers import BertTokenizerFast
 
-from medkit.core.text import Entity, Span, TextDocument  # noqa: E402
-from medkit.text.ner.hf_tokenization_utils import (  # noqa: E402
+from medkit.core.text import Entity, Span, TextDocument
+from medkit.text.ner.hf_tokenization_utils import (
     SPECIAL_TAG_ID_HF,
     align_and_map_tokens_with_tags,
     convert_labels_to_tags,
     transform_entities_to_tags,
 )
-from tests.data_utils import get_path_hf_dummy_vocab  # noqa: E402
+from tests.data_utils import get_path_hf_dummy_vocab
 
 
 def _get_document():
-    document = TextDocument(
+    return TextDocument(
         text="medkit is a python library",
         anns=[
             Entity(
@@ -30,13 +30,11 @@ def _get_document():
             ),
         ],
     )
-    return document
 
 
 @pytest.fixture()
 def tokenizer():
-    tokenizer = BertTokenizerFast(get_path_hf_dummy_vocab())
-    return tokenizer
+    return BertTokenizerFast(get_path_hf_dummy_vocab())
 
 
 TEST_CONFIG = (
@@ -52,7 +50,7 @@ TEST_CONFIG = (
 
 
 @pytest.mark.parametrize(
-    "tagging_scheme,expected_tags",
+    ("tagging_scheme", "expected_tags"),
     TEST_CONFIG,
     ids=[
         "transform_bilou",

@@ -47,12 +47,15 @@ class _MockHTTPResponse:
     def json(self):
         return self.data
 
+    def raise_for_status(self):
+        pass
 
-def _mock_requests_get(url):
+
+def _mock_requests_get(url, timeout):
     return _MockHTTPResponse(None)
 
 
-def _mock_requests_post(url, data):
+def _mock_requests_post(url, data, timeout):
     if "dims" not in data:
         response_data = [_TIME_RESPONSE_DATA, _DURATION_RESPONSE_DATA]
     else:

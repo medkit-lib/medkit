@@ -4,15 +4,15 @@ import pytest
 pytest.importorskip(modname="pandas", reason="pandas (therefore pyannote) is not installed")
 pytest.importorskip(modname="pyannote.audio", reason="pyannote.audio is not installed")
 
-import math  # noqa: E402
-from typing import NamedTuple  # noqa: E402
+import math
+from typing import NamedTuple
 
-from medkit.audio.segmentation.pa_speaker_detector import (  # noqa: E402
+from medkit.audio.segmentation.pa_speaker_detector import (
     PASpeakerDetector,
 )
-from medkit.core import ProvTracer  # noqa: E402
-from medkit.core.audio import MemoryAudioBuffer, Segment, Span  # noqa: E402
-from tests.audio_utils import generate_sin_signal, signals_are_equal  # noqa: E402
+from medkit.core import ProvTracer
+from medkit.core.audio import MemoryAudioBuffer, Segment, Span
+from tests.audio_utils import generate_sin_signal, signals_are_equal
 
 _SAMPLE_RATE = 16000
 _OUTPUT_LABEL = "turn"
@@ -68,7 +68,7 @@ def _mocked_pipeline(module_mocker):
     )
     module_mocker.patch(
         "medkit.audio.segmentation.pa_speaker_detector.Pipeline.from_pretrained",
-        lambda *args, **kwargs: _MockedPipeline(),
+        return_value=_MockedPipeline(),
     )
 
 
@@ -85,7 +85,6 @@ def _get_segment(duration):
 
 def test_basic():
     """Basic behavior"""
-
     speaker_detector = PASpeakerDetector(
         model="mock-pipeline",
         output_label=_OUTPUT_LABEL,
@@ -180,7 +179,6 @@ def test_multiple():
 
 def test_prov():
     """Generated provenance nodes"""
-
     speaker_detector = PASpeakerDetector(
         model="mock-pipeline",
         output_label=_OUTPUT_LABEL,

@@ -1,11 +1,11 @@
-import os
-from typing import Optional
+from __future__ import annotations
+
+from pathlib import Path
 
 import torch
+from tests.unit.training.dummy_model import DummyTextCat, DummyTextCatConfig, DummyTokenizer
 
 from medkit.training import BatchData
-
-from .dummy_model import DummyTextCat, DummyTextCatConfig, DummyTokenizer
 
 PYTORCH_MODEL_NAME = "pytorch_model.bin"
 
@@ -13,7 +13,7 @@ PYTORCH_MODEL_NAME = "pytorch_model.bin"
 class MockTrainableComponent:
     def __init__(
         self,
-        model_path: Optional[str] = None,
+        model_path: str | None = None,
         output_label: str = "category",
         device="cpu",
     ):
@@ -36,8 +36,7 @@ class MockTrainableComponent:
 
     def configure_optimizer(self, lr):
         parameters = self.model.parameters()
-        optimizer = torch.optim.SGD(parameters, lr=lr)
-        return optimizer
+        return torch.optim.SGD(parameters, lr=lr)
 
     def preprocess(self, data_item):
         model_inputs = {}
@@ -45,7 +44,8 @@ class MockTrainableComponent:
         model_inputs["inputs_ids"] = torch.tensor(self.tokenizer(data_item.text), dtype=torch.int64)
         attribute = data_item.attrs.get(label=self.output_label)
         if not attribute:
-            raise ValueError(f"Attr '{self.output_label}' was not found in the corpus")
+            msg = f"Attr '{self.output_label}' was not found in the corpus"
+            raise ValueError(msg)
         value = self.label2id[attribute[0].value]
         model_inputs["labels"] = torch.tensor(value, dtype=torch.int64)
         model_inputs["offsets"] = torch.tensor([0])
@@ -54,10 +54,10 @@ class MockTrainableComponent:
     def collate(self, batch):
         labels, inputs_ids, offsets = [], [], [0]
 
-        for input in batch:
-            inputs_ids.append(input["inputs_ids"])
-            offsets.append(input["inputs_ids"].size(0))
-            labels.append(input["labels"])
+        for input_ in batch:
+            inputs_ids.append(input_["inputs_ids"])
+            offsets.append(input_["inputs_ids"].size(0))
+            labels.append(input_["labels"])
 
         labels = torch.tensor(labels, dtype=torch.int64)
         offsets = torch.tensor(offsets[:-1]).cumsum(dim=0)
@@ -73,20 +73,22 @@ class MockTrainableComponent:
         logits = self.model.forward(input_batch["inputs_ids"], input_batch["offsets"])
         if return_loss:
             if "labels" not in input_batch or len(input_batch["labels"]) == 0:
-                raise ValueError("Labels not in 'model_inputs', can not compute loss")
+                msg = "Labels not in 'model_inputs', can not compute loss"
+                raise ValueError(msg)
             loss = self.model.compute_loss(logits, input_batch["labels"])
         else:
             loss = None
         return BatchData(logits=logits), loss
 
     def save(self, path):
-        output_path = os.path.join(path, PYTORCH_MODEL_NAME)
-        torch.save(self.model.state_dict(), output_path)
+        model_path = Path(path) / PYTORCH_MODEL_NAME
+        torch.save(self.model.state_dict(), model_path)
 
     def load(self, path):
-        model_path = os.path.join(path, PYTORCH_MODEL_NAME)
-        if not os.path.isfile(model_path):
-            raise ValueError(f"Can't find a valid model at '{path}'")
+        model_path = Path(path) / PYTORCH_MODEL_NAME
+        if not model_path.is_file():
+            msg = f"Can't find a valid model at '{path}'"
+            raise ValueError(msg)
 
         state_dict = torch.load(model_path)
         self.model.load_state_dict(state_dict)

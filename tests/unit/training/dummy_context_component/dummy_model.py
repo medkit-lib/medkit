@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import List
+from typing import TYPE_CHECKING
 
 import torch
 from torch import nn
 
-from medkit.training import BatchData
+if TYPE_CHECKING:
+    from medkit.training import BatchData
 
 
 @dataclass
@@ -35,13 +38,12 @@ class DummyTextCat(nn.Module):
 
     def forward(self, inputs_ids: torch.FloatTensor, offsets: torch.FloatTensor) -> BatchData:
         embedded = self.embedding(inputs_ids, offsets)
-        logits = self.fc(embedded)
-        return logits
+        return self.fc(embedded)
 
     def compute_loss(self, logits: torch.FloatTensor, labels: torch.FloatTensor):
         return self.loss(logits, labels)
 
 
 class DummyTokenizer:
-    def __call__(self, text: str) -> List[int]:
+    def __call__(self, text: str) -> list[int]:
         return [ord(char) for char in text]

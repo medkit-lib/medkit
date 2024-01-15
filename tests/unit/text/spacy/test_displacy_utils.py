@@ -104,7 +104,7 @@ _TEST_DATA = [
 
 
 @pytest.mark.parametrize(
-    "entities,entity_formatter,expected_displacy_data",
+    ("entities", "entity_formatter", "expected_displacy_data"),
     _TEST_DATA,
 )
 def test_entities_to_displacy(entities, entity_formatter, expected_displacy_data):

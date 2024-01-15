@@ -2,21 +2,22 @@ from __future__ import annotations
 
 __all__ = ["DocTranscriber", "TranscriptionOperation"]
 
-from typing import List, Optional
+from typing import TYPE_CHECKING
 
 from typing_extensions import Protocol
 
 from medkit.audio.transcription.transcribed_text_document import TranscribedTextDocument
 from medkit.core import Operation
-from medkit.core.audio import AudioDocument
-from medkit.core.audio import Segment as AudioSegment
 from medkit.core.text import Segment as TextSegment
 from medkit.core.text import Span as TextSpan
 
+if TYPE_CHECKING:
+    from medkit.core.audio import AudioDocument
+    from medkit.core.audio import Segment as AudioSegment
+
 
 class TranscriptionOperation(Protocol):
-    """
-    Protocol for operations in charge of the actual speech-to-text transcription
+    """Protocol for operations in charge of the actual speech-to-text transcription
     to use with :class:`~.DocTranscriber`
     """
 
@@ -25,14 +26,13 @@ class TranscriptionOperation(Protocol):
     Label to use for generated transcription attributes
     """
 
-    def run(self, segments: List[AudioSegment]):
-        """
-        Add a transcription attribute to each segment with a text value
+    def run(self, segments: list[AudioSegment]):
+        """Add a transcription attribute to each segment with a text value
         containing the transcribed text.
 
         Parameters
         ----------
-        segments:
+        segments: list of AudioSegment
             List of segments to transcribe
         """
 
@@ -67,26 +67,24 @@ class DocTranscriber(Operation):
         input_label: str,
         output_label: str,
         transcription_operation: TranscriptionOperation,
-        attrs_to_copy: Optional[List[str]] = None,
-        uid: Optional[str] = None,
+        attrs_to_copy: list[str] | None = None,
+        uid: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        input_label:
+        input_label: str
             Label of audio segments that should be transcribed.
-        output_label:
+        output_label: str
             Label of generated text segments.
-        transcription_operation:
+        transcription_operation: TranscriptionOperation
             Transcription operation in charge of actually transcribing each
             audio segment.
-        attrs_to_copy:
+        attrs_to_copy: list of str, optional
             Labels of attributes that should be copied from the original audio segments
             to the transcribed text segments.
-        uid:
+        uid: str, optional
             Identifier of the transcriber.
         """
-
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -103,17 +101,17 @@ class DocTranscriber(Operation):
         # label of transcription attributes attached to audio segments
         self._attr_label = self.transcription_operation.output_label
 
-    def run(self, audio_docs: List[AudioDocument]) -> List[TranscribedTextDocument]:
+    def run(self, audio_docs: list[AudioDocument]) -> list[TranscribedTextDocument]:
         """Return a transcribed text document for each document in `audio_docs`
 
         Parameters
         ----------
-        audio_docs:
+        audio_docs: list of AudioDocument
             Audio documents to transcribe
 
         Returns
         -------
-        List[TranscribedTextDocument]:
+        list of TranscribedTextDocument:
             Transcribed text documents (once per document in `audio_docs`)
         """
         return [self._transcribe_doc(d) for d in audio_docs]
@@ -179,7 +177,8 @@ class DocTranscriber(Operation):
 
     def augment_full_text_for_next_segment(self, full_text: str, segment_text: str, audio_segment: AudioSegment) -> str:
         """Append intermediate joining text to full text before the next segment is
-        concatenated to it. Override for custom behavior."""
+        concatenated to it. Override for custom behavior.
+        """
         if len(full_text) > 0:
             full_text += "\n"
         return full_text

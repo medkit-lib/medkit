@@ -1,12 +1,12 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[nlstruct]`.
 """
+from __future__ import annotations
 
 __all__ = ["NLStructEntityMatcher"]
-import os
+
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Union
+from typing import Iterator
 
 import huggingface_hub
 import nlstruct
@@ -24,8 +24,7 @@ _EMBEDDING_REGISTRY_NAME = "word_embeddings"
 
 
 class NLStructEntityMatcher(NEROperation):
-    """
-    Entity matcher based on a NLstruct InformationExtraction model.
+    """Entity matcher based on a NLstruct InformationExtraction model.
     The matcher expects a directory with a torch checkpoint and a text file if
     the model was pretrained using word embeddings.
 
@@ -48,37 +47,36 @@ class NLStructEntityMatcher(NEROperation):
 
     def __init__(
         self,
-        model_name_or_dirpath: Union[str, Path],
-        attrs_to_copy: Optional[List[str]] = None,
+        model_name_or_dirpath: str | Path,
+        attrs_to_copy: list[str] | None = None,
         device: int = -1,
-        hf_auth_token: Optional[str] = None,
-        cache_dir: Optional[Union[str, Path]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        hf_auth_token: str | None = None,
+        cache_dir: str | Path | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        model_name_or_dirpath:
+        model_name_or_dirpath : str or Path
             Name (on the HuggingFace models hub) or dirpath of the NLstruct model.
             The model dir must contain a PyTorch file ('.cpkt','.pt') and a text file (.txt)
             representing the FastText embeddings if required.
-        attrs_to_copy:
+        attrs_to_copy : list of str, optional
             Labels of the attributes that should be copied from the input segment
             to the created entity. Useful for propagating context attributes
             (negation, antecendent, etc).
-        device:
+        device : int, default=-1
             Device to use for the NLstruct model. Follows the HuggingFace convention
             (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
-        hf_auth_token:
+        hf_auth_token : str, optional
             HuggingFace Authentication token (to access private models on the
             hub)
-        cache_dir:
+        cache_dir : str or Path, optional
             Directory where to store downloaded models. If not set, the default
             HuggingFace cache dir is used.
-        name:
+        name : str, optional
             Name describing the matcher (defaults to the class name).
-        uid:
+        uid : str, optional
             Identifier of the matcher.
         """
         # Pass all arguments to super (remove self and confidential hf_auth_token)
@@ -98,7 +96,7 @@ class NLStructEntityMatcher(NEROperation):
         if self.model_name_or_dirpath.exists():
             checkpoint_dir = self.model_name_or_dirpath
         else:
-            allow_patterns = _PYTORCH_FILES + [_TXT_FILES]
+            allow_patterns = [*_PYTORCH_FILES, _TXT_FILES]
             # download only allowed files
             checkpoint_dir = huggingface_hub.snapshot_download(
                 repo_id=str(model_name_or_dirpath),
@@ -120,7 +118,8 @@ class NLStructEntityMatcher(NEROperation):
         checkpoint_filepaths = [filepath for pattern in _PYTORCH_FILES for filepath in checkpoint_dir.glob(pattern)]
 
         if not len(checkpoint_filepaths):
-            raise FileNotFoundError(f"There was no PyTorch file with a NLstruct checkpoint in '{checkpoint_dir.name}'")
+            msg = f"There was no PyTorch file with a NLstruct checkpoint in '{checkpoint_dir.name}'"
+            raise FileNotFoundError(msg)
 
         # BUGFIX: (nlstruct) The config created from nlstruct defines a filename
         # without a relative path. This means that the text file needs to be in
@@ -146,13 +145,14 @@ class NLStructEntityMatcher(NEROperation):
                 # if 'filename' is empty, pretrained without embeddings (c.f nlstruct)
                 # keep the same config
                 if filename:
-                    new_path = os.path.join(checkpoint_dir, Path(filename).name)
+                    new_path = checkpoint_dir / Path(filename).name
 
-                    if not Path(new_path).exists():
-                        raise ValueError(f"The text file '{new_path}' with the fast text embeddings does not exist")
+                    if not new_path.exists():
+                        msg = f"The text file '{new_path}' with the fast text embeddings does not exist"
+                        raise ValueError(msg)
 
                     # update the filename of the wordEmbeddings model
-                    config["encoder"]["encoders"][key]["filename"] = new_path
+                    config["encoder"]["encoders"][key]["filename"] = str(new_path)
 
         # similar to nlstruct load pretrained
         # create the model using modified config
@@ -160,17 +160,17 @@ class NLStructEntityMatcher(NEROperation):
         model.load_state_dict(loaded["state_dict"], strict=False)
         return model
 
-    def run(self, segments: List[Segment]) -> List[Entity]:
+    def run(self, segments: list[Segment]) -> list[Entity]:
         """Return entities for each match in `segments`.
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             List of segments into which to look for matches.
 
         Returns
         -------
-        List[Entity]
+        list of Entity
             Entities found in `segments`.
         """
         # predict matches by segments
@@ -180,7 +180,7 @@ class NLStructEntityMatcher(NEROperation):
             entities.extend(self._matches_to_entities(matches, segment))
         return entities
 
-    def _matches_to_entities(self, matches: List[Dict], segment: Segment) -> Iterator[Entity]:
+    def _matches_to_entities(self, matches: list[dict], segment: Segment) -> Iterator[Entity]:
         for match in matches["entities"]:
             text_all, spans_all = [], []
 

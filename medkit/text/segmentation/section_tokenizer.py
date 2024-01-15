@@ -3,8 +3,8 @@ from __future__ import annotations
 __all__ = ["SectionModificationRule", "SectionTokenizer"]
 
 import dataclasses
-import pathlib
-from typing import Dict, Iterable, List, Optional, Tuple
+from pathlib import Path
+from typing import Iterable
 
 import yaml
 from flashtext import KeywordProcessor
@@ -14,14 +14,14 @@ from medkit.core import Attribute
 from medkit.core.text import Segment, SegmentationOperation, span_utils
 from medkit.core.text.utils import lstrip, rstrip
 
-_PATH_TO_DEFAULT_RULES = pathlib.Path(__file__).parent / "default_section_definition.yml"
+_PATH_TO_DEFAULT_RULES = Path(__file__).parent / "default_section_definition.yml"
 
 
 @dataclasses.dataclass
 class SectionModificationRule:
     section_name: str
     new_section_name: str
-    other_sections: List[str]
+    other_sections: list[str]
     order: Literal["BEFORE", "AFTER"]
 
 
@@ -33,29 +33,28 @@ class SectionTokenizer(SegmentationOperation):
 
     def __init__(
         self,
-        section_dict: Dict[str, List[str]] = None,
+        section_dict: dict[str, list[str]] | None = None,
         output_label: str = _DEFAULT_LABEL,
         section_rules: Iterable[SectionModificationRule] = (),
         strip_chars: str = _DEFAULT_STRIP_CHARS,
-        uid: Optional[str] = None,
+        uid: str | None = None,
     ):
-        """
-        Initialize the Section Tokenizer
+        """Initialize the Section Tokenizer
 
         Parameters
         ----------
-        section_dict
+        section_dict: dict of str to list of str, optional
             Dictionary containing the section name as key and the list of mappings as
             value. If None, the content of default_section_definition.yml will be used.
-        output_label
+        output_label: str, optional
             Segment label to use for annotation output.
-        section_rules
+        section_rules: iterable of SectionModificationRule, optional
             List of rules for modifying a section name according its order to the other
             sections. If section_dict is None, the content of
             default_section_definition.yml will be used.
-        strip_chars
+        strip_chars: str, optional
             The list of characters to strip at the beginning of the returned segment.
-        uid: str, Optional
+        uid: str, optional
             Identifier of the tokenizer
         """
         # Pass all arguments to super (remove self)
@@ -75,21 +74,19 @@ class SectionTokenizer(SegmentationOperation):
         self.keyword_processor = KeywordProcessor(case_sensitive=True)
         self.keyword_processor.add_keywords_from_dict(section_dict)
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
-        """
-        Return sections detected in `segments`.
+    def run(self, segments: list[Segment]) -> list[Segment]:
+        """Return sections detected in `segments`.
         Each section is a segment with an attached attribute
         (label: <same as self.output_label>, value: <the name of the section>).
 
-
         Parameters
         ----------
-        segments:
+        segments: list of Segment
             List of segments into which to look for sections
 
         Returns
         -------
-        List[Segments]:
+        list of Segment
             Sections segments found in `segments`
         """
         return [section for segment in segments for section in self._find_sections_in_segment(segment)]
@@ -134,8 +131,8 @@ class SectionTokenizer(SegmentationOperation):
             )
 
             # add section name in metadata
-            metadata = dict(name=name)
-            section = Segment(
+            metadata = {"name": name}
+            new_section = Segment(
                 label=self.output_label,
                 spans=spans,
                 text=text,
@@ -144,15 +141,15 @@ class SectionTokenizer(SegmentationOperation):
 
             # add section name in section attribute
             attr = Attribute(label=self.output_label, value=name)
-            section.attrs.add(attr)
+            new_section.attrs.add(attr)
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(section, self.description, source_data_items=[segment])
+                self._prov_tracer.add_prov(new_section, self.description, source_data_items=[segment])
                 self._prov_tracer.add_prov(attr, self.description, source_data_items=[segment])
 
-            yield section
+            yield new_section
 
-    def _get_sections_to_rename(self, match: List[Tuple]):
+    def _get_sections_to_rename(self, match: list[tuple]):
         match_type = [m[0] for m in match]
         map_index_new_name = {}
         list_to_process = ()
@@ -180,38 +177,35 @@ class SectionTokenizer(SegmentationOperation):
     def get_example(cls):
         config_path = _PATH_TO_DEFAULT_RULES
         section_dict, section_rules = cls.load_section_definition(config_path, encoding="utf-8")
-        section_tokenizer = cls(
+        return cls(
             section_dict=section_dict,
             section_rules=section_rules,
         )
-        return section_tokenizer
 
     @staticmethod
     def load_section_definition(
-        filepath: pathlib.Path, encoding: Optional[str] = None
-    ) -> Tuple[Dict[str, List[str]], Tuple[SectionModificationRule, ...]]:
-        """
-        Load the sections definition stored in a yml file
+        filepath: Path, encoding: str | None = None
+    ) -> tuple[dict[str, list[str]], tuple[SectionModificationRule, ...]]:
+        """Load the sections definition stored in a yml file
 
         Parameters
         ----------
-        filepath:
+        filepath : Path
             Path to a yml file containing the sections(name + mappings) and rules
-        encoding:
+        encoding : str, optional
             Encoding of the file to open
 
         Returns
         -------
-        Tuple[Dict[str, List[str]], Tuple[SectionModificationRule, ...]]
+        tuple
             Tuple containing:
             - the dictionary where key is the section name and value is the list of all
             equivalent strings.
             - the list of section modification rules.
             These rules allow to rename some sections according their order
         """
-
-        with open(filepath, mode="r", encoding=encoding) as f:
-            config = yaml.safe_load(f)
+        with Path(filepath).open(encoding=encoding) as fp:
+            config = yaml.safe_load(fp)
 
         section_dict = config["sections"]
         section_rules = tuple(SectionModificationRule(**rule) for rule in config["rules"])
@@ -220,29 +214,28 @@ class SectionTokenizer(SegmentationOperation):
 
     @staticmethod
     def save_section_definition(
-        section_dict: Dict[str, List[str]],
+        section_dict: dict[str, list[str]],
         section_rules: Iterable[SectionModificationRule],
-        filepath: pathlib.Path,
-        encoding: Optional[str] = None,
+        filepath: Path,
+        encoding: str | None = None,
     ):
-        """
-        Save section yaml definition file
+        """Save section yaml definition file
 
         Parameters
         ----------
-        section_dict
+        section_dict : dict of str to list of str
             Dictionary containing the section name as key and the list of mappings
             as value (cf. content of default_section_dict.yml as example)
-        section_rules
+        section_rules : iterable of SectionModificationRule
             List of rules for modifying a section name according its order to the other
             sections.
-        filepath
+        filepath : Path
             Path to the file to save
-        encoding
-            File encoding. Default: None
+        encoding : str, optional
+            File encoding
         """
-        with open(filepath, mode="w", encoding=encoding) as f:
+        with Path(filepath).open(mode="w", encoding=encoding) as fp:
             data = {"sections": section_dict, "rules": []}
             for rule in section_rules:
                 data["rules"].append(dataclasses.asdict(rule))
-            yaml.safe_dump(data, f, allow_unicode=True, encoding=encoding)
+            yaml.safe_dump(data, fp, allow_unicode=True, encoding=encoding)

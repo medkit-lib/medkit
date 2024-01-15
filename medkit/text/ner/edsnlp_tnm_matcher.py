@@ -1,11 +1,11 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[edsnlp]`.
 """
+from __future__ import annotations
 
 __all__ = ["EDSNLPTNMMatcher"]
 
-from typing import Iterator, List, Optional
+from typing import Iterator
 
 import spacy
 
@@ -16,8 +16,7 @@ from medkit.text.spacy.edsnlp import build_tnm_attribute
 
 
 class EDSNLPTNMMatcher(NEROperation):
-    """
-    TNM (Tumour/Node/Metastasis) string matcher based on `EDS-NPL's tnm pipeline
+    """TNM (Tumour/Node/Metastasis) string matcher based on `EDS-NPL's tnm pipeline
     <https://aphp.github.io/edsnlp/latest/pipelines/ner/tnm/>`.
 
     For each TNM string that is found, an entity will be created with an
@@ -28,23 +27,21 @@ class EDSNLPTNMMatcher(NEROperation):
     def __init__(
         self,
         output_label: str = "TNM",
-        attrs_to_copy: Optional[List[str]] = None,
-        uid: Optional[str] = None,
+        attrs_to_copy: list[str] | None = None,
+        uid: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        output_label:
+        output_label : str, default="TNM"
             Label to use for TNM entities created (the label of the
             attributes will always be "TNM")
-        attrs_to_copy:
+        attrs_to_copy : list of str, optional
             Labels of the attributes that should be copied from the input segment
             to the created TNM entity. Useful for propagating context attributes
             (negation, antecedent, etc).
-        uid:
+        uid : str, optional
             Identifier of the matcher
         """
-
         super().__init__(output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid)
 
         if attrs_to_copy is None:
@@ -56,21 +53,20 @@ class EDSNLPTNMMatcher(NEROperation):
         self._edsnlp = spacy.blank("eds")
         self._edsnlp.add_pipe("eds.tnm")
 
-    def run(self, segments: List[Segment]) -> List[Entity]:
+    def run(self, segments: list[Segment]) -> list[Entity]:
         """Find and return TNM entities for all `segments`
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             List of segments into which to look for TNM strings
 
         Returns
         -------
-        entities: List[Entity]
+        list of Entity
             TNM entities found in `segments`, with
             :class:`~medkit.text.ner.TNMAttribute` attributes
         """
-
         spacy_docs = self._edsnlp.pipe(s.text for s in segments)
         return [
             tnm_entity

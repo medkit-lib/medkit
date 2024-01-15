@@ -14,12 +14,11 @@ def _get_transcribed_doc():
         TextSpan(5, 17): _AUDIO_SPAN_1,
         TextSpan(25, 48): _AUDIO_SPAN_2,
     }
-    doc = TranscribedTextDocument(
+    return TranscribedTextDocument(
         text=text,
         audio_doc_id=generate_id(),
         text_spans_to_audio_spans=text_spans_to_audio_spans,
     )
-    return doc
 
 
 def test_get_containing_audio_spans():

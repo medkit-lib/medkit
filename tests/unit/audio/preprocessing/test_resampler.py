@@ -2,12 +2,12 @@ import pytest
 
 pytest.importorskip(modname="resampy", reason="resampy is not installed")
 
-import numpy as np  # noqa: E402
+import numpy as np
 
-from medkit.audio.preprocessing.resampler import Resampler  # noqa: E402
-from medkit.core import ProvTracer  # noqa: E402
-from medkit.core.audio import MemoryAudioBuffer, Segment, Span  # noqa: E402
-from tests.audio_utils import generate_sin_signal  # noqa: E402
+from medkit.audio.preprocessing.resampler import Resampler
+from medkit.core import ProvTracer
+from medkit.core.audio import MemoryAudioBuffer, Segment, Span
+from tests.audio_utils import generate_sin_signal
 
 _OUTPUT_LABEL = "downmixed"
 _TARGET_SAMPLE_RATE = 4000
@@ -36,8 +36,7 @@ def _check_resampled_segment(resampled_seg, original_seg):
 def _get_freqs(signal, sample_rate):
     fft = np.fft.fft(signal, axis=1)
     fft_freqs = np.fft.fftfreq(signal.shape[1], d=1 / sample_rate)
-    freqs = [abs(fft_freqs[i]) for i in np.argmax(fft, axis=1)]
-    return freqs
+    return [abs(fft_freqs[i]) for i in np.argmax(fft, axis=1)]
 
 
 def test_basic():

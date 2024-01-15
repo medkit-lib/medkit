@@ -4,12 +4,12 @@ import pytest
 pytest.importorskip(modname="pandas", reason="pandas (therefore pyannote) is not installed")
 pytest.importorskip(modname="pyannote.audio", reason="pyannote.audio is not installed")
 
-from pathlib import Path  # noqa: E402
+from pathlib import Path
 
-from medkit.audio.segmentation.pa_speaker_detector import (  # noqa: E402
+from medkit.audio.segmentation.pa_speaker_detector import (
     PASpeakerDetector,
 )
-from medkit.core.audio import FileAudioBuffer, Segment, Span  # noqa: E402
+from medkit.core.audio import FileAudioBuffer, Segment, Span
 
 _PIPELINE_MODEL = Path(__file__).parent / "diar_pipeline_config.yaml"
 _AUDIO = FileAudioBuffer("tests/data/audio/dialog_long.ogg")

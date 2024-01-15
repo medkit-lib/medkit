@@ -25,7 +25,7 @@ from medkit.io.brat import BratOutputConverter
 
 
 def _get_medkit_doc():
-    text = "Le patient présente une douleur abdominale de grade 4, la douleur abdominale" " est sévère."
+    text = "Le patient présente une douleur abdominale de grade 4, la douleur abdominale est sévère."
     doc = TextDocument(uid="doc_brat", text=text)
     medkit_anns = [
         Entity(
@@ -134,7 +134,7 @@ A1\tfrom_umls R1
 
 
 @pytest.mark.parametrize(
-    "ann_labels,attrs,ignore_segments,create_config,expected_ann",
+    ("ann_labels", "attrs", "ignore_segments", "create_config", "expected_ann"),
     TEST_DATA,
     ids=[
         "all_anns_all_attrs",
@@ -217,10 +217,10 @@ def test_annotation_conf_file():
     )
 
     assert config_file.entity_types == ["grade", "level", "maladie"]
-    assert "normalized" in config_file.attr_entity_values.keys()
-    assert "from_umls" in config_file.attr_relation_values.keys()
-    assert "related" in config_file.rel_types_arg_1.keys()
-    assert "related" in config_file.rel_types_arg_2.keys()
+    assert "normalized" in config_file.attr_entity_values
+    assert "from_umls" in config_file.attr_relation_values
+    assert "related" in config_file.rel_types_arg_1
+    assert "related" in config_file.rel_types_arg_2
 
     # already sorted
     assert config_file.to_str() == EXPECTED_CONFIG
@@ -230,7 +230,7 @@ def test__convert_segment_to_brat():
     original_text = "segment_text"
     brat_converter = BratOutputConverter()
     segment_medkit = Segment(label="label_segment", spans=[Span(0, 12)], text=original_text)
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError, match=r"Number of segments \d+ must be strictly positive"):
         brat_converter._convert_segment_to_brat(segment=segment_medkit, nb_segment=0, raw_text=original_text)
 
     brat_entity = brat_converter._convert_segment_to_brat(segment=segment_medkit, nb_segment=1, raw_text=original_text)
@@ -242,7 +242,7 @@ def test__convert_segment_to_brat():
 
 
 def test__convert_attribute_to_brat():
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError, match=r"Number of attributes \d+ must be strictly positive"):
         BratOutputConverter._convert_attribute_to_brat(
             label="label_attr",
             value=None,
@@ -296,7 +296,7 @@ def test__convert_relation():
     relation = Relation(label="rel1", source_id=ent_1.uid, target_id=ent_2.uid)
 
     # create entities brat and save them in a dict
-    entities_by_medkit_id = dict()
+    entities_by_medkit_id = {}
     entities_by_medkit_id[ent_1.uid] = brat_converter._convert_segment_to_brat(ent_1, nb_segment=1, raw_text=ent_1.text)
     entities_by_medkit_id[ent_2.uid] = brat_converter._convert_segment_to_brat(ent_2, nb_segment=2, raw_text=ent_2.text)
 
@@ -324,8 +324,8 @@ def test_doc_names(tmp_path: Path):
         attrs=None,
     )
 
-    with pytest.raises(AssertionError):
-        brat_converter.save(medkit_docs, output_path, doc_names=[])
+    with pytest.raises(ValueError, match="Size mismatch"):
+        brat_converter.save(medkit_docs, output_path, doc_names=["foo"])
 
     # names by default
     brat_converter.save(medkit_docs, output_path)
@@ -410,7 +410,6 @@ def test_brat_output_from_modified_span(tmp_path: Path):
 
 def test_normalization_attr(tmp_path: Path):
     """Conversion of normalization objects to strings"""
-
     text = "Le patient souffre d'asthme"
     doc = TextDocument(text=text)
     entity = Entity(label="maladie", text="asthme", spans=[Span(21, 27)])
@@ -427,7 +426,6 @@ def test_normalization_attr(tmp_path: Path):
 
 def test_convert_cuis_to_notes(tmp_path: Path):
     """Conversion of umls normalization attributes to notes"""
-
     text = "Le patient souffre d'asthme"
     doc = TextDocument(text=text)
 
@@ -461,7 +459,6 @@ def test_convert_cuis_to_notes(tmp_path: Path):
 
 def test_convert_attrs_to_notes(tmp_path: Path):
     """Conversion of n attributes to notes"""
-
     text = "Le patient souffre d'asthme"
     doc = TextDocument(text=text)
 

@@ -1,11 +1,14 @@
+from __future__ import annotations
+
 __all__ = ["ProvStore", "create_prov_store"]
 
-from typing import Dict
+from typing import TYPE_CHECKING, runtime_checkable
 
-from typing_extensions import Literal, Protocol, runtime_checkable
+from typing_extensions import Literal, Protocol
 
-from medkit.core.data_item import IdentifiableDataItem
-from medkit.core.operation_desc import OperationDescription
+if TYPE_CHECKING:
+    from medkit.core.data_item import IdentifiableDataItem
+    from medkit.core.operation_desc import OperationDescription
 
 
 @runtime_checkable
@@ -25,8 +28,8 @@ class ProvStore(Protocol):
 
 class _DictStore:
     def __init__(self) -> None:
-        self._data_items_by_id: Dict[str, IdentifiableDataItem] = {}
-        self._op_descs_by_id: Dict[str, OperationDescription] = {}
+        self._data_items_by_id: dict[str, IdentifiableDataItem] = {}
+        self._op_descs_by_id: dict[str, OperationDescription] = {}
 
     def store_data_item(self, data_item: IdentifiableDataItem):
         self._data_items_by_id[data_item.uid] = data_item

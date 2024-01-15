@@ -26,7 +26,6 @@ _AUDIO_FILE_2 = Path("tests/data/audio/dialog.ogg")
 
 def build_doc():
     """Build an audio doc with 2 segments and 1 attribute on the 1st segment"""
-
     audio = FileAudioBuffer(_AUDIO_FILE_1)
     doc = AudioDocument(uid="d1", audio=audio)
     seg_1 = Segment(
@@ -50,7 +49,6 @@ def build_doc():
 
 def build_docs():
     """Build 2 audio docs with 1 segment each"""
-
     audio_1 = FileAudioBuffer(_AUDIO_FILE_1)
     doc_1 = AudioDocument(uid="d1", audio=audio_1)
     seg_1 = Segment(
@@ -76,7 +74,6 @@ def build_docs():
 
 def build_anns():
     """Build 2 segments with 1 attribute on the 1st segment"""
-
     audio = FileAudioBuffer(_AUDIO_FILE_1)
     seg_1 = Segment(
         uid="s1",

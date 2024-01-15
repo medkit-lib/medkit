@@ -22,12 +22,13 @@ def nlp_spacy():
 )
 def _custom_component(spacy_doc: Doc) -> Doc:
     """Mock spacy component, this component adds 'is_from_medkit' extension
-    in each entity, and a DATE"""
+    in each entity, and a DATE
+    """
     # set an attribute in spacy
     if not SpacySpan.has_extension("is_from_medkit"):
         SpacySpan.set_extension("is_from_medkit", default=None)
     # add DATE entity
-    spacy_doc.ents = list(spacy_doc.ents) + [spacy_doc.char_span(36, 40, label="DATE")]
+    spacy_doc.ents = [*list(spacy_doc.ents), spacy_doc.char_span(36, 40, label="DATE")]
 
     for ent in spacy_doc.ents:
         # check if medkit_id was set up

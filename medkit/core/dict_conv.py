@@ -8,38 +8,37 @@ __all__ = [
     "get_class_name_from_data_dict",
 ]
 
-from typing import Any, Dict, Optional, Type
+from typing import Any, runtime_checkable
 
-from typing_extensions import Protocol, Self, runtime_checkable
+from typing_extensions import Protocol, Self
 
 _CLASS_NAME_KEY: str = "_class_name"
 
 
-def get_class_name(class_: Type) -> str:
+def get_class_name(class_: type) -> str:
     return class_.__module__ + "." + class_.__qualname__
 
 
-def add_class_name_to_data_dict(instance: object, data_dict: Dict[str, Any]):
-    """
-    Add a class name to a data dict returned by a `to_dict()` method, so we
+def add_class_name_to_data_dict(instance: object, data_dict: dict[str, Any]):
+    """Add a class name to a data dict returned by a `to_dict()` method, so we
     later know upon which class to call `from_dict()` when re-instantiating the
     corresponding object.
 
     Parameters
     ----------
-    instance:
+    instance: object
         The instance of class to which `data_dict` corresponds
-    data_dict:
+    data_dict: dict of str to Any
         The data dict on which to add the class name
     """
     if _CLASS_NAME_KEY in data_dict:
-        raise ValueError(f"Found pre-existing entry for key {_CLASS_NAME_KEY} in data dict")
+        msg = f"Found pre-existing entry for key {_CLASS_NAME_KEY} in data dict"
+        raise ValueError(msg)
     data_dict[_CLASS_NAME_KEY] = get_class_name(type(instance))
 
 
-def get_class_name_from_data_dict(data_dict: Dict[str, Any]):
-    """
-    Get the class name written in the data_dict by the `to_dict` method.
+def get_class_name_from_data_dict(data_dict: dict[str, Any]):
+    """Get the class name written in the data_dict by the `to_dict` method.
 
     Parameters
     ----------
@@ -54,41 +53,40 @@ def get_class_name_from_data_dict(data_dict: Dict[str, Any]):
     """
     class_name = data_dict.get(_CLASS_NAME_KEY, None)
     if class_name is None:
-        raise ValueError(
+        msg = (
             f"Data dict does not contain expected '{_CLASS_NAME_KEY}' key. Make"
             " sure it was created by a to_dict() method and that this method"
             " called the 'add_class_name_to_data_dict()' helper function"
         )
+        raise ValueError(msg)
     return class_name
 
 
 @runtime_checkable
 class DictConvertible(Protocol):
-    """
-    Base protocol that must be implemented for all classes supporting conversion
+    """Base protocol that must be implemented for all classes supporting conversion
     to a data dict and re-instantiation from a data dict.
     """
 
-    def to_dict(self) -> Dict[str, Any]:
-        """
-        Convert current instance into a data dict that can later be used to rebuild
+    def to_dict(self) -> dict[str, Any]:
+        """Convert current instance into a data dict that can later be used to rebuild
         the exact same instance
 
         Returns
         -------
-        Dict[str, Any]:
+        dict of str to Any:
             A data dict containing all the information needed to re-instantiate the object
         """
 
     @classmethod
-    def from_dict(cls, data_dict: Dict[str, Any]) -> Self:
-        """
-        Re-instantiate an object from a datadict obtained via `to_dict()`
+    def from_dict(cls, data_dict: dict[str, Any]) -> Self:
+        """Re-instantiate an object from a datadict obtained via `to_dict()`
 
         Parameters
         ----------
-            data_dict:
-                Data dict returned by `to_dict()`
+        data_dict: dict of str to Any
+            Data dict returned by `to_dict()`
+
         Returns
         -------
         Self:
@@ -97,43 +95,38 @@ class DictConvertible(Protocol):
 
 
 class SubclassMapping:
-    """
-    Base class for managing subclasses
-    """
+    """Base class for managing subclasses"""
 
-    _subclasses: Dict[str, Type[Self]]
+    _subclasses: dict[str, type[Self]]
 
     def __init_subclass__(cls):
         # make sure we have a distinct list of subclasses for each class relying on SubclassMapping
         cls._subclasses = {}
 
     @classmethod
-    def register_subclass(cls, subclass: Type[Self]):
+    def register_subclass(cls, subclass: type[Self]):
         subclass_name = get_class_name(subclass)
         if subclass_name in cls._subclasses:
             other_subclass = cls._subclasses[subclass_name]
-            raise KeyError(
+            msg = (
                 f"Trying to register child class {subclass} of"
                 f" {get_class_name(cls)} with name {subclass_name}, but other child"
                 f" class {other_subclass} is already registered with identical name"
             )
+            raise KeyError(msg)
         cls._subclasses[subclass_name] = subclass
 
     @classmethod
-    def get_subclass(cls, name: str) -> Optional[Type[Self]]:
+    def get_subclass(cls, name: str) -> type[Self] | None:
         return cls._subclasses.get(name)
 
     @classmethod
-    def get_subclass_for_data_dict(
-        cls,
-        data_dict: Dict[str, Any],
-    ) -> Optional[Type[Self]]:
-        """
-        Return the subclass that corresponds to the class name found in a data dict
+    def get_subclass_for_data_dict(cls, data_dict: dict[str, Any]) -> type[Self] | None:
+        """Return the subclass that corresponds to the class name found in a data dict
 
         Parameters
         ----------
-        data_dict:
+        data_dict: dict of str to Any
             Data dict returned by the `to_dict()` method of a subclass (or of
             the base class itself)
 
@@ -146,8 +139,9 @@ class SubclassMapping:
         class_name = get_class_name_from_data_dict(data_dict)
         subclass = cls.get_subclass(class_name)
         if subclass is None and class_name != get_class_name(cls):
-            raise ValueError(
+            msg = (
                 "Received a data dict with class_name '{class_name}' that does not"
                 " correspond to {cls} or any of its subclasses"
             )
+            raise ValueError(msg)
         return subclass

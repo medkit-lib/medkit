@@ -15,7 +15,7 @@ _METADATA = {"custom_metadata": "custom", "doc_id": 1234}
 # mock of UUID class used by generate_deterministic_id
 @dataclasses.dataclass()
 class _MockUUID:
-    int: int
+    int: int  # noqa: A003
 
 
 @pytest.fixture(scope="module", autouse=True)
@@ -32,7 +32,7 @@ def _get_doc_by_task(task: DoccanoTask):
     # the same doc, the output format changes
     doc = TextDocument(text="medkit was created in 2022")
 
-    if task == DoccanoTask.RELATION_EXTRACTION or task == DoccanoTask.SEQUENCE_LABELING:
+    if task in (DoccanoTask.RELATION_EXTRACTION, DoccanoTask.SEQUENCE_LABELING):
         medkit_anns = [
             Entity(label="ORG", spans=[Span(0, 6)], text="medkit", uid="e0"),
             Entity(label="DATE", spans=[Span(22, 26)], text="2022", uid="e1"),
@@ -54,9 +54,10 @@ def _get_doc_by_task(task: DoccanoTask):
 
 
 def _load_json_file(filepath):
-    with open(filepath) as fp:
-        data = json.load(fp)
-    return data
+    from pathlib import Path
+
+    with Path(filepath).open() as fp:
+        return json.load(fp)
 
 
 @pytest.mark.parametrize(
@@ -109,7 +110,7 @@ def test_warnings(tmp_path, caplog):
         converter.save(medkit_docs, output_file=output_file)
         assert "Entity source/target was no found" in caplog.text
 
-    with pytest.raises(KeyError, match="The attribute with the corresponding .*"):
+    with pytest.raises(KeyError, match="The attribute with the corresponding .*"):  # noqa: PT012
         # the attr_label is header not is_negated
         task = DoccanoTask.TEXT_CLASSIFICATION
         medkit_docs = [_get_doc_by_task(task)]
@@ -140,7 +141,7 @@ def test_save_by_task_without_metadata(tmp_path, task):
 
     # Prepare expected_data, the test forces not to export metadata
     # the data should not include it
-    for key in _METADATA.keys():
+    for key in _METADATA:
         expected_data.pop(key, None)
 
     assert data == expected_data

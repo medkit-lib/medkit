@@ -106,7 +106,7 @@ TEST_PARAMS_CONFIG = [
 
 
 @pytest.mark.parametrize(
-    "rules,text,expected_text,expected_spans",
+    ("rules", "text", "expected_text", "expected_spans"),
     TEST_PARAMS_CONFIG,
     ids=[
         "custom_user_rule",

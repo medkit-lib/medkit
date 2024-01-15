@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 __all__ = [
     "UMLSEntry",
     "load_umls_entries",
@@ -8,12 +10,11 @@ __all__ = [
     "SEMGROUP_LABELS",
 ]
 
-
 import dataclasses
 import re
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Union
+from typing import Iterator
 
 from anyascii import anyascii
 from tqdm import tqdm
@@ -52,61 +53,61 @@ class UMLSEntry:
 
     Attributes
     ----------
-    cui:
+    cui : str
         Unique identifier of the concept designated by the term
-    ref_term:
+    term : str
         Original version of the term
-    semtypes:
+    semtypes : list of str, optional
         Semantic types of the concept (TUIs)
-    semgroups:
+    semgroups : list of str, optional
         Semantic groups of the concept
     """
 
     cui: str
     term: str
-    semtypes: Optional[List[str]] = None
-    semgroups: Optional[List[str]] = None
+    semtypes: list[str] | None = None
+    semgroups: list[str] | None = None
 
     def to_dict(self):
-        return dict(
-            cui=self.cui,
-            term=self.term,
-            semtypes=self.semtypes,
-            semgroups=self.semgroups,
-        )
+        return {
+            "cui": self.cui,
+            "term": self.term,
+            "semtypes": self.semtypes,
+            "semgroups": self.semgroups,
+        }
 
 
 # based on https://github.com/GanjinZero/CODER/blob/master/coderpp/test/load_umls.py
 
 
 def load_umls_entries(
-    mrconso_file: Union[str, Path],
-    mrsty_file: Union[str, Path] = None,
-    sources: Optional[List[str]] = None,
-    languages: Optional[List[str]] = None,
+    mrconso_file: str | Path,
+    mrsty_file: str | Path | None = None,
+    sources: list[str] | None = None,
+    languages: list[str] | None = None,
     show_progress: bool = False,
 ) -> Iterator[UMLSEntry]:
     """Load all terms and associated CUIs found in a UMLS MRCONSO.RRF file
 
     Parameters
     ----------
-    mrconso_file:
+    mrconso_file : str or Path
         Path to the UMLS MRCONSO.RRF file
-    mrsty_file:
+    mrsty_file : str or Path, optional
         Path to the UMLS MRSTY.RRF file. If provided, semtypes info will be
         included in the entries returned.
-    sources:
+    sources : list of str, optional
         Sources to consider (ex: ICD10, CCS) If none provided, CUIs and terms
         of all sources will be taken into account.
-    languages:
+    languages : list of str, optional
         Languages to consider. If none provided, CUIs and terms of all languages
         will be taken into account
-    show_progress:
+    show_progress : bool, default=False
         Whether to show a progressbar
 
     Returns
     -------
-    Iterator[UMLSEntry]
+    iterator of UMLSEntry
         Iterator over all term entries found in UMLS install
     """
     mrconso_file = Path(mrconso_file)
@@ -124,7 +125,7 @@ def load_umls_entries(
         semtypes_by_cui = None
         semgroups_by_semtype = None
 
-    with open(mrconso_file, encoding="utf-8") as fp:
+    with mrconso_file.open(encoding="utf-8") as fp:
         lines_iter = fp
 
         if show_progress:
@@ -168,25 +169,22 @@ def load_umls_entries(
         progress_bar.close()
 
 
-def load_semtypes_by_cui(mrsty_file: Union[str, Path]) -> Dict[str, List[str]]:
-    """
-    Load the list of semtypes associated to each CUI found in a MRSTY.RRF file
+def load_semtypes_by_cui(mrsty_file: str | Path) -> dict[str, list[str]]:
+    """Load the list of semtypes associated to each CUI found in a MRSTY.RRF file
 
     Params
     ------
-    mrsty_file:
+    mrsty_file : str or Path
         Path to the UMLS MRSTY.RRF file.
 
     Returns
     -------
-    Dict[str, List[str]]
+    dict of str to list of str
         Mapping between CUIs and associated semtypes
     """
-
-    mrsty_file = Path(mrsty_file)
     semtypes_by_cui = defaultdict(list)
 
-    with open(mrsty_file) as fp:
+    with Path(mrsty_file).open() as fp:
         for line in fp:
             row = line.strip().split("|")
             cui = row[0]
@@ -203,20 +201,18 @@ _UMLS_SEMGROUPS_FILE = Path(__file__).parent / "umls_semgroups_v04.txt"
 _SEMGROUPS_BY_SEMTYPE = None
 
 
-def load_semgroups_by_semtype() -> Dict[str, str]:
-    """
-    Load the semgroup associated to each semtype
+def load_semgroups_by_semtype() -> dict[str, str]:
+    """Load the semgroup associated to each semtype
 
     Returns
     -------
     Dict[str, str]
         Mapping between semtype TUIs and corresponding semgroup
     """
-
-    global _SEMGROUPS_BY_SEMTYPE
+    global _SEMGROUPS_BY_SEMTYPE  # noqa: PLW0603
     if _SEMGROUPS_BY_SEMTYPE is None:
         _SEMGROUPS_BY_SEMTYPE = {}
-        with open(_UMLS_SEMGROUPS_FILE) as fp:
+        with Path(_UMLS_SEMGROUPS_FILE).open() as fp:
             for line in fp:
                 semgroup, _, semtype, _ = line.split("|")
                 _SEMGROUPS_BY_SEMTYPE[semtype] = semgroup
@@ -234,22 +230,21 @@ def preprocess_term_to_match(
     clean_brackets: bool = False,
     clean_dashes: bool = False,
 ):
-    """
-    Preprocess a UMLS term for matching purposes
+    """Preprocess a UMLS term for matching purposes
 
     Parameters
     ----------
     term: str
         Term to preprocess
-    lowercase:
+    lowercase : bool
         Whether `term` should be lowercased
-    normalize_unicode:
+    normalize_unicode : bool
         Whether `term_to_match` should be ASCII-only (non-ASCII chars replaced by closest ASCII chars)
-    clean_nos:
+    clean_nos : bool, default=True
         Whether to remove "NOS"
-    clean_brackets:
+    clean_brackets : bool, default=False
         Whether to remove brackets
-    clean_dashes:
+    clean_dashes : bool, default=False
         Whether to remove dashes
     """
     if lowercase:
@@ -264,16 +259,14 @@ def preprocess_term_to_match(
         term = _BRACKET_PATTERN.sub("", term)
     if clean_dashes:
         term = term.replace("-", " ")
-    term = " ".join([w for w in term.split() if w])
-    return term
+    return " ".join([w for w in term.split() if w])
 
 
 _ACRONYM_PATTERN = re.compile(r"^ *(?P<acronym>[^ \(\)]+) *\( *(?P<expanded>[^\(\)]+) *\) *$")
 
 
-def preprocess_acronym(term: str) -> Optional[str]:
-    """
-    Detect if a term contains an acronym with the expanded form between
+def preprocess_acronym(term: str) -> str | None:
+    """Detect if a term contains an acronym with the expanded form between
     parenthesis, and return the acronym if that is the case.
 
     This will work for terms such as: "ECG (ÉlectroCardioGramme)", where the
@@ -282,15 +275,14 @@ def preprocess_acronym(term: str) -> Optional[str]:
 
     Parameters
     ----------
-    term:
+    term : str
         Term that may contain an acronym. Ex: "ECG (ÉlectroCardioGramme)"
 
     Returns
     -------
-    Optional[str]
+    str, optional
         The acronym in the term if any, else `None`. Ex: "ECG"
     """
-
     match = _ACRONYM_PATTERN.match(term)
     if not match:
         return None
@@ -311,15 +303,17 @@ def preprocess_acronym(term: str) -> Optional[str]:
     return acronym
 
 
-def guess_umls_version(path: Union[str, Path]) -> str:
+def guess_umls_version(path: str | Path) -> str:
     """Try to infer UMLS version (ex: "2021AB") from any UMLS-related path
 
     Parameters
     ----------
-    path:
+    path : str or Path
         Path to the root directory of the UMLS install or any file inside that directory
+
     Returns
     -------
+    str
         UMLS version, estimated by finding the leaf-most folder in `path` that is not
         "META", "NET" nor "LEX", nor a subfolder of these folders
     """

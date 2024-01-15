@@ -1,12 +1,12 @@
-"""
-This package needs extra-dependencies not installed as core dependencies of medkit.
+"""This package needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit[edsnlp]`.
 """
+from __future__ import annotations
 
 __all__ = ["TNMAttribute"]
 
 import dataclasses
-from typing import Any, ClassVar, Dict, Optional
+from typing import Any, ClassVar
 
 from edsnlp.pipelines.ner.tnm.model import (
     TNM,
@@ -23,8 +23,7 @@ from medkit.core import Attribute, dict_conv
 
 @dataclasses.dataclass
 class TNMAttribute(Attribute):
-    """
-    Attribute destructuring the fields of a TNM string.
+    """Attribute destructuring the fields of a TNM string.
 
     The TNM (Tumour/Node/Metastasis) system is used to describe cancer stages.
 
@@ -61,17 +60,17 @@ class TNMAttribute(Attribute):
         Version year
     """
 
-    prefix: Optional[Prefix]
-    tumour: Optional[Tumour]
-    tumour_specification: Optional[Specification]
-    tumour_suffix: Optional[str]
-    node: Optional[Node]
-    node_specification: Optional[Specification]
-    node_suffix: Optional[str]
-    metastasis: Optional[Metastasis]
-    resection_completeness: Optional[int]
-    version: Optional[str]
-    version_year: Optional[int]
+    prefix: Prefix | None
+    tumour: Tumour | None
+    tumour_specification: Specification | None
+    tumour_suffix: str | None
+    node: Node | None
+    node_specification: Specification | None
+    node_suffix: str | None
+    metastasis: Metastasis | None
+    resection_completeness: int | None
+    version: str | None
+    version_year: int | None
 
     LABEL: ClassVar[str] = "TNM"
     """
@@ -80,19 +79,19 @@ class TNMAttribute(Attribute):
 
     def __init__(
         self,
-        prefix: Optional[Prefix] = None,
-        tumour: Optional[Tumour] = None,
-        tumour_specification: Optional[Specification] = None,
-        tumour_suffix: Optional[str] = None,
-        node: Optional[Node] = None,
-        node_specification: Optional[Specification] = None,
-        node_suffix: Optional[str] = None,
-        metastasis: Optional[Metastasis] = None,
-        resection_completeness: Optional[int] = None,
-        version: Optional[str] = None,
-        version_year: Optional[int] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
+        prefix: Prefix | None = None,
+        tumour: Tumour | None = None,
+        tumour_specification: Specification | None = None,
+        tumour_suffix: str | None = None,
+        node: Node | None = None,
+        node_specification: Specification | None = None,
+        node_suffix: str | None = None,
+        metastasis: Metastasis | None = None,
+        resection_completeness: int | None = None,
+        version: str | None = None,
+        version_year: int | None = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
     ):
         # use EDS-NLP's TNM class to build string representation
         value = TNM(
@@ -129,27 +128,27 @@ class TNMAttribute(Attribute):
     def to_spacy(self) -> str:
         return self.value
 
-    def to_dict(self) -> Dict[str, Any]:
-        tnm_dict = dict(
-            uid=self.uid,
-            prefix=self.prefix,
-            tumour=self.tumour,
-            tumour_suffix=self.tumour_suffix,
-            tumour_specification=self.tumour_specification,
-            node=self.node,
-            node_specification=self.node_specification,
-            node_suffix=self.node_suffix,
-            metastasis=self.metastasis,
-            resection_completeness=self.resection_completeness,
-            version=self.version,
-            version_year=self.version_year,
-            metadata=self.metadata,
-        )
+    def to_dict(self) -> dict[str, Any]:
+        tnm_dict = {
+            "uid": self.uid,
+            "prefix": self.prefix,
+            "tumour": self.tumour,
+            "tumour_suffix": self.tumour_suffix,
+            "tumour_specification": self.tumour_specification,
+            "node": self.node,
+            "node_specification": self.node_specification,
+            "node_suffix": self.node_suffix,
+            "metastasis": self.metastasis,
+            "resection_completeness": self.resection_completeness,
+            "version": self.version,
+            "version_year": self.version_year,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, tnm_dict)
         return tnm_dict
 
     @classmethod
-    def from_dict(cls, tnm_dict: Dict[str, Any]) -> Self:
+    def from_dict(cls, tnm_dict: dict[str, Any]) -> Self:
         return cls(
             uid=tnm_dict["uid"],
             prefix=tnm_dict["prefix"],

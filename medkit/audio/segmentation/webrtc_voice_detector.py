@@ -1,12 +1,12 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[webrtc-voice-detector]`.
 """
+from __future__ import annotations
 
 __all__ = ["WebRTCVoiceDetector"]
 
 import collections
-from typing import Iterator, List, Optional
+from typing import Iterator
 
 import numpy as np
 import webrtcvad
@@ -33,28 +33,26 @@ class WebRTCVoiceDetector(SegmentationOperation):
         frame_duration: Literal[10, 20, 30] = 30,
         nb_frames_in_window: int = 10,
         switch_ratio: float = 0.9,
-        uid: Optional[str] = None,
+        uid: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        output_label:
+        output_label : str
             Label of output speech segments.
-        aggressiveness:
+        aggressiveness : {0, 1, 2, 3}, default=2
             Aggressiveness param passed to `webrtcvad` (the higher, the more likely
             to detect speech).
-        frame_duration:
+        frame_duration : {10, 20, 30}, default=30
             Duration in milliseconds of frames passed to `webrtcvad`.
-        nb_frames_in_window:
+        nb_frames_in_window : int, default=10
             Number of frames in the sliding window used when aggregating per-frame VAD
             results.
-        switch_ratio:
+        switch_ratio : float, default=0.9
             Percentage of speech/non-speech frames required to switch the window speech
             state when aggregating per-frame VAD results.
-        uid:
+        uid : str, optional
             Identifier of the detector.
         """
-
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -68,17 +66,17 @@ class WebRTCVoiceDetector(SegmentationOperation):
 
         self._vad = webrtcvad.Vad(aggressiveness)
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
+    def run(self, segments: list[Segment]) -> list[Segment]:
         """Return all speech segments detected for all input `segments`.
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             Audio segments on which to perform VAD.
 
         Returns
         -------
-        List[~medkit.core.audio.Segment]:
+        list of Segment
             Segments detected as containing speech activity.
         """
         return [voice_seg for seg in segments for voice_seg in self._detect_activity_in_segment(seg)]
@@ -86,13 +84,11 @@ class WebRTCVoiceDetector(SegmentationOperation):
     def _detect_activity_in_segment(self, segment: Segment) -> Iterator[Segment]:
         audio = segment.audio
         if audio.nb_channels > 1:
-            raise RuntimeError(
-                f"Segment with identifier {segment.uid} has multi-channel audio, which" " is not supported"
-            )
+            msg = f"Segment with identifier {segment.uid} has multi-channel audio, which is not supported"
+            raise RuntimeError(msg)
         if audio.sample_rate not in _SUPPORTED_SAMPLE_RATES:
-            raise RuntimeError(
-                f"Segment with identifier {segment.uid} has non-supported sample rate" f" {audio.sample_rate}"
-            )
+            msg = f"Segment with identifier {segment.uid} has non-supported sample rate {audio.sample_rate}"
+            raise RuntimeError(msg)
 
         sample_rate = audio.sample_rate
         nb_samples = audio.nb_samples
@@ -131,7 +127,6 @@ class WebRTCVoiceDetector(SegmentationOperation):
     # from https://github.com/wiseman/py-webrtcvad/blob/master/example.py
     def _get_aggregated_vad(self, frames, sample_rate):
         """Return index ranges of voiced frames using webrtcvad"""
-
         # deque for our sliding window ring buffer
         window_ring_buffer = collections.deque(maxlen=self.nb_frames_in_window)
         # we have two states: SPEECH and NONSPEECH (we start in NONSPEECH)

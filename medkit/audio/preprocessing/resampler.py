@@ -1,11 +1,9 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[resampler]`.
 """
+from __future__ import annotations
 
 __all__ = ["Resampler"]
-
-from typing import List, Optional
 
 import resampy
 
@@ -20,22 +18,20 @@ class Resampler(PreprocessingOperation):
         output_label: str,
         sample_rate: int,
         fast: bool = False,
-        uid: Optional[str] = None,
+        uid: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        output_label:
+        output_label : str
             Label of output resampled segments.
-        sample_rate:
+        sample_rate : int
             Target sample rate to resample to, in samples per second.
-        fast:
+        fast : bool, default=False
             If `True`, prefer speed over quality and use resampy's "kaiser_fast" filter
             instead of "kaiser_best".
-        uid:
+        uid : str, optional
             Identifier of the resampler.
         """
-
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -45,17 +41,17 @@ class Resampler(PreprocessingOperation):
         self.sample_rate = sample_rate
         self.fast = fast
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
+    def run(self, segments: list[Segment]) -> list[Segment]:
         """Return a resampled segment for each segment in `segments`.
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             Audio segments to resample.
 
         Returns
         -------
-        List[~medkit.core.audio.Segment]:
+        list of Segment
             Resampled segments, one per segment in `segments`.
         """
         return [self._resample_segment(s) for s in segments]

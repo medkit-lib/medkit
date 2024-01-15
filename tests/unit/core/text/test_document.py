@@ -28,7 +28,7 @@ def test_add_annotation(init_data):
     doc.anns.add(ent1)
     assert ent1 in doc.anns.get_entities()
     # Test exception when adding the same annotation
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Impossible to add this annotation."):
         doc.anns.add(ent1)
     # Test segment addition
     doc.anns.add(segment)
@@ -116,10 +116,10 @@ def test_snippet():
 
 
 def test_from_dir():
-    dir = Path("tests/data/text")
-    docs = TextDocument.from_dir(dir, pattern="doc[1-3].txt")
+    dir_ = Path("tests/data/text")
+    docs = TextDocument.from_dir(dir_, pattern="doc[1-3].txt")
     assert len(docs) == 3
-    assert docs[0].metadata["path_to_text"] == str((dir / "doc1.txt").absolute())
-    assert docs[0].text == (dir / "doc1.txt").read_text()
-    assert docs[1].text == (dir / "doc2.txt").read_text()
-    assert docs[2].text == (dir / "doc3.txt").read_text()
+    assert docs[0].metadata["path_to_text"] == str((dir_ / "doc1.txt").absolute())
+    assert docs[0].text == (dir_ / "doc1.txt").read_text()
+    assert docs[1].text == (dir_ / "doc2.txt").read_text()
+    assert docs[2].text == (dir_ / "doc3.txt").read_text()

@@ -23,7 +23,7 @@ class _MockedNLStructModel:
     def predict(self, doc):
         doc_id = (doc["doc_id"],)
         text = doc["text"]
-        mock_result = {
+        return {
             "doc_id": doc_id,
             "text": text,
             "entities": [
@@ -43,18 +43,17 @@ class _MockedNLStructModel:
                 }
             ],
         }
-        return mock_result
 
 
 @pytest.fixture(scope="module", autouse=True)
 def _mocked_nlstruct_modules(module_mocker):
     module_mocker.patch(
         "medkit.text.ner.nlstruct_entity_matcher.NLStructEntityMatcher._load_from_checkpoint_dir",
-        lambda self, c, d: _MockedNLStructModel(),
+        return_value=_MockedNLStructModel(),
     )
     module_mocker.patch(
         "medkit.text.ner.nlstruct_entity_matcher.huggingface_hub.snapshot_download",
-        lambda repo_id, cache_dir, allow_patterns, token: ".",
+        return_value=".",
     )
 
 
@@ -85,7 +84,6 @@ def test_single_match():
 
 def test_attrs_to_copy():
     """Copying of selected attributes from input segment to created entity"""
-
     sentence = _get_segment("The patient has asthma.")
     # copied attribute
     neg_attr = Attribute(label="negation", value=False)

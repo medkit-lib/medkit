@@ -2,12 +2,9 @@ import pytest
 
 torch = pytest.importorskip(modname="torch", reason="torch is not installed")
 
-from medkit.training import Trainer, TrainerConfig  # noqa: E402
-
-from .dummy_context_component.dummy_component import (  # noqa: E402
-    MockTrainableComponent,
-)
-from .dummy_context_component.dummy_corpus import DUMMY_DATASETS  # noqa: E402
+from medkit.training import Trainer, TrainerConfig
+from tests.unit.training.dummy_context_component.dummy_component import MockTrainableComponent
+from tests.unit.training.dummy_context_component.dummy_corpus import DUMMY_DATASETS
 
 
 class DummyMetricsComputer:
@@ -20,8 +17,8 @@ class DummyMetricsComputer:
         predictions = torch.tensor(all_data["predictions"])
         references = torch.tensor(all_data["references"])
 
-        TP = (predictions == references).sum().item()
-        score = TP / len(predictions)
+        total_predictions = (predictions == references).sum().item()
+        score = total_predictions / len(predictions)
         return {"acc": score}
 
 
@@ -33,7 +30,7 @@ TEST_METRICS = [
 
 
 @pytest.mark.parametrize(
-    "metrics_computer,do_metrics_in_training,expected_train_metrics,expected_eval_metrics",
+    ("metrics_computer", "do_metrics_in_training", "expected_train_metrics", "expected_eval_metrics"),
     TEST_METRICS,
     ids=["default_metrics", "more_metrics_in_eval", "more_metrics_train_eval"],
 )
@@ -86,7 +83,7 @@ TEST_SCHEDULER = [
 
 
 @pytest.mark.parametrize(
-    "lr_scheduler_builder,metric_to_track_lr",
+    ("lr_scheduler_builder", "metric_to_track_lr"),
     TEST_SCHEDULER,
     ids=[
         "default_no_lr_scheduler",

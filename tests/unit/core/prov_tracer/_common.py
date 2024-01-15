@@ -6,7 +6,6 @@ from medkit.core import OperationDescription, generate_id
 class TextItem:
     def __init__(self, text):
         """Mock text item with uid"""
-
         self.uid = generate_id()
         self.text = text
 
@@ -18,7 +17,6 @@ def get_text_items(nb_items):
 class Generator:
     def __init__(self, prov_tracer=None):
         """Mock operation generating text items"""
-
         self.uid = generate_id()
         self.prov_tracer = prov_tracer
         self.description = OperationDescription(uid=self.uid, name="Generator")
@@ -35,7 +33,6 @@ class Generator:
 class Prefixer:
     def __init__(self, prov_tracer=None):
         """Mock operation prefixing items"""
-
         self.uid = generate_id()
         self.prov_tracer = prov_tracer
         self.description = OperationDescription(uid=self.uid, name="Prefixer")
@@ -53,7 +50,6 @@ class Prefixer:
 class Splitter:
     def __init__(self, prov_tracer=None):
         """Mock operation splitting items"""
-
         self.uid = generate_id()
         self.prov_tracer = prov_tracer
         self.description = OperationDescription(uid=self.uid, name="Splitter")

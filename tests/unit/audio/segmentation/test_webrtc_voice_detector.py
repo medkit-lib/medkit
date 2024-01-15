@@ -2,18 +2,18 @@ import pytest
 
 pytest.importorskip(modname="webrtcvad", reason="webrtcvad is not installed")
 
-import math  # noqa: E402
-from pathlib import Path  # noqa: E402
+import math
+from pathlib import Path
 
-import numpy as np  # noqa: E402
-import soundfile as sf  # noqa: E402
+import numpy as np
+import soundfile as sf
 
-from medkit.audio.segmentation.webrtc_voice_detector import (  # noqa: E402
+from medkit.audio.segmentation.webrtc_voice_detector import (
     WebRTCVoiceDetector,
 )
-from medkit.core import ProvTracer  # noqa: E402
-from medkit.core.audio import MemoryAudioBuffer, Segment, Span  # noqa: E402
-from tests.audio_utils import generate_silence, signals_are_equal  # noqa: E402
+from medkit.core import ProvTracer
+from medkit.core.audio import MemoryAudioBuffer, Segment, Span
+from tests.audio_utils import generate_silence, signals_are_equal
 
 _PATH_TO_VOICE_FILE = Path("tests/data/audio/voice.ogg")
 _OUTPUT_LABEL = "voice"
@@ -26,8 +26,7 @@ def _get_segment(voice_signal, sample_rate, silence_duration):
     silence = generate_silence(silence_duration, sample_rate, nb_channels)
     signal = np.concatenate((silence, voice_signal, silence, voice_signal, silence), axis=1)
     audio = MemoryAudioBuffer(signal, sample_rate)
-    segment = Segment(label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + audio.duration), audio=audio)
-    return segment
+    return Segment(label="raw", span=Span(_SPAN_OFFSET, _SPAN_OFFSET + audio.duration), audio=audio)
 
 
 def _check_voice_segment(voice_seg, original_seg, expected_start, expected_end):

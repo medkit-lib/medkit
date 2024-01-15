@@ -2,40 +2,38 @@ import shutil
 
 import pytest
 
-pytest.importorskip(modname="transformers", reason="transformers is not installed")
-pytest.importorskip(modname="torch", reason="torch is not installed")
+transformers = pytest.importorskip(modname="transformers", reason="transformers is not installed")
+torch = pytest.importorskip(modname="torch", reason="torch is not installed")
 
-import transformers  # noqa: E402
-
-from medkit.core.text import Entity, Span, TextDocument  # noqa: E402
-from medkit.text.ner.hf_entity_matcher import HFEntityMatcher  # noqa: E402
+from medkit.core.text import Entity, Span, TextDocument
+from medkit.text.ner.hf_entity_matcher import HFEntityMatcher
 from medkit.tools import modules_are_available
-from medkit.training import Trainer, TrainerConfig  # noqa: E402
+from medkit.training import Trainer, TrainerConfig
 
 _TOKENIZER_MAX_LENGTH = 24
 _MODEL_NER_CLINICAL = "samrawal/bert-base-uncased_clinical-ner"
 
 TEST_WITH_METRICS = modules_are_available(["seqeval"])
 if TEST_WITH_METRICS:
-    from medkit.text.metrics.ner import SeqEvalMetricsComputer  # noqa: E402
+    from medkit.text.metrics.ner import SeqEvalMetricsComputer
 
 
 # Creating a tiny model with the original vocabulary
 @pytest.fixture(autouse=True)
-def create_model_and_tokenizer(tmp_path):
+def _create_model_and_tokenizer(tmp_path):
     tokenizer = transformers.BertTokenizerFast.from_pretrained(
         _MODEL_NER_CLINICAL, model_max_length=32
     )  # modify the original config to make a tiny model with the original vocab
     config = transformers.BertConfig.from_pretrained(_MODEL_NER_CLINICAL)
     config.update(
-        dict(
-            vocab_size=tokenizer.vocab_size,
-            hidden_size=20,
-            num_hidden_layers=1,
-            num_attention_heads=1,
-            intermediate_size=10,
-            max_position_embeddings=32,
-        )
+        {
+            "vocab_size": tokenizer.vocab_size,
+            "hidden_size": 20,
+            "num_hidden_layers": 1,
+            "num_attention_heads": 1,
+            "intermediate_size": 10,
+            "max_position_embeddings": 32,
+        }
     )
 
     model = transformers.BertForTokenClassification(config=config)
@@ -95,7 +93,7 @@ def test_trainer_default(train_data, eval_data, tmp_path):
     log_history = trainer.train()
     assert len(log_history) == config.nb_training_epochs
     assert log_history[0]["train"]["loss"] > log_history[-1]["train"]["loss"]
-    # we are just overfitting on the train data so there is no guarantee the eval loss will decrease
+    # we are just overfitting on the so there is no guarantee the eval loss will decrease
     eval_item = next(iter(trainer.eval_dataloader))
     assert list(eval_item["input_ids"].size()) == [1, 10]
 

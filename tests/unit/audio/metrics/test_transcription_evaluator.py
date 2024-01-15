@@ -169,7 +169,7 @@ _TEST_DATA = {
 }
 
 
-@pytest.mark.parametrize("speech_data,params,expected_result", _TEST_DATA.values(), ids=_TEST_DATA.keys())
+@pytest.mark.parametrize(("speech_data", "params", "expected_result"), _TEST_DATA.values(), ids=_TEST_DATA.keys())
 def test_transcription_evaluator(speech_data, params, expected_result):
     pred_segs = [
         Segment(

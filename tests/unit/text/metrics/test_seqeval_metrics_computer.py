@@ -15,8 +15,7 @@ def _mock_model_output(nb_tokens, nb_labels, predicted_labels_ids):
     for i, j in enumerate(predicted_labels_ids):
         logits[0, i, j] = 1
 
-    model_output = BatchData({"logits": logits})
-    return model_output
+    return BatchData({"logits": logits})
 
 
 @pytest.fixture(scope="module")
@@ -24,7 +23,7 @@ def input_batch():
     # input batch representing "medkit is a python library"
     # two entities: medkit and python
     # labels only in the first token
-    input_batch = BatchData(
+    return BatchData(
         {
             "input_ids": torch.tensor([[101, 19960, 23615, 2003, 1037, 18750, 3075, 102]]),
             "attention_masks": torch.tensor([[1, 1, 1, 1, 1, 1, 1, 1]]),
@@ -32,19 +31,17 @@ def input_batch():
             "ref_labels_tags": [["B-corporation", "O", "O", "B-language", "O"]],
         }
     )
-    return input_batch
 
 
 @pytest.fixture(scope="module")
 def id_to_label_bio():
-    id_to_label = {
+    return {
         0: "O",
         1: "B-corporation",
         2: "I-corporation",
         3: "B-language",
         4: "I-language",
     }
-    return id_to_label
 
 
 TEST_DATA = [
@@ -85,7 +82,7 @@ TEST_DATA = [
 
 
 @pytest.mark.parametrize(
-    "mock_pred_labels_ids,expected_tags,expected_metrics",
+    ("mock_pred_labels_ids", "expected_tags", "expected_metrics"),
     TEST_DATA,
     ids=[
         "perfect_prediction",

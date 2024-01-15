@@ -175,7 +175,8 @@ def test_multiple_steps():
 
 def test_no_output():
     """Doc pipeline having no output, because it has an operation that
-    modifies the annotations it receives by adding attributes to them"""
+    modifies the annotations it receives by adding attributes to them
+    """
     attribute_adder = _AttributeAdder(output_label="validated")
     step_1 = PipelineStep(
         operation=attribute_adder,
@@ -192,7 +193,8 @@ def test_no_output():
     sentence_anns = doc.anns.get(label="sentence")
     for ann in sentence_anns:
         attrs = ann.attrs.get(label="validated")
-        assert len(attrs) == 1 and attrs[0].value is True
+        assert len(attrs) == 1
+        assert attrs[0].value is True
 
 
 def test_multiple_outputs():
@@ -235,7 +237,8 @@ def test_multiple_outputs():
 
 def test_labels_for_input_key():
     """Doc pipeline with several label to input key associations,
-    including 2 labels associated to the same key"""
+    including 2 labels associated to the same key
+    """
     doc = _get_doc()
 
     uppercaser = _Uppercaser(output_label="uppercased_sentence")
@@ -288,7 +291,8 @@ def test_labels_for_input_key():
 def test_labels_for_input_key_different_order():
     """Doc pipeline with several labels to input key associations,
     provided in different order than the underlying pipeline's input keys
-    (regression test)"""
+    (regression test)
+    """
     doc = _get_doc()
 
     uppercaser = _Uppercaser(output_label="uppercased_sentence")

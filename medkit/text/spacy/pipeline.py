@@ -1,14 +1,19 @@
+from __future__ import annotations
+
 __all__ = ["SpacyPipeline"]
-from typing import Callable, Dict, List, Optional
 
-from spacy import Language
-from spacy.tokens import Doc
-from spacy.tokens import Span as SpacySpan
+from typing import TYPE_CHECKING, Callable
 
-from medkit.core import Attribute
 from medkit.core.operation import Operation
-from medkit.core.text import Segment
 from medkit.text.spacy import spacy_utils
+
+if TYPE_CHECKING:
+    from spacy import Language
+    from spacy.tokens import Doc
+    from spacy.tokens import Span as SpacySpan
+
+    from medkit.core import Attribute
+    from medkit.core.text import Segment
 
 
 class SpacyPipeline(Operation):
@@ -17,37 +22,37 @@ class SpacyPipeline(Operation):
     def __init__(
         self,
         nlp: Language,
-        spacy_entities: Optional[List[str]] = None,
-        spacy_span_groups: Optional[List[str]] = None,
-        spacy_attrs: Optional[List[str]] = None,
-        medkit_attribute_factories: Optional[Dict[str, Callable[[SpacySpan, str], Attribute]]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        spacy_entities: list[str] | None = None,
+        spacy_span_groups: list[str] | None = None,
+        spacy_attrs: list[str] | None = None,
+        medkit_attribute_factories: dict[str, Callable[[SpacySpan, str], Attribute]] | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
         """Initialize the segment annotator
 
         Parameters
         ----------
-        nlp:
+        nlp : Language
             Language object with the loaded pipeline from Spacy
-        spacy_entities:
+        spacy_entities : list of str, optional
             Labels of new spacy entities (`doc.ents`) to convert into medkit entities.
             If `None` (default) all the new spacy entities will be converted
-        spacy_span_groups:
+        spacy_span_groups : list of str, optional
             Name of new spacy span groups (`doc.spans`) to convert into medkit segments.
             If `None` (default) new spacy span groups will be converted
-        spacy_attrs:
+        spacy_attrs : list of str, optional
             Name of span extensions to convert into medkit attributes.
             If `None` (default) all non-None extensions will be added for each annotation with
             a medkit ID.
-        medkit_attribute_factories:
+        medkit_attribute_factories : dict of str to Callable, optional
             Mapping of factories in charge of converting spacy attributes to
             medkit attributes. Factories will receive a spacy span and an an
             attribute label when called. The key in the mapping is the attribute
             label.
-        name:
+        name : str, optional
             Name describing the pipeline (defaults to the class name).
-        uid:
+        uid : str, optional
             Identifier of the pipeline
         """
         # Pass all arguments to super (remove self)
@@ -61,7 +66,7 @@ class SpacyPipeline(Operation):
         self.spacy_attrs = spacy_attrs
         self.medkit_attribute_factories = medkit_attribute_factories
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
+    def run(self, segments: list[Segment]) -> list[Segment]:
         """Run a spacy pipeline on a list of segments provided as input
         and returns a new list of segments.
         Each segment is converted to spacy document (Doc object).
@@ -70,12 +75,12 @@ class SpacyPipeline(Operation):
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             List of segments on which to run the spacy pipeline
 
         Returns
         -------
-        List[Segments]:
+        list of Segment
             List of new annotations
         """
         output_segments = []
@@ -119,7 +124,7 @@ class SpacyPipeline(Operation):
                 )
 
             # add attributes
-            if new_segment.uid in attrs_by_ann_id.keys():
+            if new_segment.uid in attrs_by_ann_id:
                 for attr in attrs_by_ann_id[new_segment.uid]:
                     new_segment.attrs.add(attr)
                     if self._prov_tracer is not None:

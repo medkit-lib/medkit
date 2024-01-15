@@ -1,9 +1,8 @@
 __all__ = ["Downmixer", "PowerNormalizer"]
 
+from medkit.audio.preprocessing.downmixer import Downmixer
+from medkit.audio.preprocessing.power_normalizer import PowerNormalizer
 from medkit.core.utils import modules_are_available
 
-from .downmixer import Downmixer
-from .power_normalizer import PowerNormalizer
-
 if modules_are_available(["resampy"]):
-    __all__.append("resampler")
+    __all__ += ["resampler"]

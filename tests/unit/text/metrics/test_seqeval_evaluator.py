@@ -4,23 +4,22 @@ from numpy.testing import assert_almost_equal
 pytest.importorskip(modname="seqeval", reason="seqeval is not installed")
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 
-from transformers import BertTokenizerFast  # noqa: E402
+from transformers import BertTokenizerFast
 
-from medkit.core.text import Entity, ModifiedSpan, Span, TextDocument  # noqa: E402
-from medkit.text.metrics.ner import SeqEvalEvaluator  # noqa: E402
-from tests.data_utils import get_path_hf_dummy_vocab  # noqa: E402
+from medkit.core.text import Entity, ModifiedSpan, Span, TextDocument
+from medkit.text.metrics.ner import SeqEvalEvaluator
+from tests.data_utils import get_path_hf_dummy_vocab
 
 
 @pytest.fixture()
 def document():
-    document = TextDocument(
+    return TextDocument(
         text="medkit is a python library",
         anns=[
             Entity(label="corporation", spans=[Span(start=0, end=6)], text="medkit"),
             Entity(label="language", spans=[Span(start=12, end=18)], text="python"),
         ],
     )
-    return document
 
 
 _PREDICTED_ENTS_BY_CASE = {
@@ -73,7 +72,7 @@ TEST_DATA = [
 
 
 @pytest.mark.parametrize(
-    "predicted_entities,expected_metrics",
+    ("predicted_entities", "expected_metrics"),
     TEST_DATA,
     ids=[
         "perfect_prediction",
@@ -93,7 +92,7 @@ def test_evaluator_bio(document, predicted_entities, expected_metrics):
 
 
 @pytest.mark.parametrize(
-    "tagging_scheme,expected_accuracy",
+    ("tagging_scheme", "expected_accuracy"),
     [("iob2", 0.80), ("bilou", 0.76)],
 )
 def test_evaluator_with_entities_all_schemes(document, tagging_scheme, expected_accuracy):
@@ -125,7 +124,7 @@ def test_evaluator_with_entities_all_schemes(document, tagging_scheme, expected_
 
 
 @pytest.mark.parametrize(
-    "tagging_scheme,expected_accuracy",
+    ("tagging_scheme", "expected_accuracy"),
     [("iob2", 0.75), ("bilou", 0.75)],
 )
 def test_evaluator_with_bert_tokenizer(document, tagging_scheme, expected_accuracy):
@@ -160,11 +159,9 @@ def test_evaluator_with_bert_tokenizer(document, tagging_scheme, expected_accura
 
 
 def test_modified_spans():
-    """
-    Behavior when encountering predicted entities with only modified spans
+    """Behavior when encountering predicted entities with only modified spans
     No tag can be added to the document's raw text in that case
     """
-
     doc = TextDocument(text="Je souffre d'asthme.")
     entity = Entity(label="disorder", text="asthme", spans=[Span(13, 19)])
     doc.anns.add(entity)

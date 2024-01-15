@@ -1,17 +1,20 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[metrics-text-classification]`.
 """
+from __future__ import annotations
 
 __all__ = ["TextClassificationEvaluator"]
+
 import logging
-from typing import Dict, List, Union
+from typing import TYPE_CHECKING
 
 from sklearn.metrics import classification_report, cohen_kappa_score
 from typing_extensions import Literal
 
-from medkit.core.text import TextDocument
 from medkit.text.metrics.irr_utils import krippendorff_alpha
+
+if TYPE_CHECKING:
+    from medkit.core.text import TextDocument
 
 logger = logging.getLogger(__name__)
 
@@ -24,22 +27,22 @@ class TextClassificationEvaluator:
 
         Parameters
         ----------
-        attr_label:
+        attr_label : str
             Label of the attribute to evaluate.
         """
         self.attr_label = attr_label
 
-    def _extract_attr_values(self, docs: List[TextDocument]) -> List[Union[str, int, bool]]:
+    def _extract_attr_values(self, docs: list[TextDocument]) -> list[str | int | bool]:
         """Prepare docs attrs to compute the metric
 
         Parameters
         ----------
-        docs : List[TextDocument]
+        docs : list of TextDocument
             List of documents with attributes
 
         Returns
         -------
-        attr_values :  List[Union[str,int,bool]]
+        list of str or int or bool
             List with the representation of the attribute by document.
         """
         attr_values = []
@@ -47,27 +50,29 @@ class TextClassificationEvaluator:
             attrs = doc.attrs.get(label=self.attr_label)
 
             if not attrs:
-                raise ValueError(f"No attribute with label {self.attr_label} was found in the" " document")
+                msg = f"No attribute with label {self.attr_label} was found in the document"
+                raise ValueError(msg)
             if len(attrs) > 1:
-                logger.warning(f"Found several attributes with label '{self.attr_label}', ignoring" " all but first")
+                logger.warning("Found several attributes with label '%s', ignoring all but first.", self.attr_label)
 
             attr_value = attrs[0].value
             if not isinstance(attr_value, (str, int, bool)):
-                raise ValueError(
+                msg = (
                     "The type of the attr value is not supported by this evaluator."
                     "Only str,int or bool are supported."
                 )
+                raise TypeError(msg)
 
             attr_values.append(attr_value)
         return attr_values
 
     def compute_classification_report(
         self,
-        true_docs: List[TextDocument],
-        predicted_docs: List[TextDocument],
+        true_docs: list[TextDocument],
+        predicted_docs: list[TextDocument],
         metrics_by_attr_value: bool = True,
         average: Literal["macro", "weighted"] = "macro",
-    ) -> Dict[str, Union[float, int]]:
+    ) -> dict[str, float | int]:
         """Compute classification metrics of document attributes giving annotated documents.
         This method uses `sklearn.metrics.classification_report` to compute
         precision, recall and F1-score for value of the attribute.
@@ -77,21 +82,21 @@ class TextClassificationEvaluator:
 
         Parameters
         ----------
-        true_docs:
+        true_docs : list of TextDocument
             Text documents containing attributes of reference
-        predicted_docs:
+        predicted_docs: list of TextDocument
             Text documents containing predicted attributes
-        metrics_by_attr_value:
+        metrics_by_attr_value: bool, default=True
             Whether return metrics by attribute value.
             If False, only global metrics are returned
-        average:
+        average : str, default="macro"
             Type of average to be performed in metrics.
             - `macro`, unweighted mean (default)
             - `weighted`, weighted average by support (number of true instances by attr value)
 
         Returns
         -------
-        Dict[str,Union[float,int]]:
+        dict of str to float or int
             A dictionary with the computed metrics
         """
         true_tags = self._extract_attr_values(true_docs)
@@ -119,8 +124,8 @@ class TextClassificationEvaluator:
         return scores
 
     def compute_cohen_kappa(
-        self, docs_annotator_1: List[TextDocument], docs_annotator_2: List[TextDocument]
-    ) -> Dict[str, Union[float, int]]:
+        self, docs_annotator_1: list[TextDocument], docs_annotator_2: list[TextDocument]
+    ) -> dict[str, float | int]:
         """Compute the cohen's kappa score, an inter-rated agreement score between two annotators.
         This method uses 'sklearn' as backend to compute the level of agreement.
 
@@ -129,15 +134,15 @@ class TextClassificationEvaluator:
 
         Parameters
         ----------
-        docs_annotator_1:
+        docs_annotator_1 : list of TextDocument
             Text documents containing attributes annotated by the first annotator
-        docs_annotator_2:
+        docs_annotator_2 : list of TextDocument
             Text documents to compare, these documents contain attributes
             annotated by the other annotator
 
         Returns
         -------
-        Dict[str, Union[float, int]]:
+        dict of str to float or int
             A dictionary with cohen's kappa score and support (number of annotated docs).
             The value is a number between -1 and 1, where 1 indicates perfect agreement; zero
             or lower indicates chance agreement.
@@ -145,14 +150,12 @@ class TextClassificationEvaluator:
         ann1_tags = self._extract_attr_values(docs_annotator_1)
         ann2_tags = self._extract_attr_values(docs_annotator_2)
 
-        scores = {
+        return {
             "cohen_kappa": cohen_kappa_score(y1=ann1_tags, y2=ann2_tags),
             "support": len(ann1_tags),
         }
 
-        return scores
-
-    def compute_krippendorff_alpha(self, docs_annotators: List[List[TextDocument]]) -> Dict[str, Union[float, int]]:
+    def compute_krippendorff_alpha(self, docs_annotators: list[list[TextDocument]]) -> dict[str, float | int]:
         """Compute the Krippendorff alpha score, an inter-rated agreement score between
         multiple annotators.
 
@@ -164,29 +167,28 @@ class TextClassificationEvaluator:
 
         Parameters
         ----------
-        docs_annotators:
+        docs_annotators : list of list of TextDocument
             A list of list of Text documents containing attributes.
             The size of the list is the number of annotators to compare.
 
         Returns
         -------
-        Dict[str, Union[float,int]]:
+        dict of str to float or int
             A dictionary with the krippendorff alpha score, number of annotators and support (number of documents).
             A value of 1 indicates perfect reliability between annotators; zero or lower indicates
             absence of reliability.
         """
-        if len(docs_annotators) < 2 or not isinstance(docs_annotators[0], list):
-            raise ValueError("'docs_annotators' should contain at least two list of TextDocuments to" " compare")
+        if len(docs_annotators) < 2 or not isinstance(docs_annotators[0], list):  # noqa: PLR2004
+            msg = "'docs_annotators' should contain at least two list of TextDocuments to compare"
+            raise ValueError(msg)
 
         all_annotators_data = []
 
         for docs in docs_annotators:
             annotator_tags = self._extract_attr_values(docs)
             all_annotators_data.append(annotator_tags)
-        scores = {
+        return {
             "krippendorff_alpha": krippendorff_alpha(all_annotators_data),
             "nb_annotators": len(all_annotators_data),
             "support": len(all_annotators_data[0]),
         }
-
-        return scores

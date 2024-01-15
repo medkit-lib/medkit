@@ -3,8 +3,8 @@ import pytest
 pytest.importorskip(modname="torch", reason="torch is not installed")
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 
-from medkit.core.text import Segment, Span  # noqa: E402
-from medkit.text.ner.hf_entity_matcher import HFEntityMatcher  # noqa: E402
+from medkit.core.text import Segment, Span
+from medkit.text.ner.hf_entity_matcher import HFEntityMatcher
 
 _MODEL = "samrawal/bert-base-uncased_clinical-ner"
 _MODEL_NO_VALID = "Helsinki-NLP/opus-mt-en-es"
@@ -20,7 +20,6 @@ def _get_sentence_segment(text):
 
 def test_basic():
     """Basic behavior"""
-
     sentence_1 = _get_sentence_segment("The patient has asthma and is using ventoline.")
     sentence_2 = _get_sentence_segment("The patient has diabetes.")
     sentences = [sentence_1, sentence_2]

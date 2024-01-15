@@ -185,14 +185,14 @@ def test_unicode_sensitive_on():
 
 def test_empty_segment():
     """Make sure an attribute is created with False value even for empty segments"""
-
     syntagmas = _get_syntagma_segments(["", " .", "21."])
     rule = NegationDetectorRule(id="id_neg_no", regexp=r"^no\b")
     detector = NegationDetector(output_label="negation", rules=[rule])
     detector.run(syntagmas)
     for syntagma in syntagmas:
         attrs = syntagma.attrs.get(label=_OUTPUT_LABEL)
-        assert len(attrs) == 1 and attrs[0].value is False
+        assert len(attrs) == 1
+        assert attrs[0].value is False
 
 
 def test_prov():
@@ -319,9 +319,9 @@ def test_default_rules():
                 f"but was matched by '{attr.metadata['rule_id']}' instead"
             )
         else:
-            assert attr.value is False, (
-                f"Syntagma '{syntagma.text}' was matched by " f"'{attr.metadata['rule_id']}' but shouldn't have been"
-            )
+            assert (
+                attr.value is False
+            ), f"Syntagma '{syntagma.text}' was matched by '{attr.metadata['rule_id']}' but shouldn't have been"
 
 
 def test_load_save_rules(tmpdir):

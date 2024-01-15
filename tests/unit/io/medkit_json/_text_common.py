@@ -23,7 +23,6 @@ SPLIT_DOC_ANNS_JSONL_FILE = Path("tests/data/medkit_json/split_text_doc_anns.jso
 
 def build_doc():
     """Build a text doc with 2 entities and 1 attribute on the 2d entity"""
-
     doc = TextDocument(uid="d1", text="I have diabetes and asthma.")
     entity_1 = Entity(uid="e1", label="disease", spans=[Span(7, 15)], text="diabetes")
     doc.anns.add(entity_1)
@@ -36,7 +35,6 @@ def build_doc():
 
 def build_docs():
     """Build 2 text docs with 1 entity each"""
-
     doc_1 = TextDocument(uid="d1", text="I have diabetes.")
     entity_1 = Entity(uid="e1", label="disease", spans=[Span(7, 15)], text="diabetes")
     doc_1.anns.add(entity_1)
@@ -50,7 +48,6 @@ def build_docs():
 
 def build_anns():
     """Build 1 segment and 2 entities with 1 attribute on the 2d entity"""
-
     segment = Segment(
         uid="s1",
         label="sentence",

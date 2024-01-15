@@ -17,17 +17,17 @@ from medkit.core.text.utils import (
 def test_replace_point_after_keywords_strict():
     text = (
         "We want to remove the dots that indicate a person's title."
-        + "Normally, these dots are close to the title of interest. "
-        + "That is why we set the mode to strict to change Dr.Dupont correctly."
-        + "Dr   . maybe is not a person's title"
+        "Normally, these dots are close to the title of interest. "
+        "That is why we set the mode to strict to change Dr.Dupont correctly."
+        "Dr   . maybe is not a person's title"
     )
     spans = [Span(0, 219)]
     text, spans = replace_point_after_keywords(text, spans, keywords=["Dr"], strict=True)
     assert text == (
         "We want to remove the dots that indicate a person's title."
-        + "Normally, these dots are close to the title of interest. "
-        + "That is why we set the mode to strict to change Dr Dupont correctly."
-        + "Dr   . maybe is not a person's title"
+        "Normally, these dots are close to the title of interest. "
+        "That is why we set the mode to strict to change Dr Dupont correctly."
+        "Dr   . maybe is not a person's title"
     )
     assert spans == [
         Span(start=0, end=165),
@@ -37,12 +37,10 @@ def test_replace_point_after_keywords_strict():
 
 
 def test_replace_point_after_keywords_non_strict():
-    text = "When Dr. Dupont wrote this, a dot appeared " + "by mistake after the keyword   . we should remove it."
+    text = "When Dr. Dupont wrote this, a dot appeared by mistake after the keyword   . we should remove it."
     spans = [Span(0, 96)]
     text, spans = replace_point_after_keywords(text, spans, keywords=["keyword"], strict=False)
-    assert text == (
-        "When Dr. Dupont wrote this, a dot appeared " + "by mistake after the keyword  we should remove it."
-    )
+    assert text == "When Dr. Dupont wrote this, a dot appeared by mistake after the keyword  we should remove it."
     assert spans == [
         Span(start=0, end=71),
         ModifiedSpan(length=1, replaced_spans=[Span(start=71, end=75)]),
@@ -129,7 +127,7 @@ def test_big_parentheses():
     # multiple matches
     text = (
         "All tests(biological, metabolic and imaging)    are negative."
-        + "Blood tests   (done in public laboratories, private laboratories and in"
+        "Blood tests   (done in public laboratories, private laboratories and in"
         " pharmacies)are positive."
     )
     spans = [Span(0, 157)]
@@ -137,7 +135,7 @@ def test_big_parentheses():
 
     assert text == (
         "All tests are negative ; biological, metabolic and imaging."
-        + "Blood tests are positive ; done in public laboratories, private laboratories"
+        "Blood tests are positive ; done in public laboratories, private laboratories"
         " and in pharmacies."
     )
 
@@ -177,7 +175,7 @@ def test_small_parentheses():
 
 def test_clean_multiple_whitespaces():
     # Now this function replaces all whitespaces, without restriction
-    text = "All tests     biological,    and metabolic are negative" + " THIS     maybe   NOT"
+    text = "All tests     biological,    and metabolic are negative THIS     maybe   NOT"
     spans = [Span(start=0, end=76)]
 
     text, spans = clean_multiple_whitespaces_in_sentence(text, spans)
@@ -198,9 +196,9 @@ def test_clean_multiple_whitespaces():
 def test_clean_parentheses_eds():
     text = (
         "Le test PCR est  (-), pas de nouvelles."
-        + "L'examen d'aujourd'hui est (+)."
-        + "Les bilans réalisés (biologique, métabolique en particulier à la recherche"
-        " de GAMT et X fragile) sont revenus négatifs. " + "Le patient a un traitement (debuté le 3/02)."
+        "L'examen d'aujourd'hui est (+)."
+        "Les bilans réalisés (biologique, métabolique en particulier à la recherche"
+        " de GAMT et X fragile) sont revenus négatifs. Le patient a un traitement (debuté le 3/02)."
     )
     spans = [Span(start=0, end=234)]
 
@@ -208,9 +206,9 @@ def test_clean_parentheses_eds():
 
     assert text == (
         "Le test PCR est   negatif , pas de nouvelles."
-        + "L'examen d'aujourd'hui est  positif ."
-        + "Les bilans réalisés sont revenus négatifs ; biologique, métabolique en"
-        " particulier à la recherche de GAMT et X fragile." + " Le patient a un traitement ,debuté le 3/02,."
+        "L'examen d'aujourd'hui est  positif ."
+        "Les bilans réalisés sont revenus négatifs ; biologique, métabolique en"
+        " particulier à la recherche de GAMT et X fragile. Le patient a un traitement ,debuté le 3/02,."
     )
     assert spans == [
         Span(start=0, end=17),
@@ -232,13 +230,11 @@ def test_clean_parentheses_eds():
 
 
 def test_no_text_after_parenthesis():
-    text = "Les bilans réalisés (biologique, métabolique en particulier à la recherche de" " GAMT et X fragile)."
+    text = "Les bilans réalisés (biologique, métabolique en particulier à la recherche de GAMT et X fragile)."
     spans = [Span(start=0, end=97)]
 
     text, spans = clean_parentheses_eds(text, spans)
-    assert (
-        text == "Les bilans réalisés ; biologique, métabolique " "en particulier à la recherche de GAMT et X fragile."
-    )
+    assert text == "Les bilans réalisés ; biologique, métabolique en particulier à la recherche de GAMT et X fragile."
     assert spans == [
         Span(start=0, end=19),  # text before parentheses
         ModifiedSpan(length=3, replaced_spans=[]),  # insert ' ; '
@@ -268,10 +264,10 @@ def test_point_between_characters():
         Span(start=20, end=31),
     ]
 
-    text = "We found a point before the keyword: .  pour  and before .avec, we should" " remove them."
+    text = "We found a point before the keyword: .  pour  and before .avec, we should remove them."
     spans = [Span(0, 86)]
     text, spans = replace_point_before_keywords(text, spans, keywords=["pour", "avec"])
-    assert text == "We found a point before the keyword: pour  and before avec, we should" " remove them."
+    assert text == "We found a point before the keyword: pour  and before avec, we should remove them."
     assert spans == [
         Span(start=0, end=36),
         ModifiedSpan(length=1, replaced_spans=[Span(start=36, end=40)]),

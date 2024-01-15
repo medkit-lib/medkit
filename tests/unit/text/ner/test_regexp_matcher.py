@@ -191,7 +191,7 @@ def test_unicode_sensitive_off(caplog):
     assert entity.label == "Diabetes"
 
     sentence_with_ligatures = _get_sentence_segment(
-        "Il a une sœur atteinte de diabète et pensait que sa mère avait peut-être aussi" " le diabète. "
+        "Il a une sœur atteinte de diabète et pensait que sa mère avait peut-être aussi le diabète. "
     )
     with caplog.at_level(logging.INFO, logger="medkit.text.ner.regexp_matcher"):
         matcher.run([sentence_with_ligatures])
@@ -237,7 +237,6 @@ def test_attrs_to_copy():
 
 def test_match_at_start_of_segment():
     """Make sure we are able to match entities starting at beginning of a segment"""
-
     text = "Diabetes and asthma"
     sentence = Segment(label="sentence", text=text, spans=[Span(0, len(text))])
 

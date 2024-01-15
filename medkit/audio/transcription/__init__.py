@@ -4,13 +4,12 @@ __all__ = [
     "TranscribedTextDocument",
 ]
 
+from medkit.audio.transcription.doc_transcriber import DocTranscriber, TranscriptionOperation
+from medkit.audio.transcription.transcribed_text_document import TranscribedTextDocument
 from medkit.core.utils import modules_are_available
 
-from .doc_transcriber import DocTranscriber, TranscriptionOperation
-from .transcribed_text_document import TranscribedTextDocument
-
 if modules_are_available(["torchaudio", "transformers"]):
-    __all__.append("hf_transcriber")
+    __all__ += ["hf_transcriber"]
 
 if modules_are_available(["torch", "speechbrain"]):
-    __all__.append("sb_transcriber")
+    __all__ += ["sb_transcriber"]

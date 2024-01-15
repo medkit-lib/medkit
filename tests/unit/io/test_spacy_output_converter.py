@@ -2,11 +2,11 @@ import pytest
 
 spacy = pytest.importorskip(modname="spacy", reason="spacy is not installed")
 
-from spacy.tokens import Doc  # noqa: E402
+from spacy.tokens import Doc
 
-from medkit.core import Attribute  # noqa: E402
-from medkit.core.text import Entity, Segment, Span, TextDocument  # noqa: E402
-from medkit.io.spacy import SpacyOutputConverter  # noqa: E402
+from medkit.core import Attribute
+from medkit.core.text import Entity, Segment, Span, TextDocument
+from medkit.io.spacy import SpacyOutputConverter
 
 
 @pytest.fixture(scope="module")
@@ -59,7 +59,7 @@ TEST_ENTS_TO_SPACY = [
 
 
 @pytest.mark.parametrize(
-    "labels_ents_to_transfer,expected_nb_ents,expected_label_ents",
+    ("labels_ents_to_transfer", "expected_nb_ents", "expected_label_ents"),
     TEST_ENTS_TO_SPACY,
     ids=["all_ents", "no_annotations", "entity_by_label"],
 )
@@ -97,7 +97,7 @@ TEST_ATTR_TRANSFER = [
 
 
 @pytest.mark.parametrize(
-    "attrs_to_transfer,should_have_severity_attr,should_have_family_attr",
+    ("attrs_to_transfer", "should_have_severity_attr", "should_have_family_attr"),
     TEST_ATTR_TRANSFER,
     ids=["default", "no_attrs", "only_family_attr"],
 )

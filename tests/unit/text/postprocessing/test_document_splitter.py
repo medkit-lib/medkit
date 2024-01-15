@@ -60,8 +60,7 @@ def doc():
     relation_2 = Relation(label="related", source_id="e2", target_id="e3")
 
     anns = [segment_1, segment_2, entity_1, entity_2, entity_3, relation_1, relation_2]
-    doc = TextDocument(text=text, anns=anns, metadata={"doc_id": "001"})
-    return doc
+    return TextDocument(text=text, anns=anns, metadata={"doc_id": "001"})
 
 
 def test_document_splitter_no_attrs(doc):

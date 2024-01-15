@@ -159,14 +159,14 @@ def test_verbs():
 
 def test_empty_segment():
     """Make sure an attribute is created with False value even for empty segments"""
-
     syntagmas = _get_syntagma_segments(["", " .", "21."])
     rule = HypothesisDetectorRule(id="id_if", regexp=r"\bif\b")
     detector = HypothesisDetector(output_label="hypothesis", rules=[rule])
     detector.run(syntagmas)
     for syntagma in syntagmas:
         attrs = syntagma.attrs.get(label=_OUTPUT_LABEL)
-        assert len(attrs) == 1 and attrs[0].value is False
+        assert len(attrs) == 1
+        assert attrs[0].value is False
 
 
 def test_prov():

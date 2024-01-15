@@ -11,8 +11,6 @@ __all__ = [
     "clean_up_gaps_in_normalized_spans",
 ]
 
-from typing import List, Tuple
-
 from medkit.core.text.span import AnySpan, ModifiedSpan, Span
 
 
@@ -38,34 +36,34 @@ def _positions_are_within_text(text, positions):
 
 def replace(
     text: str,
-    spans: List[AnySpan],
-    ranges: List[Tuple[int, int]],
-    replacement_texts: List[str],
-) -> Tuple[str, List[AnySpan]]:
+    spans: list[AnySpan],
+    ranges: list[tuple[int, int]],
+    replacement_texts: list[str],
+) -> tuple[str, list[AnySpan]]:
     """Replace parts of a text, and update accordingly its associated spans
 
     Parameters
     ----------
-    text:
+    text : str
         The text in which some parts will be replaced
-    spans:
+    spans : list of AnySpan
         The spans associated with `text`
-    ranges:
+    ranges : list of tuple of int
         The ranges of the parts that will be replaced (end excluded),
         sorted by ascending order
-    replacements_texts:
+    replacement_texts : tuple
         The strings to use as replacements
         (must be the same length as `ranges`)
 
     Returns
     -------
-    text:
+    text : str
         The updated text
-    spans:
+    spans : list of AnySpan
         The spans associated with the updated text
 
-    Example
-    -------
+    Examples
+    --------
     >>> text = "Hello, my name is John Doe."
     >>> spans = [Span(0, len(text))]
     >>> ranges = [(0, 5), (18, 22)]
@@ -88,12 +86,12 @@ def replace(
     offset = 0
     replacement_lengths = []
     for (range_start, range_end), rep_text in zip(ranges, replacement_texts):
-        range_start += offset
-        range_end += offset
-        text = text[:range_start] + rep_text + text[range_end:]
+        new_start = range_start + offset
+        new_end = range_end + offset
+        text = text[:new_start] + rep_text + text[new_end:]
 
         rep_length = len(rep_text)
-        offset += rep_length - (range_end - range_start)
+        offset += rep_length - (new_end - new_start)
         replacement_lengths.append(rep_length)
 
     spans = _replace_in_spans(spans, ranges, replacement_lengths)
@@ -204,26 +202,26 @@ def _replace_in_spans(spans, ranges, replacement_lengths):
 
 def remove(
     text: str,
-    spans: List[AnySpan],
-    ranges: List[Tuple[int, int]],
-) -> Tuple[str, List[AnySpan]]:
+    spans: list[AnySpan],
+    ranges: list[tuple[int, int]],
+) -> tuple[str, list[AnySpan]]:
     """Remove parts of a text, while also removing accordingly its associated spans
 
     Parameters
     ----------
-    text:
+    text : str
         The text in which some parts will be removed
-    spans:
+    spans : list of AnySpan
         The spans associated with `text`
-    ranges:
+    ranges : list of tuple of int
         The ranges of the parts that will be removed (end excluded),
         sorted by ascending order
 
     Returns
     -------
-    text:
+    text : str
         The updated text
-    spans:
+    spans : list of AnySpan
         The spans associated with the updated text
     """
     # validate params
@@ -236,10 +234,10 @@ def remove(
 
     offset = 0
     for range_start, range_end in ranges:
-        range_start += offset
-        range_end += offset
-        text = text[:range_start] + text[range_end:]
-        offset -= range_end - range_start
+        new_start = range_start + offset
+        new_end = range_end + offset
+        text = text[:new_start] + text[new_end:]
+        offset -= new_end - new_start
     spans = _remove_in_spans(spans, ranges)
     return text, spans
 
@@ -251,26 +249,26 @@ def _remove_in_spans(spans, ranges):
 
 def extract(
     text: str,
-    spans: List[AnySpan],
-    ranges: List[Tuple[int, int]],
-) -> Tuple[str, List[AnySpan]]:
+    spans: list[AnySpan],
+    ranges: list[tuple[int, int]],
+) -> tuple[str, list[AnySpan]]:
     """Extract parts of a text as well as its associated spans
 
     Parameters
     ----------
-    text:
+    text : str
         The text to extract parts from
-    spans:
+    spans : list of AnySpan
         The spans associated with `text`
-    ranges:
+    ranges : list of tuple of int
         The ranges of the parts to extract (end excluded),
         sorted by ascending order
 
     Returns
     -------
-    text:
+    text : str
         The extracted text
-    spans:
+    spans : list of AnySpan
         The spans associated with the extracted text
     """
     # validate params
@@ -302,33 +300,33 @@ def _extract_in_spans(spans, ranges):
 
 def insert(
     text: str,
-    spans: List[AnySpan],
-    positions: List[int],
-    insertion_texts: List[str],
-) -> Tuple[str, List[AnySpan]]:
+    spans: list[AnySpan],
+    positions: list[int],
+    insertion_texts: list[str],
+) -> tuple[str, list[AnySpan]]:
     """Insert strings in text, and update accordingly its associated spans
 
     Parameters
     ----------
-    text:
+    text : str
         The text in which some strings will be inserted
-    spans:
+    spans : list of AnySpan
         The spans associated with `text`
-    positions:
+    positions : list of int
         The positions where the strings will be inserted,
         sorted by ascending order
-    insertion_texts:
+    insertion_texts : list of str
         The strings to insert (must be the same length as `positions`)
 
     Returns
     -------
-    text:
+    text : str
         The updated text
-    spans:
+    spans : list of AnySpan
         The spans associated with the updated text
 
-    Example
-    -------
+    Examples
+    --------
     >>> text = "Hello, my name is John Doe."
     >>> spans = [Span(0, len(text))]
     >>> positions = [5]
@@ -351,8 +349,8 @@ def insert(
     offset = 0
     insertion_lengths = []
     for position, insertion_text in zip(positions, insertion_texts):
-        position += offset
-        text = text[:position] + insertion_text + text[position:]
+        new_position = position + offset
+        text = text[:new_position] + insertion_text + text[new_position:]
 
         insertion_length = len(insertion_text)
         offset += insertion_length
@@ -373,30 +371,32 @@ def _insert_in_spans(spans, positions, insertion_lengths):
 
 def move(
     text: str,
-    spans: List[AnySpan],
-    range: Tuple[int, int],
+    spans: list[AnySpan],
+    range: tuple[int, int],  # noqa: A002
     destination: int,
-) -> Tuple[str, List[AnySpan]]:
+) -> tuple[str, list[AnySpan]]:
     """Move part of a text to another position, also moving its associated spans
 
     Parameters
     ----------
-    text:
+    text : str
         The text in which a part should be moved
-    range:
+    spans : list of AnySpan
+        The spans associated with the input text
+    range : tuple of int
         The range of the part to move (end excluded)
-    destination:
+    destination : int
         The position where to insert the displaced range
 
     Returns
     -------
-    text:
+    text : str
         The updated text
-    spans:
+    spans : list of AnySpan
         The spans associated with the updated text
 
-    Example
-    -------
+    Examples
+    --------
     >>> text = "Hello, my name is John Doe."
     >>> spans = [Span(0, len(text))]
     >>> range = (17, 22)
@@ -421,7 +421,7 @@ def move(
     return text, spans
 
 
-def _move_in_spans(spans, range, destination):
+def _move_in_spans(spans, range, destination):  # noqa: A002
     start, end = range
     length = end - start
     assert not (start < destination <= end)
@@ -431,23 +431,15 @@ def _move_in_spans(spans, range, destination):
     if destination > end:
         destination -= length
 
-    if destination > 0:
-        spans_before = _extract_in_spans(spans, [(0, destination)])
-    else:
-        spans_before = []
+    spans_before = _extract_in_spans(spans, [(0, destination)]) if destination > 0 else []
     total_length = sum(s.length for s in spans)
-    if destination < total_length:
-        spans_after = _extract_in_spans(spans, [(destination, total_length)])
-    else:
-        spans_after = []
+    spans_after = _extract_in_spans(spans, [(destination, total_length)]) if destination < total_length else []
 
-    spans = spans_before + spans_to_move + spans_after
-    return spans
+    return spans_before + spans_to_move + spans_after
 
 
-def concatenate(texts: List[str], all_spans: List[List[AnySpan]]) -> Tuple[str, List[AnySpan]]:
+def concatenate(texts: list[str], all_spans: list[list[AnySpan]]) -> tuple[str, list[AnySpan]]:
     """Concatenate text and span objects"""
-
     assert _lists_have_same_dimension(texts, all_spans), "Text and all_spans should have the same dimension"
     text = "".join(texts)
     span = [sp for spans in all_spans for sp in spans]
@@ -455,25 +447,23 @@ def concatenate(texts: List[str], all_spans: List[List[AnySpan]]) -> Tuple[str, 
     return text, span
 
 
-def normalize_spans(spans: List[AnySpan]) -> List[Span]:
-    """
-    Return a transformed of `spans` in which all instances of ModifiedSpan are
+def normalize_spans(spans: list[AnySpan]) -> list[Span]:
+    """Return a transformed of `spans` in which all instances of ModifiedSpan are
     replaced by the spans they refer to, spans are sorted and contiguous spans are merged.
 
     Parameters
     ----------
-    spans:
+    spans : list of AnySpan
         The spans associated with a text, including additional spans if
         insertions or replacement were performed
 
     Returns
     -------
-    normalized_spans:
+    normalized_spans : list of Span
         Spans in `spans` normalized as described
 
     Examples
     --------
-
     >>> spans = [
     ...     Span(0, 10),
     ...     Span(20, 30),
@@ -508,7 +498,7 @@ def normalize_spans(spans: List[AnySpan]) -> List[Span]:
     return all_spans_merged
 
 
-def clean_up_gaps_in_normalized_spans(spans: List[Span], text: str, max_gap_length: int = 3):
+def clean_up_gaps_in_normalized_spans(spans: list[Span], text: str, max_gap_length: int = 3):
     """Remove small gaps in normalized spans.
 
     This is useful for converting non-contiguous entity spans with small gaps containing
@@ -517,12 +507,12 @@ def clean_up_gaps_in_normalized_spans(spans: List[Span], text: str, max_gap_leng
     will be removed by merging the spans before and after the gap.
 
     Parameters
-    -----------
-    spans:
+    ----------
+    spans : list of Span
         The normalized spans in which to remove gaps
-    text:
+    text : str
         The text associated with `spans`
-    max_gap_length:
+    max_gap_length : int, default=3
         Max number of characters in gaps, after stripping leading and trailing whitespace.
 
     Examples

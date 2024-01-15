@@ -14,7 +14,6 @@ class _MockAnnotation:
 
 def test_basic():
     "Basic usage, add annotations and retrieve them"
-
     anns = AnnotationContainer(doc_id="id")
 
     # empty container

@@ -20,11 +20,11 @@ TEST_CONFIG = [
         [
             {
                 "spans": [Span(start=1, end=72)],
-                "text": ("Elle avait été améliorée par l'intervention pratiquée par le" " chirurgien"),
+                "text": ("Elle avait été améliorée par l'intervention pratiquée par le chirurgien"),
             },
             {
                 "spans": [Span(start=73, end=156)],
-                "text": ("mais présentait des petites douleurs résiduelles sur la face" " interne du genou droit"),
+                "text": ("mais présentait des petites douleurs résiduelles sur la face interne du genou droit"),
             },
         ],
     ),
@@ -54,7 +54,7 @@ def _get_segment_from_text(text):
     )
 
 
-@pytest.mark.parametrize("syntagma_tokenizer, text, expected_syntagmas", TEST_CONFIG)
+@pytest.mark.parametrize(("syntagma_tokenizer", "text", "expected_syntagmas"), TEST_CONFIG)
 def test_run(syntagma_tokenizer, text, expected_syntagmas):
     segment = _get_segment_from_text(text)
 
@@ -145,7 +145,7 @@ def test_tokenizer_behavior():
     # use cases with '.'
 
     segment = _get_segment_from_text(
-        "Repos à domicile. Absence de fièvre, frissons, hallucinations ou sueurs" " nocturnes"
+        "Repos à domicile. Absence de fièvre, frissons, hallucinations ou sueurs nocturnes"
     )
 
     syntagmas = syntagma_tokenizer.run([segment])

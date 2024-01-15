@@ -1,12 +1,12 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[umls-coder-normalizer]`.
 """
+from __future__ import annotations
 
 __all__ = ["UMLSCoderNormalizer"]
 
 from pathlib import Path
-from typing import Any, Dict, List, NamedTuple, Optional, Tuple, Union
+from typing import Any, NamedTuple
 
 import pandas as pd
 import torch
@@ -39,16 +39,16 @@ class _UMLSEmbeddingsParams(NamedTuple):
     lowercase: bool
     normalize_unicode: bool
 
-    def to_dict(self) -> Dict[str, Any]:
-        return dict(
-            umls_version=self.umls_version,
-            language=self.language,
-            model=self.model,
-            summary_method=self.summary_method,
-            normalize_embeddings=self.normalize_embeddings,
-            lowercase=self.lowercase,
-            normalize_unicode=self.normalize_unicode,
-        )
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "umls_version": self.umls_version,
+            "language": self.language,
+            "model": self.model,
+            "summary_method": self.summary_method,
+            "normalize_embeddings": self.normalize_embeddings,
+            "lowercase": self.lowercase,
+            "normalize_unicode": self.normalize_unicode,
+        }
 
 
 class UMLSCoderNormalizer(Operation):
@@ -73,67 +73,62 @@ class UMLSCoderNormalizer(Operation):
 
     def __init__(
         self,
-        umls_mrconso_file: Union[str, Path],
+        umls_mrconso_file: str | Path,
         language: str,
-        model: Union[str, Path],
-        embeddings_cache_dir: Union[str, Path],
+        model: str | Path,
+        embeddings_cache_dir: str | Path,
         summary_method: Literal["mean", "cls"] = "cls",
         normalize_embeddings: bool = True,
         lowercase: bool = False,
         normalize_unicode: bool = False,
-        threshold: Optional[float] = None,
+        threshold: float | None = None,
         max_nb_matches: int = 1,
         device: int = -1,
         batch_size: int = 128,
-        hf_auth_token: Optional[str] = None,
-        nb_umls_embeddings_chunks: Optional[int] = None,
-        hf_cache_dir: Optional[Union[str, Path]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        hf_auth_token: str | None = None,
+        nb_umls_embeddings_chunks: int | None = None,
+        hf_cache_dir: str | Path | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        umls_mrconso_file:
+        umls_mrconso_file : str or Path
             Path to the UMLS `MRCONSO.RRF` file.
-        language:
+        language : str
             Language of the UMLS terms to use (ex: `"ENG"`, `"FRE"`).
-        model:
+        model : str or Path
             Name on the Hugging Face hub or path to the transformers model that will be used to extract
             embeddings (ex: `"GanjinZero/UMLSBert_ENG"`).
-        embeddings_cache_dir:
+        embeddings_cache_dir : str or Path
             Path to the directory into which pre-computed embeddings of UMLS terms should be cached.
             If it doesn't exist yet, the embeddings will be automatically generated (it can take a long
             time) and stored there, ready to be reused on further instantiations.
             If it already exists, a check will be done to make sure the params used when the embeddings
             were computed are consistent with the params of the current instance.
-        summary_method:
+        summary_method : {"mean", "cls"}, default="cls"
             If set to `"mean"`, the embeddings extracted will be the mean of the pooling layers
             of the model. Otherwise, when set to `"cls"`, the last hidden layer will be used.
-        normalize_embeddings:
+        normalize_embeddings : bool, default=True
             Whether to normalize the extracted embeddings.
-        lowercase:
+        lowercase : bool, default=False
             Whether to use lowercased versions of UMLS terms and input entities.
-        normalize_unicode:
+        normalize_unicode : bool, default=False
             Whether to use ASCII-only versions of UMLS terms and input entities
             (non-ASCII chars replaced by closest ASCII chars).
-        threshold:
+        threshold : float, optional
             Minimum similarity threshold (between 0.0 and 1.0) between the embeddings
             of an entity and of an UMLS term for a normalization attribute to be added.
-        max_nb_matches:
+        max_nb_matches : int, default=1
             Maximum number of normalization attributes to add to each entity.
-        device:
+        device : int, default=-1
             Device to use for transformers models. Follows the Hugging Face convention
             (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
-        batch_size:
+        batch_size : int, default=128
             Number of entities in batches processed by the embeddings extraction pipeline.
-        hf_auth_token:
-            HuggingFace Authentication token (to access private models on the
-            hub)
-        hf_cache_dir:
-            Directory where to store downloaded models. If not set, the default
-            HuggingFace cache dir is used.
-        nb_umls_embeddings_chunks:
+        hf_auth_token : str, optional
+            HuggingFace Authentication token (to access private models on the hub)
+        nb_umls_embeddings_chunks : int, optional
             Number of umls embeddings chunks to load at the same time when computing
             embeddings similarities. (a chunk contains 65536 embeddings).
             If `None`, all pre-computed umls embeddings are pre-loaded in memory and
@@ -142,9 +137,12 @@ class UMLSCoderNormalizer(Operation):
             for each group.
             Use this when umls embeddings are too big to be fully loaded in memory.
             The higher this value, the more memory needed.
-        name:
+        hf_cache_dir: str or Path, optional
+            Directory where to store downloaded models. If not set, the default
+            HuggingFace cache dir is used.
+        name : str, optional
             Name describing the normalizer (defaults to the class name).
-        uid:
+        uid : str, optional
             Identifier of the normalizer.
         """
         # Pass all arguments to super (remove self and confidential hf_auth_token)
@@ -195,7 +193,7 @@ class UMLSCoderNormalizer(Operation):
         umls_terms_file = self.embeddings_cache_dir / _TERMS_FILENAME
         self._umls_entries = pd.read_feather(umls_terms_file)
 
-    def run(self, entities: List[Entity]):
+    def run(self, entities: list[Entity]):
         """Add normalization attributes to each entity in `entities`.
 
         Each entity will have zero, one or more normalization attributes depending
@@ -204,10 +202,9 @@ class UMLSCoderNormalizer(Operation):
 
         Parameters
         ----------
-        entities:
+        entities : list of Entity
             List of entities to add normalization attributes to
         """
-
         if len(entities) == 0:
             return
 
@@ -218,7 +215,7 @@ class UMLSCoderNormalizer(Operation):
         for entity, match_indices, match_scores in zip(entities, all_match_indices, all_match_scores):
             self._normalize_entity(entity, match_indices, match_scores)
 
-    def _find_best_matches(self, entities: List[Entity]) -> Tuple[List[List[int]], List[List[float]]]:
+    def _find_best_matches(self, entities: list[Entity]) -> tuple[list[list[int]], list[list[float]]]:
         entity_terms = [entity.text for entity in entities]
         entity_embeddings = self._pipeline(entity_terms)
         entity_embeddings = torch.cat(entity_embeddings, dim=0)
@@ -242,12 +239,11 @@ class UMLSCoderNormalizer(Operation):
         all_matches_scores = torch.round(all_matches_scores, decimals=4)
         return all_matches_indices.tolist(), all_matches_scores.tolist()
 
-    def _load_umls_embeddings(self, files: List[Path]) -> torch.Tensor:
+    def _load_umls_embeddings(self, files: list[Path]) -> torch.Tensor:
         torch_device = "cpu" if self.device < 0 else f"cuda:{self.device}"
-        umls_embeddings = torch.cat([torch.load(file, map_location=torch_device) for file in files])
-        return umls_embeddings
+        return torch.cat([torch.load(file, map_location=torch_device) for file in files])
 
-    def _normalize_entity(self, entity: Entity, match_indices: List[int], match_scores: List[float]):
+    def _normalize_entity(self, entity: Entity, match_indices: list[int], match_scores: list[float]):
         for match_index, match_score in zip(match_indices, match_scores):
             if self.threshold is not None and match_score < self.threshold:
                 continue
@@ -280,14 +276,15 @@ class UMLSCoderNormalizer(Operation):
         params_file = self.embeddings_cache_dir / _PARAMS_FILENAME
         if params_file.exists():
             # check consistency of params
-            with open(params_file) as fp:
+            with params_file.open() as fp:
                 existing_params = _UMLSEmbeddingsParams(**yaml.safe_load(fp))
             if existing_params != params:
-                raise Exception(
+                msg = (
                     f"Cache directory {self.embeddings_cache_dir} contains UMLS"
                     f" embeddings pre-computed with different params: {params} vs"
                     f" {existing_params}"
                 )
+                raise ValueError(msg)
 
             # nothing to do, embeddings have already been computed
             return
@@ -354,7 +351,7 @@ class UMLSCoderNormalizer(Operation):
             print("Done")
 
         # store params into yaml
-        with open(params_file, mode="w") as fp:
+        with params_file.open(mode="w") as fp:
             yaml.safe_dump(
                 params.to_dict(),
                 fp,
@@ -384,8 +381,7 @@ class _EmbeddingsPipeline(FeatureExtractionPipeline):
         self.normalize = normalize
 
     def _ensure_tensor_on_device(self, inputs, device):
-        """
-        Hack to force tensors to be kept on pipeline device. The base hugging
+        """Hack to force tensors to be kept on pipeline device. The base hugging
         face pipeline tries to move the model outputs back to the cpu before
         returning them but we want to keep them on the gpu if they are, because
         we want to still be on the gpu when doing big similarity matrix multiplication
@@ -393,7 +389,7 @@ class _EmbeddingsPipeline(FeatureExtractionPipeline):
         """
         return super()._ensure_tensor_on_device(inputs, self.device)
 
-    def preprocess(self, inputs, truncation=True) -> Dict[str, torch.Tensor]:
+    def preprocess(self, inputs, truncation=True) -> dict[str, torch.Tensor]:
         return self.tokenizer(
             inputs,
             max_length=32,

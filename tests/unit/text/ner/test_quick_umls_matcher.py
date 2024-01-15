@@ -5,11 +5,11 @@ import pytest
 packaging = pytest.importorskip(modname="packaging", reason="packaging is not installed")
 quickumls = pytest.importorskip(modname="quickumls", reason="quickumls is not installed")
 
-import spacy.cli  # noqa: E402
+import spacy.cli
 
-from medkit.core import Attribute, ProvTracer  # noqa: E402
-from medkit.core.text import Segment, Span, UMLSNormAttribute  # noqa: E402
-from medkit.text.ner.quick_umls_matcher import QuickUMLSMatcher  # noqa: E402
+from medkit.core import Attribute, ProvTracer
+from medkit.core.text import Segment, Span, UMLSNormAttribute
+from medkit.text.ner.quick_umls_matcher import QuickUMLSMatcher
 
 # QuickUMLSMatcher is a wrapper around 3d-party quickumls.core.QuickUMLS,
 # which requires a QuickUMLS install to work. A QuickUMLS install can be
@@ -40,7 +40,7 @@ _DIABETES_CUI = "C0011854"
 
 
 @pytest.fixture(scope="module", autouse=True)
-def setup():
+def _setup():
     # register QuickUMLS installs
     QuickUMLSMatcher.add_install(
         _PATH_TO_QUICK_UMLS_INSTALL_EN,
@@ -245,7 +245,7 @@ TEST_OUTPUT_LABEL = [
 
 
 @pytest.mark.parametrize(
-    "output_label,expected_label",
+    ("output_label", "expected_label"),
     TEST_OUTPUT_LABEL,
     ids=["default_label", "label_str", "label_dict"],
 )

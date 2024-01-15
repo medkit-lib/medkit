@@ -1,7 +1,7 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[metrics-transcription]`.
 """
+from __future__ import annotations
 
 __all__ = ["TranscriptionEvaluator", "TranscriptionEvaluatorResult"]
 
@@ -9,43 +9,44 @@ import dataclasses
 import functools
 import logging
 import string
-from typing import List, Sequence
+from typing import TYPE_CHECKING, Sequence
 
 from speechbrain.utils.metric_stats import ErrorRateStats
 
-from medkit.core.audio import AudioDocument, Segment
 from medkit.text.utils.decoding import get_ascii_from_unicode
+
+if TYPE_CHECKING:
+    from medkit.core.audio import AudioDocument, Segment
 
 logger = logging.getLogger(__name__)
 
 
 @dataclasses.dataclass(frozen=True)
 class TranscriptionEvaluatorResult:
-    """
-    Results returned by :class:`~.TranscriptionEvaluator`
+    """Results returned by :class:`~.TranscriptionEvaluator`
 
     Attributes
     ----------
-    wer:
+    wer : float
         Word Error Rate, combination of word insertions, deletions and
         substitutions
-    word_insertions:
+    word_insertions : float
         Ratio of extra words in prediction (over `word_support`)
-    word_deletions:
+    word_deletions : float
         Ratio of missing words in prediction (over `word_support`)
-    word_substitutions
+    word_substitutions : float
         Ratio of replaced words in prediction (over `word_support`)
-    word_support:
+    word_support : int
         Total number of words
-    cer:
+    cer : float
         Character Error Rate, same as `wer` but at character level
-    char_insertions:
+    char_insertions : float
         Identical to `word_insertions` but at character level
-    char_deletions:
+    char_deletions : float
         Identical to `word_deletions` but at character level
-    char_substitutions:
+    char_substitutions : float
         Identical to `word_substitutions` but at character level
-    char_support:
+    char_support : int
         Total number of characters (not including whitespaces, post punctuation
         removal and unicode replacement)
     """
@@ -63,8 +64,7 @@ class TranscriptionEvaluatorResult:
 
 
 class TranscriptionEvaluator:
-    """
-    Word Error Rate (WER) and Character Error Rate (CER) computation based on
+    """Word Error Rate (WER) and Character Error Rate (CER) computation based on
     `speechbrain`.
 
     The WER is the ratio of predictions errors at the word level, taking into
@@ -93,26 +93,24 @@ class TranscriptionEvaluator:
         remove_punctuation: bool = True,
         replace_unicode: bool = False,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        speech_label:
+        speech_label : str, default="speech"
             Label of the speech segments on the reference documents
-        transcription_label:
+        transcription_label : str, default="transcription"
             Label of the transcription attributes on the reference and predicted
             speech segments
-        case_sensitive:
+        case_sensitive : bool, default=False
             Whether to take case into consideration when comparing reference and
             prediction
-        remove_punctuation:
+        remove_punctuation : bool, default=True
             If True, punctuation in reference and predictions is removed before
             comparing (based on `string.punctuation`)
-        replace_unicode:
+        replace_unicode : bool, default=False
             If True, special unicode characters in reference and predictions are
             replaced by their closest ASCII characters (when possible) before
             comparing
         """
-
         self.speech_label = speech_label
         self.transcription_label = transcription_label
         self.case_sensitive = case_sensitive
@@ -124,17 +122,16 @@ class TranscriptionEvaluator:
         reference: Sequence[AudioDocument],
         predicted: Sequence[Sequence[Segment]],
     ) -> TranscriptionEvaluatorResult:
-        """
-        Compute and return the WER and CER for predicted transcription
+        """Compute and return the WER and CER for predicted transcription
         attributes, against reference annotated documents.
 
         Parameters
         ----------
-        reference:
+        reference : sequence of AudioDocument
             Reference documents containing speech segments with `speech_label`
             as label, each of them containing a transcription attribute with
             `transcription_label` as label.
-        predicted:
+        predicted : sequence of sequence of Segment
             Predicted segments containing each a transcription attribute with
             `transcription_label` as label. This is a list of list that must be
             of the same length and ordering as `reference`.
@@ -144,8 +141,9 @@ class TranscriptionEvaluator:
         TranscriptionEvaluatorResult
             Computed metrics
         """
-
-        assert len(reference) == len(predicted), "reference and predicted must have the same length"
+        if len(reference) != len(predicted):
+            msg = "Reference and predicted must have the same length"
+            raise ValueError(msg)
 
         sb_wer_metric = ErrorRateStats()
         sb_cer_metric = ErrorRateStats(split_tokens=True)
@@ -176,12 +174,10 @@ class TranscriptionEvaluator:
             char_support=nb_chars,
         )
 
-    def _convert_speech_segs_to_words(self, segments: Sequence[Segment]) -> List[str]:
-        """
-        Convert list of speech segments with transcription attribute to list of
+    def _convert_speech_segs_to_words(self, segments: Sequence[Segment]) -> list[str]:
+        """Convert list of speech segments with transcription attribute to list of
         words that can be passed to speechbrain metrics objects
         """
-
         # get values of all transcription attributes and concatenate them into
         # one big string representing the transcription of the whole document
 
@@ -193,10 +189,11 @@ class TranscriptionEvaluator:
             transcription_attrs = seg.attrs.get(label=self.transcription_label)
 
             if not transcription_attrs:
-                raise ValueError(f"Attribute with label '{self.transcription_label}' not found on" " speech segment")
+                msg = f"Attribute with label '{self.transcription_label}' not found on speech segment"
+                raise ValueError(msg)
             if len(transcription_attrs) > 1:
                 logger.warning(
-                    f"Found several attributes with label '{self.transcription_label}'," " ignoring all but first"
+                    "Found several attributes with label '%s' ignoring all but first", self.transcription_label
                 )
             transcription = transcription_attrs[0].value
             texts.append(transcription)
@@ -213,14 +210,12 @@ class TranscriptionEvaluator:
             text = get_ascii_from_unicode(text, logger=logger)
 
         # split into words
-        words = [w for w in text.split(" ") if w]
-        return words
+        return [w for w in text.split(" ") if w]
 
 
 @functools.lru_cache
 def _get_punctation_translation_table():
-    """
-    Return a translation table mapping all punctuations chars to a single space,
+    """Return a translation table mapping all punctuations chars to a single space,
     that can be used with `str.translate()`
     """
     return str.maketrans(dict.fromkeys(string.punctuation, " "))

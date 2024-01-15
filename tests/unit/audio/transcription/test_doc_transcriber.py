@@ -46,7 +46,6 @@ def _get_audio_doc(audio_spans):
 
 def test_basic():
     """Basic behavior"""
-
     # build 2 audio docs with 2 and 1 spans
     audio_span_1 = AudioSpan(0.0, 0.5)
     audio_span_2 = AudioSpan(1.0, 2.5)
@@ -112,7 +111,6 @@ def test_basic():
 
 def test_prov():
     """Generated provenance nodes"""
-
     audio_span_1 = AudioSpan(0.0, 0.5)
     audio_span_2 = AudioSpan(1.0, 2.5)
     audio_doc = _get_audio_doc([audio_span_1, audio_span_2])
@@ -192,7 +190,6 @@ class _CustomDocTranscriber(DocTranscriber):
 
 def test_custom_full_text():
     """Overriding of full text reconstruction method"""
-
     # audio doc with speaker name attributes on segments
     audio_doc = AudioDocument(audio=_FULL_AUDIO)
     audio_span_1 = AudioSpan(0.0, 0.5)
@@ -211,5 +208,5 @@ def test_custom_full_text():
     )
     text_doc = doc_transcriber.run([audio_doc])[0]
 
-    expected_text = "- BOB:\nThis is transcribed text number 1.\n\n- ALICE:\nThis is transcribed" " text number 2."
+    expected_text = "- BOB:\nThis is transcribed text number 1.\n\n- ALICE:\nThis is transcribed text number 2."
     assert text_doc.text == expected_text

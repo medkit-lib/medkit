@@ -74,7 +74,7 @@ TEST_DATA = [
 
 
 @pytest.mark.parametrize(
-    "predicted_docs,expected_metrics",
+    ("predicted_docs", "expected_metrics"),
     TEST_DATA,
     ids=[
         "perfect_prediction",
@@ -137,7 +137,7 @@ TEST_DATA_CK = [
 
 
 @pytest.mark.parametrize(
-    "predicted_docs,expected_metrics",
+    ("predicted_docs", "expected_metrics"),
     TEST_DATA_CK,
     ids=[
         "total_agreement",
@@ -174,7 +174,7 @@ TEST_DATA_KA = [
 
 
 @pytest.mark.parametrize(
-    "predicted_docs,expected_metrics",
+    ("predicted_docs", "expected_metrics"),
     TEST_DATA_KA,
     ids=[
         "total_agreement",
@@ -205,12 +205,12 @@ def test_assertions_krippendorff(evaluator, true_documents):
 
 def test_assertions_docs(true_documents):
     # test number of annotators
+    evaluator = classification.TextClassificationEvaluator(attr_label="other")
     with pytest.raises(ValueError, match="No attribute with label .*"):
-        evaluator = classification.TextClassificationEvaluator(attr_label="other")
         evaluator._extract_attr_values(true_documents)
 
     doc_test = true_documents[0]
     doc_test.attrs.add(Attribute(label="other", value=[0, 1, 2]))
+    evaluator = classification.TextClassificationEvaluator(attr_label="other")
     with pytest.raises(ValueError, match="The type of the attr value .*"):
-        evaluator = classification.TextClassificationEvaluator(attr_label="other")
         evaluator._extract_attr_values([doc_test])

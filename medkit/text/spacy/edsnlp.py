@@ -1,7 +1,7 @@
-"""
-This package needs extra-dependencies not installed as core dependencies of medkit.
+"""This package needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit[edsnlp]`.
 """
+from __future__ import annotations
 
 __all__ = [
     "EDSNLPPipeline",
@@ -14,7 +14,7 @@ __all__ = [
     "DEFAULT_ATTRIBUTE_FACTORIES",
 ]
 
-from typing import Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Callable
 
 from edsnlp.pipelines.misc.dates.models import AbsoluteDate as EDSNLP_AbsoluteDate
 from edsnlp.pipelines.misc.dates.models import Direction as EDSNLP_Direction
@@ -25,8 +25,6 @@ from edsnlp.pipelines.misc.measurements.measurements import (
 )
 from edsnlp.pipelines.ner.adicap.models import AdicapCode as EDSNLP_AdicapCode
 from edsnlp.pipelines.ner.tnm.model import TNM as EDSNLP_TNM
-from spacy import Language
-from spacy.tokens import Span as SpacySpan
 from spacy.tokens.underscore import Underscore
 
 from medkit.core import Attribute
@@ -40,17 +38,20 @@ from medkit.text.ner import (
 from medkit.text.ner.tnm_attribute import TNMAttribute
 from medkit.text.spacy import SpacyDocPipeline, SpacyPipeline
 
+if TYPE_CHECKING:
+    from spacy import Language
+    from spacy.tokens import Span as SpacySpan
+
 
 def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
-    """
-    Build a medkit date attribute from an EDS-NLP attribute with a date object
+    """Build a medkit date attribute from an EDS-NLP attribute with a date object
     as value.
 
     Parameters
     ----------
-    spacy_span
+    spacy_span : SpacySpan
         Spacy span having an ESD-NLP date attribute
-    spacy_label
+    spacy_label : str
         Label of the date attribute on `spacy_spacy`. Ex: "date", "consultation_date"
 
     Returns
@@ -60,7 +61,6 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
         :class:`~medkit.text.ner.RelativeDateAttribute` instance, depending on
         the EDS-NLP attribute
     """
-
     value = spacy_span._.get(spacy_label)
     if isinstance(value, EDSNLP_AbsoluteDate):
         return DateAttribute(
@@ -72,7 +72,7 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
             minute=value.minute,
             second=value.second,
         )
-    elif isinstance(value, EDSNLP_RelativeDate):
+    elif isinstance(value, EDSNLP_RelativeDate):  # noqa: RET505
         direction = (
             RelativeDateDirection.PAST if value.direction is EDSNLP_Direction.PAST else RelativeDateDirection.FUTURE
         )
@@ -88,19 +88,19 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
             seconds=value.second,
         )
     else:
-        raise ValueError(f"Unexpected value type: {type(value)} for spaCy attribute with label" f" '{spacy_label}'")
+        msg = f"Unexpected value type: {type(value)} for spaCy attribute with label '{spacy_label}'"
+        raise TypeError(msg)
 
 
 def build_duration_attribute(spacy_span: SpacySpan, spacy_label: str) -> DurationAttribute:
-    """
-    Build a medkit duration attribute from an EDS-NLP attribute with a duration
+    """Build a medkit duration attribute from an EDS-NLP attribute with a duration
     object as value.
 
     Parameters
     ----------
-    spacy_span
+    spacy_span : SpacySpan
         Spacy span having an ESD-NLP date attribute
-    spacy_label
+    spacy_label : str
         Label of the date attribute on `spacy_spacy`. Ex: "duration"
 
     Returns
@@ -108,7 +108,6 @@ def build_duration_attribute(spacy_span: SpacySpan, spacy_label: str) -> Duratio
     DurationAttribute
         Medkit duration attribute
     """
-
     value = spacy_span._.get(spacy_label)
     assert isinstance(value, EDSNLP_Duration)
     return DurationAttribute(
@@ -124,15 +123,14 @@ def build_duration_attribute(spacy_span: SpacySpan, spacy_label: str) -> Duratio
 
 
 def build_adicap_attribute(spacy_span: SpacySpan, spacy_label: str) -> ADICAPNormAttribute:
-    """
-    Build a medkit ADICAP normalization attribute from an EDS-NLP attribute with
+    """Build a medkit ADICAP normalization attribute from an EDS-NLP attribute with
     an ADICAP object as value.
 
     Parameters
     ----------
-    spacy_span
+    spacy_span : SpacySpan
         Spacy span having an ADICAP object as value
-    spacy_label
+    spacy_label : str
         Label of the attribute on `spacy_spacy`. Ex: "adicap"
 
     Returns
@@ -140,7 +138,6 @@ def build_adicap_attribute(spacy_span: SpacySpan, spacy_label: str) -> ADICAPNor
     ADICAPNormAttribute
         Medkit ADICAP normalization attribute
     """
-
     value = spacy_span._.get(spacy_label)
     assert isinstance(value, EDSNLP_AdicapCode)
     return ADICAPNormAttribute(
@@ -155,15 +152,14 @@ def build_adicap_attribute(spacy_span: SpacySpan, spacy_label: str) -> ADICAPNor
 
 
 def build_tnm_attribute(spacy_span: SpacySpan, spacy_label: str) -> TNMAttribute:
-    """
-    Build a medkit TNM attribute from an EDS-NLP attribute with a TNM object as
+    """Build a medkit TNM attribute from an EDS-NLP attribute with a TNM object as
     value.
 
     Parameters
     ----------
-    spacy_span
+    spacy_span : SpacySpan
         Spacy span having a TNM object as value
-    spacy_label
+    spacy_label : str
         Label of the attribute on `spacy_spacy`. Ex: "tnm"
 
     Returns
@@ -171,7 +167,6 @@ def build_tnm_attribute(spacy_span: SpacySpan, spacy_label: str) -> TNMAttribute
     TNMAttribute
         Medkit TNM attribute
     """
-
     value = spacy_span._.get(spacy_label)
     assert isinstance(value, EDSNLP_TNM)
     return TNMAttribute(
@@ -189,15 +184,14 @@ def build_tnm_attribute(spacy_span: SpacySpan, spacy_label: str) -> TNMAttribute
 
 
 def build_measurement_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
-    """
-    Build a medkit attribute from an EDS-NLP attribute with a measurement object
+    """Build a medkit attribute from an EDS-NLP attribute with a measurement object
     as value.
 
     Parameters
     ----------
-    spacy_span
+    spacy_span : SpacySpan
         Spacy span having a measurement object as value
-    spacy_label
+    spacy_label : str
         Label of the attribute on `spacy_spacy`. Ex: "size", "weight", "bmi"
 
     Returns
@@ -277,41 +271,40 @@ class EDSNLPPipeline(SpacyPipeline):
     def __init__(
         self,
         nlp: Language,
-        spacy_entities: Optional[List[str]] = None,
-        spacy_span_groups: Optional[List[str]] = None,
-        spacy_attrs: Optional[List[str]] = None,
-        medkit_attribute_factories: Optional[Dict[str, Callable[[SpacySpan, str], Attribute]]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        spacy_entities: list[str] | None = None,
+        spacy_span_groups: list[str] | None = None,
+        spacy_attrs: list[str] | None = None,
+        medkit_attribute_factories: dict[str, Callable[[SpacySpan, str], Attribute]] | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
         """Initialize the segment annotator
 
         Parameters
         ----------
-        nlp:
+        nlp : Language
             Language object with the loaded pipeline from Spacy
-        spacy_entities:
+        spacy_entities : list of str, optional
             Labels of new spacy entities (`doc.ents`) to convert into medkit entities.
             If `None` (default) all the new spacy entities will be converted
-        spacy_span_groups:
+        spacy_span_groups : list of str, optional
             Name of new spacy span groups (`doc.spans`) to convert into medkit segments.
             If `None` (default) new spacy span groups will be converted
-        spacy_attrs:
+        spacy_attrs : list of str, optional
             Name of span extensions to convert into medkit attributes. If
             `None`, all non-redundant EDS-NLP attributes will be handled.
-        medkit_attribute_factories:
+        medkit_attribute_factories : dict of str to Callable, optional
             Mapping of factories in charge of converting spacy attributes to
             medkit attributes. Factories will receive a spacy span and an an
             attribute label when called. The key in the mapping is the attribute
             label.
             Pre-defined default factories are listed in
             :const:`~DEFAULT_ATTRIBUTE_FACTORIES`
-        name:
+        name : str, optional
             Name describing the pipeline (defaults to the class name).
-        uid:
+        uid : str, optional
             Identifier of the pipeline
         """
-
         if medkit_attribute_factories is None:
             medkit_attribute_factories = DEFAULT_ATTRIBUTE_FACTORIES
         else:
@@ -336,59 +329,56 @@ class EDSNLPPipeline(SpacyPipeline):
 
 
 class EDSNLPDocPipeline(SpacyDocPipeline):
-    """
-    DocPipeline to obtain annotations created using EDS-NLP
-    """
+    """DocPipeline to obtain annotations created using EDS-NLP"""
 
     def __init__(
         self,
         nlp: Language,
-        medkit_labels_anns: Optional[List[str]] = None,
-        medkit_attrs: Optional[List[str]] = None,
-        spacy_entities: Optional[List[str]] = None,
-        spacy_span_groups: Optional[List[str]] = None,
-        spacy_attrs: Optional[List[str]] = None,
-        medkit_attribute_factories: Optional[Dict[str, Callable[[SpacySpan, str], Attribute]]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        medkit_labels_anns: list[str] | None = None,
+        medkit_attrs: list[str] | None = None,
+        spacy_entities: list[str] | None = None,
+        spacy_span_groups: list[str] | None = None,
+        spacy_attrs: list[str] | None = None,
+        medkit_attribute_factories: dict[str, Callable[[SpacySpan, str], Attribute]] | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
         """Initialize the pipeline
 
         Parameters
         ----------
-        nlp:
+        nlp : Language
             Language object with the loaded pipeline from Spacy
-        medkit_labels_anns:
+        medkit_labels_anns : list of str, optional
             Labels of medkit annotations to include in the spacy document.
             If `None` (default) all the annotations will be included.
-        medkit_attrs:
+        medkit_attrs : list of str, optional
             Labels of medkit attributes to add in the annotations that will be included.
             If `None` (default) all the attributes will be added as `custom attributes`
             in each annotation included.
-        spacy_entities:
+        spacy_entities : list of str, optional
             Labels of new spacy entities (`doc.ents`) to convert into medkit entities.
             If `None` (default) all the new spacy entities will be converted and added into
             its origin medkit document.
-        spacy_span_groups:
+        spacy_span_groups : list of str, optional
             Name of new spacy span groups (`doc.spans`) to convert into medkit segments.
             If `None` (default) new spacy span groups will be converted and added into
             its origin medkit document.
-        spacy_attrs:
+        spacy_attrs : list of str, optional
             Name of span extensions to convert into medkit attributes. If
             `None`, all non-redundant EDS-NLP attributes will be handled.
-        medkit_attribute_factories:
+        medkit_attribute_factories : dict of str to Callable, optional
             Mapping of factories in charge of converting spacy attributes to
             medkit attributes. Factories will receive a spacy span and an an
             attribute label when called. The key in the mapping is the attribute
             label.
             Pre-defined default factories are listed in
             :const:`~DEFAULT_ATTRIBUTE_FACTORIES`
-        name:
+        name : str, optional
             Name describing the pipeline (defaults to the class name).
-        uid:
+        uid : str, optional
             Identifier of the pipeline
         """
-
         # use pre-defined attribute factory
         if medkit_attribute_factories is None:
             medkit_attribute_factories = DEFAULT_ATTRIBUTE_FACTORIES

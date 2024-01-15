@@ -2,17 +2,17 @@ import pytest
 
 pytest.importorskip(modname="spacy", reason="spacy is not installed")
 
-import spacy.cli  # noqa: E402
+import spacy.cli
 
-from medkit.core.prov_tracer import ProvTracer  # noqa: E402
-from medkit.core.text import Entity, Relation, Span, TextDocument  # noqa: E402
-from medkit.text.relations.syntactic_relation_extractor import (  # noqa: E402
+from medkit.core.prov_tracer import ProvTracer
+from medkit.core.text import Entity, Relation, Span, TextDocument
+from medkit.text.relations.syntactic_relation_extractor import (
     SyntacticRelationExtractor,
 )
 
 
 @pytest.fixture(scope="module", autouse=True)
-def setup():
+def _setup():
     # download french spacy model
     if not spacy.util.is_package("fr_core_news_sm"):
         spacy.cli.download("fr_core_news_sm")
@@ -22,7 +22,7 @@ def setup():
 
 
 def _get_medkit_doc():
-    text = "Le patient présente une douleur abdominale de grade 4, la douleur abdominale" " est sévère."
+    text = "Le patient présente une douleur abdominale de grade 4, la douleur abdominale est sévère."
     doc = TextDocument(text=text)
     entities = [
         Entity(spans=[Span(24, 42)], label="maladie", text="douleur abdominale"),
@@ -46,7 +46,7 @@ TEST_CONFIG = (
 
 
 @pytest.mark.parametrize(
-    "entities_source,entities_target,exp_source_target",
+    ("entities_source", "entities_target", "exp_source_target"),
     TEST_CONFIG,
     ids=[
         "between_all_entities",
@@ -94,7 +94,7 @@ def test_exceptions_init():
 def _custom_component(doc):
     """Mock spacy component adds entity without medkit ID"""
     if doc.ents:
-        doc.ents = list(doc.ents) + [doc.char_span(11, 19, "ACTE")]
+        doc.ents = [*list(doc.ents), doc.char_span(11, 19, "ACTE")]
     return doc
 
 

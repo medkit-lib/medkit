@@ -1,5 +1,4 @@
-"""
-This module needs extra-dependencies not installed as core dependencies of medkit.
+"""This module needs extra-dependencies not installed as core dependencies of medkit.
 To install them, use `pip install medkit-lib[hf-translator]`.
 """
 
@@ -8,8 +7,7 @@ from __future__ import annotations
 __all__ = ["HFTranslator"]
 
 from collections import defaultdict
-from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Iterator
 
 import torch
 import transformers
@@ -18,6 +16,9 @@ from transformers import BertModel, BertTokenizerFast, TranslationPipeline
 import medkit.core.utils
 from medkit.core import Operation
 from medkit.core.text import ModifiedSpan, Segment, span_utils
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 class HFTranslator(Operation):
@@ -44,47 +45,45 @@ class HFTranslator(Operation):
     def __init__(
         self,
         output_label: str = _DEFAULT_LABEL,
-        translation_model: Union[str, Path] = _DEFAULT_TRANSLATION_MODEL,
-        alignment_model: Union[str, Path] = _DEFAULT_ALIGNMENT_MODEL,
+        translation_model: str | Path = _DEFAULT_TRANSLATION_MODEL,
+        alignment_model: str | Path = _DEFAULT_ALIGNMENT_MODEL,
         alignment_layer: int = 8,
         alignment_threshold: float = 1e-3,
-        device: int = -1,  # -1 corresponds to the cpu else device number
+        device: int = -1,
         batch_size: int = 1,
-        hf_auth_token: Optional[str] = None,
-        cache_dir: Optional[Union[str, Path]] = None,
-        uid: str = None,
+        hf_auth_token: str | None = None,
+        cache_dir: str | Path | None = None,
+        uid: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        output_label:
+        output_label : str, optional
             Label of the translated segments
-        translation_model:
+        translation_model : str or Path, optional
             Name (on the HuggingFace models hub) or path of the translation model. Must be a model compatible
             with the `TranslationPipeline` transformers class.
-        alignment_model:
+        alignment_model : str or Path, optional
             Name (on the HuggingFace models hub) or path of the alignment model. Must be a multilingual BERT model
             compatible with the `BertModel` transformers class.
-        alignment_layer:
+        alignment_layer : int, default=8
             Index of the layer in the alignment model that contains the token embeddings
             (the original and translated embedding will be. compared)
-        alignment_threshold:
+        alignment_threshold : float, default=1e-3
             Threshold value used to decide if embeddings are similar enough to be aligned
-        device:
+        device : int, default=-1
             Device to use for transformers models. Follows the HuggingFace convention
             (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0")
-        batch_size:
+        batch_size : int, default=1
             Number of segments in batches processed by translation and alignment models
-        hf_auth_token:
+        hf_auth_token : str, optional
             HuggingFace Authentication token (to access private models on the
             hub)
-        cache_dir:
+        cache_dir : str or Path, optional
             Directory where to store downloaded models. If not set, the default
             HuggingFace cache dir is used.
-        uid:
+        uid : str, optional
             Identifier of the translator
         """
-
         # Pass all arguments to super (remove self and confidential hf_auth_token)
         init_args = locals()
         init_args.pop("self")
@@ -102,10 +101,11 @@ class HFTranslator(Operation):
         if isinstance(self.translation_model, str):
             task = transformers.pipelines.get_task(translation_model, token=hf_auth_token)
             if not task.startswith("translation"):
-                raise ValueError(
+                msg = (
                     f"Model {self.translation_model} is not associated to a translation"
                     " task and cannot be use with HFTranslator"
                 )
+                raise ValueError(msg)
 
         self._translation_pipeline = transformers.pipeline(
             task=task,
@@ -126,24 +126,23 @@ class HFTranslator(Operation):
             cache_dir=cache_dir,
         )
 
-    def run(self, segments: List[Segment]) -> List[Segment]:
-        """
-        Translate short segments (can't contain multiple sentences)
+    def run(self, segments: list[Segment]) -> list[Segment]:
+        """Translate short segments (can't contain multiple sentences)
 
         Parameters
         ----------
-        segments:
+        segments : list of Segment
             List of segments to translate
 
         Returns
         -------
-        List[~medkit.core.text.Segment]:
+        list of Segment
             Translated segments (with spans referring to words in original text, for translated
             words that have been aligned to original words)
         """
         return list(self._translate_segments(segments))
 
-    def _translate_segments(self, segments: List[Segment]) -> Iterator[Segment]:
+    def _translate_segments(self, segments: list[Segment]) -> Iterator[Segment]:
         original_texts = [s.text for s in segments]
         translated_texts = [d["translation_text"] for d in self._translation_pipeline(original_texts)]
 
@@ -166,8 +165,8 @@ class HFTranslator(Operation):
 
     def _get_translated_spans(self, alignment, translated_text, original_text, original_spans):
         """Compute spans for translated segments, making translated words reference words
-        in original text through ModifiedSpans when possible"""
-
+        in original text through ModifiedSpans when possible
+        """
         # build translated spans, which will contains:
         # - ModifiedSpans with no replacement_spans, for non-aligned parts of translated text
         #   (ie gaps between aligned words, plus head and tail)
@@ -221,19 +220,19 @@ Ex:
     (15, 20): [(17, 22)], # Lucas = Lucas
 }
 """
-_AlignmentDict = Dict[Tuple[int, int], List[Tuple[int, int]]]
+_AlignmentDict = dict[tuple[int, int], list[tuple[int, int]]]
 
 
 class _Aligner:
     def __init__(
         self,
-        model: Union[str, Path] = "bert-base-multilingual-cased",
+        model: str | Path = "bert-base-multilingual-cased",
         layer_index: int = 8,
         threshold: float = 1e-3,
         device: int = -1,
         batch_size: int = 1,
-        hf_auth_token: Optional[str] = None,
-        cache_dir: Optional[Union[str, Path]] = None,
+        hf_auth_token: str | None = None,
+        cache_dir: str | Path | None = None,
     ):
         self._device = torch.device("cpu" if device < 0 else f"cuda:{device}")
         self._batch_size = batch_size
@@ -247,19 +246,19 @@ class _Aligner:
         self._threshold: float = threshold
         self._tokenizer = BertTokenizerFast.from_pretrained(model, token=hf_auth_token)
 
-    def align(self, source_texts: List[str], target_texts: List[str]) -> List[_AlignmentDict]:
+    def align(self, source_texts: list[str], target_texts: list[str]) -> list[_AlignmentDict]:
         """Compute word alignments between two lists of texts in different languages.
 
         Parameters
         ----------
-        source_texts:
+        source_texts : list of str
             The texts to align from (typically the translated texts)
-        target_texts:
+        target_texts : list of str
             The texts to align to (typically the original texts)
 
         Returns
         -------
-        List[_AlignmentDict]:
+        list of dict
             List of alignments dicts between characters ranges (cf description of _AlignmentDict)
         """
         assert len(source_texts) == len(target_texts), "Must have same number of source and target texts"
@@ -310,21 +309,22 @@ class _Aligner:
     def _encode_text(self, text):
         """Return a BatchEncoder instance
         (useful for converting token back to words and CharSpans,
-        but requires a TokenizerFast)"""
-        encodings = self._tokenizer(
+        but requires a TokenizerFast)
+        """
+        return self._tokenizer(
             text,
             return_tensors="pt",
             truncation=True,
             padding=True,
             max_length=self._tokenizer.model_max_length,
         )
-        return encodings
 
     def _token_alignment_to_word_alignment(
         self, token_alignment, source_encoding, target_encoding, batch_index
     ) -> _AlignmentDict:
         """Convert BERT token alignments computed from the model to word alignments,
-        (using characters ranges of aligned words)"""
+        (using characters ranges of aligned words)
+        """
         source_word_ids = source_encoding.word_ids(batch_index)
         target_word_ids = target_encoding.word_ids(batch_index)
 

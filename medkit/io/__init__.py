@@ -10,26 +10,21 @@ __all__ = [
     "RTTMOutputConverter",
 ]
 
-from . import medkit_json
-from .brat import BratInputConverter, BratOutputConverter
-from .doccano import (
-    DoccanoClientConfig,
-    DoccanoInputConverter,
-    DoccanoOutputConverter,
-    DoccanoTask,
-)
-from .rttm import RTTMInputConverter, RTTMOutputConverter
+from medkit.io import medkit_json
+from medkit.io.brat import BratInputConverter, BratOutputConverter
+from medkit.io.doccano import DoccanoClientConfig, DoccanoInputConverter, DoccanoOutputConverter, DoccanoTask
+from medkit.io.rttm import RTTMInputConverter, RTTMOutputConverter
 
 try:
-    from .spacy import SpacyInputConverter, SpacyOutputConverter  # noqa: F401
+    from medkit.io.spacy import SpacyInputConverter, SpacyOutputConverter
 
-    __all__.extend(["SpacyInputConverter", "SpacyOutputConverter"])
+    __all__ += ["SpacyInputConverter", "SpacyOutputConverter"]
 except ImportError:
     pass
 
 try:
-    from .srt import SRTInputConverter, SRTOutputConverter  # noqa: F401
+    from medkit.io.srt import SRTInputConverter, SRTOutputConverter
 
-    __all__.extend(["SRTInputConverter", "SRTOutputConverter"])
+    __all__ += ["SRTInputConverter", "SRTOutputConverter"]
 except ImportError:
     pass

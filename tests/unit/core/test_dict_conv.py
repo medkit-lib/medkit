@@ -8,8 +8,7 @@ from medkit.core import dict_conv
 
 @dataclasses.dataclass
 class _MockAttribute(dict_conv.SubclassMapping):
-    """
-    Base non-abstract with its own from_dict()/to_dict() methods, but also
+    """Base non-abstract with its own from_dict()/to_dict() methods, but also
     handling dispatch to the from_dict() method of a subclass
     """
 
@@ -35,18 +34,12 @@ class _MockAttribute(dict_conv.SubclassMapping):
 
 @dataclasses.dataclass
 class _MockSubAttribute(_MockAttribute):
-    """
-    Subclass inheriting parent from_dict()/to_dict() methods
-    """
-
-    pass
+    """Subclass inheriting parent from_dict()/to_dict() methods"""
 
 
 @dataclasses.dataclass
 class _MockSubAttributeWithValue(_MockAttribute):
-    """
-    Subclass with its own from_dict()/to_dict() methods
-    """
+    """Subclass with its own from_dict()/to_dict() methods"""
 
     value: bool
 
@@ -62,8 +55,7 @@ class _MockSubAttributeWithValue(_MockAttribute):
 
 @dataclasses.dataclass
 class _MockAnnotation(abc.ABC, dict_conv.SubclassMapping):
-    """
-    Base abstract class without its own from_dict()/to_dict() methods, but still
+    """Base abstract class without its own from_dict()/to_dict() methods, but still
     handling dispatch to the from_dict() method of a subclass
     """
 
@@ -79,14 +71,12 @@ class _MockAnnotation(abc.ABC, dict_conv.SubclassMapping):
         if subclass is not None:
             return subclass.from_dict(attr_dict)
 
-        raise NotImplementedError()
+        raise NotImplementedError
 
 
 @dataclasses.dataclass
 class _MockSubAnnotationWithText(_MockAnnotation):
-    """
-    Subclass with its own from_dict()/to_dict() methods
-    """
+    """Subclass with its own from_dict()/to_dict() methods"""
 
     text: str
 

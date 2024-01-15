@@ -21,7 +21,7 @@ def create_doccano_zip_files_disk(tmp_path, filename):
 def test_relation_extraction_converter(tmp_path):
     task = DoccanoTask.RELATION_EXTRACTION
     create_doccano_zip_files_disk(tmp_path, filename=task.value)
-    expected_metadata = dict(custom_metadata="custom", doc_id=1234)
+    expected_metadata = {"custom_metadata": "custom", "doc_id": 1234}
 
     converter = DoccanoInputConverter(task=task)
     documents = converter.load_from_directory_zip(dir_path=f"{tmp_path}/{task.value}")
@@ -109,7 +109,7 @@ TEST_PROV_BY_TASK = [
 
 
 @pytest.mark.parametrize(
-    "task,check_prov_entity",
+    ("task", "check_prov_entity"),
     TEST_PROV_BY_TASK,
 )
 def test_prov(tmp_path, task, check_prov_entity):
@@ -134,7 +134,7 @@ def test_exceptions(tmp_path):
     wrong_task = DoccanoTask.RELATION_EXTRACTION
     create_doccano_zip_files_disk(tmp_path, filename=wrong_task.value)
 
-    with pytest.raises(Exception, match="Impossible to convert.*"):
+    with pytest.raises(ValueError, match="Impossible to convert"):
         DoccanoInputConverter(task=task).load_from_directory_zip(dir_path=f"{tmp_path}/{wrong_task.value}")
 
     # testing incoherence between data and task
@@ -142,7 +142,7 @@ def test_exceptions(tmp_path):
     wrong_task = DoccanoTask.SEQUENCE_LABELING
     create_doccano_zip_files_disk(tmp_path, filename=wrong_task.value)
 
-    with pytest.raises(Exception, match="Impossible to convert.*"):
+    with pytest.raises(ValueError, match="Impossible to convert"):
         DoccanoInputConverter(task=task).load_from_directory_zip(dir_path=f"{tmp_path}/{wrong_task.value}")
 
     # testing incoherence between data and task
@@ -150,5 +150,5 @@ def test_exceptions(tmp_path):
     wrong_task = DoccanoTask.SEQUENCE_LABELING
     create_doccano_zip_files_disk(tmp_path, filename=wrong_task.value)
 
-    with pytest.raises(Exception, match="Impossible to convert.*"):
+    with pytest.raises(ValueError, match="Impossible to convert"):
         DoccanoInputConverter(task=task).load_from_directory_zip(dir_path=f"{tmp_path}/{wrong_task.value}")

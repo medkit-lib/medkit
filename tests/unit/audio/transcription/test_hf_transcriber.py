@@ -3,11 +3,11 @@ import pytest
 pytest.importorskip(modname="torchaudio", reason="torchaudio is not installed")
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 
-import numpy as np  # noqa: E402
+import numpy as np
 
-from medkit.audio.transcription.hf_transcriber import HFTranscriber  # noqa: E402
-from medkit.core import ProvTracer  # noqa: E402
-from medkit.core.audio import MemoryAudioBuffer, Segment, Span  # noqa: E402
+from medkit.audio.transcription.hf_transcriber import HFTranscriber
+from medkit.core import ProvTracer
+from medkit.core.audio import MemoryAudioBuffer, Segment, Span
 
 _SAMPLE_RATE = 16000
 _TEXT_TEMPLATE = "AUDIO HAS {} SAMPLES"
@@ -34,7 +34,7 @@ class _MockPipeline:
 def _mocked_pipeline(module_mocker):
     module_mocker.patch(
         "transformers.pipelines.get_task",
-        lambda m, token=None: "automatic-speech-recognition",
+        return_value="automatic-speech-recognition",
     )
     module_mocker.patch("transformers.pipeline", _MockPipeline)
 
@@ -46,7 +46,6 @@ def _gen_segment(nb_samples) -> Segment:
 
 def test_basic():
     """Basic behavior"""
-
     transcriber = HFTranscriber(model="mock-model", output_label="transcribed_text")
 
     seg_1 = _gen_segment(1000)

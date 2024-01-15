@@ -2,17 +2,14 @@ import pytest
 
 torch = pytest.importorskip(modname="torch", reason="torch is not installed")
 
-from medkit.training import Trainer, TrainerConfig  # noqa: E402
-from medkit.training.trainer import (  # noqa: E402
+from medkit.training import Trainer, TrainerConfig
+from medkit.training.trainer import (
     CONFIG_NAME,
     OPTIMIZER_NAME,
     SCHEDULER_NAME,
 )
-
-from .dummy_context_component.dummy_component import (  # noqa: E402
-    MockTrainableComponent,
-)
-from .dummy_context_component.dummy_corpus import DUMMY_DATASETS  # noqa: E402
+from tests.unit.training.dummy_context_component.dummy_component import MockTrainableComponent
+from tests.unit.training.dummy_context_component.dummy_corpus import DUMMY_DATASETS
 
 
 class DummyMetricsComputer:
@@ -49,7 +46,7 @@ def _get_trainer(output_dir, nb_epochs, minimize_metric, use_lr_scheduler, check
     def lr_scheduler_builder(optimizer):
         return torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.1)
 
-    trainer = Trainer(
+    return Trainer(
         mock_component,
         config=config,
         train_data=DUMMY_DATASETS["train"],
@@ -57,7 +54,6 @@ def _get_trainer(output_dir, nb_epochs, minimize_metric, use_lr_scheduler, check
         lr_scheduler_builder=lr_scheduler_builder if use_lr_scheduler else None,
         metrics_computer=DummyMetricsComputer(minimize=minimize_metric),
     )
-    return trainer
 
 
 def _check_checkpoint(path, use_lr_scheduler):
@@ -77,7 +73,7 @@ def _check_checkpoint(path, use_lr_scheduler):
 
 
 @pytest.mark.parametrize(
-    "use_lr_scheduler,minimize_metric,overfit",
+    ("use_lr_scheduler", "minimize_metric", "overfit"),
     [
         # no scheduler, minimize metric, overfit
         (False, True, True),

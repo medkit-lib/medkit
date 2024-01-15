@@ -4,12 +4,12 @@ pytest.importorskip(modname="torchaudio", reason="torchaudio is not installed")
 pytest.importorskip(modname="transformers", reason="transformers is not installed")
 pytest.importorskip(modname="speechbrain", reason="speechbrain is not installed")
 
-import numpy as np  # noqa: E402
-import torch  # noqa: E402
+import numpy as np
+import torch
 
-from medkit.audio.transcription.sb_transcriber import SBTranscriber  # noqa: E402
-from medkit.core import ProvTracer  # noqa: E402
-from medkit.core.audio import MemoryAudioBuffer, Segment, Span  # noqa: E402
+from medkit.audio.transcription.sb_transcriber import SBTranscriber
+from medkit.core import ProvTracer
+from medkit.core.audio import MemoryAudioBuffer, Segment, Span
 
 _MOCK_MODEL_NAME = "mock-model"
 _SAMPLE_RATE = 16000
@@ -30,8 +30,10 @@ class _MockSpeechbrainASR:
         return cls()
 
     def transcribe_batch(self, wavs, wav_lengths):
-        assert isinstance(wavs, torch.Tensor) and wavs.ndim == 2
-        assert isinstance(wav_lengths, torch.Tensor) and wav_lengths.ndim == 1
+        assert isinstance(wavs, torch.Tensor)
+        assert wavs.ndim == 2
+        assert isinstance(wav_lengths, torch.Tensor)
+        assert wav_lengths.ndim == 1
 
         # for each wav in batch, return string containing sample count (allows
         # us to check that each audio input has corresponding output)
@@ -65,7 +67,6 @@ def _gen_segment(nb_samples) -> Segment:
 
 def test_basic():
     """Basic behavior"""
-
     transcriber = SBTranscriber(model=_MOCK_MODEL_NAME, output_label="transcribed_text", needs_decoder=False)
 
     seg_1 = _gen_segment(1000)
@@ -83,7 +84,6 @@ def test_basic():
 
 def test_no_formatting():
     """No reformatting of transcribed text (raw text as returned by speechbrain ASR)"""
-
     transcriber = SBTranscriber(
         model=_MOCK_MODEL_NAME,
         output_label="transcribed_text",

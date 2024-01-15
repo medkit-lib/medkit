@@ -44,7 +44,7 @@ def test__parse__entity_discontinued_span():
 def test__parse_entity_error():
     brat_entity = "T1	medication 36 46 Lisinopril"
     entity_id, entity_content = brat_entity.split("\t", maxsplit=1)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Impossible to parse entity."):
         _parse_entity(entity_id, entity_content)
 
 
@@ -61,14 +61,14 @@ def test__parse_relation():
 def test__parse_relation_error():
     brat_relation = "R1	treats  Arg1:T1\t"
     relation_id, relation_content = brat_relation.split("\t", maxsplit=1)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Impossible to parse relation."):
         _parse_relation(relation_id, relation_content)
 
 
 def test__parse_relation_in_events_error():
     brat_relation = "R1	treats Arg1:E1 Arg2:T1"
     relation_id, relation_content = brat_relation.split("\t", maxsplit=1)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Relations between events are not supported."):
         _parse_relation(relation_id, relation_content)
 
 
@@ -91,7 +91,7 @@ def test__parse_attribute_value():
 def test__parse_attribute_error():
     brat_attribute = "A2	severity "
     attribute_id, attribute_content = brat_attribute.split("\t", maxsplit=1)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Impossible to parse attribute."):
         _parse_attribute(attribute_id, attribute_content)
 
 
@@ -124,7 +124,7 @@ def test_document_get_augmented_entities():
     test_file = pathlib.Path("tests/data/brat/2_augmented_entities.ann")
     doc = parse_file(test_file)
     augmented_entities = doc.get_augmented_entities()
-    assert "T4" in augmented_entities.keys()
+    assert "T4" in augmented_entities
     entity = augmented_entities["T4"]
     assert entity.text == "entity1 entity2"
     assert entity.type == "And-Group"
@@ -140,15 +140,15 @@ def test_document_get_augmented_entities():
 def test_document_grouping():
     test_file = pathlib.Path("tests/data/brat/2_augmented_entities.ann")
     doc = parse_file(test_file, detect_groups=True)
-    assert "T1" not in doc.groups.keys()
+    assert "T1" not in doc.groups
     # Test And-Group
-    assert "T4" in doc.groups.keys()
+    assert "T4" in doc.groups
     and_group = doc.groups["T4"]
     assert and_group.type == "And-Group"
     entity1 = BratEntity(uid="T1", type="label1", span=[(30, 37)], text="entity1")
     assert entity1 in and_group.items
     # Test Or-Group
-    assert "T5" in doc.groups.keys()
+    assert "T5" in doc.groups
     or_group = doc.groups["T5"]
     assert or_group.type == "Or-Group"
     entity3 = BratEntity(uid="T3", type="label3", span=[(140, 147)], text="entity3")
@@ -223,7 +223,7 @@ TEST_CONFIG = [
 
 
 @pytest.mark.parametrize(
-    "top_values_by_attr,expected_values,expected_str",
+    ("top_values_by_attr", "expected_values", "expected_str"),
     TEST_CONFIG,
     ids=["no_values", "max_2_values", "all_values"],
 )

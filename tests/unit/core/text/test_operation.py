@@ -1,4 +1,4 @@
-from typing import List
+from __future__ import annotations
 
 import pytest
 
@@ -57,7 +57,7 @@ def test_create_text_operation(init_data, prov_enabled):
 def test_create_text_operation_extract(init_data):
     doc, words = init_data
 
-    def extract_annotations_from_doc(document: TextDocument) -> List[TextAnnotation]:
+    def extract_annotations_from_doc(document: TextDocument) -> list[TextAnnotation]:
         return document.anns.get()
 
     operation = create_text_operation(
@@ -83,13 +83,13 @@ def test_create_text_operation_filter(init_data):
         return False
 
     anns = doc.anns.get()
-    filter = create_text_operation(
+    filter_ = create_text_operation(
         function=keep_hello_segment,
         function_type=CustomTextOpType.FILTER,
     )
-    assert filter.description.name == "keep_hello_segment"
-    assert filter.description.config.get("function_type") == CustomTextOpType.FILTER.name
+    assert filter_.description.name == "keep_hello_segment"
+    assert filter_.description.config.get("function_type") == CustomTextOpType.FILTER.name
 
-    res: List[Segment] = filter.run(anns)
+    res: list[Segment] = filter_.run(anns)
     assert len(res) == 1
     assert res[0].text == "hello"

@@ -1,10 +1,13 @@
+from __future__ import annotations
+
 __all__ = ["Store", "GlobalStore"]
 
-from typing import Dict, Optional, Union
+from typing import TYPE_CHECKING, runtime_checkable
 
-from typing_extensions import Protocol, runtime_checkable
+from typing_extensions import Protocol
 
-from medkit.core.data_item import IdentifiableDataItem
+if TYPE_CHECKING:
+    from medkit.core.data_item import IdentifiableDataItem
 
 
 @runtime_checkable
@@ -14,26 +17,26 @@ class Store(Protocol):
     def store_data_item(self, data_item: IdentifiableDataItem, parent_id: str):
         pass
 
-    def get_data_item(self, data_item_id: str) -> Optional[IdentifiableDataItem]:
+    def get_data_item(self, data_item_id: str) -> IdentifiableDataItem | None:
         pass
 
-    def get_parent_item(self, data_item) -> Optional[IdentifiableDataItem]:
+    def get_parent_item(self, data_item) -> IdentifiableDataItem | None:
         pass
 
 
 class _DictStore:
     def __init__(self) -> None:
-        self._data_items_by_id: Dict[str, IdentifiableDataItem] = {}
-        self._parent_ids_by_id: Dict[str, str] = {}
+        self._data_items_by_id: dict[str, IdentifiableDataItem] = {}
+        self._parent_ids_by_id: dict[str, str] = {}
 
     def store_data_item(self, data_item: IdentifiableDataItem, parent_id: str):
         self._data_items_by_id[data_item.uid] = data_item
         self._parent_ids_by_id[data_item.uid] = parent_id
 
-    def get_data_item(self, data_item_id: str) -> Optional[IdentifiableDataItem]:
+    def get_data_item(self, data_item_id: str) -> IdentifiableDataItem | None:
         return self._data_items_by_id.get(data_item_id)
 
-    def get_parent_item(self, data_item_id: str) -> Optional[IdentifiableDataItem]:
+    def get_parent_item(self, data_item_id: str) -> IdentifiableDataItem | None:
         parent_id = self._parent_ids_by_id[data_item_id]
         return self._data_items_by_id.get(parent_id)
 
@@ -41,16 +44,15 @@ class _DictStore:
 class GlobalStore:
     """Global store"""
 
-    _store: Union[Store, None] = None
+    _store: Store | None = None
 
     @classmethod
     def init_store(cls, store: Store):
-        """
-        Initialize the global store for your application
+        """Initialize the global store for your application
 
         Parameters
         ----------
-        store
+        store : Store
             Store for all the data items
 
         Raises
@@ -61,16 +63,16 @@ class GlobalStore:
         if cls._store is None:
             cls._store = store
         else:
-            raise RuntimeError(
+            msg = (
                 "The global store has already been initialized. If it was not your"
                 " intention, please put this line at the beginning of your script to"
                 " make sure to set global store before any other initialization"
             )
+            raise RuntimeError(msg)
 
     @classmethod
     def get_store(cls) -> Store:
-        """
-        Returns the global store object
+        """Returns the global store object
 
         Returns
         -------
@@ -83,7 +85,5 @@ class GlobalStore:
 
     @classmethod
     def del_store(cls):
-        """
-        Delete the global store object
-        """
+        """Delete the global store object"""
         cls._store = None

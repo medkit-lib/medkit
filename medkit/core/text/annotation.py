@@ -4,7 +4,7 @@ __all__ = ["TextAnnotation", "Segment", "Entity", "Relation"]
 
 import abc
 import dataclasses
-from typing import Any, Dict, List, Optional, Set, Type
+from typing import TYPE_CHECKING, Any
 
 from typing_extensions import Self
 
@@ -12,9 +12,11 @@ from medkit.core import dict_conv
 from medkit.core.attribute import Attribute
 from medkit.core.attribute_container import AttributeContainer
 from medkit.core.id import generate_id
-from medkit.core.store import Store
 from medkit.core.text.entity_attribute_container import EntityAttributeContainer
 from medkit.core.text.span import AnySpan
+
+if TYPE_CHECKING:
+    from medkit.core.store import Store
 
 
 @dataclasses.dataclass(init=False)
@@ -23,34 +25,34 @@ class TextAnnotation(abc.ABC, dict_conv.SubclassMapping):
 
     Attributes
     ----------
-    uid:
+    uid : str
         Unique identifier of the annotation.
-    label:
+    label : str
         The label for this annotation (e.g., SENTENCE)
-    attrs:
+    attrs : AttributeContainer
         Attributes of the annotation. Stored in a
         :class:{~medkit.core.AttributeContainer} but can be passed as a list at
         init.
-    metadata:
+    metadata : dict of str to Any
         The metadata of the annotation
-    keys:
+    keys : set of str
         Pipeline output keys to which the annotation belongs to.
     """
 
     uid: str
     label: str
     attrs: AttributeContainer
-    metadata: Dict[str, Any]
-    keys: Set[str]
+    metadata: dict[str, Any]
+    keys: set[str]
 
     @abc.abstractmethod
     def __init__(
         self,
         label: str,
-        attrs: Optional[List[Attribute]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
-        attr_container_class: Type[AttributeContainer] = AttributeContainer,
+        attrs: list[Attribute] | None = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
+        attr_container_class: type[AttributeContainer] = AttributeContainer,
     ):
         if attrs is None:
             attrs = []
@@ -73,59 +75,59 @@ class TextAnnotation(abc.ABC, dict_conv.SubclassMapping):
         super().__init_subclass__()
 
     @classmethod
-    def from_dict(cls, ann_dict: Dict[str, Any]) -> Self:
+    def from_dict(cls, ann_dict: dict[str, Any]) -> Self:
         subclass = cls.get_subclass_for_data_dict(ann_dict)
         if subclass is None:
-            raise NotImplementedError(
+            msg = (
                 "TextAnnotation is an abstract class. Its class method `from_dict` is"
                 " only used for calling the correct subclass `from_dict`. Subclass is"
                 f" {subclass}"
             )
+            raise NotImplementedError(msg)
         return subclass.from_dict(ann_dict)
 
-    def to_dict(self) -> Dict[str, Any]:
-        raise NotImplementedError()
+    def to_dict(self) -> dict[str, Any]:
+        raise NotImplementedError
 
 
 @dataclasses.dataclass(init=False)
 class Segment(TextAnnotation):
-    """
-    Text segment referencing part of an :class:`~medkit.core.text.TextDocument`.
+    """Text segment referencing part of an :class:`~medkit.core.text.TextDocument`.
 
     Attributes
     ----------
-    uid:
+    uid : str
         The segment identifier.
-    label:
+    label : str
         The label for this segment (e.g., SENTENCE)
-    text:
+    text : str
         Text of the segment.
-    spans:
+    spans : list of AnySpan
         List of spans indicating which parts of the segment text correspond to
         which part of the document's full text.
-    attrs:
+    attrs : AttributeContainer
         Attributes of the segment. Stored in a
         :class:{~medkit.core.AttributeContainer} but can be passed as a list at
         init.
-    metadata:
+    metadata : dict of str to Any
         The metadata of the segment
-    keys:
+    keys : set of str
         Pipeline output keys to which the segment belongs to.
     """
 
-    spans: List[AnySpan]
+    spans: list[AnySpan]
     text: str
 
     def __init__(
         self,
         label: str,
         text: str,
-        spans: List[AnySpan],
-        attrs: Optional[List[Attribute]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
-        store: Optional[Store] = None,
-        attr_container_class: Type[AttributeContainer] = AttributeContainer,
+        spans: list[AnySpan],
+        attrs: list[Attribute] | None = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
+        store: Store | None = None,
+        attr_container_class: type[AttributeContainer] = AttributeContainer,
     ):
         super().__init__(
             label=label,
@@ -142,31 +144,29 @@ class Segment(TextAnnotation):
         length = sum(s.length for s in self.spans)
         assert len(self.text) == length, "Spans length does not match text length"
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         spans = [s.to_dict() for s in self.spans]
         attrs = [a.to_dict() for a in self.attrs]
-        segment_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            text=self.text,
-            spans=spans,
-            attrs=attrs,
-            metadata=self.metadata,
-        )
+        segment_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "text": self.text,
+            "spans": spans,
+            "attrs": attrs,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, segment_dict)
         return segment_dict
 
     @classmethod
-    def from_dict(cls, segment_dict: Dict[str, Any]) -> Self:
-        """
-        Creates a Segment from a dict
+    def from_dict(cls, segment_dict: dict[str, Any]) -> Self:
+        """Creates a Segment from a dict
 
         Parameters
         ----------
-        segment_dict: dict
+        segment_dict : dict of str to Any
             A dictionary from a serialized segment as generated by to_dict()
         """
-
         spans = [AnySpan.from_dict(s) for s in segment_dict["spans"]]
         attrs = [Attribute.from_dict(a) for a in segment_dict["attrs"]]
         return cls(
@@ -181,27 +181,26 @@ class Segment(TextAnnotation):
 
 @dataclasses.dataclass(init=False)
 class Entity(Segment):
-    """
-    Text entity referencing part of an :class:`~medkit.core.text.TextDocument`.
+    """Text entity referencing part of an :class:`~medkit.core.text.TextDocument`.
 
     Attributes
     ----------
-    uid:
+    uid : str
         The entity identifier.
-    label:
+    label : str
         The label for this entity (e.g., DISEASE)
-    text:
+    text : str
         Text of the entity.
-    spans:
+    spans : list of AnySpan
         List of spans indicating which parts of the entity text correspond to
         which part of the document's full text.
-    attrs:
+    attrs : EntityAttributeContainer
         Attributes of the entity. Stored in a
         :class:{~medkit.core.EntityAttributeContainer} but can be passed as a list at
         init.
-    metadata:
+    metadata : dict of str to Any
         The metadata of the entity
-    keys:
+    keys : set of str
         Pipeline output keys to which the entity belongs to.
     """
 
@@ -211,36 +210,35 @@ class Entity(Segment):
         self,
         label: str,
         text: str,
-        spans: List[AnySpan],
-        attrs: Optional[List[Attribute]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
-        store: Optional[Store] = None,
-        attr_container_class: Type[EntityAttributeContainer] = EntityAttributeContainer,
+        spans: list[AnySpan],
+        attrs: list[Attribute] | None = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
+        store: Store | None = None,
+        attr_container_class: type[EntityAttributeContainer] = EntityAttributeContainer,
     ):
         super().__init__(label, text, spans, attrs, metadata, uid, store, attr_container_class)
 
 
 @dataclasses.dataclass(init=False)
 class Relation(TextAnnotation):
-    """
-    Relation between two text entities.
+    """Relation between two text entities.
 
     Attributes
     ----------
-    uid:
+    uid : str
         The identifier of the relation
-    label:
+    label : str
         The relation label
-    source_id:
+    source_id : str
         The identifier of the entity from which the relation is defined
-    target_id:
+    target_id : str
         The identifier of the entity to which the relation is defined
-    attrs:
+    attrs : AttributeContainer
         The attributes of the relation
-    metadata:
+    metadata : dict of str to Any
         The metadata of the relation
-    keys:
+    keys : set of str
         Pipeline output keys to which the relation belongs to
     """
 
@@ -252,11 +250,11 @@ class Relation(TextAnnotation):
         label: str,
         source_id: str,
         target_id: str,
-        attrs: Optional[List[Attribute]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
-        uid: Optional[str] = None,
-        store: Optional[Store] = None,
-        attr_container_class: Type[AttributeContainer] = AttributeContainer,
+        attrs: list[Attribute] | None = None,
+        metadata: dict[str, Any] | None = None,
+        uid: str | None = None,
+        store: Store | None = None,
+        attr_container_class: type[AttributeContainer] = AttributeContainer,
     ):
         super().__init__(
             label=label,
@@ -269,30 +267,28 @@ class Relation(TextAnnotation):
         self.source_id = source_id
         self.target_id = target_id
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         attrs = [a.to_dict() for a in self.attrs]
-        relation_dict = dict(
-            uid=self.uid,
-            label=self.label,
-            source_id=self.source_id,
-            target_id=self.target_id,
-            attrs=attrs,
-            metadata=self.metadata,
-        )
+        relation_dict = {
+            "uid": self.uid,
+            "label": self.label,
+            "source_id": self.source_id,
+            "target_id": self.target_id,
+            "attrs": attrs,
+            "metadata": self.metadata,
+        }
         dict_conv.add_class_name_to_data_dict(self, relation_dict)
         return relation_dict
 
     @classmethod
-    def from_dict(cls, relation_dict: Dict[str, Any]) -> Self:
-        """
-        Creates a Relation from a dict
+    def from_dict(cls, relation_dict: dict[str, Any]) -> Self:
+        """Creates a Relation from a dict
 
         Parameters
         ----------
-        relation_dict: dict
+        relation_dict : dict of str to Any
             A dictionary from a serialized relation as generated by to_dict()
         """
-
         attrs = [Attribute.from_dict(a) for a in relation_dict["attrs"]]
         return cls(
             uid=relation_dict["uid"],

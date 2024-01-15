@@ -5,7 +5,7 @@ __all__ = ["SimstringMatcher", "SimstringMatcherRule", "SimstringMatcherNormaliz
 import dataclasses
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import yaml
 from typing_extensions import Literal
@@ -23,8 +23,7 @@ _SIMSTRING_DB_FILENAME = "simstring"
 
 @dataclasses.dataclass
 class SimstringMatcherRule(BaseSimstringMatcherRule):
-    """
-    Rule to use with :class:`~.SimstringMatcher`
+    """Rule to use with :class:`~.SimstringMatcher`
 
     Attributes
     ----------
@@ -43,10 +42,8 @@ class SimstringMatcherRule(BaseSimstringMatcherRule):
     """
 
     @staticmethod
-    def from_dict(data: Dict[str, Any]) -> SimstringMatcherRule:
-        """
-        Creates a SimStringMatcherRule from a dict.
-        """
+    def from_dict(data: dict[str, Any]) -> SimstringMatcherRule:
+        """Creates a SimStringMatcherRule from a dict."""
         return SimstringMatcherRule(
             term=data["term"],
             label=data["label"],
@@ -57,8 +54,7 @@ class SimstringMatcherRule(BaseSimstringMatcherRule):
 
 
 class SimstringMatcherNormalization(BaseSimstringMatcherNormalization):
-    """
-    Descriptor of normalization attributes to attach to entities
+    """Descriptor of normalization attributes to attach to entities
     created from a :class:`~.SimstringMatcherRule`
 
     Attributes
@@ -74,7 +70,7 @@ class SimstringMatcherNormalization(BaseSimstringMatcherNormalization):
     """
 
     @staticmethod
-    def from_dict(data: Dict[str, Any]) -> SimstringMatcherNormalization:
+    def from_dict(data: dict[str, Any]) -> SimstringMatcherNormalization:
         """Creates a SimstringMatcherNormalization object from a dict"""
         return SimstringMatcherNormalization(
             kb_name=data["kb_name"],
@@ -85,8 +81,7 @@ class SimstringMatcherNormalization(BaseSimstringMatcherNormalization):
 
 
 class SimstringMatcher(BaseSimstringMatcher):
-    """
-    Entity matcher relying on string similarity
+    """Entity matcher relying on string similarity
 
     Uses the `simstring` fuzzy matching algorithm
     (http://chokkan.org/software/simstring/).
@@ -98,57 +93,55 @@ class SimstringMatcher(BaseSimstringMatcher):
 
     def __init__(
         self,
-        rules: List[SimstringMatcherRule],
+        rules: list[SimstringMatcherRule],
         threshold: float = 0.9,
         min_length: int = 3,
         max_length: int = 50,
         similarity: Literal["cosine", "dice", "jaccard", "overlap"] = "jaccard",
-        spacy_tokenization_language: Optional[str] = None,
-        blacklist: Optional[List[str]] = None,
+        spacy_tokenization_language: str | None = None,
+        blacklist: list[str] | None = None,
         same_beginning: bool = False,
-        attrs_to_copy: Optional[List[str]] = None,
-        name: Optional[str] = None,
-        uid: Optional[str] = None,
+        attrs_to_copy: list[str] | None = None,
+        name: str | None = None,
+        uid: str | None = None,
     ):
-        """
-        Parameters
+        """Parameters
         ----------
-        rules:
+        rules: list of SimstringMatcherRule
             Rules to use for matching entities.
-        min_length:
+        threshold: float, default=0.9
+            Minimum similarity (between 0.0 and 1.0) between a rule term
+            and the text of an entity matched on that rule.
+        min_length: int, default=3
             Minimum number of chars in matched entities.
-        max_length:
+        max_length: int, default=50
             Maximum number of chars in matched entities.
-        threshold:
-            Minimum similarity (between 0.0 and 1.0) between a rule term and the
-            text of an entity matched on that rule.
-        similarity:
+        similarity: str, default="jaccard"
             Similarity metric to use.
-        spacy_tokenization_language:
+        spacy_tokenization_language: str, optional
             2-letter code (ex: "fr", "en", etc.) designating the language of the
             spacy model to use for tokenization. If provided, spacy will be used
             to tokenize input segments and filter out some tokens based on their
             part-of-speech tags, such as determinants, conjunctions and
             prepositions. If `None`, a simple regexp based tokenization will be
             used, which is faster but might give more false positives.
-        blacklist:
+        blacklist: list of str, optional
             Optional list of exact terms to ignore.
-        same_beginning:
+        same_beginning: bool, default=False
             Ignore all matches that start with a different character than the
             term of the rule. This can be convenient to get rid of false
             positives on words that are very similar but have opposite meanings
             because of a preposition, for instance "activation" and
             "inactivation".
-        attrs_to_copy:
+        attrs_to_copy: list of str, optional
             Labels of the attributes that should be copied from the source
             segment to the created entity. Useful for propagating context
             attributes (negation, antecedent, etc.).
-        name:
+        name: str, optional
             Name describing the matcher (defaults to the class name).
-        uid:
+        uid: str, optional
             Identifier of the matcher.
         """
-
         self._temp_dir = tempfile.TemporaryDirectory()
         rules_db_file = Path(self._temp_dir.name) / _RULES_DB_FILENAME
         simstring_db_file = Path(self._temp_dir.name) / _SIMSTRING_DB_FILENAME
@@ -175,16 +168,15 @@ class SimstringMatcher(BaseSimstringMatcher):
         )
 
     @staticmethod
-    def load_rules(path_to_rules: Path, encoding: Optional[str] = None) -> List[SimstringMatcherRule]:
-        """
-        Load all rules stored in a yml file
+    def load_rules(path_to_rules: Path, encoding: str | None = None) -> list[SimstringMatcherRule]:
+        """Load all rules stored in a yml file
 
         Parameters
         ----------
         path_to_rules
             The path to a yml file containing a list of mappings with the same
             structure as :class:`~.SimstringMatcherRule`
-        encoding
+        encoding: str, optional
             The encoding of the file to open
 
         Returns
@@ -201,34 +193,26 @@ class SimstringMatcher(BaseSimstringMatcher):
             data = loader.construct_mapping(node)
             if "kb_name" in data:
                 return SimstringMatcherNormalization(**data)
-            else:
-                return SimstringMatcherRule(**data)
+            return SimstringMatcherRule(**data)
 
         _Loader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _construct_mapping)
 
-        with open(path_to_rules, encoding=encoding) as f:
-            rules = yaml.load(f, Loader=_Loader)
-        return rules
+        with Path(path_to_rules).open(encoding=encoding) as fp:
+            return yaml.load(fp, Loader=_Loader)  # noqa: S506
 
     @staticmethod
-    def save_rules(
-        rules: List[SimstringMatcherRule],
-        path_to_rules: Path,
-        encoding: Optional[str] = None,
-    ):
-        """
-        Store rules in a yml file
+    def save_rules(rules: list[SimstringMatcherRule], path_to_rules: Path, encoding: str | None = None):
+        """Store rules in a yml file
 
         Parameters
         ----------
-        rules
+        rules: list of SimstringMatcherRule
             The rules to save
-        path_to_rules
+        path_to_rules: Path
             The path to a yml file that will contain the rules
-        encoding
+        encoding: str, optional
             The encoding of the yml file
         """
-
-        with open(path_to_rules, mode="w", encoding=encoding) as f:
+        with Path(path_to_rules).open(mode="w", encoding=encoding) as fp:
             rules_data = [dataclasses.asdict(r) for r in rules]
-            yaml.safe_dump(rules_data, f)
+            yaml.safe_dump(rules_data, fp)
