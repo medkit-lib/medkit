@@ -38,24 +38,24 @@ def extract_anns_and_attrs_from_spacy_doc(
 
     Parameters
     ----------
-    spacy_doc:
+    spacy_doc : Doc
          A Spacy Doc with spans to be converted
-    medkit_source_ann:
+    medkit_source_ann : Segment, optional
         Segment used to rebuild spans referencing the original text
-    entities:
+    entities : list of str, optional
         Labels of entities to be extracted
         If `None` (default) all new entities will be extracted as annotations
-    span_groups:
+    span_groups : list of str, optional
         Name of span groups to be extracted
         If `None` (default) all new spans will be extracted as annotations
-    attrs:
+    attrs : list of str, optional
         Name of custom attributes to extract from the annotations that will be included.
         If `None` (default) all the custom attributes will be extracted
-    attribute_factories:
+    attribute_factories : dict of str to Callable, optional
         Mapping of factories in charge of converting spacy attributes to medkit
         attributes. Factories will receive a spacy span and an attribute label
         when called. The key in the mapping is the attribute label.
-    rebuild_medkit_anns_and_attrs:
+    rebuild_medkit_anns_and_attrs : bool, default=False
         If True the annotations and attributes with medkit ids will become
         new annotations/attributes with new ids.
         If False (default) the annotations and attributes with medkit ids are not
@@ -63,9 +63,9 @@ def extract_anns_and_attrs_from_spacy_doc(
 
     Returns
     -------
-    annotations: List[~medkit.core.text.Segment]
+    annotations: list of Segment
         Segments extracted from the spacy Doc object
-    attributes_by_ann: Dict[str, List[Attribute]]]
+    attributes_by_ann: dict of str to list of Attribute
         Attributes extracted for each annotation, the key is a medkit uid
 
     Raises
@@ -137,12 +137,12 @@ def extract_anns_and_attrs_from_spacy_doc(
 
             if medkit_id is None or rebuild_medkit_anns_and_attrs:
                 # create new segment annotation
-                text, spans = _get_text_and_spans_from_span_spacy(
+                text, new_spans = _get_text_and_spans_from_span_spacy(
                     span_spacy=span_spacy, medkit_source_ann=medkit_source_ann
                 )
                 segment = Segment(
                     label=label,
-                    spans=spans,
+                    spans=new_spans,
                     text=text,
                     attrs=[],
                     metadata={"name": span_spacy.label_},

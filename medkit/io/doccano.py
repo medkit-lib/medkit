@@ -316,7 +316,7 @@ class DoccanoInputConverter:
         This character is the only indicator available to warn
         if there are alignment problems in the documents
         """
-        if self.task == DoccanoTask.RELATION_EXTRACTION or self.task == DoccanoTask.SEQUENCE_LABELING:
+        if self.task in (DoccanoTask.RELATION_EXTRACTION, DoccanoTask.SEQUENCE_LABELING):
             nb_docs_with_warning = sum(document.text.find("\r\n") != -1 for document in documents)
 
             if nb_docs_with_warning > 0:

@@ -132,7 +132,7 @@ class SectionTokenizer(SegmentationOperation):
 
             # add section name in metadata
             metadata = {"name": name}
-            section = Segment(
+            new_section = Segment(
                 label=self.output_label,
                 spans=spans,
                 text=text,
@@ -141,13 +141,13 @@ class SectionTokenizer(SegmentationOperation):
 
             # add section name in section attribute
             attr = Attribute(label=self.output_label, value=name)
-            section.attrs.add(attr)
+            new_section.attrs.add(attr)
 
             if self._prov_tracer is not None:
-                self._prov_tracer.add_prov(section, self.description, source_data_items=[segment])
+                self._prov_tracer.add_prov(new_section, self.description, source_data_items=[segment])
                 self._prov_tracer.add_prov(attr, self.description, source_data_items=[segment])
 
-            yield section
+            yield new_section
 
     def _get_sections_to_rename(self, match: list[tuple]):
         match_type = [m[0] for m in match]

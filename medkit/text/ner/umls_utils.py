@@ -209,7 +209,7 @@ def load_semgroups_by_semtype() -> dict[str, str]:
     Dict[str, str]
         Mapping between semtype TUIs and corresponding semgroup
     """
-    global _SEMGROUPS_BY_SEMTYPE
+    global _SEMGROUPS_BY_SEMTYPE  # noqa: PLW0603
     if _SEMGROUPS_BY_SEMTYPE is None:
         _SEMGROUPS_BY_SEMTYPE = {}
         with Path(_UMLS_SEMGROUPS_FILE).open() as fp:

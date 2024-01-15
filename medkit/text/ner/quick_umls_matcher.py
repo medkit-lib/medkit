@@ -30,7 +30,7 @@ _spacy_language_map_fixed = False
 
 
 def _fix_spacy_language_map():
-    global _spacy_language_map_fixed
+    global _spacy_language_map_fixed  # noqa: PLW0603
     if _spacy_language_map_fixed:
         return
 

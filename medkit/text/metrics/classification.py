@@ -178,7 +178,7 @@ class TextClassificationEvaluator:
             A value of 1 indicates perfect reliability between annotators; zero or lower indicates
             absence of reliability.
         """
-        if len(docs_annotators) < 2 or not isinstance(docs_annotators[0], list):
+        if len(docs_annotators) < 2 or not isinstance(docs_annotators[0], list):  # noqa: PLR2004
             msg = "'docs_annotators' should contain at least two list of TextDocuments to compare"
             raise ValueError(msg)
 

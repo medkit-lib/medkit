@@ -32,7 +32,7 @@ def _get_doc_by_task(task: DoccanoTask):
     # the same doc, the output format changes
     doc = TextDocument(text="medkit was created in 2022")
 
-    if task == DoccanoTask.RELATION_EXTRACTION or task == DoccanoTask.SEQUENCE_LABELING:
+    if task in (DoccanoTask.RELATION_EXTRACTION, DoccanoTask.SEQUENCE_LABELING):
         medkit_anns = [
             Entity(label="ORG", spans=[Span(0, 6)], text="medkit", uid="e0"),
             Entity(label="DATE", spans=[Span(22, 26)], text="2022", uid="e1"),

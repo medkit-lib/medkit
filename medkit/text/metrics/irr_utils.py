@@ -50,11 +50,11 @@ def _compute_observed_disagreement(values_by_unit_matrix: np.ndarray) -> float:
 
     do = 0
     for u, unit in enumerate(matrix_disagreement.T):
-        unit = unit[unit > 0]
-        for n in range(len(unit)):
+        positive_unit = unit[unit > 0]
+        for n in range(len(positive_unit)):
             # only nominal weight is supported in this function
             # perfect agreement seen as 0 disagreement
-            p_unit = np.dot(unit[n], unit[n + 1 :]) / (total_by_unit[u] - 1)
+            p_unit = np.dot(positive_unit[n], positive_unit[n + 1 :]) / (total_by_unit[u] - 1)
             do += np.sum(p_unit)
     return do
 

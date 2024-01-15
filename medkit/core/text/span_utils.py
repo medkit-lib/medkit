@@ -86,12 +86,12 @@ def replace(
     offset = 0
     replacement_lengths = []
     for (range_start, range_end), rep_text in zip(ranges, replacement_texts):
-        range_start += offset
-        range_end += offset
-        text = text[:range_start] + rep_text + text[range_end:]
+        new_start = range_start + offset
+        new_end = range_end + offset
+        text = text[:new_start] + rep_text + text[new_end:]
 
         rep_length = len(rep_text)
-        offset += rep_length - (range_end - range_start)
+        offset += rep_length - (new_end - new_start)
         replacement_lengths.append(rep_length)
 
     spans = _replace_in_spans(spans, ranges, replacement_lengths)
@@ -234,10 +234,10 @@ def remove(
 
     offset = 0
     for range_start, range_end in ranges:
-        range_start += offset
-        range_end += offset
-        text = text[:range_start] + text[range_end:]
-        offset -= range_end - range_start
+        new_start = range_start + offset
+        new_end = range_end + offset
+        text = text[:new_start] + text[new_end:]
+        offset -= new_end - new_start
     spans = _remove_in_spans(spans, ranges)
     return text, spans
 
@@ -349,8 +349,8 @@ def insert(
     offset = 0
     insertion_lengths = []
     for position, insertion_text in zip(positions, insertion_texts):
-        position += offset
-        text = text[:position] + insertion_text + text[position:]
+        new_position = position + offset
+        text = text[:new_position] + insertion_text + text[new_position:]
 
         insertion_length = len(insertion_text)
         offset += insertion_length

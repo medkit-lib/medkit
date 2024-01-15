@@ -483,16 +483,17 @@ def _parse_attribute(attribute_id: str, attribute_content: str) -> BratAttribute
         Raises when the attribute can't be parsed
     """
     attribute_arguments = attribute_content.strip().split(" ", maxsplit=2)
-    if len(attribute_arguments) < 2:
+
+    try:
+        attribute_name, attribute_target = attribute_arguments[:2]
+    except IndexError as err:
         msg = "Impossible to parse attribute."
-        raise ValueError(msg)
+        raise ValueError(msg) from err
 
-    attribute_name = attribute_arguments[0]
-    attribute_target = attribute_arguments[1]
-    attribute_value = None
-
-    if len(attribute_arguments) > 2:
+    try:
         attribute_value = attribute_arguments[2].strip()
+    except IndexError:
+        attribute_value = None
 
     return BratAttribute(
         attribute_id.strip(),
@@ -523,16 +524,18 @@ def _parse_note(note_id: str, note_content: str) -> BratNote:
         Raises when the note can't be parsed
     """
     parts = note_content.split("\t", maxsplit=1)
-    if len(parts) != 2:
+    try:
+        note_arguments, note_value = parts
+    except ValueError as err:
         msg = "Impossible to parse the input note"
-        raise ValueError(msg)
-    note_arguments, note_value = parts
+        raise ValueError(msg) from err
 
     parts = note_arguments.split(" ", maxsplit=1)
-    if len(parts) != 2:
+    try:
+        note_type, note_target = parts
+    except ValueError as err:
         msg = "Impossible to parse the input note"
-        raise ValueError(msg)
-    note_type, note_target = parts
+        raise ValueError(msg) from err
 
     return BratNote(
         uid=note_id.strip(),
