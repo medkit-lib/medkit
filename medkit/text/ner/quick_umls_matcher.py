@@ -137,14 +137,14 @@ class QuickUMLSMatcher(NEROperation):
         """
         install = _QuickUMLSInstall(version, language, lowercase, normalize_unicode)
         path = cls._install_paths.get(install)
-        if path is None:
+        if not path:
             msg = (
                 f"Couldn't find any Quick- UMLS install for version={version},"
                 f" language={language}, lowercase={lowercase},"
                 f" normalize_unicode={normalize_unicode}.\nRegistered installs:"
                 f" {cls._install_paths}"
             )
-            raise Exception(msg)
+            raise ValueError(msg)
         return path
 
     def __init__(

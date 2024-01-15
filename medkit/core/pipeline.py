@@ -291,13 +291,13 @@ class Pipeline:
         for input_key in self.input_keys:
             if input_key not in steps_input_keys:
                 msg = f"Pipeline input key {input_key} does not correspond to any step input key"
-                raise Exception(msg)
+                raise KeyError(msg)
 
         steps_output_keys = [k for s in self.steps for k in s.output_keys]
         for output_key in self.output_keys:
             if output_key not in steps_output_keys:
                 msg = f"Pipeline output key {output_key} does not correspond to any step output key"
-                raise Exception(msg)
+                raise KeyError(msg)
 
         for step in self.steps:
             for input_key in step.input_keys:
@@ -306,12 +306,12 @@ class Pipeline:
                         f"Step input key {input_key} does not correspond to any step"
                         " output key nor any pipeline input key"
                     )
-                    raise Exception(msg)
+                    raise KeyError(msg)
 
         available_keys = self.input_keys.copy()
         for step in self.steps:
             for input_key in step.input_keys:
                 if input_key not in available_keys:
                     msg = f"Step input key {input_key} is not available yet at this step"
-                    raise Exception(msg)
+                    raise KeyError(msg)
             available_keys += step.output_keys

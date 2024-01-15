@@ -109,13 +109,13 @@ class PASpeakerDetector(SegmentationOperation):
         self._pipeline = Pipeline.from_pretrained(model, use_auth_token=hf_auth_token)
         if self._pipeline is None:
             msg = f"Could not instantiate pretrained pipeline with '{model}'"
-            raise Exception(msg)
+            raise ValueError(msg)
         if not isinstance(self._pipeline, SpeakerDiarization):
             msg = (
                 f"'{model}' does not correspond to a SpeakerDiarization pipeline. Got"
                 f" object of type {type(self._pipeline)}"
             )
-            raise Exception(msg)
+            raise TypeError(msg)
         self._pipeline.to(torch_device)
         self._pipeline.segmentation_batch_size = segmentation_batch_size
         self._pipeline.embedding_batch_size = embedding_batch_size

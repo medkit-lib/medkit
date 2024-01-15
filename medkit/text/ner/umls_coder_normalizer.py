@@ -284,7 +284,7 @@ class UMLSCoderNormalizer(Operation):
                     f" embeddings pre-computed with different params: {params} vs"
                     f" {existing_params}"
                 )
-                raise Exception(msg)
+                raise ValueError(msg)
 
             # nothing to do, embeddings have already been computed
             return

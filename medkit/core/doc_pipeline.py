@@ -93,7 +93,7 @@ class DocPipeline(DocOperation, Generic[AnnotationType]):
                     "Pipeline expects more than 1 input, you must provide a"
                     " labels_by_input_key mapping to the DocPipeline"
                 )
-                raise Exception(msg)
+                raise ValueError(msg)
             all_input_anns = [[doc.raw_segment]]
         else:
             # retrieve annotations by their label(s) for each input key

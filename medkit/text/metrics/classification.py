@@ -61,7 +61,7 @@ class TextClassificationEvaluator:
                     "The type of the attr value is not supported by this evaluator."
                     "Only str,int or bool are supported."
                 )
-                raise ValueError(msg)
+                raise TypeError(msg)
 
             attr_values.append(attr_value)
         return attr_values

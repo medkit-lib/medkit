@@ -89,7 +89,7 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
         )
     else:
         msg = f"Unexpected value type: {type(value)} for spaCy attribute with label '{spacy_label}'"
-        raise ValueError(msg)
+        raise TypeError(msg)
 
 
 def build_duration_attribute(spacy_span: SpacySpan, spacy_label: str) -> DurationAttribute:

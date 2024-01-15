@@ -311,7 +311,7 @@ select = [
   # Pylint
   "PL",
   # tryceratops
-  #"TRY",
+  "TRY",
   # NumPy-specific rules
   "NPY",
   # Perflint

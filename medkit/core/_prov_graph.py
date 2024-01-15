@@ -146,19 +146,19 @@ class ProvGraph:
         for node_id, node in self._nodes_by_id.items():
             if node.source_ids and node.operation_id is None:
                 msg = f"Node with identifier {node_id} has source ids but no operation"
-                raise Exception(msg)
+                raise ValueError(msg)
             for source_id in node.source_ids:
                 source_node = self._nodes_by_id.get(source_id)
                 if source_node is None:
                     msg = f"Source identifier {source_id} in node with identifier {node_id} has no corresponding node"
-                    raise Exception(msg)
+                    raise ValueError(msg)
                 if node_id not in source_node.derived_ids:
                     msg = (
                         f"Node with identifier {node_id} has source item with"
                         f" identifier {source_id} but reciprocate derivation link does"
                         " not exists"
                     )
-                    raise Exception(msg)
+                    raise ValueError(msg)
             for derived_id in node.derived_ids:
                 derived_node = self._nodes_by_id.get(derived_id)
                 if derived_node is None:
@@ -166,14 +166,14 @@ class ProvGraph:
                         f"Derived identifier {derived_id} in node with identifier"
                         f" {node_id} has no corresponding node"
                     )
-                    raise Exception(msg)
+                    raise ValueError(msg)
                 if node_id not in derived_node.source_ids:
                     msg = (
                         f"Node with identifier {node_id} has derived item with"
                         f" identifier {derived_id} but reciprocate source link does not"
                         " exists"
                     )
-                    raise Exception(msg)
+                    raise ValueError(msg)
         for sub_graph in self._sub_graphs_by_op_id.values():
             sub_graph.check_sanity()
 

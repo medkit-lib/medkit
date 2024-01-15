@@ -195,7 +195,7 @@ class UMLSMatcher(BaseSimstringMatcher):
                     f" with different params: {existing_cache_params} vs"
                     f" {cache_params}"
                 )
-                raise Exception(msg)
+                raise ValueError(msg)
         else:
             logger.info("Building simstring database from UMLS terms, this may take a while")
             rules = self._build_rules(

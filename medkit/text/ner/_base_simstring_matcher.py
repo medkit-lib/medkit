@@ -227,9 +227,9 @@ class BaseSimstringMatcher(NEROperation):
         self._rules_db = shelve.open(str(rules_db_file), flag="r")  # noqa: S301
 
         if spacy_tokenization_language is not None:
-            if spacy is None:
+            if not spacy:
                 msg = "Spacy module must be installed to use the 'spacy_language_code' init parameter"
-                raise Exception(msg)
+                raise ModuleNotFoundError(msg)
             if spacy_tokenization_language == "en":
                 spacy_model = "en_core_web_sm"
             else:

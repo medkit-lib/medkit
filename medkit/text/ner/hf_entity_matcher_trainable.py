@@ -177,7 +177,7 @@ class HFEntityMatcherTrainable:
                 "This operation only works with model that have a fast tokenizer. Check"
                 " the hugging face documentation to find the required tokenizer"
             )
-            raise ValueError(msg)
+            raise TypeError(msg)
 
         # we intentionally do not pad at the encoding stage
         # so we disable this warning
