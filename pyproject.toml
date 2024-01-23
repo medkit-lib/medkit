@@ -366,7 +366,7 @@ ignore_packages = [
 
 [tool.commitizen]
 name = "cz_pydata"
-version_provider = "poetry"
+version_provider = "pep621"
 update_changelog_on_bump = true
 bump_message = "REL: Release version $new_version"
 changelog_start_rev = "0.12.0"
