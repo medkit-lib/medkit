@@ -1,81 +1,83 @@
 # Installation
 
-The medkit package supports a version of python >= 3.8.
+## Supported Python versions
+
+`medkit` requires a distribution of Python with a minimum version of 3.8.
+
+:::{note}
+It is recommended to install `medkit` in a virtual or conda environment.
+:::
 
 ## Install an official version
 
-:::{important}
-From 0.4.1 version, medkit package (named **medkit-lib**) is available on
-[PyPi](https://pypi.org/project/medkit-lib/).
-:::
+Releases of `medkit` are published on [PyPI](https://pypi.org/project/medkit-lib/)
+under the name **medkit-lib**.
 
-Releases are published on <https://github.com/medkit-lib/medkit/releases>.
+To install `medkit` with basic functionalities:
 
-To install medkit :
-
-```
-# Install medkit with required dependencies
+```console
 python -m pip install 'medkit-lib'
+```
 
-# Install medkit with all extra dependencies
+To install `medkit` with all functionalities:
+
+```console
 python -m pip install 'medkit-lib[all]'
 ```
 
-:::{note}
-We recommend to install the medkit package in a virtual or conda environment.
-:::
+Using `conda`, `mamba` or `micromamba`:
 
-Here is an example with conda:
-```
-conda create -n medkit-tuto python=3.8
-conda activate medkit-tuto
+```console
+conda create -n medkit python=3.8
+conda activate medkit
 pip install 'medkit-lib[all]'
 ```
 
 ## Install a development version
 
-If you want to contribute, clone the `medkit` repository locally:
-  - SSH: `git clone  git@github.com:medkit-lib/medkit.git`
-  - HTTPS: `git clone https://github.com/medkit-lib/medkit.git`
+To start contributing, first clone the `medkit` [repository](https://github.com/medkit-lib/medkit.git) locally:
 
-[Poetry](https://python-poetry.org) is used for managing dependencies and
-packaging medkit.
+Using Git:
 
-```shell
-cd medkit
-poetry install
+```console
+git clone https://github.com/medkit-lib/medkit.git
 ```
 
-If you want to also install the extras dependencies, you may use:
-```shell
-poetry install --all-extras
+or the GitHub CLI:
+
+```console
+gh repo clone medkit-lib/medkit.git
 ```
 
-For documentation:
-```shell
-poetry install --with docs
+This project uses [Hatch](https://hatch.pypa.io/) to manage its dependencies.
+Please follow its [installation instructions](https://hatch.pypa.io/latest/install/).
 
-make docs # for generating documentation
+The project can be deployed in a virtual environment and tested with:
+
+```console
+hatch run test
 ```
 
-Then, a `.venv` folder is created at the root of the project. To activate the
-virtual environment:
-```shell
-source .venv/bin/activate
+The corresponding documentation can be built with:
+
+```console
+hatch run docs:build
 ```
 
-To make sure everything is set up properly, you may run the tests :
+Or served with interactive reloading with:
 
-```
-# For unit/small tests
-pytest -v tests/unit
+```console
+hatch run docs:serve
 ```
 
-## Troubleshooting
+Code linting and formatting can be applied with:
 
-Sometimes, for documentation and/or testing, you may need some additional packages:
+```console
+hatch fmt
+```
 
+Additional checks may be run using [pre-commit](https://pre-commit.com/):
+
+```console
+pre-commit run --all-files
 ```
-sudo apt-get install -y gcc g++ libsndfile1 graphviz
-```
-You may also refer to CI file (e.g., .gitlab-ci.yml) for up-to-date information.

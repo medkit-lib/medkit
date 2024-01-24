@@ -160,13 +160,12 @@ all = [
     webrtc-voice-detector]""",
 ]
 docs = [
-  "jupyter-book==1.0.*",
-  "matplotlib",
-  "pandas>=1.4",
-  "spacy>=3.4",
+  "myst-parser",
+  "numpydoc",
+  "sphinx>=7,<8",
+  "sphinx-autoapi",
   "sphinx-autobuild",
-  "sphinx-book-theme>=1.1.2",
-  "sphinx-toolbox",
+  "sphinx-book-theme",
   "sphinxcontrib-mermaid",
 ]
 
@@ -205,19 +204,19 @@ cov = [
 ]
 
 [tool.hatch.envs.docs]
-features = [
-  "docs",
-  "metrics-ner",
-  "nlstruct",
-  "srt-io-converter",
-  "webrtc-voice-detector",
+dependencies = [
+  "myst-parser",
+  "numpydoc",
+  "sphinx>=7,<8",
+  "sphinx-autoapi",
+  "sphinx-autobuild",
+  "sphinx-book-theme",
+  "sphinxcontrib-mermaid",
 ]
-python = "3.10"
 
 [tool.hatch.envs.docs.scripts]
-config = "jupyter-book config sphinx docs/"
-build = "sphinx-build docs/ {args:docs/_build/html}"
-serve = "sphinx-autobuild docs/ {args:docs/_build/html}"
+build = "sphinx-build docs/ docs/_build/html {args}"
+serve = "sphinx-autobuild docs/ docs/_build/html {args}"
 
 [tool.coverage.run]
 source_pkgs = ["medkit", "tests"]
