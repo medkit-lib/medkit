@@ -15,7 +15,7 @@ _METADATA = {"custom_metadata": "custom", "doc_id": 1234}
 # mock of UUID class used by generate_deterministic_id
 @dataclasses.dataclass()
 class _MockUUID:
-    int: int  # noqa: A003
+    int: int
 
 
 @pytest.fixture(scope="module", autouse=True)

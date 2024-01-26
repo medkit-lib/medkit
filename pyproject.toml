@@ -177,6 +177,9 @@ Source = "https://github.com/medkit-lib/medkit"
 [tool.hatch.build.targets.wheel]
 packages = ["medkit"]
 
+[tool.hatch.envs.hatch-static-analysis]
+dependencies = ["ruff==0.1.14"]
+
 [tool.hatch.envs.default]
 dependencies = [
   "coverage[toml]",
