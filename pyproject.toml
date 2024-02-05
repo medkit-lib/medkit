@@ -160,7 +160,7 @@ all = [
     webrtc-voice-detector]""",
 ]
 docs = [
-  "jupyter-book==0.15.*",
+  "jupyter-book==1.0.*,",
   "matplotlib",
   "pandas>=1.4",
   "spacy>=3.4",
