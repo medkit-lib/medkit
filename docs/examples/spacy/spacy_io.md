@@ -74,8 +74,7 @@ displacy.render(spacy_doc, style="ent")
 ---
 
 ```{code-cell} ipython3
-displacy.render(spacy_doc, style="span",options={"spans_key": "SECTION"})
-
+displacy.render(spacy_doc, style="span", options={"spans_key": "SECTION"})
 ```
 
 The spacy document has **2** entities and **1** span group called `SECTION`.
