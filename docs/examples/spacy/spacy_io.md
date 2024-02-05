@@ -24,7 +24,8 @@ For this example, you should download the french spacy model. You can download i
 ```{code-cell} ipython3
 :tags: [remove-output]
 
-!python -m spacy download fr_core_news_sm
+import spacy.cli
+spacy.cli.download("fr_core_news_sm")
 ```
 
 Consider the following spacy document:
