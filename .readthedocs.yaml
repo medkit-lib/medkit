@@ -12,3 +12,4 @@ build:
       - pip install -e ".[docs,metrics-ner,nlstruct,srt-io-converter,webrtc-voice-detector]"
     pre_build:
       - jupyter-book config sphinx docs/
+      - sed "s/'sphinx_book_theme',//" docs/conf.py  # See https://github.com/executablebooks/jupyter-book/pull/2111
