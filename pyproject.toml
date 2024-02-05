@@ -178,7 +178,7 @@ Source = "https://github.com/medkit-lib/medkit"
 packages = ["medkit"]
 
 [tool.hatch.envs.hatch-static-analysis]
-dependencies = ["ruff==0.1.14"]
+dependencies = ["ruff==0.2.0"]
 
 [tool.hatch.envs.default]
 dependencies = [
@@ -343,7 +343,7 @@ mark-parentheses = true
 [tool.ruff.lint.isort]
 known-first-party = ["medkit"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "medkit/io/_brat_utils.py" = ["A001", "A002", "A003"]
 "medkit/io/doccano.py" = ["A003"]
 "medkit/text/context/family_detector.py" = ["A003"]
