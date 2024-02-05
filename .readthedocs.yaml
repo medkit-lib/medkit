@@ -1,15 +1,25 @@
 version: 2
 
+python:
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
+        - metrics-ner
+        - nlstruct
+        - srt-io-converter
+        - webrtc-voice-detector
+
 build:
   os: ubuntu-22.04
+  tools:
+    python: '3.11'
   apt_packages:
     - graphviz
     - libsndfile1
-  tools:
-    python: '3.10'
   jobs:
-    post_install:
-      - pip install -e ".[docs,metrics-ner,nlstruct,srt-io-converter,webrtc-voice-detector]"
     pre_build:
       - jupyter-book config sphinx docs/
-      - sed "s/'sphinx_book_theme',//" docs/conf.py  # See https://github.com/executablebooks/jupyter-book/pull/2111
+      # See https://github.com/executablebooks/jupyter-book/pull/2111
+      - sed -i "s/[\x27]sphinx_book_theme[\x27],//" docs/conf.py
