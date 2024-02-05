@@ -13,11 +13,11 @@ Once tested, reviewed and approved, they will be merged back into `main`.
 The medkit contributing process is as follows:
 
 - fork the project into your personal space
-- before creating a new branch, open an [issue](https://github.com/TeamHeka/medkit/issues/new) describing the bug or the feature you will be working on, unless there is already an existing issue.
+- before creating a new branch, open an [issue](https://github.com/medkit-lib/medkit/issues/new) describing the bug or the feature you will be working on, unless there is already an existing issue.
 - in your fork, create a branch from `main` and name it with a short description: `<issue-id>-<short-description>` (without the `#` character).
 - start working by adding commits to this branch. Try to have clear [commit messages](https://cbea.ms/git-commit/). Do not forget to also write tests in the `tests/`directory if applicable (cf [Tests](#tests)).
 - once you are done, check that your code follows our coding standards with `black`and `flake8` (cf [Linting and formatting](#linting-and-formatting)) and that all the tests pass with `pytest` (cf [Tests](#tests))
-- open a [pull request](https://github.com/TeamHeka/medkit/compare) (PR). Unit tests and linting/formatting checks will automatically be run on the PR and prevent it from being merged if they fail.
+- open a [pull request](https://github.com/medkit-lib/medkit/compare) (PR). Unit tests and linting/formatting checks will automatically be run on the PR and prevent it from being merged if they fail.
 - once all CI checks passed, wait for the review of the medkit maintainers. They will make sure it aligns with the project goals and may ask for some changes.
 
 Once this reviewing phase is over, the pull request will be integrated into `main`, either with a merge, a squash & merge or a rebase, depending on the impact of the merge request and the state of its git history.

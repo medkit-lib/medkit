@@ -194,7 +194,7 @@ for syntagma_seg in syntagma_segs:
 
 As you can see, a few sentences where split into smaller parts. We can now run a
 {class}`~medkit.text.context.NegationDetector` instance on the syntagmas (using
-the [default rules file](https://github.com/TeamHeka/medkit/blob/main/medkit/text/context/negation_detector_default_rules.yml)).
+the [default rules file](https://github.com/medkit-lib/medkit/blob/main/medkit/text/context/negation_detector_default_rules.yml)).
 
 ```{code-cell} ipython3
 from medkit.text.context import NegationDetector, NegationDetectorRule

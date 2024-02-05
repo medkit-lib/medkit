@@ -9,7 +9,7 @@ From 0.4.1 version, medkit package (named **medkit-lib**) is available on
 [PyPi](https://pypi.org/project/medkit-lib/).
 :::
 
-Releases are published on <https://github.com/TeamHeka/medkit/releases>.
+Releases are published on <https://github.com/medkit-lib/medkit/releases>.
 
 To install medkit :
 
@@ -35,8 +35,8 @@ pip install 'medkit-lib[all]'
 ## Install a development version
 
 If you want to contribute, clone the `medkit` repository locally:
-  - SSH: `git clone  git@github.com:TeamHeka/medkit.git`
-  - HTTPS: `git clone https://github.com/TeamHeka/medkit.git`
+  - SSH: `git clone  git@github.com:medkit-lib/medkit.git`
+  - HTTPS: `git clone https://github.com/medkit-lib/medkit.git`
 
 [Poetry](https://python-poetry.org) is used for managing dependencies and
 packaging medkit.

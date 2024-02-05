@@ -73,7 +73,7 @@ from pathlib import Path
 from medkit.core.text import TextDocument
 
 # You can download the file available in source code
-# !wget https://raw.githubusercontent.com/TeamHeka/medkit/main/docs/data/text/1.txt
+# !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/data/text/1.txt
 # or create your file and copy the text
 doc = TextDocument.from_file(Path("../data/text/1.txt"))
 

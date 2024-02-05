@@ -260,7 +260,7 @@ reference of the file.
 :::{note}
 You may test French default rules using `section_tokenizer = SectionTokenizer()`.
 The corresponding file content is available
-[here](https://raw.githubusercontent.com/TeamHeka/medkit/develop/medkit/text/segmentation/default_section_definition.yml).
+[here](https://raw.githubusercontent.com/medkit-lib/medkit/develop/medkit/text/segmentation/default_section_definition.yml).
 :::
 
 For {class}`~.text.segmentation.SyntagmaTokenizer`, here is the yaml schema 
@@ -272,7 +272,7 @@ start of a new syntagma.
 :::{note}
 You may test default French rules using `syntagma_tokenizer = SyntagmaTokenizer()`.
 The corresponding file content is available
-[here](https://raw.githubusercontent.com/TeamHeka/medkit/develop/medkit/text/segmentation/default_syntagma_definition.yml).
+[here](https://raw.githubusercontent.com/medkit-lib/medkit/develop/medkit/text/segmentation/default_syntagma_definition.yml).
 :::
 
 

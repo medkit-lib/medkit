@@ -30,7 +30,7 @@ Consider this text file:
 +++
 ```{code-cell} ipython3
 # You can download the file available in source code
-# !wget https://raw.githubusercontent.com/TeamHeka/medkit/main/docs/examples/input/brat/doc_01.txt
+# !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/examples/input/brat/doc_01.txt
 
 from pathlib import Path
 
@@ -43,7 +43,7 @@ It has the following brat annotation file:
 
 ```{code-cell} ipython3
 # You can download the file available in source code
-# !wget https://raw.githubusercontent.com/TeamHeka/medkit/main/docs/examples/input/brat/doc_01.ann
+# !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/examples/input/brat/doc_01.ann
 
 print(Path("./input/brat/doc_01.ann").read_text(encoding="utf-8"))
 ```

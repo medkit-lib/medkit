@@ -24,7 +24,7 @@ For starters, let's load a text file using the
 
 ```{code-cell} ipython3
 # You can download the file available in source code
-# !wget https://raw.githubusercontent.com/TeamHeka/medkit/main/docs/data/text/1.txt
+# !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/data/text/1.txt
 
 from pathlib import Path
 from medkit.core.text import TextDocument
