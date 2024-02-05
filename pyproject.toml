@@ -214,14 +214,8 @@ python = "3.10"
 
 [tool.hatch.envs.docs.scripts]
 config = "jupyter-book config sphinx docs/"
-build = [
-  "config",
-  "sphinx-build docs/ {args:docs/_build/html}",
-]
-serve = [
-  "config",
-  "sphinx-autobuild docs/ {args:docs/_build/html}",
-]
+build = "sphinx-build docs/ {args:docs/_build/html}"
+serve = "sphinx-autobuild docs/ {args:docs/_build/html}"
 
 [tool.coverage.run]
 source_pkgs = ["medkit", "tests"]
