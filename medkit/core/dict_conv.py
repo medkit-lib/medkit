@@ -51,7 +51,7 @@ def get_class_name_from_data_dict(data_dict: dict[str, Any]):
         The name of the class which has generated the data_dict
 
     """
-    class_name = data_dict.get(_CLASS_NAME_KEY, None)
+    class_name = data_dict.get(_CLASS_NAME_KEY)
     if class_name is None:
         msg = (
             f"Data dict does not contain expected '{_CLASS_NAME_KEY}' key. Make"
