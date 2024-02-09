@@ -94,6 +94,7 @@ cookbook/detecting_text_duplicates
 cookbook/audio_transcription
 cookbook/audio_dataset_metrics
 cookbook/ontotox
+cookbook/ner_benchmark/index
 ```
 
 ```{toctree}
