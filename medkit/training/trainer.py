@@ -312,8 +312,8 @@ class Trainer:
         str
             Path of the checkpoint saved
         """
-        current_date = datetime.datetime.now().strftime("%d-%m-%Y_%H:%M")
-        name = f"checkpoint_{epoch:03d}_{current_date}"
+        timestamp = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+        name = f"checkpoint_{epoch:03d}_{timestamp}"
 
         checkpoint_dir = Path(self.output_dir) / name
         self.callback.on_save(checkpoint_dir=str(checkpoint_dir))
