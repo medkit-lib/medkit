@@ -2,13 +2,12 @@ from __future__ import annotations
 
 __all__ = ["IAMSystemMatcher", "MedkitKeyword"]
 
-from typing import Any, Callable, Optional, Sequence, runtime_checkable
+from dataclasses import dataclass
+from typing import Callable, Optional, Sequence
 
 from iamsystem import Annotation as IS_Annotation
-from iamsystem import IEntity as IS_IEntity
 from iamsystem import IKeyword as IS_IKeyword
 from iamsystem import Matcher as IS_Matcher
-from typing_extensions import Protocol
 
 from medkit.core.text import (
     Entity,
@@ -19,16 +18,7 @@ from medkit.core.text import (
 )
 
 
-@runtime_checkable
-class SupportKBName(IS_IEntity, Protocol):
-    kb_name: str | None
-
-
-@runtime_checkable
-class SupportEntLabel(IS_IKeyword, Protocol):
-    ent_label: str | None
-
-
+@dataclass
 class MedkitKeyword:
     """A recommended iamsystem's IEntity implementation.
 
@@ -36,22 +26,12 @@ class MedkitKeyword:
     or `kb_name` with its iamsystem keyword.
     The entity label may be also provided if the user wants to define a category for
     the searched keyword (e.g., "drug" label for "Vicodin" keyword)
-
-
-    Also implements :class:`~.SupportEntLabel`, :class:`~.SupportKBName` protocols
     """
 
-    def __init__(
-        self,
-        label: str,  # String to search in text
-        kb_id: Any | None,
-        kb_name: str | None,
-        ent_label: str | None,  # Output label for the detected entity
-    ):
-        self.label = label
-        self.kb_id = kb_id
-        self.kb_name = kb_name
-        self.ent_label = ent_label
+    label: str
+    kb_id: str
+    kb_name: str | None
+    ent_label: str | None
 
 
 LabelProvider = Callable[[Sequence[IS_IKeyword]], Optional[str]]
@@ -66,8 +46,9 @@ class DefaultLabelProvider:
         `ent_label`. Otherwise, returns None.
         """
         for kw in keywords:
-            if isinstance(kw, SupportEntLabel) and kw.ent_label is not None:
-                return kw.ent_label
+            if ent_label := getattr(kw, "ent_label", None):
+                return ent_label
+
         return None
 
 
@@ -167,12 +148,8 @@ class IAMSystemMatcher(NEROperation):
 
         # create normalization attributes
         for kw in ann.keywords:
-            kb_id = None
-            if isinstance(kw, IS_IEntity):
-                kb_id = kw.kb_id
-            kb_name = None
-            if isinstance(kw, SupportKBName) and kw.kb_name is not None:
-                kb_name = kw.kb_name
+            kb_id: str | None = getattr(kw, "kb_id", None)
+            kb_name: str | None = getattr(kw, "kb_name", None)
             term = kw.label
             if any([kb_name, kb_id]):
                 norm_attr = EntityNormAttribute(kb_name=kb_name, kb_id=kb_id, term=term)
