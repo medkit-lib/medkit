@@ -21,5 +21,3 @@ build:
   jobs:
     pre_build:
       - jupyter-book config sphinx docs/
-      # See https://github.com/executablebooks/jupyter-book/pull/2111
-      - sed -i "s/[\x27]sphinx_book_theme[\x27],//" docs/conf.py
