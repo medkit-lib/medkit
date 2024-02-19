@@ -179,7 +179,7 @@ Source = "https://github.com/medkit-lib/medkit"
 packages = ["medkit"]
 
 [tool.hatch.envs.hatch-static-analysis]
-dependencies = ["ruff==0.2.0"]
+dependencies = ["ruff==0.2.2"]
 
 [tool.hatch.envs.default]
 dependencies = [
