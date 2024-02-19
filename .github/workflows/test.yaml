@@ -27,12 +27,24 @@ jobs:
         include:
           - os: macos-13
             python-version: '3.11'
+          - os: macos-14
+            python-version: '3.11'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
+      # see https://github.com/actions/runner-images/issues/9256
+      - name: Fix pipx permissions
+        if: matrix.os == 'macos-14'
+        run: |
+          for d in "$PIPX_HOME" "$PIPX_BIN_DIR" ; do
+            if [[ -n "$d" ]] ; then
+              sudo mkdir -p "$d"
+              sudo chown -R $(id -u) "$d"
+            fi
+          done
       - name: Install Hatch
         run: pipx install hatch
       - name: Run tests
