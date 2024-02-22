@@ -15,10 +15,8 @@ from medkit.text.spacy.edsnlp import build_date_attribute, build_duration_attrib
 
 
 class EDSNLPDateMatcher(NEROperation):
-    """Date matcher based on `EDS-NPL's dates pipeline
-    <https://aphp.github.io/edsnlp/latest/pipelines/misc/dates/>`_ which itself
-    relies on regular expressions. Note that this operation is designed to run
-    on french documents.
+    """Date matcher based on the `EDS-NPL dates pipeline <https://aphp.github.io/edsnlp/latest/pipelines/misc/dates/>`_
+    which itself relies on regular expressions. Note that this operation is designed to run on french documents.
 
     Absolute dates (ex: "23/08/2021"), relatives dates (ex: "la semaine
     dernière") and durations (ex: "pendant quatre jours") will be matched.

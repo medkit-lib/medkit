@@ -80,7 +80,7 @@ class BratNote:
 
 
 def ensure_attr_value(attr_value: Any) -> str:
-    """Ensure that `attr_value` is a string. If it's not, the
+    """Ensure that the attribue value is a string. If it's not, the
     value is changed depending on its original format.
     """
     if isinstance(attr_value, str):
@@ -96,7 +96,7 @@ def ensure_attr_value(attr_value: Any) -> str:
 
 @dataclass
 class Grouping:
-    """A grouping data structure for entities  of type 'And-Group", "Or-Group'"""
+    """A grouping data structure for entities of type And-Group and Or-Group"""
 
     uid: str
     type: str
@@ -310,7 +310,7 @@ def parse_file(ann_path: str | Path, detect_groups: bool = False) -> BratDocumen
     ann_path : str or Path
         The path to the annotation file to be processed.
     detect_groups : bool, default=False
-        If set to `True`, the function will also parse the group of entities according
+        If set to True, the function will also parse the group of entities according
         to some specific keywords.
         By default, it is set to False.
 
@@ -335,7 +335,7 @@ def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
     ann_string : str
         The string containing all brat annotations
     detect_groups : bool, default=False
-        If set to `True`, the function will also parse the group of entities according
+        If set to True, the function will also parse the group of entities according
         to some specific keywords.
         By default, it is set to False.
 
@@ -395,10 +395,10 @@ def _parse_entity(entity_id: str, entity_content: str) -> BratEntity:
     Parameters
     ----------
     entity_id : str
-        The ID defined in the brat annotation (e.g.,`T12`)
+        The ID defined in the brat annotation (e.g., 'T12')
     entity_content : str
         The string content for this ID to parse
-         (e.g., `Temporal-Modifier 116 126\thistory of`)
+         (e.g., 'Temporal-Modifier 116 126\thistory of')
 
     Returns
     -------
@@ -433,9 +433,9 @@ def _parse_relation(relation_id: str, relation_content: str) -> BratRelation:
     Parameters
     ----------
     relation_id : str
-        The ID defined in the brat annotation (e.g., R12)
+        The ID defined in the brat annotation (e.g., 'R12')
     relation_content : str
-        The relation text content. (e.g., `Modified-By Arg1:T8 Arg2:T6\t`)
+        The relation text content. (e.g., 'Modified-By Arg1:T8 Arg2:T6\t')
 
     Returns
     -------
@@ -468,9 +468,9 @@ def _parse_attribute(attribute_id: str, attribute_content: str) -> BratAttribute
     Parameters
     ----------
     attribute_id : str
-        The attribute ID defined in the annotation. (e.g., `A1`)
+        The attribute ID defined in the annotation. (e.g., 'A1')
     attribute_content : str
-         The attribute text content. (e.g., `Tense T19 Past-Ended`)
+         The attribute text content. (e.g., 'Tense T19 Past-Ended')
 
     Returns
     -------
@@ -509,9 +509,9 @@ def _parse_note(note_id: str, note_content: str) -> BratNote:
     Parameters
     ----------
     note_id : str
-        The note ID defined in the annotation. (e.g., `#1`)
+        The note ID defined in the annotation. (e.g., '#1')
     note_content : str
-        The note text content. (e.g., `AnnotatorNotes T10	C0011849`)
+        The note text content. (e.g., 'AnnotatorNotes T10	C0011849')
 
     Returns
     -------
