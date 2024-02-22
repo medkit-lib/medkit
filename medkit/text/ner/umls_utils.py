@@ -172,8 +172,8 @@ def load_umls_entries(
 def load_semtypes_by_cui(mrsty_file: str | Path) -> dict[str, list[str]]:
     """Load the list of semtypes associated to each CUI found in a MRSTY.RRF file
 
-    Params
-    ------
+    Parameters
+    ----------
     mrsty_file : str or Path
         Path to the UMLS MRSTY.RRF file.
 

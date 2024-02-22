@@ -106,8 +106,8 @@ def clean_multiple_whitespaces_in_sentence(text: str, spans: list[AnySpan]) -> t
     """Replace multiple white-spaces between alphanumeric characters and
     lowercase characters with a single whitespace
 
-    Example:
-    -------
+    Examples
+    --------
     >>> text = "A   phrase    with  multiple   spaces     "
     >>> spans = [Span(0, len(text))]
     >>> text, spans = clean_multiple_whitespaces_in_sentence(text, spans)
@@ -301,8 +301,8 @@ def replace_point_in_numbers(text: str, spans: list[AnySpan]) -> tuple[str, list
     """Replace the character '.' between numbers
     with the character ',' a space and update its span.
 
-    Example:
-    -------
+    Examples
+    --------
     >>> text = "La valeur est de 3.456."
     >>> spans = [Span(0, len(text))]
     >>> text, spans = replace_point_in_numbers(text, spans)
