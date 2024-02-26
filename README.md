@@ -30,7 +30,7 @@ pip install medkit-lib
 To install `medkit` with all its optional features:
 
 ```console
-pip install medkit-lib[all]
+pip install 'medkit-lib[all]'
 ```
 
 ## Example
