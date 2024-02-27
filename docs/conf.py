@@ -32,6 +32,7 @@ autoapi_root = "api/_generated"
 # https://myst-parser.readthedocs.io/en/latest/configuration.html
 
 myst_enable_extensions = ["attrs_inline", "colon_fence"]
+myst_heading_anchors = 2
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

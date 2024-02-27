@@ -8,7 +8,7 @@ and context detection operations.
 
 For starters, let's load a text file using the {class}`~medkit.core.text.TextDocument` class:
 
-:::{code-block}
+:::{code}
 # You can download the file available in source code
 # !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/data/text/1.txt
 
@@ -20,7 +20,7 @@ doc = TextDocument.from_file(Path("../data/text/1.txt"))
 
 The full raw text can be accessed through the `text` attribute:
 
-:::{code-block}
+:::{code}
 print(doc.text)
 :::
 
@@ -36,7 +36,7 @@ documents in sentences.
 including a rule-based {class}`~medkit.text.segmentation.SentenceTokenizer` class
 that relies on a list of punctuation characters.
 
-:::{code-block}
+:::{code}
 from medkit.text.segmentation import SentenceTokenizer
 
 sent_tokenizer = SentenceTokenizer(
@@ -54,7 +54,7 @@ and returns a list of `Segment` objects.
 Here, we can pass a special `Segment` containing the full text of the document,
 which can be retrieved through the `raw_segment` attribute of `TextDocument`:
 
-:::{code-block}
+:::{code}
 sentences = sent_tokenizer.run([doc.raw_segment])
 
 for sentence in sentences:
@@ -76,7 +76,7 @@ Each segment features:
 If you take a look at the 13th and 14th detected sentences,
 you will notice something strange:
 
-:::{code-block}
+:::{code}
 print(repr(sentences[12].text))
 print(repr(sentences[13].text))
 :::
@@ -92,7 +92,7 @@ For this, we can use the {class}`~medkit.text.preprocessing.RegexpReplacer` clas
 a regexp-based "search-and-replace" operation.
 As other `medkit` operations, it can be configured with a set of user-determined rules:
 
-:::{code-block}
+:::{code}
 from medkit.text.preprocessing import RegexpReplacer
 
 rule = (r"(?<=\d)\.(?=\d)", ",")  # => (pattern to replace, new text)
@@ -105,7 +105,7 @@ In our case we only want to preprocess the full raw text segment,
 and we will only receive one preprocessed segment,
 so we can call it with:
 
-:::{code-block}
+:::{code}
 clean_segment = regexp_replacer.run([doc.raw_segment])[0]
 print(clean_segment.text)
 :::
@@ -113,7 +113,7 @@ print(clean_segment.text)
 We may use again our previously-defined sentence tokenizer again,
 but this time on the preprocessed text:
 
-:::{code-block}
+:::{code}
 sentences = sent_tokenizer.run([clean_segment])
 print(sentences[12].text)
 :::
@@ -126,7 +126,7 @@ The `medkit` library also comes with operations to perform NER (named entity rec
 for instance with {class}`~medkit.text.ner.regexp_matcher.RegexpMatcher`.
 Let's instantiate one with a few simple rules:
 
-:::{code-block}
+:::{code}
 from medkit.text.ner import RegexpMatcher, RegexpMatcherRule
 
 regexp_rules = [
@@ -162,7 +162,7 @@ representing the entities that were matched (`Entity` is a subclass of `Segment`
 As input, it expects a list of `Segment` objects.
 Let's give it the sentences returned by the sentence tokenizer:
 
-:::{code-block}
+:::{code}
 entities = regexp_matcher.run(sentences)
 
 for entity in entities:
@@ -192,7 +192,7 @@ accessible through their {class}`~medkit.core.AttributeContainer`).
 Let's instantiate a `NegationDetector` with a couple of simplistic handcrafted rules
 and run it on our sentences:
 
-:::{code-block}
+:::{code}
 from medkit.text.context import NegationDetector, NegationDetectorRule
 
 neg_rules = [
@@ -213,7 +213,7 @@ located in the `medkit.text.context` module.
 
 And now, let's look at which sentence have been detected as being negated:
 
-:::{code-block}
+:::{code}
 for sentence in sentences:
     neg_attr = sentence.attrs.get(label="is_negated")[0]
     if neg_attr.value:
@@ -235,7 +235,7 @@ which are stored in file `default_syntagma_definition.yml`
 located in the `medkit.text.segmentation` module.
 :::
 
-:::{code-block}
+:::{code}
 from medkit.text.segmentation import SyntagmaTokenizer
 
 synt_tokenizer = SyntagmaTokenizer(
@@ -268,7 +268,7 @@ Let's again use a `RegexpMatcher` to find some entities,
 but this time from syntagmas rather than from sentences,
 and using `attrs_to_copy` to copy negation attributes:
 
-:::{code-block}
+:::{code}
 regexp_matcher = RegexpMatcher(rules=regexp_rules, attrs_to_copy=["is_negated"])
 entities = regexp_matcher.run(syntagmas)
 
@@ -293,7 +293,7 @@ an instance of {class}`~medkit.core.text.TextAnnotationContainer`)
 that behaves roughly like a list but also offers additional filtering methods.
 Annotations can be added by calling its `add()` method:
 
-:::{code-block}
+:::{code}
 for entity in entities:
     doc.anns.add(entity)
 :::
@@ -303,7 +303,7 @@ such as brat (see {class}`~medkit.io.brat.BratOutputConverter`)
 or Doccano (see {class}`~medkit.io.doccano.DoccanoOutputConverter`),
 or serialized to JSON (see {mod}`~medkit.io.medkit_json`):
 
-:::{code-block}
+:::{code}
 from medkit.io import medkit_json
 
 medkit_json.save_text_document(doc, "doc_1.json")
@@ -316,9 +316,7 @@ a visualization tool part of the [spaCy](https://spacy.io/) NLP library.
 `medkit` provides helper functions to facilitate the use of `displacy`
 in the {mod}`~medkit.text.spacy.displacy_utils` module:
 
-:::{code-block}
-:tags: [scroll-output]
-
+:::{code}
 from spacy import displacy
 from medkit.text.spacy.displacy_utils import medkit_doc_to_displacy
 
@@ -341,6 +339,6 @@ including model-based NER operations.
 You can learn more about them in the [API reference](../api/text.md).
 
 To dive further into `medkit`, you might be interested in an overview
-of the [various entity matching methods available in medkit](entity_matching.md),
-[context detection](context_detection.md),
-or [how to encapsulate all these operations in a pipeline](pipeline.md).
+of the [various entity matching methods available in medkit](../tutorial/entity_matching.md),
+[context detection](../tutorial/context_detection.md),
+or [how to encapsulate all these operations in a pipeline](./pipeline.md).

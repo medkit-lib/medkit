@@ -8,7 +8,7 @@ and how to create pipelines to enrich documents.
 Let's reuse the preprocessing, segmentation, context detection and entity recognition operations
 from the [First steps](./first_steps.md) tutorial:
 
-:::{code-block}
+:::{code}
 from medkit.text.preprocessing import RegexpReplacer
 from medkit.text.segmentation import SentenceTokenizer, SyntagmaTokenizer
 from medkit.text.context import NegationDetector, NegationDetectorRule
@@ -56,7 +56,7 @@ Each of these operations features a `run()` method, which could be called sequen
 Data need to be routed manually between inputs and outputs for each operation,
 using a document's raw text segment as initial input:
 
-:::{code-block}
+:::{code}
 from pathlib import Path
 from medkit.core.text import TextDocument
 
@@ -105,7 +105,7 @@ But we also need to "connect" the operations together,
 i.e. to indicate which output of an operation should be fed as input to another operation.
 This is the purpose of the {class}`~medkit.core.PipelineStep` objects:
 
-:::{code-block}
+:::{code}
 from medkit.core import PipelineStep
 
 steps = [
@@ -147,7 +147,7 @@ graph TD
 
 Pipeline steps can then be used to instantiate a {class}`~medkit.core.Pipeline` object:
 
-:::{code-block}
+:::{code}
 from medkit.core import Pipeline
 
 pipeline = Pipeline(
@@ -171,7 +171,7 @@ but more complex pipelines with multiple inputs and outputs are supported.
 
 Like any other operation, the pipeline can be evaluated using its `run` method: 
 
-:::{code-block}
+:::{code}
 entities = pipeline.run([doc.raw_segment])
 
 for entity in entities:
@@ -188,7 +188,7 @@ which can be used, tested and exercised in isolation.
 In our example, we can use this feature to regroup together our regexp replacer,
 sentence tokenizer and family detector into a context sub-pipeline:
 
-:::{code-block}
+:::{code}
 # Context pipeline that receives full text segments
 # and returns preprocessed syntagmas segments with negation attributes.
 context_pipeline = Pipeline(
@@ -207,10 +207,10 @@ context_pipeline = Pipeline(
 :::
 
 Likewise, we can introduce a NER sub-pipelines
-composed of a UMLS-based matching operation (see also [Entity Matching](./entity_matching.md))
+composed of a UMLS-based matching operation (see also [Entity Matching](../tutorial/entity_matching.md))
 grouped with the previously defined regexp matcher:
 
-:::{code-block}
+:::{code}
 from medkit.text.ner import UMLSMatcher
 
 umls_matcher = UMLSMatcher(
@@ -239,7 +239,7 @@ both the regexp matcher and the UMLS matcher.
 
 The NER and context sub-pipelines can now be sequenced with:
 
-:::{code-block}
+:::{code}
 pipeline = Pipeline(
     steps=[
         PipelineStep(context_pipeline, input_keys=["full_text"], output_keys=["syntagmas"]),
@@ -287,7 +287,7 @@ graph TD
 
 Let's run the pipeline and verify entities with negation attributes:
 
-:::{code-block}
+:::{code}
 entities = pipeline.run([doc.raw_segment])
 
 for entity in entities:
@@ -393,7 +393,7 @@ To scale the processing of such pipeline to a collection of documents,
 one needs to iterate over each document manually to obtain its entities
 rather than processing all the documents at once:
 
-:::{code-block}
+:::{code}
 docs = TextDocument.from_dir(Path("..data/text"))
 
 for doc in docs:
@@ -407,7 +407,7 @@ which wraps a `Pipeline` instance and run it on a list of documents.
 
 Here is an example of its usage:
 
-:::{code-block}
+:::{code}
 from medkit.core import DocPipeline
 
 docs = TextDocument.from_dir(Path("..data/text"))

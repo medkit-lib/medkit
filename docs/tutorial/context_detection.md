@@ -22,7 +22,7 @@ contextual information to entities such has:
 - it is related to the patient or it is part of their family's medical history
 
 NB: If you are not familiar with medkit, you should probably take a look at the
-[First steps](first_steps.md) tutorial before going further.
+[First steps](../user_guide/first_steps.md) tutorial before going further.
 
 Let's start by loading a document:
 
@@ -74,7 +74,7 @@ for section_seg in section_segs:
 
 ## Sentence splitting
 
-We have already seen sentence splitting [previously](first_steps.md) and we will
+We have already seen sentence splitting [previously](../user_guide/first_steps.md) and we will
 reuse the same code, with a little addition: we want the section information to
 be propagated onto the sentences, ie. we want to be able to tell in which
 section a sentence belongs.
@@ -113,7 +113,7 @@ this is not always the case. To handle this, medkit provides a
 {class}`~medkit.text.context.FamilyDetector`  operation based on regular
 expressions. It is somewhat similar to the
 {class}`~medkit.text.ner.RegexpMatcher` we have
-[previously](entity_matcher.html#regular-expression-matching) seen, but instead
+[previously](./entity_matching.md#regular-expression-matching) seen, but instead
 of returning entities, it attaches attributes to the segments it receives, with
 a boolean value indicating whether it mentions family history.
 

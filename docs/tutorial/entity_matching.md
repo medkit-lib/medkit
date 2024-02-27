@@ -18,7 +18,7 @@ This tutorial will take you on a tour of the most common methods to perform
 entity matching on text documents using medkit.
 
 NB: If you are new to medkit, you should probably take a look at the [First
-steps](first_steps.md) tutorial before going further.
+steps](../user_guide/first_steps.md) tutorial before going further.
 
 ## Sentence splitting
 
@@ -38,7 +38,7 @@ print(doc.text)
 ```
 
 We will now use medkit's sentence tokenizing operation to create and display
-sentence segments. As seen [before](first_steps.md), the sentence tokenizer
+sentence segments. As seen [before](../user_guide/first_steps.md), the sentence tokenizer
 expects a list of segments as input and will return a list of sentence segments,
 and since we don't have any segments yet on our document, we use
 `TextDocument.raw_segment`, which is a special segment that contains the full
@@ -558,7 +558,7 @@ characters pans of the entities in the original unprocessed text.
 
 If you use different methods or 3d-party tools, it is possible to wrap them into
 a medkit operation so you can use them within medkit, as described in [this
-tutorial](module.md). Contributions to medkit are welcome so you can
+tutorial](../user_guide/module.md). Contributions to medkit are welcome so you can
 submit your operations to be integrated into medkit!
 
 
