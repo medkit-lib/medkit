@@ -1,17 +1,3 @@
----
-jupytext:
-  formats: md:myst
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.14.4
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-
 # Entity Matching
 
 This tutorial will take you on a tour of the most common methods to perform
@@ -29,13 +15,13 @@ detection operation at the sentence level.
 
 Let's start by loading a medical report to work on:
 
-```{code-cell} ipython3
+:::{code}
 from pathlib import Path
 from medkit.core.text import TextDocument
 
 doc = TextDocument.from_file(Path("../data/mtsamplesfr/1.txt"))
 print(doc.text)
-```
+:::
 
 We will now use medkit's sentence tokenizing operation to create and display
 sentence segments. As seen [before](../user_guide/first_steps.md), the sentence tokenizer
@@ -44,7 +30,7 @@ and since we don't have any segments yet on our document, we use
 `TextDocument.raw_segment`, which is a special segment that contains the full
 unprocessed text.
 
-```{code-cell} ipython3
+:::{code}
 from medkit.text.segmentation import SentenceTokenizer
 
 # By default, SentenceTokenizer will use a list of punctuation chars to detect sentences.
@@ -63,7 +49,7 @@ sentence_segs = sentence_tokenizer.run([doc.raw_segment])
 # Print all returned sentence segments
 for sentence_seg in sentence_segs:
     print(sentence_seg.text, end="\n\n")
-```
+:::
 
 ## Regular expression matching
 
@@ -74,7 +60,7 @@ expressions. For a complete overview of its features, you can refer to its
 We are going to use regular expressions to match entities that cannot be
 detected by a dictionary-based approach, such as age and weight indications:
 
-```{code-cell} ipython3
+:::{code}
 from medkit.text.ner import RegexpMatcher, RegexpMatcherRule
 
 # Rule with simple regexps to match age and weights
@@ -108,30 +94,30 @@ regexp_matcher = RegexpMatcher(rules=[regexp_rule_1, regexp_rule_2])
 entities = regexp_matcher.run(sentence_segs)
 for entity in entities:
     print(entity.text, entity.label)
-```
+:::
 
 Let's visualize them with `displacy`, using the
 {func}`~medkit.text.spacy.displacy_utils.entities_to_displacy` helper (similar
 to {func}`~medkit.text.spacy.displacy_utils.medkit_doc_to_displacy` but we can
 pass it a list of entities rather than a `TextDocument`):
 
-```{code-cell} ipython3
+:::{code}
 from spacy import displacy
 from medkit.text.spacy.displacy_utils import entities_to_displacy
 
 displacy_data = entities_to_displacy(entities, doc.text)
 displacy.render(displacy_data, manual=True, style="ent")
-```
+:::
 
  Note that you can save a particular list of regexp rules into a yaml file using
  the {func}`~medkit.text.ner.RegexpMatcher.save_rules` static method, and
  then reload them with {func}`~medkit.text.ner.RegexpMatcher.load_rules`.
  This makes it easier to share and reuse them:
 
-```{code-cell} ipython3
+:::{code}
 RegexpMatcher.save_rules([regexp_rule_1, regexp_rule_2], "weight_and_age_rules.yml")
 rules = RegexpMatcher.load_rules("weight_and_age_rules.yml")
-```
+:::
 
 Medkit itself comes with a list of predefined regexp rules, available at
 https://github.com/medkit-lib/medkit/blob/main/medkit/text/ner/regexp_matcher_default_rules.yml,
@@ -152,18 +138,18 @@ classification.[^atc_footnote] Let's take a look at it:
 [^atc_footnote]: This file was created by Bastien Rance, reusing scripts originally from
 Sébastien Cossin
 
-```{code-cell} ipython3
+:::{code}
 import pandas as pd
 
 drugs = pd.read_csv("../data/bdpm.csv")
 drugs.head(n=10)
-```
+:::
 
 Rather than regular expressions, we will used similarity-based matching using the {class}`~medkit.text.ner.SimstringMatcher` operation.
 
 This "fuzzy" matcher based on the [simstring algorithm](http://chokkan.org/software/simstring/) will be more tolerant to small spelling errors than the exact matching of a regular expression.We are going to create a rule for each commercial name, and to each rule we will attach the ATC identifier of each molecule when we know them:
 
-```{code-cell} ipython3
+:::{code}
 from medkit.text.ner import SimstringMatcher, SimstringMatcherRule, SimstringMatcherNormalization
 
 simstring_rules = []
@@ -211,7 +197,7 @@ for entity in entities:
     for norm_attr in entity.attrs.norms:
         print(norm_attr.kb_name, norm_attr.kb_id)
     print()
-```
+:::
 
 ## Advanced entity matching with IAMSystem
 
@@ -224,7 +210,7 @@ terms to match is very large.
 
 Let's see how to use it to match a couple of manually-defined terms:
 
-```{code-cell} ipython3
+:::{code}
 from iamsystem import Matcher, ESpellWiseAlgo
 from medkit.text.ner.iamsystem_matcher import IAMSystemMatcher
 
@@ -246,7 +232,7 @@ entities = iam_system_matcher.run(sentence_segs)
 
 for entity in entities:
     print(entity.label, ":", entity.text)
-```
+:::
 
 To learn more about the possibilities of `IAMSystem`, refer to its
 [documentation](https://iamsystem-python.readthedocs.io/en/).
@@ -277,7 +263,7 @@ Note that the UMLS files are not freely distributable nor usable, to download
 them and use you must request a license on the [UMLS
 website](https://www.nlm.nih.gov/research/umls/index.html)
 
-```
+:::{code}
 from medkit.text.ner import UMLSMatcher
 
 # Codes of UMLS semantic groups to take into account
@@ -321,7 +307,8 @@ def custom_formatter(entity):
 
 displacy_data = entities_to_displacy(entities, doc.text, entity_formatter=custom_formatter)
 displacy.render(displacy_data, manual=True, style="ent")
-```
+:::
+
 
 <span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">PLAINTE PRINCIPALE :<br>
 <mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Thrombocytose essentielle<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0040028)</span></mark>
@@ -420,7 +407,7 @@ Let's use this model with the
 {class}`~medkit.text.ner.hf_entity_matcher.HFEntityMatcher` to look for entities
 in our document:
 
-```
+:::{code}
 from medkit.text.ner.hf_entity_matcher import HFEntityMatcher
 
 # HFEntityMatcher just needs the name of a model on the HuggingFace hub or a path to a local checkpoint
@@ -435,7 +422,7 @@ entities = bert_matcher.run(sentence_segs)
 
 displacy_data = entities_to_displacy(entities, doc.text)
 displacy.render(docs=displacy_data, manual=True, style="ent")
-```
+:::
 
 <span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">PLAINTE PRINCIPALE :<br>
 <mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Thrombocytose essentielle<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
@@ -514,36 +501,36 @@ normalization attributes attached to them.
 Let's consider the more realistic case in which we are dealing with a collection
 of documents rather than a unique document:
 
-```{code-cell} ipython3
+:::{code}
 from glob import glob
 
 # Let's load all of our sample documents
 docs = TextDocument.from_dir(Path("../data/mtsamplesfr/"))
 print(len(docs))
-```
+:::
 
 It is possible to run the sentence splitting and entity matching operations on all documents at once:
 
-```{code-cell} ipython3
+:::{code}
 sentence_segs = sentence_tokenizer.run([d.raw_segment for d in docs])
 entities = regexp_matcher.run(sentence_segs)
 for entity in entities:
     print(entity.label, entity.text)
-```
+:::
 
 Here, `entities` contains the entities found by the regexp matcher across
 all of our documents, in a list. But if we want to attach the entities back to
 the document they belong to, then we need to process each document
 independently:
 
-```{code-cell} ipython3
+:::{code}
 for doc in docs:
     clean_text_segs = sentence_tokenizer.run([doc.raw_segment])
     sentence_segs = sentence_tokenizer.run(clean_text_segs)
     entities = regexp_matcher.run(sentence_segs)
     for entity in entities:
         doc.anns.add(entity)
-```
+:::
 
 When using pipelines (which will be covered in a later tutorial), this last use
 case is covered by the {class}`~medkit.core.DocPipeline` class.
@@ -561,10 +548,8 @@ a medkit operation so you can use them within medkit, as described in [this
 tutorial](../user_guide/module.md). Contributions to medkit are welcome so you can
 submit your operations to be integrated into medkit!
 
-
-```{code-cell} ipython3
-:tags: [remove-cell]
+:::{code}
 import os
 
 os.unlink("weight_and_age_rules.yml")
-```
+:::
