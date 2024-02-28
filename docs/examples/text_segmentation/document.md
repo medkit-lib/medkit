@@ -1,33 +1,12 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.14.5
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-
-
 # Document splitter
-
-+++
 
 This tutorial will show an example of how to split a document using its sections as a reference. 
 
-```{seealso}
-We combine some operations like **section tokenizer**, **regexp matcher** and **custom operation**. Please see the other examples for more information.
-```
-+++
+## Adding annotations to a document
 
-## Adding annotations in a document
+Let's detect the sections and add some annotations using `medkit` operations.
 
-Let's detect the sections and add some annotations using medkit operations.
-
-```{code-cell} ipython3
+:::{code}
 # You can download the file available in source code
 # !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/data/text/1.txt
 
@@ -36,10 +15,11 @@ from medkit.core.text import TextDocument
 
 doc = TextDocument.from_file(Path("../../data/text/1.txt"))
 print(doc.text)
-```
+:::
+
 **Defining the operations**
 
-```{code-cell} ipython3
+:::{code}
 from medkit.text.ner import RegexpMatcher, RegexpMatcherRule
 from medkit.text.segmentation import SectionTokenizer
 
@@ -64,11 +44,11 @@ regexp_rules = [
     RegexpMatcherRule(regexp=r"\bnasonex\b", label="treatment", case_sensitive=False),
 ]
 regexp_matcher = RegexpMatcher(rules=regexp_rules)
-```
+:::
 
-We can now annotate the document
+We can now annotate the document:
 
-```{code-cell} ipython3
+:::{code}
 # Detect annotations
 sections = section_tokenizer.run([doc.raw_segment])
 entities = regexp_matcher.run([doc.raw_segment])
@@ -77,15 +57,18 @@ for ann in sections + entities:
     doc.anns.add(ann)
 
 print(f"The document contains {len(sections)} sections and {len(entities)} entities\n")
-```
+:::
 
 ## Split the document by sections 
 
-Once annotated, we can use the medkit operation {class}`~medkit.text.postprocessing.DocumentSplitter` to create smaller versions of the document using the sections. 
+Once annotated, we can use {class}`~medkit.text.postprocessing.DocumentSplitter`
+to create smaller versions of the document using the sections. 
 
-By default, since its `entity_labels`, `attr_labels`, and `relation_labels` are set to `None`, all annotations will be in the resulting documents. You can select the annotations using their labels.
+By default, since its `entity_labels`, `attr_labels`, and `relation_labels` are set to `None`,
+all annotations will be in the resulting documents.
+You can select the annotations using their labels.
 
-```{code-cell} ipython3
+:::{code}
 from medkit.text.postprocessing import DocumentSplitter
 
 doc_splitter = DocumentSplitter(segment_label="section", # segments of reference
@@ -95,11 +78,12 @@ doc_splitter = DocumentSplitter(segment_label="section", # segments of reference
 )
 new_docs = doc_splitter.run([doc])
 print(f"The document was divided into {len(new_docs)} documents\n")
-```
+:::
 
-Each document contains entities and attributes from the source segment; below, we visualize the new documents via displacy utils.
+Each document contains entities and attributes from the source segment.
+Below, we visualize the new documents via the `displacy` helpers.
 
-```{code-cell} ipython3
+:::{code}
 from spacy import displacy
 from medkit.text.spacy.displacy_utils import medkit_doc_to_displacy
 
@@ -110,5 +94,4 @@ for new_doc in new_docs:
     # convert new document to displacy 
     displacy_data = medkit_doc_to_displacy(new_doc)
     displacy.render(displacy_data, manual=True, style="ent", options=options_displacy)
-```
-
+:::
