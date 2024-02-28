@@ -1,17 +1,17 @@
 # Entity Matching
 
 This tutorial will take you on a tour of the most common methods to perform
-entity matching on text documents using medkit.
+entity matching on text documents using `medkit`.
 
-NB: If you are new to medkit, you should probably take a look at the [First
-steps](../user_guide/first_steps.md) tutorial before going further.
+NB: If you are new to `medkit`, you should probably take a look at the
+[First steps](../user_guide/first_steps.md) tutorial before going further.
 
 ## Sentence splitting
 
-Before trying to locate entities in a document, it is often necessary to split
-it into sentences, either because some operations expect sentences rather than a
-full document as their input, or because we will afterward perform some context
-detection operation at the sentence level.
+Before trying to locate entities in a document,
+it is often necessary to split it into sentences,
+either because some operations expect sentences rather than a full document as their input,
+or because we will afterward perform some context detection operation at the sentence level.
 
 Let's start by loading a medical report to work on:
 
@@ -23,12 +23,12 @@ doc = TextDocument.from_file(Path("../data/mtsamplesfr/1.txt"))
 print(doc.text)
 :::
 
-We will now use medkit's sentence tokenizing operation to create and display
-sentence segments. As seen [before](../user_guide/first_steps.md), the sentence tokenizer
-expects a list of segments as input and will return a list of sentence segments,
-and since we don't have any segments yet on our document, we use
-`TextDocument.raw_segment`, which is a special segment that contains the full
-unprocessed text.
+We will now use a sentence tokenizing operation to create and display sentence segments.
+As seen [before](../user_guide/first_steps.md), the sentence tokenizer expects
+a list of segments as input and will return a list of sentence segments.
+Since we don't have any segments yet on our document,
+we use {class}`medkit.core.text.document.TextDocument`.raw_segment,
+which is a special segment that contains the full unprocessed text.
 
 :::{code}
 from medkit.text.segmentation import SentenceTokenizer
@@ -53,12 +53,12 @@ for sentence_seg in sentence_segs:
 
 ## Regular expression matching
 
-Medkit comes with a built-in matcher that can identify entities based on regular
-expressions. For a complete overview of its features, you can refer to its
-{mod}`API doc<medkit.text.ner.regexp_matcher>`.
+`medkit` comes with a built-in matcher that can identify entities based on regular expressions.
+For a complete overview of its features, you can refer to {mod}`medkit.text.ner.regexp_matcher`.
 
-We are going to use regular expressions to match entities that cannot be
-detected by a dictionary-based approach, such as age and weight indications:
+We are going to use regular expressions to match entities
+that cannot be detected by a dictionary-based approach,
+such as age and weight indications:
 
 :::{code}
 from medkit.text.ner import RegexpMatcher, RegexpMatcherRule
@@ -96,10 +96,9 @@ for entity in entities:
     print(entity.text, entity.label)
 :::
 
-Let's visualize them with `displacy`, using the
-{func}`~medkit.text.spacy.displacy_utils.entities_to_displacy` helper (similar
-to {func}`~medkit.text.spacy.displacy_utils.medkit_doc_to_displacy` but we can
-pass it a list of entities rather than a `TextDocument`):
+Let's visualize them with `displacy`, using {func}`~medkit.text.spacy.displacy_utils.entities_to_displacy`
+(similar to {func}`~medkit.text.spacy.displacy_utils.medkit_doc_to_displacy`but we can pass it
+a list of entities rather than a `TextDocument`):
 
 :::{code}
 from spacy import displacy
@@ -109,32 +108,31 @@ displacy_data = entities_to_displacy(entities, doc.text)
 displacy.render(displacy_data, manual=True, style="ent")
 :::
 
- Note that you can save a particular list of regexp rules into a yaml file using
- the {func}`~medkit.text.ner.RegexpMatcher.save_rules` static method, and
- then reload them with {func}`~medkit.text.ner.RegexpMatcher.load_rules`.
- This makes it easier to share and reuse them:
+Note that you can save a particular list of regexp rules into a yaml file
+using {func}`~medkit.text.ner.RegexpMatcher.save_rules`,
+and reload them with {func}`~medkit.text.ner.RegexpMatcher.load_rules`.
+This makes rules easier to share and reuse:
 
 :::{code}
 RegexpMatcher.save_rules([regexp_rule_1, regexp_rule_2], "weight_and_age_rules.yml")
 rules = RegexpMatcher.load_rules("weight_and_age_rules.yml")
 :::
 
-Medkit itself comes with a list of predefined regexp rules, available at
-https://github.com/medkit-lib/medkit/blob/main/medkit/text/ner/regexp_matcher_default_rules.yml,
-that will be used by default if you don't provide any rules to `RegexpMatcher`.
+`medkit` comes with a list of predefined regexp rules,
+available at https://github.com/medkit-lib/medkit/blob/main/medkit/text/ner/regexp_matcher_default_rules.yml,
+which will be used as default if no rules are provided to the `RegexpMatcher` instance.
 
 ## Similarity-based entity matching
 
-We will now perform entity matching but this time based on a list of terms that
-we want to retrieve.
+We will now perform entity matching but this time based on a list of terms
+that we want to retrieve.
 
-The medical report we have loaded mentions several drugs that we are interested
-in detecting. For this, we are going to take a CSV file that contains commercial
-names of drugs, along with the molecules they contain and their corresponding
-identifiers in the ATC
-(https://www.who.int/tools/atc-ddd-toolkit/atc-classification)
-classification.[^atc_footnote] Let's take a look at it:
+The medical report we have loaded mentions several drugs that we are interested in detecting.
+For this, we are going to take a CSV file that contains commercial names of drugs,
+along with the molecules they contain and their corresponding identifiers in the [ATC classification].[^atc_footnote]
+Let's take a look at it:
 
+[ATC classification]: https://www.who.int/tools/atc-ddd-toolkit/atc-classification
 [^atc_footnote]: This file was created by Bastien Rance, reusing scripts originally from
 Sébastien Cossin
 
@@ -145,9 +143,13 @@ drugs = pd.read_csv("../data/bdpm.csv")
 drugs.head(n=10)
 :::
 
-Rather than regular expressions, we will used similarity-based matching using the {class}`~medkit.text.ner.SimstringMatcher` operation.
+Rather than regular expressions, we will use similarity-based matching
+using the {class}`~medkit.text.ner.SimstringMatcher` operation.
 
-This "fuzzy" matcher based on the [simstring algorithm](http://chokkan.org/software/simstring/) will be more tolerant to small spelling errors than the exact matching of a regular expression.We are going to create a rule for each commercial name, and to each rule we will attach the ATC identifier of each molecule when we know them:
+This "fuzzy" matcher based on the [simstring algorithm](http://chokkan.org/software/simstring/)
+will be more tolerant to small spelling errors than the exact matching of a regular expression.
+We are going to create a rule for each commercial name, and to each rule we will attach
+the ATC identifier of each molecule when we know them:
 
 :::{code}
 from medkit.text.ner import SimstringMatcher, SimstringMatcherRule, SimstringMatcherNormalization
@@ -201,12 +203,12 @@ for entity in entities:
 
 ## Advanced entity matching with IAMSystem
 
-[IAMSystem](https://iamsystem-python.readthedocs.io/en/latest/) is an advanced
-entity matcher developed by Sébastien Cossin.[^footnote_iam] It allows for a fine control of
-the matching strategy and should be relatively fast, even when the dictionary of
-terms to match is very large.
+[IAMSystem](https://iamsystem-python.readthedocs.io/en/latest/) is an advanced entity matcher
+developed by Sébastien Cossin.[^iam_footnote]
+It allows for a fine control of the matching strategy and should be relatively fast,
+even when the dictionary of terms to match is very large.
 
-[^footnote_iam]: Cossin S, Jouhet V, Mougin F, Diallo G, Thiessard F. IAM at CLEF eHealth 2018: Concept Annotation and Coding in French Death Certificates. https://arxiv.org/abs/1807.03674
+[^iam_footnote]: Cossin S, Jouhet V, Mougin F, Diallo G, Thiessard F. IAM at CLEF eHealth 2018: Concept Annotation and Coding in French Death Certificates. https://arxiv.org/abs/1807.03674
 
 Let's see how to use it to match a couple of manually-defined terms:
 
@@ -234,34 +236,37 @@ for entity in entities:
     print(entity.label, ":", entity.text)
 :::
 
-To learn more about the possibilities of `IAMSystem`, refer to its
-[documentation](https://iamsystem-python.readthedocs.io/en/).
+To learn more about the possibilities of `IAMSystem`,
+please refer to its [documentation](https://iamsystem-python.readthedocs.io/en/).
 
 ## Finding UMLS concepts
 
-Rather than manually building a dictionary of terms to match, we may be
-interested in exploiting the terms referenced by the [UMLS
-metathesaurus](https://www.nlm.nih.gov/research/umls/).
+Rather than manually building a dictionary of terms to match,
+we may be interested in exploiting the terms referenced by the [UMLS metathesaurus].
 
-Among other things, the UMLS contains a list of medical terms in different
-languages, associated with a unique identifier (named CUI) for each concept they
-refer to. The concepts are grouped together into "semantic types", themselves
-grouped into wider groups caller "semantic groups" such as "ANAT", "CHEM",
-"DISO", "PHYSIO", "PROC", etc (cf
-https://lhncbc.nlm.nih.gov/semanticnetwork/download/sg_archive/SemGroups-v04.txt
-for the complete list).
+[UMLS metathesaurus]: https://www.nlm.nih.gov/research/umls/
 
-Medkit provides a similarity-based fuzzy matcher dedicated to the UMLS. It uses
-2 files from the standard UMLS distribution : `MRSTY.RRF`, which contains all
-the UMLS concepts with their CUI in a CSV-like format, and `MRCONSO.RRF` which
-contains a list of terms in different languages with corresponding CUI. The
-{class}`~medkit.text.ner.umls_matcher.UMLSMatcher` operation simply uses this
-lists to build a dictionary of terms to match (it does not take advantage of the
-hierarchical nature of UMLS concepts).
+Among other things, the UMLS contains a list of medical terms in different languages,
+associated with a unique identifier (named CUI) for each concept they refer to.
+The concepts are grouped together into _semantic types_,
+themselves grouped into wider groups caller [semantic groups],
+such as "ANAT", "CHEM", "DISO", "PHYSIO", "PROC", etc...
 
-Note that the UMLS files are not freely distributable nor usable, to download
-them and use you must request a license on the [UMLS
-website](https://www.nlm.nih.gov/research/umls/index.html)
+[semantic groups]: https://lhncbc.nlm.nih.gov/semanticnetwork/download/sg_archive/SemGroups-v04.txt
+
+`medkit` provides a similarity-based fuzzy matcher dedicated to the UMLS.
+
+It uses two files from the standard UMLS distribution:
+- `MRSTY.RRF` -- which contains all UMLS concepts with their CUI in a CSV-like format;
+- `MRCONSO.RRF` -- which contains a list of terms in different languages with corresponding CUI.
+
+The {class}`~medkit.text.ner.umls_matcher.UMLSMatcher` operation simply uses these lists
+to build a dictionary of terms to match (it does not take advantage of the hierarchical nature of UMLS concepts).
+
+Note that the UMLS files are not freely reusable nor redistributable nor usable.
+To download them, you must request a license on the [UMLS website].
+
+[UMLS website]: https://www.nlm.nih.gov/research/umls/index.html
 
 :::{code}
 from medkit.text.ner import UMLSMatcher
@@ -386,26 +391,24 @@ displacy.render(displacy_data, manual=True, style="ent")
 ## Finding entities with BERT models
 
 BERT language models are neural network using a transformer architecture,
-trained on large amounts of textual data using self-supervised learning
-techniques such as masked language modeling and next sentence prediction.
+trained on large amounts of textual data using self-supervised learning techniques
+such as masked language modeling and next sentence prediction.
 Additional layers can be added to BERT models to perform various NLP tasks,
 including named entity recognition.
 
-Medkit makes it possible to use BERT models for NER by wrapping the [HuggingFace
-transformers library](https://huggingface.co/docs/transformers/index). This
-python deep learning library specializes in reimplementing state of the art
-transformers architectures, and also provides a model hub where the weights of
-many pre-trained models can be found.
+`medkit` makes it possible to use BERT models for NER by wrapping the [HuggingFace transformers library].
+This deep learning library specializes in reimplementing state-of-the-art transformers architectures,
+and also provides a model hub with the weights of many pre-trained models.
+
+[HuggingFace transformers library]: https://huggingface.co/docs/transformers/index
 
 [DrBERT](https://drbert.univ-avignon.fr/) is a BERT model trained on french
-biomedical documents, available on the HuggingFace hub at
-https://huggingface.co/Dr-BERT/DrBERT-7GB. The medkit team has fine-tuned DrBERT
-on an annotated version of the [CAS dataset](https://hal.science/hal-01937096)
-to perform entity matching: https://huggingface.co/medkit/DrBERT-CASM2
+biomedical documents, available on [HuggingFace](https://huggingface.co/Dr-BERT/DrBERT-7GB).
+The medkit team fine-tuned DrBERT on an annotated version of the [CAS dataset](https://hal.science/hal-01937096)
+to perform [entity matching](https://huggingface.co/medkit/DrBERT-CASM2).
 
-Let's use this model with the
-{class}`~medkit.text.ner.hf_entity_matcher.HFEntityMatcher` to look for entities
-in our document:
+Let's use this model using {class}`~medkit.text.ner.hf_entity_matcher.HFEntityMatcher`
+to look for entities in our document:
 
 :::{code}
 from medkit.text.ner.hf_entity_matcher import HFEntityMatcher
@@ -493,13 +496,12 @@ displacy.render(docs=displacy_data, manual=True, style="ent")
  85.7 kg.<br></div></span>
 
 
-Note that the entities obtained with `HFEntityMatcher` don't have any
-normalization attributes attached to them.
+Note that the entities obtained with `HFEntityMatcher` don't have any normalization attributes attached to them.
 
 ## Matching entities in multiple documents
 
-Let's consider the more realistic case in which we are dealing with a collection
-of documents rather than a unique document:
+Let's consider a more realistic case in which we are dealing with a collection of documents
+rather than a unique document:
 
 :::{code}
 from glob import glob
@@ -518,10 +520,9 @@ for entity in entities:
     print(entity.label, entity.text)
 :::
 
-Here, `entities` contains the entities found by the regexp matcher across
-all of our documents, in a list. But if we want to attach the entities back to
-the document they belong to, then we need to process each document
-independently:
+Here, `entities` contains a list of entities found by the regexp matcher across all of our documents.
+But if we want to attach the entities back to the document they belong to,
+then we need to process each document independently:
 
 :::{code}
 for doc in docs:
@@ -532,21 +533,21 @@ for doc in docs:
         doc.anns.add(entity)
 :::
 
-When using pipelines (which will be covered in a later tutorial), this last use
-case is covered by the {class}`~medkit.core.DocPipeline` class.
+When using [pipelines](../user_guide/pipeline.md),
+this last use case is covered using {class}`~medkit.core.DocPipeline`.
 
 ## Wrapping it up
 
-Medkit provides many operations to perform entity matching using various
-methods: regular expressions, fuzzy matching, BERT models, etc.
+`medkit` provides many operations to perform entity matching using various methods:
+regular expressions, fuzzy matching, BERT models, etc.
 
-Even if you do complex pre-processing, medkit will be able to give the
-characters pans of the entities in the original unprocessed text.
+Even if you do complex pre-processing, `medkit` will be able to give the characters spans
+of the entities in the original unprocessed text.
 
-If you use different methods or 3d-party tools, it is possible to wrap them into
-a medkit operation so you can use them within medkit, as described in [this
-tutorial](../user_guide/module.md). Contributions to medkit are welcome so you can
-submit your operations to be integrated into medkit!
+If you use different methods or 3d-party tools, it is possible to wrap them into a `medkit` operation,
+so you can use them anywhere else within `medkit`. See the [module](../user_guide/module.md) section.
+
+Contributions to `medkit` are welcome, feel free to submit your operations.
 
 :::{code}
 import os
