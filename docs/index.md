@@ -41,7 +41,6 @@ titlesonly:
 ---
 examples/spans
 examples/cleaning_text
-examples/text_segmentation/index
 examples/brat_io
 examples/spacy/index
 examples/custom_text_operation
@@ -62,6 +61,7 @@ titlesonly:
 ---
 tutorial/context_detection
 tutorial/entity_matching
+tutorial/text_segmentation/index
 :::
 
 :::{toctree}
