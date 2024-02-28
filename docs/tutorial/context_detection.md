@@ -1,14 +1,11 @@
 # Context Detection
 
-In this tutorial, we will use rule-based operations to attach additional
-contextual information to entities such has:
-- the section in which the entity is located
-- is the entity negated
-- did it appear as part of a hypothesis
-- it is related to the patient or it is part of their family's medical history
-
-NB: If you are not familiar with medkit, you should probably take a look at the
-[First steps](../user_guide/first_steps.md) tutorial before going further.
+In this tutorial, we will use rule-based operations to attach additional contextual information to entities,
+such has:
+- the section in which the entity is located;
+- is the entity negated;
+- whether it appears as part of an hypothesis;
+- whether it is related to the patient or part of their family's medical history.
 
 Let's start by loading a document:
 
@@ -22,16 +19,17 @@ print(doc.text)
 
 ## Section detection
 
-Medkit provides a {class}`~medkit.text.segmentation.SectionTokenizer` operation
-that takes a input segments containing full document texts and splits them into
-sections, returning a segment for each section.
+`medkit` provides a {class}`~medkit.text.segmentation.SectionTokenizer` operation
+that takes input segments containing full document texts and splits them into sections,
+returning a segment for each section.
 
-The section tokenizer is configured with a list of trigger terms signaling the
-beginning of a section, and corresponding section names. Medkit provides a
-default list of possible sections
-(https://github.com/medkit-lib/medkit/blob/main/medkit/text/segmentation/default_section_definition.yml)
-but it is missing some sections that our document has, so we will manually
-define our own section rules:
+The section tokenizer is configured with a list of trigger terms
+signaling the beginning of a section and corresponding section names.
+`medkit` provides a [default list of sections],
+but it is missing some sections featured in our document,
+so we will manually define our own section rules:
+
+[default list of sections]: https://github.com/medkit-lib/medkit/blob/main/medkit/text/segmentation/default_section_definition.yml
 
 :::{code}
 from medkit.text.segmentation import SectionTokenizer
@@ -60,15 +58,16 @@ for section_seg in section_segs:
 
 ## Sentence splitting
 
-We have already seen sentence splitting [previously](../user_guide/first_steps.md) and we will
-reuse the same code, with a little addition: we want the section information to
-be propagated onto the sentences, ie. we want to be able to tell in which
-section a sentence belongs.
+We have covered sentence splitting [previously](../user_guide/first_steps.md),
+and will reuse the same code, with a little addition:
+we want the section information to be propagated onto the sentences,
+i.e. we want to be able to tell in which section a sentence belongs.
 
-For this, we will use the `attrs_to_copy` init parameter. It takes a list of
-labels that we want to copy from the input segments to the new sentences
-segments created by the operation. Here, we will use it to copy the "section"
-attribute of the section segments (which has the section name as value):
+For this, we will use the `attrs_to_copy` init parameter.
+It takes a list of labels that we want to copy from the input segments
+to the new sentences segments created by the operation.
+Here, we will use it to copy the "section" attribute of the section segments
+(which has the section name as value):
 
 :::{code}
 from medkit.text.segmentation import SentenceTokenizer
@@ -94,20 +93,20 @@ for sentence_seg in sentence_segs:
 
 ## Family history detection
 
-In this document, we have a section dedicated to family medical history, but,
-this is not always the case. To handle this, medkit provides a
-{class}`~medkit.text.context.FamilyDetector`  operation based on regular
-expressions. It is somewhat similar to the
-{class}`~medkit.text.ner.RegexpMatcher` we have
-[previously](./entity_matching.md#regular-expression-matching) seen, but instead
-of returning entities, it attaches attributes to the segments it receives, with
-a boolean value indicating whether it mentions family history.
+In this document, we have a section dedicated to family medical history,
+but this is not always the case.
+To handle this, `medkit` provides a {class}`~medkit.text.context.FamilyDetector` operation
+based on regular expressions.
+It is somewhat similar to {class}`~medkit.text.ner.RegexpMatcher`
+encountered [previously](./entity_matching.md#regular-expression-matching),
+but instead of returning entities, it attaches attributes to the segments it receives,
+with a boolean value indicating whether it mentions family history.
 
-Like most rule-based medkit operations, `FamilyDetector` comes with [predefined
-rules](
-https://github.com/medkit-lib/medkit/blob/main/medkit/text/context/family_detector_default_rules.yml)
-that will be used by default if you don't provide any. For the sake of learning,
-we will manually create a few rules:
+Like most rule-based operations, `FamilyDetector` comes with [predefined rules]
+that will be used by default if none is provided.
+For the sake of learning, we will manually create a few rules:
+
+[predefined rules]: https://github.com/medkit-lib/medkit/blob/main/medkit/text/context/family_detector_default_rules.yml
 
 :::{code}
 from medkit.text.context import FamilyDetector, FamilyDetectorRule
@@ -149,16 +148,16 @@ for sentence_seg in sentence_segs:
 :::
 
 As with all rule-based operations, `FamilyDetector` provides
-{func}`~medkit.text.context.FamilyDetector.load_rules` and
-{func}`~medkit.text.context.FamilyDetector.save_rules` methods to help you store
-then in a yaml file.
+the {func}`~medkit.text.context.FamilyDetector.load_rules`
+and {func}`~medkit.text.context.FamilyDetector.save_rules` methods
+to facilitate their persistence to a YAML file.
 
 ## Negation detection
 
-Detecting family history work best at the sentence level, but for negation and
-hypothesis it is better to split sentences into smaller chunks, as the scope of
-negation and hypothesis can be very limited. For this purpose, medkit comes with
-a {class}`~medkit.text.segmentation.SyntagmaTokenizer` operation.
+Detecting family history works best at the sentence level.
+However, for negation and hypothesis, it is better to split sentences into smaller chunks,
+as the scope of negation and hypothesis can be very limited.
+For this purpose, `medkit` provides a {class}`~medkit.text.segmentation.SyntagmaTokenizer` operation.
 
 :::{code}
 from medkit.text.segmentation import SyntagmaTokenizer
@@ -178,9 +177,9 @@ for syntagma_seg in syntagma_segs:
     print(syntagma_seg.text)
 :::
 
-As you can see, a few sentences where split into smaller parts. We can now run a
-{class}`~medkit.text.context.NegationDetector` instance on the syntagmas (using
-the [default rules file](https://github.com/medkit-lib/medkit/blob/main/medkit/text/context/negation_detector_default_rules.yml)).
+As you can see, a few sentences were split into smaller parts.
+We can now run a {class}`~medkit.text.context.NegationDetector` instance on the syntagmata
+(using the default rules).
 
 :::{code}
 from medkit.text.context import NegationDetector, NegationDetectorRule
@@ -199,11 +198,11 @@ for syntagma_seg in syntagma_segs:
 
 ## Hypothesis detection
 
-Medkit's {class}`~medkit.text.context.HypothesisDetector` is very similar to
-`NegationDetector`, except that in addition to a list of rules, it also uses a
-list of conjugated verb forms. By default, verbs at conditional and future
-tenses will be considered to indicate the presence of an hypothesis. This can be
-configured, as well as the list of verbs which is far from exhaustive.
+`medkit` also provides {class}`~medkit.text.context.HypothesisDetector`,
+which is very similar to {class}`~medkit.text.context.NegationDetector`,
+except it also uses a list of conjugated verb forms in addition to the list of rules.
+By default, verbs at conditional and future tenses indicate the presence of an hypothesis.
+This can be configured alongside the list of verbs.
 
 :::{code}
 from medkit.text.context import HypothesisDetector
@@ -221,18 +220,18 @@ for syntagma_seg in syntagma_segs:
 As you can see, no hypothesis was detected in this document.
 
 :::{warning}
-The default settings (rules and verbs) of `HypothesisDetector` are far from
-complete and may not give satisfactory results. If you plan on using
-`HypothesisDetector`, you will need to come up with your own set of regexp rules
-and conjugated verbs that work well for you data.
+The default settings (rules and verbs) of `HypothesisDetector` are **NOT** exhaustive
+and may not yield satisfactory results.
+If you plan on using `HypothesisDetector`, please consider specifying your own set of rules
+and conjugated verbs that are specifically tailored to your data.
 :::
 
 ## Passing context information to matched entities
 
-Now that we have gathered all this contextual information, we want to propagate
-it to the entities that we will find in the document. This is easily done by
-using the `attrs_to_copy` mechanism that we have already seen, and that is
-available for all NER operations:
+Now that we have gathered all this contextual information,
+we want to propagate it to the entities that we will find in the document.
+This can be done using the `attrs_to_copy` mechanism that we have already seen,
+which is available to all NER operations:
 
 :::{code}
 from medkit.text.ner.hf_entity_matcher import HFEntityMatcher
@@ -563,24 +562,20 @@ displacy.render(docs=displacy_data, manual=True, style="ent")
 <mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">pèse<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
  85.7 kg.<br></div></span>
 
-## Adding context attributes a posteriori
+## Adding context attributes retrospectively
 
-What if we already have some entities that we imported from another source and
-we want to attach the contextual information that we obtain with medkit
-operations? In that case it is possible to use the
-{class}`~medkit.text.postprocessing.AttributeDuplicator` operation, that makes
-it possible to copy attributes a posteriori without using the `attrs_to_copy`
-parameter.
+What if we already have some entities that we imported from another source,
+and we want to attach the resulting contextual information obtained with `medkit`?
+In that case, one can copy attributes retrospectively using the
+{class}`~medkit.text.postprocessing.AttributeDuplicator` operation.
 
 ## Wrapping it up
 
-In this tutorial, we have seen how medkit can help you to detect contextual
-information with built-in rule-based detectors, for which the rules can be
-customized.
+In this tutorial, we have seen how `medkit` can facilitate detection of contextual information
+with built-in and customizable rule-based detectors.
 
 These detectors can be run on segments of different granularity,
-such as sentences or syntagmas, and the results are stored in attributes.
+including as sentences or syntagmas, with their results stored as attributes.
 
-In order to make these contextual attributes propagate from the outer-most
-segments down to the entities matched, we use the `attrs_to_copy` operation
-init parameter.
+In order to propagate these contextual attributes from the outermost segments down to the entities matched,
+we use the `attrs_to_copy` operation init parameter.
