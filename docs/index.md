@@ -42,13 +42,8 @@ titlesonly:
 examples/spans
 examples/cleaning_text
 examples/text_segmentation/index
-examples/text_segmentation/section
-examples/text_segmentation/syntagma
-examples/text_segmentation/document
 examples/brat_io
 examples/spacy/index
-examples/spacy/spacy_io
-examples/spacy/spacy_pipeline
 examples/custom_text_operation
 examples/edsnlp
 examples/iamsystem
