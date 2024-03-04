@@ -1,10 +1,10 @@
-# medkit
+# Overview
 
 `medkit` is a Python library which facilitates **extraction of features**
 from various modalities of patient data, including text and audio for now
 -- relational, image, genetic, and others will follow soon.
 
-To this end, medkit enables composition of pipelines with multiple modules,
+To this end, `medkit` enables composition of pipelines with multiple modules,
 developed by us, yourself or others.
 
 `medkit` places a strong emphasis on **non-destructive operations**,
@@ -20,25 +20,33 @@ Some public interfaces may change in the future.
 Please check the **BREAKING CHANGES** section of the project's changelog for details.
 :::
 
-:::{toctree}
----
-caption: User Guide
-hidden:
-titlesonly:
----
+```{toctree}
+:caption: User Guide
+:hidden:
+:titlesonly:
+
 user_guide/install
 user_guide/first_steps
 user_guide/pipeline
 user_guide/provenance
 user_guide/module
-:::
+```
 
-:::{toctree}
----
-caption: Examples
-hidden:
-titlesonly:
----
+```{toctree}
+:caption: Tutorial
+:hidden:
+:titlesonly:
+
+tutorial/context_detection
+tutorial/entity_matching
+tutorial/text_segmentation/index
+```
+
+```{toctree}
+:caption: Cookbook
+:hidden:
+:titlesonly:
+
 examples/spans
 examples/cleaning_text
 examples/brat_io
@@ -51,25 +59,13 @@ examples/detecting_text_duplicates
 examples/audio_transcription
 examples/audio_dataset_metrics
 examples/ontotox
-:::
+```
 
-:::{toctree}
----
-caption: Tutorial
-hidden:
-titlesonly:
----
-tutorial/context_detection
-tutorial/entity_matching
-tutorial/text_segmentation/index
-:::
+```{toctree}
+:caption: Reference
+:hidden:
+:titlesonly:
 
-:::{toctree}
----
-caption: Reference
-hidden:
-titlesonly:
----
 api/_generated/index
 api/audio
 api/core
@@ -80,4 +76,5 @@ api/text
 api/training
 api/tools
 changelog
-:::
+license
+```
