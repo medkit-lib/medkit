@@ -4,15 +4,50 @@
 from various modalities of patient data, including text and audio for now
 -- relational, image, genetic, and others will follow soon.
 
-To this end, `medkit` enables composition of pipelines with multiple modules,
-developed by us, yourself or others.
-
 `medkit` places a strong emphasis on **non-destructive operations**,
 i.e. no loss of information when passing data from a module to another,
 and a flexible tracing of **data provenance**.
+It enables composition of pipelines with multiple modules,
+developed by the _HeKA Research Team_, contributors, and eventually yourself.
 
 `medkit` aims at accelerating the development of a learning health system,
 with a strong dedication to open-source and community development.
+
+::::{grid} 2
+:gutter: 2
+
+:::{grid-item-card} User Guide
+
+To get started with `medkit`
+
++++
+[Learn more »](user_guide/first_steps)
+:::
+
+:::{grid-item-card} Tutorial
+
+To walk through `medkit` features
+
++++
+[Learn more »](tutorial/entity_matching)
+:::
+
+:::{grid-item-card} Cookbook
+
+To learn `medkit` by examples
+
++++
+[Learn more »](examples/spans)
+:::
+
+:::{grid-item-card} Reference
+
+For developers and contributors
+
++++
+[Learn more »](api/core)
+:::
+::::
 
 :::{warning}
 The `medkit` core library is still under heavy development and testing.
