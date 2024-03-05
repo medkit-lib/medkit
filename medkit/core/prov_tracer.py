@@ -66,14 +66,14 @@ class ProvTracer:
     through :meth:`~.get_sub_prov_tracer` or :meth:`~.get_sub_prov_tracers`. The
     inner operations of a composite operation can themselves be composite
     operations, leading to a tree-like structure of nested provenance tracers.
+
+    Parameters
+    ----------
+    store:
+        Store that will contain all traced data items.
     """
 
     def __init__(self, store: ProvStore | None = None, _graph: ProvGraph | None = None):
-        """Parameters
-        ----------
-        store:
-            Store that will contain all traced data items.
-        """
         if store is None:
             store = create_prov_store()
         if _graph is None:
@@ -119,7 +119,9 @@ class ProvTracer:
         op_desc: OperationDescription,
         sub_tracer: ProvTracer,
     ):
-        """Append provenance information about data items created by a composite
+        """Add provenance information about data items to a specific tracer.
+
+        Append provenance information about data items created by a composite
         operation relying on inner operations (such as a pipeline) having its
         own internal sub-provenance tracer.
 
@@ -182,8 +184,7 @@ class ProvTracer:
         self._graph.add_node(data_item_id, operation_id, source_ids)
 
     def has_prov(self, data_item_id: str) -> bool:
-        """Check if the provenance tracer has provenance information about a
-        specific data item.
+        """Check whether a specific data item has provenance information.
 
         .. note::
             This will return `False` if we have provenance info about a data
@@ -240,8 +241,7 @@ class ProvTracer:
         return [self._build_prov_from_node(node) for node in self._graph.get_nodes()]
 
     def has_sub_prov_tracer(self, operation_id: str) -> bool:
-        """Check if the provenance tracer has a sub-provenance tracer for a
-        specific composite operation (such as a pipeline).
+        """Check whether the provenance tracer has a sub-provenance tracer for an operation.
 
         .. note::
             This will return `False` if there is a sub-provenance tracer for
@@ -261,8 +261,7 @@ class ProvTracer:
         return self._graph.has_sub_graph(operation_id)
 
     def get_sub_prov_tracer(self, operation_id: str) -> ProvTracer:
-        """Return a sub-provenance tracer containing sub-provenance information from a
-        specific composite operation.
+        """Return a sub-provenance tracer containing sub-provenance information for an operation.
 
         Parameters
         ----------

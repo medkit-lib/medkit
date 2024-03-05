@@ -18,8 +18,7 @@ from medkit.core import Attribute, dict_conv
 
 @dataclasses.dataclass
 class DateAttribute(Attribute):
-    """Attribute representing an absolute date or time associated to a segment or
-    entity.
+    """Attribute representing an absolute date or time associated to a segment or entity.
 
     The date or time can be incomplete: each date/time component is optional but
     at least one must be provided.
@@ -218,7 +217,7 @@ class DurationAttribute(Attribute):
 
 
 class RelativeDateDirection(Enum):
-    """Direction of a :class:`~.RelativeDateAttribute`"""
+    """Direction of a :class:`~.RelativeDateAttribute`."""
 
     PAST = "past"
     FUTURE = "future"
@@ -226,11 +225,11 @@ class RelativeDateDirection(Enum):
 
 @dataclasses.dataclass
 class RelativeDateAttribute(Attribute):
-    """Attribute representing a relative date or time associated to a segment or
-    entity, ie a date/time offset from an (unknown) reference date/time, with a
-    direction.
+    """Attribute representing a relative date or time associated to a segment or entity.
 
-    At least one date/time component must be non-zero.
+    A date or time offset from an (unknown) reference date time with a direction.
+
+    At least one date or time component must be non-zero.
 
     Attributes
     ----------
@@ -345,9 +344,11 @@ def _format_date(
     minute: int | None,
     second: int | None,
 ) -> str:
-    """Return a string representation of a date with format YYYY-MM-DD for the date
+    """Return a string representation of a date with or without time.
+
+    Return a string representation of a date with format YYYY-MM-DD for the date
     part and HH:MM:SS for the time part, if present. Missing components are
-    replaced with question marks
+    replaced with question marks.
     """
     formatted = ""
     if year is not None or month is not None or day is not None:
@@ -394,7 +395,7 @@ def _format_duration(
     minutes: int | None,
     seconds: int | None,
 ) -> str:
-    """Return a string representation of a date/time offset.
+    """Return a string representation of a date or time offset.
 
     Ex: "1 year 10 months 2 days"
     """
@@ -427,8 +428,9 @@ def _format_relative_date(
     minutes: int | None,
     seconds: int | None,
 ) -> str:
-    """Return a string representation of a the date/time offset with a direction
-    Ex: "+ 1 year 10 months 2 days"
+    """Return a string representation of a date or time offset with a direction.
+
+    Ex: "+ 1 year 10 months 2 days".
     """
     prefix = "+ " if direction is RelativeDateDirection.FUTURE else "- "
     return prefix + _format_duration(years, months, weeks, days, hours, minutes, seconds)

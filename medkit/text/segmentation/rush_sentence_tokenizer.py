@@ -1,7 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[rush-sentence-tokenizer]`.
-"""
-
 from __future__ import annotations
 
 __all__ = ["RushSentenceTokenizer"]
@@ -18,7 +14,26 @@ _PATH_TO_DEFAULT_RULES = Path(__file__).parent / "rush_sentence_tokenizer_defaul
 
 
 class RushSentenceTokenizer(SegmentationOperation):
-    """Sentence segmentation annotator based on PyRuSH."""
+    """Sentence segmentation annotator based on PyRuSH.
+
+    Parameters
+    ----------
+    output_label: str, optional
+        The output label of the created annotations.
+    path_to_rules: str or Path, optional
+        Path to csv or tsv file to provide to PyRuSH. If none provided,
+        "rush_tokenizer_default_rules.tsv" will be used
+        (corresponds to the "conf/rush_rules.tsv" in the PyRush repo)
+    keep_newlines: bool, default=True
+        With the default rules, newline chars are not used to split
+        sentences, therefore a sentence maybe contain one or more newline chars.
+        If `keep_newlines` is False, newlines will be replaced by spaces.
+    attrs_to_copy: list of str, optional
+        Labels of the attributes that should be copied from the input segment
+        to the derived segment. For example, useful for propagating section name.
+    uid: str, optional
+        Identifier of the tokenizer
+    """
 
     _DEFAULT_LABEL = "sentence"
 
@@ -30,26 +45,6 @@ class RushSentenceTokenizer(SegmentationOperation):
         attrs_to_copy: list[str] | None = None,
         uid: str | None = None,
     ):
-        """Instantiate the RuSH tokenizer
-
-        Parameters
-        ----------
-        output_label: str, optional
-            The output label of the created annotations.
-        path_to_rules: str or Path, optional
-            Path to csv or tsv file to provide to PyRuSH. If none provided,
-            "rush_tokenizer_default_rules.tsv" will be used
-            (corresponds to the "conf/rush_rules.tsv" in the PyRush repo)
-        keep_newlines: bool, default=True
-            With the default rules, newline chars are not used to split
-            sentences, therefore a sentence maybe contain one or more newline chars.
-            If `keep_newlines` is False, newlines will be replaced by spaces.
-        attrs_to_copy: list of str, optional
-            Labels of the attributes that should be copied from the input segment
-            to the derived segment. For example, useful for propagating section name.
-        uid: str, optional
-            Identifier of the tokenizer
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")

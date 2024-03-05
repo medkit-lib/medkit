@@ -9,7 +9,7 @@ from medkit.core.text import Segment, SegmentationOperation, span_utils
 
 
 class SentenceTokenizer(SegmentationOperation):
-    """Sentence segmentation annotator based on end punctuation rules"""
+    """Sentence segmentation annotator based on end punctuation rules."""
 
     _DEFAULT_LABEL = "sentence"
     _DEFAULT_PUNCT_CHARS = (".", ";", "?", "!")
@@ -23,7 +23,7 @@ class SentenceTokenizer(SegmentationOperation):
         attrs_to_copy: list[str] | None = None,
         uid: str | None = None,
     ):
-        """Instantiate the sentence tokenizer
+        """Instantiate the sentence tokenizer.
 
         Parameters
         ----------

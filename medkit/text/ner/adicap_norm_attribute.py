@@ -13,8 +13,9 @@ from medkit.core.text import EntityNormAttribute
 
 @dataclasses.dataclass
 class ADICAPNormAttribute(EntityNormAttribute):
-    """Attribute describing tissue sample using the ADICAP (Association pour le
-    Développement de l'Informatique en Cytologie et Anatomo-Pathologie) coding.
+    """Attribute describing tissue sample using the ADICAP coding.
+
+    ADICAP: Association pour le Développement de l'Informatique en Cytologie et Anatomo-Pathologie
 
     :see: https://smt.esante.gouv.fr/wp-json/ans/terminologies/document?terminologyId=terminologie-adicap&fileName=cgts_sem_adicap_fiche-detaillee.pdf
 

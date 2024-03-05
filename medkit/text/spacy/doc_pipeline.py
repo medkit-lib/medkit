@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class SpacyDocPipeline(DocOperation):
-    """DocPipeline to obtain annotations created using spacy"""
+    """DocPipeline to obtain annotations created using spacy."""
 
     def __init__(
         self,
@@ -29,7 +29,7 @@ class SpacyDocPipeline(DocOperation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Initialize the pipeline
+        """Initialize the pipeline.
 
         Parameters
         ----------
@@ -80,6 +80,7 @@ class SpacyDocPipeline(DocOperation):
 
     def run(self, medkit_docs: list[TextDocument]) -> None:
         """Run a spacy pipeline on a list of medkit documents.
+
         Each medkit document is converted to spacy document (Doc object),
         with the selected annotations and attributes. Then, the spacy pipeline
         is executed and finally, the new annotations and attributes are

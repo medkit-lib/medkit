@@ -30,18 +30,20 @@ CONFIG_NAME = "trainer_config.yml"
 
 
 def set_seed(seed: int = 0):
-    """Set seed to keep deterministic operations"""
+    """Set seed to keep deterministic operations."""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
 
 
 class _TrainerDataset(Dataset):
-    """A Dataset that preprocesses data using the 'preprocess' defined in a trainable component.
+    """Dataset preprocessing data with a trainable component.
+
+    A Dataset that preprocesses data using the 'preprocess' defined in a trainable component.
     This class is inspired from the ``PipelineDataset`` class from hugginface transformers library.
     """
 
-    def __init__(self, dataset, component: TrainableComponent):
+    def __init__(self, dataset: dict, component: TrainableComponent):
         self.dataset = dataset
         self.component = component
 
@@ -54,8 +56,31 @@ class _TrainerDataset(Dataset):
 
 
 class Trainer:
-    """A trainer is a base training/eval loop for a TrainableComponent that uses PyTorch models
-    to create medkit annotations
+    """Class faciltating training and evaluation of PyTorch models to generate annotations.
+
+    Parameters
+    ----------
+    component:
+        The component to train, the component must implement the `TrainableComponent` protocol.
+    config:
+        A `TrainerConfig` with the parameters for training, the parameter `output_dir` define the
+        path of the checkpoints
+    train_data:
+        The data to use for training. This should be a corpus of medkit objects. The data could be,
+        for instance, a `torch.utils.data.Dataset` that returns medkit objects for training.
+    eval_data:
+        The data to use for evaluation, this is not for testing. This should be a corpus of medkit objects.
+        The data can be a `torch.utils.data.Dataset` that returns medkit objects for evaluation.
+    metrics_computer:
+        Optional `MetricsComputer` object that will be used to compute custom metrics during eval.
+        By default, only evaluation metrics will be computed, `do_metrics_in_training` in `config` allows
+        metrics in training.
+    lr_scheduler_builder:
+        Optional function that build a `lr_scheduler` to adjust the learning rate after an epoch. Must take
+        an Optimizer and return a `lr_scheduler`. If not provided, the learning rate does not change during
+        training.
+    callback:
+        Optional callback to customize training.
     """
 
     def __init__(
@@ -68,30 +93,6 @@ class Trainer:
         lr_scheduler_builder: Callable[[torch.optim.Optimizer], Any] | None = None,
         callback: TrainerCallback | None = None,
     ):
-        """Parameters
-        ----------
-        component:
-            The component to train, the component must implement the `TrainableComponent` protocol.
-        config:
-            A `TrainerConfig` with the parameters for training, the parameter `output_dir` define the
-            path of the checkpoints
-        train_data:
-            The data to use for training. This should be a corpus of medkit objects. The data could be,
-            for instance, a `torch.utils.data.Dataset` that returns medkit objects for training.
-        eval_data:
-            The data to use for evaluation, this is not for testing. This should be a corpus of medkit objects.
-            The data can be a `torch.utils.data.Dataset` that returns medkit objects for evaluation.
-        metrics_computer:
-            Optional `MetricsComputer` object that will be used to compute custom metrics during eval.
-            By default, only evaluation metrics will be computed, `do_metrics_in_training` in `config` allows
-            metrics in training.
-        lr_scheduler_builder:
-            Optional function that build a `lr_scheduler` to adjust the learning rate after an epoch. Must take
-            an Optimizer and return a `lr_scheduler`. If not provided, the learning rate does not change during
-            training.
-        callback:
-            Optional callback to customize training.
-        """
         # enable deterministic operation
         if config.seed is not None:
             set_seed(config.seed)
@@ -122,9 +123,20 @@ class Trainer:
             callback = DefaultPrinterCallback()
         self.callback = callback
 
-    def get_dataloader(self, data: any, shuffle: bool) -> DataLoader:
-        """Return a DataLoader with transformations defined
-        in the component to train
+    def get_dataloader(self, data: dict, shuffle: bool) -> DataLoader:
+        """Return a DataLoader with transformations defined in the component to train.
+
+        Parameters
+        ----------
+        data : dict
+            Training data
+        shuffle: bool
+            Whether to use sequential or shuffled sampling
+
+        Returns
+        -------
+        torch.utils.data.DataLoader
+            The corresponding instance of a DataLoader
         """
         dataset = _TrainerDataset(data, self.component)
         collate_fn = self.component.collate
@@ -144,7 +156,10 @@ class Trainer:
         When the config enabled metrics in training ('do_metrics_in_training' is True),
         the additional metrics are prepared per batch.
 
-        Return a dictionary with metrics.
+        Returns
+        -------
+        dict of str to float
+            A dictionary containing the training metrics
         """
         config = self.config
         total_loss_epoch = 0.0
@@ -185,7 +200,16 @@ class Trainer:
         """Perform an epoch using the evaluation data.
 
         The additional metrics are prepared per batch.
-        Return a dictionary with metrics.
+
+        Parameters
+        ----------
+        eval_dataloader : torch.utils.data.DataLoader
+            The evaluation dataset as a PyTorch DataLoader
+
+        Returns
+        -------
+        dict of str to float
+            A dictionary containing the evaluation metrics
         """
         total_loss_epoch = 0.0
         metrics = {}
@@ -213,7 +237,7 @@ class Trainer:
         return metrics
 
     def make_forward_pass(self, inputs: BatchData, eval_mode: bool) -> tuple[BatchData, torch.Tensor]:
-        """Run forward safely, same device as the component"""
+        """Run forward safely, same device as the component."""
         inputs = inputs.to_device(self.device)
         model_output, loss = self.component.forward(inputs, return_loss=True, eval_mode=eval_mode)
 
@@ -223,8 +247,8 @@ class Trainer:
 
         return model_output, loss
 
-    def update_learning_rate(self, eval_metrics: dict[str, float]):
-        """Call the learning rate scheduler if defined"""
+    def update_learning_rate(self, eval_metrics: dict[str, float]) -> None:
+        """Call the learning rate scheduler if defined."""
         if self.lr_scheduler is None:
             return
 
@@ -242,9 +266,12 @@ class Trainer:
             self.lr_scheduler.step()
 
     def train(self) -> list[dict]:
-        """Main training method. Call the training / eval loop.
+        """Call the training and evaluation loop.
 
-        Return a list with the metrics per epoch.
+        Returns
+        -------
+        list of dict of str to float
+            The list of computed metrics per epoch
         """
         self.callback.on_train_begin(config=self.config)
         log_history = []
@@ -298,19 +325,20 @@ class Trainer:
         return log_history
 
     def save(self, epoch: int) -> str:
-        """Save a checkpoint (trainer configuration, model weights, optimizer and
-        scheduler)
+        """Save a checkpoint.
+
+        Checkpoints include trainer configuration, model weights, optimizer and scheduler.
 
         Parameters
         ----------
         epoch : int
-            Epoch corresponding of the current training state (will be included
-            in the checkpoint name)
+            Epoch corresponding of the current training state
+            (will be included in the checkpoint name)
 
         Returns
         -------
         str
-            Path of the checkpoint saved
+            Path to the saved checkpoint
         """
         timestamp = datetime.datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
         name = f"checkpoint_{epoch:03d}_{timestamp}"

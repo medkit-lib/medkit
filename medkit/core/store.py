@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 @runtime_checkable
 class Store(Protocol):
-    """Store protocol"""
+    """Store protocol."""
 
     def store_data_item(self, data_item: IdentifiableDataItem, parent_id: str):
         pass
@@ -42,13 +42,13 @@ class _DictStore:
 
 
 class GlobalStore:
-    """Global store"""
+    """Global store."""
 
     _store: Store | None = None
 
     @classmethod
     def init_store(cls, store: Store):
-        """Initialize the global store for your application
+        """Initialize the global store for your application.
 
         Parameters
         ----------
@@ -72,7 +72,7 @@ class GlobalStore:
 
     @classmethod
     def get_store(cls) -> Store:
-        """Returns the global store object
+        """Return the global store object.
 
         Returns
         -------
@@ -85,5 +85,5 @@ class GlobalStore:
 
     @classmethod
     def del_store(cls):
-        """Delete the global store object"""
+        """Delete the global store object."""
         cls._store = None

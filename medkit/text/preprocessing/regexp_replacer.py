@@ -15,12 +15,23 @@ class _Rule(NamedTuple):
 
 
 class RegexpReplacer(Operation):
-    """Generic pattern replacer to be used as pre-processing module
+    """Generic pattern replacer to be used as pre-processing module.
 
     This module is a non-destructive module allowing to replace a regex pattern
     by a new text.
     It respects the span modification by creating a new text-bound annotation containing
     the span modification information from input text.
+
+    Parameters
+    ----------
+    output_label : str
+        The output label of the created annotations
+    rules : list of tuple, optional
+        The list of replacement rules [(pattern_to_replace, new_text)]
+    name : str, optional
+        Name describing the pre-processing module (defaults to the class name)
+    uid : str, optional
+        Identifier of the pre-processing module
     """
 
     def __init__(
@@ -30,17 +41,6 @@ class RegexpReplacer(Operation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        output_label : str
-            The output label of the created annotations
-        rules : list of tuple, optional
-            The list of replacement rules [(pattern_to_replace, new_text)]
-        name : str, optional
-            Name describing the pre-processing module (defaults to the class name)
-        uid : str, optional
-            Identifier of the pre-processing module
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -57,8 +57,7 @@ class RegexpReplacer(Operation):
         self._pattern = re.compile(regex_rule)
 
     def run(self, segments: list[Segment]) -> list[Segment]:
-        """Run the module on a list of segments provided as input
-        and returns a new list of segments
+        """Run the module on a list of segments provided as input and returns a new list of segments.
 
         Parameters
         ----------

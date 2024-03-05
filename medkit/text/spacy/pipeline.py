@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class SpacyPipeline(Operation):
-    """Segment annotator relying on a Spacy pipeline"""
+    """Segment annotator relying on a Spacy pipeline."""
 
     def __init__(
         self,
@@ -29,7 +29,7 @@ class SpacyPipeline(Operation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Initialize the segment annotator
+        """Initialize the segment annotator.
 
         Parameters
         ----------
@@ -67,7 +67,9 @@ class SpacyPipeline(Operation):
         self.medkit_attribute_factories = medkit_attribute_factories
 
     def run(self, segments: list[Segment]) -> list[Segment]:
-        """Run a spacy pipeline on a list of segments provided as input
+        """Run the operation.
+
+        Run a spacy pipeline on a list of segments provided as input
         and returns a new list of segments.
         Each segment is converted to spacy document (Doc object).
         Then, the spacy pipeline is executed and finally, the new

@@ -8,12 +8,23 @@ from medkit.text.preprocessing.char_rules import ALL_CHAR_RULES
 
 
 class CharReplacer(Operation):
-    """Generic character replacer to be used as pre-processing module
+    """Generic character replacer to be used as pre-processing module.
 
     This module is a non-destructive module allowing to replace selected 1-char string
     with the wanted n-chars strings.
     It respects the span modification by creating a new text-bound annotation containing
     the span modification information from input text.
+
+    Parameters
+    ----------
+    output_label : str
+        The output label of the created annotations
+    rules : list of tuple, optional
+        The list of replacement rules. Default: ALL_CHAR_RULES
+    name : str, optional
+        Name describing the pre-processing module (defaults to the class name)
+    uid : str, optional
+        Identifier of the pre-processing module
     """
 
     def __init__(
@@ -23,17 +34,6 @@ class CharReplacer(Operation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        output_label : str
-            The output label of the created annotations
-        rules : list of tuple, optional
-            The list of replacement rules. Default: ALL_CHAR_RULES
-        name : str, optional
-            Name describing the pre-processing module (defaults to the class name)
-        uid : str, optional
-            Identifier of the pre-processing module
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -49,8 +49,7 @@ class CharReplacer(Operation):
         ), "CharReplacer can only contain rules that replace 1-char string."
 
     def run(self, segments: list[Segment]) -> list[Segment]:
-        """Run the module on a list of segments provided as input
-        and returns a new list of segments
+        """Run the module on a list of segments provided as input and returns a new list of segments.
 
         Parameters
         ----------

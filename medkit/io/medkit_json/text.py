@@ -25,8 +25,7 @@ def load_text_document(
     anns_input_file: str | Path | None = None,
     encoding: str | None = "utf-8",
 ) -> TextDocument:
-    """Load a text document from a medkit-json file generated with
-    :func:`~medkit.io.medkit_json.save_text_document`.
+    """Load a text document from JSON.
 
     Parameters
     ----------
@@ -42,6 +41,10 @@ def load_text_document(
     -------
     TextDocument
         The text document in the file
+
+    See Also
+    --------
+    save_text_document : Save a text document to JSON.
     """
     with Path(input_file).open(encoding=encoding) as fp:
         data = json.load(fp)
@@ -56,8 +59,7 @@ def load_text_document(
 
 
 def load_text_documents(input_file: str | Path, encoding: str | None = "utf-8") -> Iterator[TextDocument]:
-    """Returns an iterator on text documents loaded from a medkit-json file generated with
-    :func:`~medkit.io.medkit_json.save_text_documents`
+    """Load multiple text documents from JSON.
 
     Parameters
     ----------
@@ -70,6 +72,10 @@ def load_text_documents(input_file: str | Path, encoding: str | None = "utf-8") 
     -------
     iterator of TextDocument
         An iterator to the text documents in the file
+
+    See Also
+    --------
+    save_text_documents : Save multiple text documents to JSON.
     """
     with Path(input_file).open(encoding=encoding) as fp:
         line = fp.readline()
@@ -83,8 +89,7 @@ def load_text_documents(input_file: str | Path, encoding: str | None = "utf-8") 
 
 
 def load_text_anns(input_file: str | Path, encoding: str | None = "utf-8") -> Iterator[TextAnnotation]:
-    """Return an iterator on text annotations loaded from a medkit-json file generated with
-    :func:`~medkit.io.medkit_json.save_text_anns`
+    """Load text annotations from JSON.
 
     Parameters
     ----------
@@ -97,6 +102,10 @@ def load_text_anns(input_file: str | Path, encoding: str | None = "utf-8") -> It
     -------
     iterator of TextAnnotation
         An iterator to the text annotations in the file
+
+    See Also
+    --------
+    save_text_anns : Save text annotations to JSON.
     """
     with Path(input_file).open(encoding=encoding) as fp:
         line = fp.readline()
@@ -116,7 +125,7 @@ def save_text_document(
     anns_output_file: str | Path | None = None,
     encoding: str | None = "utf-8",
 ):
-    """Save a text document into a medkit-json file.
+    """Save a text document to JSON.
 
     Parameters
     ----------
@@ -132,6 +141,10 @@ def save_text_document(
         If not provided, `output_file` will be used with an extra "_anns" suffix.
     encoding : str, default="utf-8"
         Optional encoding of `output_file` and `anns_output_file`
+
+    See Also
+    --------
+    load_text_document : Load a text document from JSON.
     """
     output_file = Path(output_file)
     anns_output_file = Path(anns_output_file) if anns_output_file is not None else None
@@ -158,7 +171,7 @@ def save_text_documents(
     output_file: str | Path,
     encoding: str | None = "utf-8",
 ):
-    """Save text documents into a medkit-json file.
+    """Save multiple text documents to JSON.
 
     Parameters
     ----------
@@ -168,6 +181,10 @@ def save_text_documents(
         Path of the generated medkit-json file
     encoding : str, default="utf-8"
         Optional encoding of `output_file`
+
+    See Also
+    --------
+    load_text_documents : Load multiple text documents from JSON.
     """
     header = build_header(content_type=ContentType.TEXT_DOCUMENT_LIST)
     with Path(output_file).open(mode="w", encoding=encoding) as fp:
@@ -183,7 +200,7 @@ def save_text_anns(
     output_file: str | Path,
     encoding: str | None = "utf-8",
 ):
-    """Save text annotations into a medkit-json file.
+    """Save text annotations to JSON.
 
     Parameters
     ----------
@@ -193,6 +210,10 @@ def save_text_anns(
         Path of the generated medkit-json file
     encoding : str, default="utf-8"
         Optional encoding of `output_file`
+
+    See Also
+    --------
+    load_text_anns : Load text annotations from JSON.
     """
     header = build_header(content_type=ContentType.TEXT_ANNOTATION_LIST)
     with Path(output_file).open(mode="w", encoding=encoding) as fp:

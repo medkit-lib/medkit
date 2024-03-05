@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[metrics-transcription]`.
-"""
 from __future__ import annotations
 
 __all__ = ["TranscriptionEvaluator", "TranscriptionEvaluatorResult"]
@@ -23,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 @dataclasses.dataclass(frozen=True)
 class TranscriptionEvaluatorResult:
-    """Results returned by :class:`~.TranscriptionEvaluator`
+    """Results returned by :class:`~.TranscriptionEvaluator`.
 
     Attributes
     ----------
@@ -64,8 +61,7 @@ class TranscriptionEvaluatorResult:
 
 
 class TranscriptionEvaluator:
-    """Word Error Rate (WER) and Character Error Rate (CER) computation based on
-    `speechbrain`.
+    """Word Error Rate (WER) and Character Error Rate (CER) computation based on `speechbrain`.
 
     The WER is the ratio of predictions errors at the word level, taking into
     accounts:
@@ -83,6 +79,24 @@ class TranscriptionEvaluator:
     This component expects as input reference documents containing speech
     segments with reference transcription attributes, as well as corresponding
     speech segments with predicted transcription attributes.
+
+    Parameters
+    ----------
+    speech_label : str, default="speech"
+        Label of the speech segments on the reference documents
+    transcription_label : str, default="transcription"
+        Label of the transcription attributes on the reference and predicted
+        speech segments
+    case_sensitive : bool, default=False
+        Whether to take case into consideration when comparing reference and
+        prediction
+    remove_punctuation : bool, default=True
+        If True, punctuation in reference and predictions is removed before
+        comparing (based on `string.punctuation`)
+    replace_unicode : bool, default=False
+        If True, special unicode characters in reference and predictions are
+        replaced by their closest ASCII characters (when possible) before
+        comparing
     """
 
     def __init__(
@@ -93,24 +107,6 @@ class TranscriptionEvaluator:
         remove_punctuation: bool = True,
         replace_unicode: bool = False,
     ):
-        """Parameters
-        ----------
-        speech_label : str, default="speech"
-            Label of the speech segments on the reference documents
-        transcription_label : str, default="transcription"
-            Label of the transcription attributes on the reference and predicted
-            speech segments
-        case_sensitive : bool, default=False
-            Whether to take case into consideration when comparing reference and
-            prediction
-        remove_punctuation : bool, default=True
-            If True, punctuation in reference and predictions is removed before
-            comparing (based on `string.punctuation`)
-        replace_unicode : bool, default=False
-            If True, special unicode characters in reference and predictions are
-            replaced by their closest ASCII characters (when possible) before
-            comparing
-        """
         self.speech_label = speech_label
         self.transcription_label = transcription_label
         self.case_sensitive = case_sensitive
@@ -122,8 +118,7 @@ class TranscriptionEvaluator:
         reference: Sequence[AudioDocument],
         predicted: Sequence[Sequence[Segment]],
     ) -> TranscriptionEvaluatorResult:
-        """Compute and return the WER and CER for predicted transcription
-        attributes, against reference annotated documents.
+        """Compute the WER and CER for predicted transcription attributes against reference annotated documents.
 
         Parameters
         ----------
@@ -175,12 +170,7 @@ class TranscriptionEvaluator:
         )
 
     def _convert_speech_segs_to_words(self, segments: Sequence[Segment]) -> list[str]:
-        """Convert list of speech segments with transcription attribute to list of
-        words that can be passed to speechbrain metrics objects
-        """
-        # get values of all transcription attributes and concatenate them into
-        # one big string representing the transcription of the whole document
-
+        """Convert speech segments with transcription attributes to speechbrain words."""
         # sort segments by time to concatenate in correct order
         segments = sorted(segments, key=lambda s: s.span)
         texts = []
@@ -215,7 +205,5 @@ class TranscriptionEvaluator:
 
 @functools.lru_cache
 def _get_punctation_translation_table():
-    """Return a translation table mapping all punctuations chars to a single space,
-    that can be used with `str.translate()`
-    """
+    """Return a translation table mapping all punctuations chars to a single space."""
     return str.maketrans(dict.fromkeys(string.punctuation, " "))

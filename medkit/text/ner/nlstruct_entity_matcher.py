@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[nlstruct]`.
-"""
 from __future__ import annotations
 
 __all__ = ["NLStructEntityMatcher"]
@@ -25,6 +22,7 @@ _EMBEDDING_REGISTRY_NAME = "word_embeddings"
 
 class NLStructEntityMatcher(NEROperation):
     """Entity matcher based on a NLstruct InformationExtraction model.
+
     The matcher expects a directory with a torch checkpoint and a text file if
     the model was pretrained using word embeddings.
 
@@ -33,6 +31,30 @@ class NLStructEntityMatcher(NEROperation):
     The weights of the CAS student model are shared via the HuggingFace Hub and you can
     load the model using the following model name `NesrineBannour/CAS-privacy-preserving-model`
     to create a NLstructEntityMatcher.
+
+    Parameters
+    ----------
+    model_name_or_dirpath : str or Path
+        Name (on the HuggingFace models hub) or dirpath of the NLstruct model.
+        The model dir must contain a PyTorch file ('.cpkt','.pt') and a text file (.txt)
+        representing the FastText embeddings if required.
+    attrs_to_copy : list of str, optional
+        Labels of the attributes that should be copied from the input segment
+        to the created entity. Useful for propagating context attributes
+        (negation, antecendent, etc).
+    device : int, default=-1
+        Device to use for the NLstruct model. Follows the HuggingFace convention
+        (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
+    hf_auth_token : str, optional
+        HuggingFace Authentication token (to access private models on the
+        hub)
+    cache_dir : str or Path, optional
+        Directory where to store downloaded models. If not set, the default
+        HuggingFace cache dir is used.
+    name : str, optional
+        Name describing the matcher (defaults to the class name).
+    uid : str, optional
+        Identifier of the matcher.
 
     References
     ----------
@@ -55,30 +77,6 @@ class NLStructEntityMatcher(NEROperation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        model_name_or_dirpath : str or Path
-            Name (on the HuggingFace models hub) or dirpath of the NLstruct model.
-            The model dir must contain a PyTorch file ('.cpkt','.pt') and a text file (.txt)
-            representing the FastText embeddings if required.
-        attrs_to_copy : list of str, optional
-            Labels of the attributes that should be copied from the input segment
-            to the created entity. Useful for propagating context attributes
-            (negation, antecendent, etc).
-        device : int, default=-1
-            Device to use for the NLstruct model. Follows the HuggingFace convention
-            (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
-        hf_auth_token : str, optional
-            HuggingFace Authentication token (to access private models on the
-            hub)
-        cache_dir : str or Path, optional
-            Directory where to store downloaded models. If not set, the default
-            HuggingFace cache dir is used.
-        name : str, optional
-            Name describing the matcher (defaults to the class name).
-        uid : str, optional
-            Identifier of the matcher.
-        """
         # Pass all arguments to super (remove self and confidential hf_auth_token)
         init_args = locals()
         init_args.pop("self")
@@ -112,8 +110,9 @@ class NLStructEntityMatcher(NEROperation):
 
     @staticmethod
     def _load_from_checkpoint_dir(checkpoint_dir: Path, device):
-        """Get the location of the checkpoint and fix the path of the Fast Text file
-        in the configuration. Return the nlstruct model created with the modified config.
+        """Get the location of the checkpoint and fix the path of the Fast Text file in the configuration.
+
+        Return the nlstruct model created with the modified config.
         """
         checkpoint_filepaths = [filepath for pattern in _PYTORCH_FILES for filepath in checkpoint_dir.glob(pattern)]
 

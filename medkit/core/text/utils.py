@@ -32,7 +32,8 @@ _LOWERCASE_CHARS = "a-zàâäçéèêëîïôöùûüÿ"
 
 
 def clean_newline_character(text: str, spans: list[AnySpan], keep_endlines: bool = False) -> tuple[str, list[AnySpan]]:
-    """Replace the newline character depending on its position in the text.
+    r"""Replace the newline character depending on its position in the text.
+
     The endlines characters that are not suppressed can be either kept as
     endlines, or replaced by spaces. This method combines :func:`replace_multiple_newline_after_sentence`
     and :func:`replace_newline_inside_sentence`.
@@ -73,7 +74,8 @@ def clean_newline_character(text: str, spans: list[AnySpan], keep_endlines: bool
 
 
 def clean_parentheses_eds(text: str, spans: list[AnySpan]) -> tuple[str, list[AnySpan]]:
-    """Modify the text near the parentheses depending on its content.
+    r"""Modify the text near the parentheses depending on its content.
+
     The rules are adapted for French documents.
 
     Examples
@@ -103,8 +105,10 @@ def clean_parentheses_eds(text: str, spans: list[AnySpan]) -> tuple[str, list[An
 
 
 def clean_multiple_whitespaces_in_sentence(text: str, spans: list[AnySpan]) -> tuple[str, list[AnySpan]]:
-    """Replace multiple white-spaces between alphanumeric characters and
-    lowercase characters with a single whitespace
+    """Normalize consecutive whitespaces in a sentence.
+
+    Replace multiple white-spaces between alphanumeric characters and
+    lowercase characters with a single whitespace.
 
     Examples
     --------
@@ -126,9 +130,10 @@ def replace_point_after_keywords(
     strict: bool = False,
     replace_by: str = " ",
 ) -> tuple[str, list[AnySpan]]:
-    """Replace the character '.' after a keyword and update its span.
+    """Replace the dot character after a keyword and update its span.
+
     Could be used to replace dots that indicate the title of a person (i.e. M. or Mrs.)
-    or some dots that appear by mistake after `keywords`
+    or some dots that appear by mistake after `keywords`.
 
     Parameters
     ----------
@@ -170,7 +175,9 @@ def replace_point_after_keywords(
 
 
 def replace_multiple_newline_after_sentence(text: str, spans: list[AnySpan]) -> tuple[str, list[AnySpan]]:
-    """Replace multiple space characters between a newline
+    r"""Normalize consecutive newlines between sentences.
+
+    Replace multiple space characters between a newline
     character \\\\n and a capital letter or a number with a single newline character.
 
     Parameters
@@ -194,8 +201,10 @@ def replace_multiple_newline_after_sentence(text: str, spans: list[AnySpan]) -> 
 
 
 def replace_newline_inside_sentence(text: str, spans: list[AnySpan]) -> tuple[str, list[AnySpan]]:
-    """Replace the newline character \\\\n between lowercase letters
-    or punctuation marks with a space
+    r"""Replace newline in a sentence.
+
+    Replace the newline character \\\\n between lowercase letters
+    or punctuation marks with a space.
 
     Parameters
     ----------
@@ -219,6 +228,7 @@ def replace_newline_inside_sentence(text: str, spans: list[AnySpan]) -> tuple[st
 
 def _replace_big_parentheses(text: str, spans: list[AnySpan]) -> tuple[str, list[AnySpan]]:
     """Modify the sentence containing large parentheses.
+
     The new sentence contains the text after the parentheses followed by
     the text that was inside the parentheses.
     """
@@ -256,7 +266,8 @@ def _replace_big_parentheses(text: str, spans: list[AnySpan]) -> tuple[str, list
 
 def _replace_small_parentheses(text: str, spans: list[AnySpan]) -> tuple[str, list[AnySpan]]:
     """Modify the sentence containing small parentheses.
-    The new sentence has the text that was inside the parentheses surrounded by `,`
+
+    The new sentence has the text that was inside the parentheses surrounded by `,`.
     """
     pattern = r"(\()(?:[^)(]{1,29})(\))"
     # capture each parenthesis
@@ -280,8 +291,7 @@ def _replace_text(
 
 
 def replace_point_in_uppercase(text: str, spans: list[AnySpan]) -> tuple[str, list[AnySpan]]:
-    """Replace the character '.' between uppercase characters
-    with a space and update its span.
+    """Replace the dot character between uppercase characters with a space and update its span.
 
     Examples
     --------
@@ -298,8 +308,7 @@ def replace_point_in_uppercase(text: str, spans: list[AnySpan]) -> tuple[str, li
 
 
 def replace_point_in_numbers(text: str, spans: list[AnySpan]) -> tuple[str, list[AnySpan]]:
-    """Replace the character '.' between numbers
-    with the character ',' a space and update its span.
+    """Replace the dot character between numbers with a comma and update its span.
 
     Examples
     --------
@@ -315,9 +324,7 @@ def replace_point_in_numbers(text: str, spans: list[AnySpan]) -> tuple[str, list
 
 
 def replace_point_before_keywords(text: str, spans: list[AnySpan], keywords: list[str]) -> tuple[str, list[AnySpan]]:
-    """Replace the character '.' before a keyword
-    with a space and update its span.
-    """
+    """Replace the dot character before a keyword with a space and update its span."""
     keywords_regexp = "|".join([rf"{keyword}\b" for keyword in keywords])
     pattern = rf"(\s\.\s*)(?:{keywords_regexp})"
     text, spans = _replace_text(text, spans, pattern, " ", group=1)
@@ -325,8 +332,7 @@ def replace_point_before_keywords(text: str, spans: list[AnySpan], keywords: lis
 
 
 def lstrip(text: str, start: int = 0, chars: str | None = None) -> tuple[str, int]:
-    """Returns a copy of the string with leading characters removed
-    and its corresponding new start index.
+    """Return a copy of the string with leading characters removed and its corresponding new start index.
 
     Parameters
     ----------
@@ -350,8 +356,7 @@ def lstrip(text: str, start: int = 0, chars: str | None = None) -> tuple[str, in
 
 
 def rstrip(text: str, end: int | None = None, chars: str | None = None) -> tuple[str, int]:
-    """Returns a copy of the string with trailing characters removed
-    and its corresponding new end index.
+    """Return a copy of the string with trailing characters removed and its corresponding new end index.
 
     Parameters
     ----------
@@ -377,8 +382,7 @@ def rstrip(text: str, end: int | None = None, chars: str | None = None) -> tuple
 
 
 def strip(text: str, start: int = 0, chars: str | None = None) -> tuple[str, int, int]:
-    """Returns a copy of the string with leading characters removed
-    and its corresponding new start and end indexes.
+    """Return a copy of the string with leading characters removed and its corresponding new start and end indexes.
 
     Parameters
     ----------

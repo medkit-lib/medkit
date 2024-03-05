@@ -1,17 +1,16 @@
-"""This module aims to provide facilities for accessing some examples of mtsamples files
-available on this repository: https://github.com/neurazlab/mtsamplesFR
+"""Tools for accessing examples of mtsamples files.
 
-Refer to the repository for more information.
+Refer to the `mtsamplesFR`_ repository for more information.
 
 This repository contains:
 
-* **a version of mtsamples.csv**
-    Source: https://www.kaggle.com/datasets/tboyle10/medicaltranscriptions
-    license: CC0: Public Domain
+* the original dataset from Kaggle (data/mtsamples.csv);
 
-* **a mtsamples_translation.json file which is a translation to french**
+* a French translation for the dataset (data/mtsamples_translation.json).
 
-Date: 08/04/2022
+Both of which are made available under the CC0-1.0 license.
+
+.. _mtsamplesFR: https://github.com/neurazlab/mtsamplesFR
 """
 
 from __future__ import annotations
@@ -36,7 +35,7 @@ def load_mtsamples(
     translated: bool = True,
     nb_max: int | None = None,
 ) -> list[TextDocument]:
-    """Function loading mtsamples data into medkit text documents
+    """Load mtsamples data as medkit text documents.
 
     Parameters
     ----------
@@ -52,7 +51,6 @@ def load_mtsamples(
     -------
     list of TextDocument
         The medkit text documents corresponding to mtsamples data
-
     """
     if translated:
         mtsamples_url = _REPO_URL + _MTSAMPLES_TRANSLATED_FILE
@@ -92,7 +90,7 @@ def convert_mtsamples_to_medkit(
     cache_dir: Path | str = ".cache",
     translated: bool = True,
 ):
-    """Convert mtsamples data into  a medkit file
+    """Save mtsamples data as a medkit text file.
 
     Parameters
     ----------

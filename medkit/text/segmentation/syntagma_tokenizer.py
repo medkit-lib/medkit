@@ -15,7 +15,7 @@ _PATH_TO_DEFAULT_RULES = Path(__file__).parent / "default_syntagma_definition.ym
 
 
 class SyntagmaTokenizer(SegmentationOperation):
-    """Syntagma segmentation annotator based on provided separators"""
+    """Syntagma segmentation annotator based on provided separators."""
 
     _DEFAULT_LABEL = "syntagma"
     _DEFAULT_STRIP_CHARS = ".;,?! \n\r\t"
@@ -28,7 +28,7 @@ class SyntagmaTokenizer(SegmentationOperation):
         attrs_to_copy: list[str] | None = None,
         uid: str | None = None,
     ):
-        """Instantiate the syntagma tokenizer
+        """Instantiate the syntagma tokenizer.
 
         Parameters
         ----------
@@ -142,7 +142,7 @@ class SyntagmaTokenizer(SegmentationOperation):
 
     @staticmethod
     def load_syntagma_definition(filepath: Path, encoding: str | None = None) -> tuple[str, ...]:
-        """Load the syntagma definition stored in yml file
+        """Load the syntagma definition stored in yml file.
 
         Parameters
         ----------
@@ -163,7 +163,7 @@ class SyntagmaTokenizer(SegmentationOperation):
 
     @staticmethod
     def save_syntagma_definition(syntagma_seps: tuple[str, ...], filepath: Path, encoding: str | None = None):
-        """Save syntagma yaml definition file
+        """Save syntagma yaml definition file.
 
         Parameters
         ----------

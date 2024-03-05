@@ -1,18 +1,20 @@
-"""This module aims to provide facilities for accessing data from e3c corpus.
+"""Tools for accessing data from the E3C corpus.
 
-**Version** : 2.0.0
-**License**: The E3C corpus is released under Creative Commons NonCommercial license
-(CC BY-NC).
+Notes
+-----
+The `E3C corpus <https://github.com/hltfbk/E3C-Corpus>`_ is released under a
+Creative Commons NonCommercial license (CC-BY-NC).
 
-**Github**: https://github.com/hltfbk/E3C-Corpus
 
-**Reference**
+References
+----------
+.. [1] Magnini, B., Altuna, B., Lavelli, A., Speranza, M., & Zanoli, R. (2020).
+    The E3C Project: Collection and Annotation of a Multilingual Corpus of Clinical Cases.
+    Proceedings of the Seventh Italian Conference on Computational Linguistics CLiC-it 2020.
+.. [2] Zanoli, R., Lavelli, A., Verdi do Amarante, D., & Toti, D. (2023).
+    Assessment of the E3C corpus for the recognition of disorders in clinical texts.
+    Natural Language Engineering, 1-19. doi:10.1017/S1351324923000335
 
-B. magnini, B. Altuna, A. Lavelli, M. Speranza, and R. Zanoli. 2020.
-The E3C Project: Collection and Annotation of a Multilingual Corpus of Clinical Cases.
-In Proceedings of the Seventh Italian Conference on Computational Linguistics, Bologna,
-Italy, December.
-Associazione Italiana di Linguistica Computazionale.
 """
 from __future__ import annotations
 
@@ -53,9 +55,7 @@ Label used by medkit for annotated clinical entities of E3C corpus
 
 @dataclass
 class E3CDocument:
-    """Represents the data structure of a json document
-    in data collection folder of the E3C corpus
-    """
+    """Data structure of a JSON document from the E3C corpus."""
 
     authors: list[dict]  # list of {'author': '<name>'}
     doi: str
@@ -71,7 +71,7 @@ class E3CDocument:
     text: str
 
     def extract_metadata(self) -> dict:
-        """Returns the metadata dict for medkit text document"""
+        """Return the metadata dict for medkit text document."""
         dict_repr = self.__dict__.copy()
         dict_repr.pop("text")
         return dict_repr
@@ -79,6 +79,7 @@ class E3CDocument:
 
 def load_document(filepath: str | Path, encoding: str = "utf-8") -> TextDocument:
     """Load a E3C corpus document (json document) as medkit text document.
+
     For example, one in data collection folder.
     Document id is always kept in medkit document metadata.
 
@@ -102,7 +103,7 @@ def load_document(filepath: str | Path, encoding: str = "utf-8") -> TextDocument
 
 
 def load_data_collection(dir_path: Path | str, encoding: str = "utf-8") -> Iterator[TextDocument]:
-    """Load the E3C corpus data collection as medkit text documents
+    """Load the E3C corpus data collection as medkit text documents.
 
     Parameters
     ----------
@@ -134,7 +135,7 @@ def load_data_collection(dir_path: Path | str, encoding: str = "utf-8") -> Itera
 
 
 def convert_data_collection_to_medkit(dir_path: Path | str, output_file: str | Path, encoding: str | None = "utf-8"):
-    """Convert E3C corpus data collection to medkit jsonl file
+    """Convert E3C corpus data collection to medkit jsonl file.
 
     Parameters
     ----------
@@ -152,6 +153,7 @@ def convert_data_collection_to_medkit(dir_path: Path | str, output_file: str | P
 
 def load_annotated_document(filepath: str | Path, encoding: str = "utf-8", keep_sentences=False) -> TextDocument:
     """Load a E3C corpus annotated document (xml document) as medkit text document.
+
     For example, one in data annotation folder.
     Each annotation id is always kept in corresponding medkit element metadata.
 

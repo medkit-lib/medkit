@@ -26,7 +26,24 @@ class SectionModificationRule:
 
 
 class SectionTokenizer(SegmentationOperation):
-    """Section segmentation annotator based on keyword rules"""
+    """Section segmentation annotator based on keyword rules.
+
+    Parameters
+    ----------
+    section_dict: dict of str to list of str, optional
+        Dictionary containing the section name as key and the list of mappings as
+        value. If None, the content of default_section_definition.yml will be used.
+    output_label: str, optional
+        Segment label to use for annotation output.
+    section_rules: iterable of SectionModificationRule, optional
+        List of rules for modifying a section name according its order to the other
+        sections. If section_dict is None, the content of
+        default_section_definition.yml will be used.
+    strip_chars: str, optional
+        The list of characters to strip at the beginning of the returned segment.
+    uid: str, optional
+        Identifier of the tokenizer
+    """
 
     _DEFAULT_LABEL: str = "section"
     _DEFAULT_STRIP_CHARS: str = ".;,?! \n\r\t"
@@ -39,24 +56,6 @@ class SectionTokenizer(SegmentationOperation):
         strip_chars: str = _DEFAULT_STRIP_CHARS,
         uid: str | None = None,
     ):
-        """Initialize the Section Tokenizer
-
-        Parameters
-        ----------
-        section_dict: dict of str to list of str, optional
-            Dictionary containing the section name as key and the list of mappings as
-            value. If None, the content of default_section_definition.yml will be used.
-        output_label: str, optional
-            Segment label to use for annotation output.
-        section_rules: iterable of SectionModificationRule, optional
-            List of rules for modifying a section name according its order to the other
-            sections. If section_dict is None, the content of
-            default_section_definition.yml will be used.
-        strip_chars: str, optional
-            The list of characters to strip at the beginning of the returned segment.
-        uid: str, optional
-            Identifier of the tokenizer
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -76,6 +75,7 @@ class SectionTokenizer(SegmentationOperation):
 
     def run(self, segments: list[Segment]) -> list[Segment]:
         """Return sections detected in `segments`.
+
         Each section is a segment with an attached attribute
         (label: <same as self.output_label>, value: <the name of the section>).
 
@@ -186,7 +186,7 @@ class SectionTokenizer(SegmentationOperation):
     def load_section_definition(
         filepath: Path, encoding: str | None = None
     ) -> tuple[dict[str, list[str]], tuple[SectionModificationRule, ...]]:
-        """Load the sections definition stored in a yml file
+        """Load the sections definition stored in a yml file.
 
         Parameters
         ----------
@@ -219,7 +219,7 @@ class SectionTokenizer(SegmentationOperation):
         filepath: Path,
         encoding: str | None = None,
     ):
-        """Save section yaml definition file
+        """Save section yaml definition file.
 
         Parameters
         ----------

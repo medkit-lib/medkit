@@ -45,7 +45,7 @@ _SIMILARITY_MAP = {
 
 @dataclasses.dataclass
 class BaseSimstringMatcherRule:
-    """Rule to use with :class:`~.BaseSimstringMatcher`
+    """Rule to use with :class:`~.BaseSimstringMatcher`.
 
     Attributes
     ----------
@@ -72,8 +72,7 @@ class BaseSimstringMatcherRule:
 
 @dataclasses.dataclass
 class BaseSimstringMatcherNormalization:
-    """Descriptor of normalization attributes to attach to entities
-    created from a `~.BaseSimstringMatcherRule`
+    """Descriptor of normalization attributes to attach to entities created from a `~.BaseSimstringMatcherRule`.
 
     Attributes
     ----------
@@ -84,7 +83,7 @@ class BaseSimstringMatcherNormalization:
     kb_version : str, optional
         The name of the knowledge base we are referencing. Ex: "202AB"
     term : str, optional
-        Optional normalized version of the entity text in the knowledge base
+        Normalized version of the entity text in the knowledge base
     """
 
     kb_name: str
@@ -93,7 +92,7 @@ class BaseSimstringMatcherNormalization:
     term: str | None = None
 
     def to_attribute(self: BaseSimstringMatcherNormalization, score: float) -> EntityNormAttribute:
-        """Create a normalization attribute based on the normalization descriptor
+        """Create a normalization attribute based on the normalization descriptor.
 
         Parameters
         ----------
@@ -139,8 +138,47 @@ class _Match:
 
 
 class BaseSimstringMatcher(NEROperation):
-    """Base class for entity matcher using the `simstring` fuzzy matching algorithm
-    (also used by `QuickUMLS`).
+    """Base class for entity matcher using the `simstring` fuzzy matching algorithm.
+
+    Parameters
+    ----------
+    simstring_db_file : Path
+        Simstring database to use
+    rules_db_file : Path
+        Rules database (in python shelve format) mapping matched terms to
+        corresponding rules
+    threshold : float, default=0.9
+        Minimum similarity (between 0.0 and 1.0) between a rule term and the
+        text of an entity matched on that rule.
+    min_length : int, default=3
+        Minimum number of chars in matched entities.
+    max_length : int, default=50
+        Maximum number of chars in matched entities.
+    similarity : str, default="jaccard"
+        Similarity metric to use.
+    spacy_tokenization_language : str, optional
+        2-letter code (ex: "fr", "en", etc) designating the language of the
+        spacy model to use for tokenization. If provided, spacy will be used
+        to tokenize input segments and filter out some tokens based on their
+        part-of-speech tags, such as determinants, conjunctions and
+        prepositions. If `None`, a simple regexp based tokenization will be
+        used, which is faster but might give more false positives.
+    blacklist : list of str, optional
+        List of exact terms to ignore.
+    same_beginning : bool, default=False
+        Ignore all matches that start with a different character than the
+        term of the rule. This can be convenient to get rid of false
+        positives on words that are very similar but have opposite meanings
+        because of a preposition, for instance "activation" and
+        "inactivation".
+    attrs_to_copy : list of str, optional
+        Labels of the attributes that should be copied from the source
+        segment to the created entity. Useful for propagating context
+        attributes (negation, antecedent, etc).
+    name : str, optional
+        Name describing the matcher (defaults to the class name).
+    uid : str, optional
+        Identifier of the matcher.
     """
 
     def __init__(
@@ -158,46 +196,6 @@ class BaseSimstringMatcher(NEROperation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        simstring_db_file : Path
-            Simstring database to use
-        rules_db_file : Path
-            Rules database (in python shelve format) mapping matched terms to
-            corresponding rules
-        threshold : float, default=0.9
-            Minimum similarity (between 0.0 and 1.0) between a rule term and the
-            text of an entity matched on that rule.
-        min_length : int, default=3
-            Minimum number of chars in matched entities.
-        max_length : int, default=50
-            Maximum number of chars in matched entities.
-        similarity : str, default="jaccard"
-            Similarity metric to use.
-        spacy_tokenization_language : str, optional
-            2-letter code (ex: "fr", "en", etc) designating the language of the
-            spacy model to use for tokenization. If provided, spacy will be used
-            to tokenize input segments and filter out some tokens based on their
-            part-of-speech tags, such as determinants, conjunctions and
-            prepositions. If `None`, a simple regexp based tokenization will be
-            used, which is faster but might give more false positives.
-        blacklist : list of str, optional
-            Optional list of exact terms to ignore.
-        same_beginning : bool, default=False
-            Ignore all matches that start with a different character than the
-            term of the rule. This can be convenient to get rid of false
-            positives on words that are very similar but have opposite meanings
-            because of a preposition, for instance "activation" and
-            "inactivation".
-        attrs_to_copy : list of str, optional
-            Labels of the attributes that should be copied from the source
-            segment to the created entity. Useful for propagating context
-            attributes (negation, antecedent, etc).
-        name : str, optional
-            Name describing the matcher (defaults to the class name).
-        uid : str, optional
-            Identifier of the matcher.
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -243,7 +241,7 @@ class BaseSimstringMatcher(NEROperation):
             self._spacy_lang = None
 
     def run(self, segments: list[Segment]) -> list[Entity]:
-        """Return entities (with optional normalization attributes) matched in `segments`
+        """Return entities (with optional normalization attributes) matched in `segments`.
 
         Parameters
         ----------
@@ -266,7 +264,7 @@ class BaseSimstringMatcher(NEROperation):
         ]
 
     def _find_matches_in_segment(self, segment: Segment, spacy_doc: Any | None) -> Iterator[Entity]:
-        """Return an iterator to the entities matched in a segment"""
+        """Return an iterator to the entities matched in a segment."""
         text = segment.text
         matches = []
         if spacy_doc is not None:
@@ -323,8 +321,10 @@ class BaseSimstringMatcher(NEROperation):
 
     @staticmethod
     def _filter_overlapping_matches(matches: list[_Match]) -> list[_Match]:
-        """Remove overlapping matches by keeping matches with best score then max
-        length among overlapping matches
+        """Find and remove overlapping matches.
+
+        Remove overlapping matches by keeping matches with best score then max
+        length among overlapping matches.
         """
         matches.sort(key=lambda m: (m.score, m.length), reverse=True)
         matches_filtered = []
@@ -338,7 +338,7 @@ class BaseSimstringMatcher(NEROperation):
         return matches_filtered
 
     def _build_entity(self, segment: Segment, match: _Match) -> Entity:
-        """Build an entity from a match in a segment"""
+        """Build an entity from a match in a segment."""
         # extract text and spans corresponding to match
         text, spans = span_utils.extract(segment.text, segment.spans, [(match.start, match.end)])
 
@@ -421,7 +421,9 @@ _TOKENIZATION_PATTERN = re.compile(r"[\w]+|[^\w ]")
 
 
 def _build_candidate_ranges_with_regexp(text: str, min_length: int, max_length: int) -> Iterator[tuple[int, int]]:
-    """From a string, generate all candidate matches (by tokenizing it and then
+    """Generate candidate matches using a regexp.
+
+    From a string, generate all candidate matches (by tokenizing it and then
     re-concatenating tokens) and return their ranges. Based on the QuickUMLS
     code.
 
@@ -482,7 +484,9 @@ def _build_candidate_ranges_with_spacy(
     min_length: int,
     max_length: int,
 ) -> Iterator[tuple[int, int]]:
-    """From a pre-tokenized spacy Document, generate all candidate matches (by
+    """Generate candidate matches using spaCy.
+
+    From a pre-tokenized spacy Document, generate all candidate matches (by
     concatenating tokens) and return their ranges, filtering out some tokens
     based on their part-of-speech tags. Based on the QuickUMLS code.
 
@@ -543,11 +547,14 @@ def _build_candidate_ranges_with_spacy(
             yield (span.start_char, span.end_char)
 
 
-# based on https://github.com/Georgetown-IR-Lab/QuickUMLS/blob/master/quickumls/toolbox.py
-
-
 def _get_similarity_score(text_1, text_2, similarity_name, ngram_size=3):
-    """The MIT License (MIT)
+    """Compute similarity between two texts.
+
+    Adapted from `QuickUMLS <https://github.com/Georgetown-IR-Lab/QuickUMLS/blob/master/quickumls/toolbox.py>`_.
+
+    License
+    -------
+    The MIT License (MIT).
 
     Copyright (c) 2019 Georgetown Information Retrieval Lab
 

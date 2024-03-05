@@ -1,7 +1,3 @@
-"""This package needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[spacy]`.
-"""
-
 __all__ = [
     "SpacyDocPipeline",
     "SpacyPipeline",

@@ -23,7 +23,9 @@ from medkit.core.prov_tracer import ProvTracer
 @runtime_checkable
 class PipelineCompatibleOperation(Protocol):
     def run(self, *all_input_data: list[Any]) -> list[Any] | tuple[list[Any], ...] | None:
-        """Parameters
+        """Run the operation.
+
+        Parameters
         ----------
         all_input_data : list of Any
             One or several list of data items to process
@@ -54,7 +56,7 @@ class DescribableOperation(Protocol):
 
 @dataclasses.dataclass
 class PipelineStep:
-    """`Pipeline` item describing how a processing operation is connected to other
+    """Pipeline step describing how a processing operation is connected to other.
 
     Attributes
     ----------
@@ -88,7 +90,7 @@ class PipelineStep:
 
 
 class Pipeline:
-    """Graph of processing operations
+    """Graph of processing operations.
 
     A pipeline is made of pipeline steps, connecting together different processing
     operations by the use of input/output keys. Each operation can be seen as a node
@@ -97,6 +99,21 @@ class Pipeline:
 
     Steps must be added in the order of execution, there isn't any sort of dependency
     detection mechanism.
+
+    Parameters
+    ----------
+    steps : list of PipelineStep
+        List of pipeline steps
+        These steps will be executed in the order in which they were added,
+        so make sure to add first the steps generating data used by other steps.
+    input_keys : list of str
+        List of keys corresponding to the inputs passed to `run()`
+    output_keys : list of str
+        List of keys corresponding to the outputs returned by `run()`
+    name : str, optional
+        Name describing the pipeline (defaults to the class name)
+    uid : str, optional
+         Identifier of the pipeline
     """
 
     def __init__(
@@ -107,23 +124,6 @@ class Pipeline:
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Initialize the pipeline
-
-        Parameters
-        ----------
-        steps : list of PipelineStep
-            List of pipeline steps
-            These steps will be executed in the order in which they were added,
-            so make sure to add first the steps generating data used by other steps.
-        input_keys : list of str
-            List of keys corresponding to the inputs passed to `run()`
-        output_keys : list of str
-            List of keys corresponding to the outputs returned by `run()`
-        name : str, optional
-            Name describing the pipeline (defaults to the class name)
-        uid : str, optional
-             Identifier of the pipeline
-        """
         if uid is None:
             uid = generate_id()
 

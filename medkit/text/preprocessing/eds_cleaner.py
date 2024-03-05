@@ -25,12 +25,29 @@ _FR_KEYWORDS_BEFORE = ["pour", "avec", "et"]
 
 
 class EDSCleaner(Operation):
-    """EDS pre-processing annotation module
+    r"""EDS pre-processing annotation module.
 
     This module is a non-destructive module allowing to remove and clean selected points
     and newlines characters. It respects the span modification by creating a new
     text-bound annotation containing the span modification information from input text.
 
+    Parameters
+    ----------
+    output_label : str, optional
+        The output label of the created annotations.
+    keep_endlines : bool, default=False
+        If True, modify multiple endlines using `.\\n` as a replacement.
+        If False (default), modify multiple endlines using whitespaces (`.\\s`) as a replacement.
+    handle_parentheses_eds : bool, default=True
+        If True (default), modify the text near to parentheses or keywords according to
+        predefined rules for french documents
+        If False, the text near to parentheses or keywords is not modified
+    handle_points_eds : bool, default=True
+        Modify points near to predefined keywords for french documents
+        If True (default), modify the points near to keywords
+        If False, the points near to keywords is not modified
+    uid : str, optional
+        Identifier of the pre-processing module
     """
 
     _DEFAULT_LABEL = "clean_text"
@@ -43,26 +60,6 @@ class EDSCleaner(Operation):
         handle_points_eds: bool = True,
         uid: str | None = None,
     ):
-        """Instantiate the endlines handler.
-
-        Parameters
-        ----------
-        output_label : str, optional
-            The output label of the created annotations.
-        keep_endlines : bool, default=False
-            If True, modify multiple endlines using `.\\n` as a replacement.
-            If False (default), modify multiple endlines using whitespaces (`.\\s`) as a replacement.
-        handle_parentheses_eds : bool, default=True
-            If True (default), modify the text near to parentheses or keywords according to
-            predefined rules for french documents
-            If False, the text near to parentheses or keywords is not modified
-        handle_points_eds : bool, default=True
-            Modify points near to predefined keywords for french documents
-            If True (default), modify the points near to keywords
-            If False, the points near to keywords is not modified
-        uid : str, optional
-            Identifier of the pre-processing module
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -74,8 +71,7 @@ class EDSCleaner(Operation):
         self.handle_points_eds = handle_points_eds
 
     def run(self, segments: list[Segment]) -> list[Segment]:
-        """Run the module on a list of segments provided as input
-        and returns a new list of segments.
+        """Run the module on a list of segments provided as input and returns a new list of segments.
 
         Parameters
         ----------
@@ -91,6 +87,7 @@ class EDSCleaner(Operation):
 
     def _clean_segment_text(self, segment: Segment):
         """Clean up a segment non-destructively, remove points between numbers and  upper case letters.
+
         Then remove multiple whitespaces or newline characters.
         Finally, modify parentheses or point after keywords if necessary.
         """

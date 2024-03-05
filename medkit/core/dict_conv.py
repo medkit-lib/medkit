@@ -20,9 +20,7 @@ def get_class_name(class_: type) -> str:
 
 
 def add_class_name_to_data_dict(instance: object, data_dict: dict[str, Any]):
-    """Add a class name to a data dict returned by a `to_dict()` method, so we
-    later know upon which class to call `from_dict()` when re-instantiating the
-    corresponding object.
+    """Add a class name to a data dict returned by a `to_dict()` method.
 
     Parameters
     ----------
@@ -64,13 +62,10 @@ def get_class_name_from_data_dict(data_dict: dict[str, Any]):
 
 @runtime_checkable
 class DictConvertible(Protocol):
-    """Base protocol that must be implemented for all classes supporting conversion
-    to a data dict and re-instantiation from a data dict.
-    """
+    """Base protocol to support conversion to and from a data dictionary."""
 
     def to_dict(self) -> dict[str, Any]:
-        """Convert current instance into a data dict that can later be used to rebuild
-        the exact same instance
+        """Convert current instance to a data dictionary.
 
         Returns
         -------
@@ -80,7 +75,7 @@ class DictConvertible(Protocol):
 
     @classmethod
     def from_dict(cls, data_dict: dict[str, Any]) -> Self:
-        """Re-instantiate an object from a datadict obtained via `to_dict()`
+        """Instantiate an object from a data dictionary.
 
         Parameters
         ----------
@@ -95,7 +90,7 @@ class DictConvertible(Protocol):
 
 
 class SubclassMapping:
-    """Base class for managing subclasses"""
+    """Base class for managing subclasses."""
 
     _subclasses: dict[str, type[Self]]
 
@@ -122,13 +117,13 @@ class SubclassMapping:
 
     @classmethod
     def get_subclass_for_data_dict(cls, data_dict: dict[str, Any]) -> type[Self] | None:
-        """Return the subclass that corresponds to the class name found in a data dict
+        """Return the subclass corresponding to the class name found in a data dictionary.
 
         Parameters
         ----------
         data_dict: dict of str to Any
-            Data dict returned by the `to_dict()` method of a subclass (or of
-            the base class itself)
+            Data dict returned by the `to_dict()` method of a subclass
+            (or of the base class itself).
 
         Returns
         -------

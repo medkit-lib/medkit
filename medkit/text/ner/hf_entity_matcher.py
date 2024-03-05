@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[hf-entity-matcher]`.
-"""
 from __future__ import annotations
 
 __all__ = ["HFEntityMatcher"]
@@ -21,10 +18,39 @@ if TYPE_CHECKING:
 
 
 class HFEntityMatcher(NEROperation):
-    """Entity matcher based on HuggingFace transformers model
+    """Entity matcher based on HuggingFace transformers model.
 
     Any token classification model from the HuggingFace hub can be used
     (for instance "samrawal/bert-base-uncased_clinical-ner").
+
+    Parameters
+    ----------
+    model : str or Path
+        Name (on the HuggingFace models hub) or path of the NER model. Must be a model compatible
+        with the `TokenClassification` transformers class.
+    aggregation_strategy : str, default="max"
+        Strategy to fuse tokens based on the model prediction, passed to `TokenClassificationPipeline`.
+        Defaults to "max", cf https://huggingface.co/docs/transformers/main_classes/pipelines#transformers.TokenClassificationPipeline.aggregation_strategy
+        for details
+    attrs_to_copy : list of str, optional
+        Labels of the attributes that should be copied from the input segment
+        to the created entity. Useful for propagating context attributes
+        (negation, antecendent, etc).
+    device : int, default=-1
+        Device to use for the transformer model. Follows the HuggingFace convention
+        (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
+    batch_size : int, default=1
+        Number of segments in batches processed by the transformer model.
+    hf_auth_token : str, optional
+        HuggingFace Authentication token (to access private models on the
+        hub)
+    cache_dir : str or Path, optional
+        Directory where to store downloaded models. If not set, the default
+        HuggingFace cache dir is used.
+    name : str, optional
+        Name describing the matcher (defaults to the class name).
+    uid : str, optional
+        Identifier of the matcher.
     """
 
     def __init__(
@@ -39,35 +65,6 @@ class HFEntityMatcher(NEROperation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        model : str or Path
-            Name (on the HuggingFace models hub) or path of the NER model. Must be a model compatible
-            with the `TokenClassification` transformers class.
-        aggregation_strategy : str, default="max"
-            Strategy to fuse tokens based on the model prediction, passed to `TokenClassificationPipeline`.
-            Defaults to "max", cf https://huggingface.co/docs/transformers/main_classes/pipelines#transformers.TokenClassificationPipeline.aggregation_strategy
-            for details
-        attrs_to_copy : list of str, optional
-            Labels of the attributes that should be copied from the input segment
-            to the created entity. Useful for propagating context attributes
-            (negation, antecendent, etc).
-        device : int, default=-1
-            Device to use for the transformer model. Follows the HuggingFace convention
-            (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
-        batch_size : int, default=1
-            Number of segments in batches processed by the transformer model.
-        hf_auth_token : str, optional
-            HuggingFace Authentication token (to access private models on the
-            hub)
-        cache_dir : str or Path, optional
-            Directory where to store downloaded models. If not set, the default
-            HuggingFace cache dir is used.
-        name : str, optional
-            Name describing the matcher (defaults to the class name).
-        uid : str, optional
-            Identifier of the matcher.
-        """
         # Pass all arguments to super (remove self and confidential hf_auth_token)
         init_args = locals()
         init_args.pop("self")
@@ -165,6 +162,7 @@ class HFEntityMatcher(NEROperation):
         device: int = -1,
     ):
         """Return the trainable component of the operation.
+
         This component can be trained using :class:`~medkit.training.Trainer`, and then
         used in a new `HFEntityMatcher` operation.
         """

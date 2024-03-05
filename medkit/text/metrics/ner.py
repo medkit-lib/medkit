@@ -1,6 +1,3 @@
-"""This package needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[metrics-ner]`.
-"""
 from __future__ import annotations
 
 __all__ = ["SeqEvalEvaluator", "SeqEvalMetricsComputer"]
@@ -25,7 +22,7 @@ def _compute_seqeval_from_dict(
     return_metrics_by_label: bool,
     average: Literal["macro", "weighted"],
 ) -> dict[str, float | int]:
-    """Compute seqeval metrics using preprocessed data"""
+    """Compute seqeval metrics using preprocessed data."""
     # internal configuration for seqeval
     # 'bilou' only works with 'strict' mode
     scheme = BILOU if tagging_scheme == "bilou" else IOB2
@@ -56,9 +53,10 @@ def _compute_seqeval_from_dict(
 
 
 class SeqEvalEvaluator:
-    """Evaluator to compute the performance of labeling tasks such as
-    named entity recognition. This evaluator compares TextDocuments of reference
-    with its predicted annotations and returns a dictionary of metrics.
+    """Evaluator to compute the performance of labeling tasks such as named entity recognition.
+
+    This evaluator compares TextDocuments of reference with its predicted annotations
+    and returns a dictionary of metrics.
 
     The evaluator converts the set of entities and documents to tags before compute the metric.
     It supports two schemes, IOB2 (a BIO scheme) and BILOU. The IOB2 scheme tags the Beginning,
@@ -74,6 +72,26 @@ class SeqEvalEvaluator:
 
         >>> from transformers import AutoTokenizer
         >>> tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased", use_fast=True)
+
+    Parameters
+    ----------
+    tagging_scheme : str, default="bilou"
+        Scheme for tagging the tokens, it can be `bilou` or `iob2`
+    return_metrics_by_label : bool, default=True
+        If `True`, return the metrics by label in the output dictionary.
+        If `False`, only global metrics are returned
+    average : str, default="macro"
+        Type of average to be performed in metrics.
+        - `macro`, unweighted mean (default)
+        - `weighted`, weighted average by support (number of true instances by label)
+    tokenizer : Any, optional
+        Fast Tokenizer to convert text into tokens.
+        If not provided, the text is tokenized by character.
+    labels_remapping : dict of str to str, optional
+        Remapping of labels, useful when there is a mismatch
+        between the predicted labels and the reference labels to evaluate
+        against. If a label (of a reference of predicted entity) is found in
+        this dict, the corresponding value will be used as label instead.
     """
 
     def __init__(
@@ -84,27 +102,6 @@ class SeqEvalEvaluator:
         tokenizer: Any | None = None,
         labels_remapping: dict[str, str] | None = None,
     ):
-        """
-        Parameters
-        ----------
-        tagging_scheme : str, default="bilou"
-            Scheme for tagging the tokens, it can be `bilou` or `iob2`
-        return_metrics_by_label : bool, default=True
-            If `True`, return the metrics by label in the output dictionary.
-            If `False`, only global metrics are returned
-        average : str, default="macro"
-            Type of average to be performed in metrics.
-            - `macro`, unweighted mean (default)
-            - `weighted`, weighted average by support (number of true instances by label)
-        tokenizer : Any, optional
-            Optional Fast Tokenizer to convert text into tokens.
-            If not provided, the text is tokenized by character.
-        labels_remapping : dict of str to str, optional
-            Optional remapping of labels, useful when there is a mismatch
-            between the predicted labels and the reference labels to evaluate
-            against. If a label (of a reference of predicted entity) is found in
-            this dict, the corresponding value will be used as label instead.
-        """
         self.tokenizer = tokenizer
         self.tagging_scheme = tagging_scheme
         self.return_metrics_by_label = return_metrics_by_label
@@ -184,10 +181,26 @@ class SeqEvalEvaluator:
 
 
 class SeqEvalMetricsComputer:
-    """An implementation of :class:`~medkit.training.MetricsComputer` using seqeval
+    """Compute evaluation metrics using seqeval.
+
+    An implementation of :class:`~medkit.training.MetricsComputer` using seqeval
     to compute metrics in the training of named-entity recognition components.
 
     The metrics computer can be used with a :class:`~medkit.training.Trainer`
+
+    Parameters
+    ----------
+    id_to_label : dict of int to str
+        Mapping integer value to label, it should be the same used in preprocess
+    tagging_scheme : str, default="bilou"
+        Scheme used for tagging the tokens, it can be `bilou` or `iob2`
+    return_metrics_by_label : bool, default=True
+        If `True`, return the metrics by label in the output dictionary.
+        If `False`, only return average metrics
+    average : str, default="macro"
+        Type of average to be performed in metrics.
+        - `macro`, unweighted mean (default)
+        - `weighted`, weighted average by support (number of true instances by attr value)
     """
 
     def __init__(
@@ -197,28 +210,13 @@ class SeqEvalMetricsComputer:
         return_metrics_by_label: bool = True,
         average: Literal["macro", "weighted"] = "macro",
     ):
-        """
-        Parameters
-        ----------
-        id_to_label : dict of int to str
-            Mapping integer value to label, it should be the same used in preprocess
-        tagging_scheme : str, default="bilou"
-            Scheme used for tagging the tokens, it can be `bilou` or `iob2`
-        return_metrics_by_label : bool, default=True
-            If `True`, return the metrics by label in the output dictionary.
-            If `False`, only return average metrics
-        average : str, default="macro"
-            Type of average to be performed in metrics.
-            - `macro`, unweighted mean (default)
-            - `weighted`, weighted average by support (number of true instances by attr value)
-        """
         self.id_to_label = id_to_label
         self.tagging_scheme = tagging_scheme
         self.return_metrics_by_label = return_metrics_by_label
         self.average = average
 
     def prepare_batch(self, model_output: BatchData, input_batch: BatchData) -> dict[str, list[list[str]]]:
-        """Prepare a batch of tensors to compute the metric
+        """Prepare a batch of tensors to compute the metric.
 
         Parameters
         ----------
@@ -248,7 +246,9 @@ class SeqEvalMetricsComputer:
         return {"y_true": batch_true_tags, "y_pred": batch_pred_tags}
 
     def compute(self, all_data: dict[str, list[Any]]) -> dict[str, float]:
-        """Compute metrics using the tag representation collected by batches
+        """Compute the metrics.
+
+        Compute metrics using the tag representation collected by batches
         during the training/evaluation loop.
 
         Parameters

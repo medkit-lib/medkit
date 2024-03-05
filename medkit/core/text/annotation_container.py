@@ -33,17 +33,17 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
 
     @property
     def segments(self) -> list[Segment]:
-        """Return the list of segments"""
+        """Return the list of segments."""
         return self.get_segments()
 
     @property
     def entities(self) -> list[Entity]:
-        """Return the list of entities"""
+        """Return the list of entities."""
         return self.get_entities()
 
     @property
     def relations(self) -> list[Relation]:
-        """Return the list of relations"""
+        """Return the list of relations."""
         return self.get_relations()
 
     def add(self, ann: TextAnnotation):
@@ -77,8 +77,7 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         return super().get_by_id(uid)
 
     def get_segments(self, *, label: str | None = None, key: str | None = None) -> list[Segment]:
-        """Return a list of the segments of the document (not including entities),
-        optionally filtering by label or key.
+        """Return a list of the segments of the document (not including entities).
 
         Parameters
         ----------
@@ -96,8 +95,7 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         return cast(List[Segment], segments)
 
     def get_entities(self, *, label: str | None = None, key: str | None = None) -> list[Entity]:
-        """Return a list of the entities of the document, optionally filtering
-        by label or key.
+        """Return a list of the entities of the document.
 
         Parameters
         ----------
@@ -121,8 +119,7 @@ class TextAnnotationContainer(AnnotationContainer[TextAnnotation]):
         key: str | None = None,
         source_id: str | None = None,
     ) -> list[Relation]:
-        """Return a list of the relations of the document, optionally filtering
-        by label, key or source entity.
+        """Return a list of the relations of the document.
 
         Parameters
         ----------

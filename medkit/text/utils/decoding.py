@@ -6,7 +6,7 @@ from anyascii import anyascii
 
 
 def get_ascii_from_unicode(text: str, keep_length: bool = True, logger=None) -> str:
-    """Function returning the (closest) ascii text when possible
+    """Return the (closest) ascii text when possible.
 
     Parameters
     ----------

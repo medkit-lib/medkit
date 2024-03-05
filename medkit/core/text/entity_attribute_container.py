@@ -27,7 +27,7 @@ class EntityAttributeContainer(AttributeContainer):
 
     @property
     def norms(self) -> list[EntityNormAttribute]:
-        """Return the list of normalization attributes"""
+        """Return the list of normalization attributes."""
         return self.get_norms()
 
     def add(self, attr: Attribute):
@@ -38,6 +38,6 @@ class EntityAttributeContainer(AttributeContainer):
             self._norm_ids.append(attr.uid)
 
     def get_norms(self) -> list[EntityNormAttribute]:
-        """Return a list of the normalization attributes of the annotation"""
+        """Return a list of the normalization attributes of the annotation."""
         segments = [self.get_by_id(uid) for uid in self._norm_ids]
         return cast(List[EntityNormAttribute], segments)

@@ -17,18 +17,21 @@ if TYPE_CHECKING:
 
 
 class TranscriptionOperation(Protocol):
-    """Protocol for operations in charge of the actual speech-to-text transcription
-    to use with :class:`~.DocTranscriber`
+    """Protocol for speech-to-text transcription operations.
+
+    Attributes
+    ----------
+    output_label : str
+        Label to use for generated transcription attributes.
     """
 
     output_label: str
-    """
-    Label to use for generated transcription attributes
-    """
 
     def run(self, segments: list[AudioSegment]):
-        """Add a transcription attribute to each segment with a text value
-        containing the transcribed text.
+        """Run the transcription operation.
+
+        Add a transcription attribute to each segment with a text value containing
+        the transcribed text.
 
         Parameters
         ----------
@@ -60,6 +63,21 @@ class DocTranscriber(Operation):
     :class:`~.TranscriptionOperation` that must be provided, for instance
     :class`~medkit.audio.transcription.hf_transcriber.HFTranscriber` or
     :class`~medkit.audio.transcription.sb_transcriber.SBTranscriber`.
+
+    Parameters
+    ----------
+    input_label: str
+        Label of audio segments that should be transcribed.
+    output_label: str
+        Label of generated text segments.
+    transcription_operation: TranscriptionOperation
+        Transcription operation in charge of actually transcribing each
+        audio segment.
+    attrs_to_copy: list of str, optional
+        Labels of attributes that should be copied from the original audio segments
+        to the transcribed text segments.
+    uid: str, optional
+        Identifier of the transcriber.
     """
 
     def __init__(
@@ -70,21 +88,6 @@ class DocTranscriber(Operation):
         attrs_to_copy: list[str] | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        input_label: str
-            Label of audio segments that should be transcribed.
-        output_label: str
-            Label of generated text segments.
-        transcription_operation: TranscriptionOperation
-            Transcription operation in charge of actually transcribing each
-            audio segment.
-        attrs_to_copy: list of str, optional
-            Labels of attributes that should be copied from the original audio segments
-            to the transcribed text segments.
-        uid: str, optional
-            Identifier of the transcriber.
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -102,7 +105,7 @@ class DocTranscriber(Operation):
         self._attr_label = self.transcription_operation.output_label
 
     def run(self, audio_docs: list[AudioDocument]) -> list[TranscribedTextDocument]:
-        """Return a transcribed text document for each document in `audio_docs`
+        """Return a transcribed text document for each document in `audio_docs`.
 
         Parameters
         ----------
@@ -176,8 +179,9 @@ class DocTranscriber(Operation):
         return text_doc
 
     def augment_full_text_for_next_segment(self, full_text: str, segment_text: str, audio_segment: AudioSegment) -> str:
-        """Append intermediate joining text to full text before the next segment is
-        concatenated to it. Override for custom behavior.
+        """Append intermediate joining text to full text before the next segment is concatenated to it.
+
+        Override for custom behavior.
         """
         if len(full_text) > 0:
             full_text += "\n"

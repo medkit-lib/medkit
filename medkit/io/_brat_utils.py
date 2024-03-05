@@ -80,9 +80,7 @@ class BratNote:
 
 
 def ensure_attr_value(attr_value: Any) -> str:
-    """Ensure that the attribue value is a string. If it's not, the
-    value is changed depending on its original format.
-    """
+    """Ensure that the attribue value is a string."""
     if isinstance(attr_value, str):
         return attr_value
     if attr_value is None or isinstance(attr_value, bool):
@@ -96,7 +94,7 @@ def ensure_attr_value(attr_value: Any) -> str:
 
 @dataclass
 class Grouping:
-    """A grouping data structure for entities of type And-Group and Or-Group"""
+    """A grouping data structure for entities of type And-Group and Or-Group."""
 
     uid: str
     type: str
@@ -162,7 +160,7 @@ class BratDocument:
 
 # data structures for configuration
 class RelationConf(NamedTuple):
-    """Configuration data structure of a BratRelation"""
+    """Configuration data structure of a BratRelation."""
 
     type: str
     arg1: str
@@ -170,7 +168,7 @@ class RelationConf(NamedTuple):
 
 
 class AttributeConf(NamedTuple):
-    """Configuration data structure of a BratAttribure"""
+    """Configuration data structure of a BratAttribure."""
 
     from_entity: bool
     type: str
@@ -179,6 +177,7 @@ class AttributeConf(NamedTuple):
 
 class BratAnnConfiguration:
     """A data structure to represent 'annotation.conf' in brat documents.
+
     This is necessary to generate a valid annotation project in brat.
     An 'annotation.conf' has four sections. The section 'events' is not
     supported in medkit, so the section is empty.
@@ -303,6 +302,7 @@ class BratAnnConfiguration:
 
 def parse_file(ann_path: str | Path, detect_groups: bool = False) -> BratDocument:
     """Read an annotation file to get the Entities, Relations and Attributes in it.
+
     All other lines are ignored.
 
     Parameters
@@ -326,8 +326,8 @@ def parse_file(ann_path: str | Path, detect_groups: bool = False) -> BratDocumen
 
 
 def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
-    """Read a string containing all annotations and extract Entities, Relations and
-    Attributes.
+    """Read a string containing all annotations and extract Entities, Relations and Attributes.
+
     All other lines are ignored.
 
     Parameters
@@ -390,7 +390,7 @@ def parse_string(ann_string: str, detect_groups: bool = False) -> BratDocument:
 
 
 def _parse_entity(entity_id: str, entity_content: str) -> BratEntity:
-    """Parse the brat entity string into an Entity structure.
+    r"""Parse the brat entity string into an Entity structure.
 
     Parameters
     ----------
@@ -428,7 +428,7 @@ def _parse_entity(entity_id: str, entity_content: str) -> BratEntity:
 
 
 def _parse_relation(relation_id: str, relation_content: str) -> BratRelation:
-    """Parse the annotation string into a Relation structure.
+    r"""Parse the annotation string into a Relation structure.
 
     Parameters
     ----------

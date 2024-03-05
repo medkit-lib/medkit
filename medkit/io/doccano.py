@@ -27,8 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 class DoccanoTask(enum.Enum):
-    """Supported doccano tasks. The task defines
-    the type of document to convert.
+    """Supported doccano tasks.
 
     Attributes
     ----------
@@ -47,7 +46,8 @@ class DoccanoTask(enum.Enum):
 
 @dataclasses.dataclass
 class DoccanoClientConfig:
-    """A class representing the configuration in the doccano client.
+    """Doccano client configuration.
+
     The default values are the default values used by doccano.
 
     Attributes
@@ -190,6 +190,24 @@ class DoccanoInputConverter:
         If the option *Count grapheme clusters as one character*  was selected
         when creating the doccano project, the converted documents are
         likely to have alignment problems; the converter does not support this option.
+
+    Parameters
+    ----------
+    task : DocanoTask
+        The doccano task for the input converter
+    client_config : DoccanoClientConfig, optional
+        Optional client configuration to define default values in doccano interface.
+        This config can change, for example, the name of the text field or labels.
+    attr_label : str, default="doccano_category"
+        The label to use for the medkit attribute that represents the doccano category.
+        This is related to :class:`~.io.DoccanoTask.TEXT_CLASSIFICATION` projects.
+    uid : str, optional
+        Identifier of the converter.
+
+    Attributes
+    ----------
+    description : str
+        Description for the operation.
     """
 
     def __init__(
@@ -199,19 +217,6 @@ class DoccanoInputConverter:
         attr_label: str = "doccano_category",
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        task : DocanoTask
-            The doccano task for the input converter
-        client_config : DoccanoClientConfig, optional
-            Optional client configuration to define default values in doccano interface.
-            This config can change, for example, the name of the text field or labels.
-        attr_label : str, default="doccano_category"
-            The label to use for the medkit attribute that represents the doccano category.
-            This is related to :class:`~.io.DoccanoTask.TEXT_CLASSIFICATION` projects.
-        uid : str, optional
-            Identifier of the converter.
-        """
         if uid is None:
             uid = generate_id()
 
@@ -245,8 +250,9 @@ class DoccanoInputConverter:
         )
 
     def load_from_directory_zip(self, dir_path: str | Path) -> list[TextDocument]:
-        """Create a list of TextDocuments from zip files in a directory.
-        The zip files should contain a JSONL file coming from doccano.
+        """Load text documents from a directory of zip files.
+
+        The zip files should contain JSONL files coming from doccano.
 
         Parameters
         ----------
@@ -266,8 +272,7 @@ class DoccanoInputConverter:
         return documents
 
     def load_from_zip(self, input_file: str | Path) -> list[TextDocument]:
-        """Create a list of TextDocuments from a zip file containing a JSONL file
-        coming from doccano.
+        """Load text documents from a zip file.
 
         Parameters
         ----------
@@ -287,7 +292,7 @@ class DoccanoInputConverter:
             return self.load_from_file(unzipped_file)
 
     def load_from_file(self, input_file: str | Path) -> list[TextDocument]:
-        """Create a list of TextDocuments from a doccano JSONL file.
+        """Load text documents from a JSONL file.
 
         Parameters
         ----------
@@ -311,8 +316,9 @@ class DoccanoInputConverter:
 
     def _check_crlf_character(self, documents: list[TextDocument]):
         """Check if the list of converted documents contains the CRLF character.
-        This character is the only indicator available to warn
-        if there are alignment problems in the documents
+
+        This character is the only indicator available to warn if there are alignment
+        problems in the documents.
         """
         if self.task in (DoccanoTask.RELATION_EXTRACTION, DoccanoTask.SEQUENCE_LABELING):
             nb_docs_with_warning = sum(document.text.find("\r\n") != -1 for document in documents)
@@ -330,7 +336,7 @@ class DoccanoInputConverter:
                 )
 
     def _parse_doc_line(self, doc_line: dict[str, Any]) -> TextDocument:
-        """Parse a doc_line into a TextDocument depending on the task
+        """Parse a doc_line into a TextDocument depending on the task.
 
         Parameters
         ----------
@@ -351,7 +357,7 @@ class DoccanoInputConverter:
         return None
 
     def _parse_doc_line_relation_extraction(self, doc_line: dict[str, Any]) -> TextDocument:
-        """Parse a dictionary and return a TextDocument with entities and relations
+        """Parse a dictionary and return a TextDocument with entities and relations.
 
         Parameters
         ----------
@@ -407,7 +413,7 @@ class DoccanoInputConverter:
         )
 
     def _parse_doc_line_seq_labeling(self, doc_line: dict[str, Any]) -> TextDocument:
-        """Parse a dictionary and return a TextDocument with entities
+        """Parse a dictionary and return a TextDocument with entities.
 
         Parameters
         ----------
@@ -483,6 +489,34 @@ class DoccanoOutputConverter:
     """Convert medkit files to doccano files (.JSONL) for a given task.
 
     For each :class:`~medkit.core.text.TextDocument` a jsonline will be created.
+
+    Parameters
+    ----------
+    task : DoccanoTask
+        The doccano task for the input converter
+    anns_labels : list of str, optional
+        Labels of medkit annotations to convert into doccano annotations.
+        If `None` (default) all the entities or relations will be converted.
+        Useful for :class:`~.io.DoccanoTask.SEQUENCE_LABELING` or
+        :class:`~.io.DoccanoTask.RELATION_EXTRACTION` converters.
+    attr_label : str, optional
+        The label of the medkit attribute that represents the text category.
+        Useful for :class:`~.io.DoccanoTask.TEXT_CLASSIFICATION` converters.
+    ignore_segments : bool, default=True
+        If `True` medkit segments will be ignored. Only entities will be
+        converted to Doccano entities.  If `False` the medkit segments will
+        be converted to Doccano entities as well.
+        Useful for :class:`~.io.DoccanoTask.SEQUENCE_LABELING` or
+        :class:`~.io.DoccanoTask.RELATION_EXTRACTION` converters.
+    include_metadata : bool, default=True
+        Whether include medkit metadata in the converted documents
+    uid : str, optional
+        Identifier of the converter.
+
+    Attributes
+    ----------
+    description : str
+        Description for the operation.
     """
 
     def __init__(
@@ -494,29 +528,6 @@ class DoccanoOutputConverter:
         include_metadata: bool | None = True,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        task : DoccanoTask
-            The doccano task for the input converter
-        anns_labels : list of str, optional
-            Labels of medkit annotations to convert into doccano annotations.
-            If `None` (default) all the entities or relations will be converted.
-            Useful for :class:`~.io.DoccanoTask.SEQUENCE_LABELING` or
-            :class:`~.io.DoccanoTask.RELATION_EXTRACTION` converters.
-        attr_label : str, optional
-            The label of the medkit attribute that represents the text category.
-            Useful for :class:`~.io.DoccanoTask.TEXT_CLASSIFICATION` converters.
-        ignore_segments : bool, default=True
-            If `True` medkit segments will be ignored. Only entities will be
-            converted to Doccano entities.  If `False` the medkit segments will
-            be converted to Doccano entities as well.
-            Useful for :class:`~.io.DoccanoTask.SEQUENCE_LABELING` or
-            :class:`~.io.DoccanoTask.RELATION_EXTRACTION` converters.
-        include_metadata : bool, default=True
-            Whether include medkit metadata in the converted documents
-        uid : str, optional
-            Identifier of the converter.
-        """
         if uid is None:
             uid = generate_id()
 
@@ -537,7 +548,7 @@ class DoccanoOutputConverter:
         )
 
     def save(self, docs: list[TextDocument], output_file: str | Path):
-        """Convert and save a list of TextDocuments into a doccano file (.JSONL)
+        """Convert and save a list of TextDocuments into a doccano file (.JSONL).
 
         Parameters
         ----------
@@ -552,7 +563,7 @@ class DoccanoOutputConverter:
                 fp.write(json.dumps(doc_line, ensure_ascii=False) + "\n")
 
     def _convert_doc_by_task(self, medkit_doc: TextDocument) -> dict[str, Any]:
-        """Convert a TextDocument into a dictionary depending on the task
+        """Convert a TextDocument into a dictionary depending on the task.
 
         Parameters
         ----------
@@ -573,8 +584,7 @@ class DoccanoOutputConverter:
         return None
 
     def _convert_doc_relation_extraction(self, medkit_doc: TextDocument) -> dict[str, Any]:
-        """Convert a TextDocument to a doc_line compatible
-        with the doccano relation extraction task
+        """Convert a TextDocument to a doc_line compatible with the doccano relation extraction task.
 
         Parameters
         ----------
@@ -634,8 +644,7 @@ class DoccanoOutputConverter:
         return doccano_doc.to_dict()
 
     def _convert_doc_seq_labeling(self, medkit_doc: TextDocument) -> dict[str, Any]:
-        """Convert a TextDocument to a doc_line compatible
-        with the doccano sequence labeling task
+        """Convert a TextDocument to a doc_line compatible with the doccano sequence labeling task.
 
         Parameters
         ----------
@@ -672,8 +681,7 @@ class DoccanoOutputConverter:
         return doccano_doc.to_dict()
 
     def _convert_doc_text_classification(self, medkit_doc: TextDocument) -> dict[str, Any]:
-        """Convert a TextDocument to a doc_line compatible with
-        the doccano text classification task.
+        """Convert a TextDocument to a doc_line compatible with the doccano text classification task.
 
         Parameters
         ----------

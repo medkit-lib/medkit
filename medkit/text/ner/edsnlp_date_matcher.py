@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[edsnlp]`.
-"""
 from __future__ import annotations
 
 __all__ = ["EDSNLPDateMatcher"]
@@ -15,8 +12,9 @@ from medkit.text.spacy.edsnlp import build_date_attribute, build_duration_attrib
 
 
 class EDSNLPDateMatcher(NEROperation):
-    """Date matcher based on the `EDS-NPL dates pipeline <https://aphp.github.io/edsnlp/latest/pipelines/misc/dates/>`_
-    which itself relies on regular expressions. Note that this operation is designed to run on french documents.
+    """Date matcher based on the `EDS-NLP dates`_ pipeline.
+
+    Note that this operation is designed to run on french documents.
 
     Absolute dates (ex: "23/08/2021"), relatives dates (ex: "la semaine
     dernière") and durations (ex: "pendant quatre jours") will be matched.
@@ -27,6 +25,20 @@ class EDSNLPDateMatcher(NEROperation):
     attribute will be either class :class:`~medkit.text.ner.DateAttribute`,
     :class:`~medkit.text.ner.RelativeDateAttribute` or
     :class:`~medkit.text.ner.DurationAttribute`.
+
+    .. _EDS-NLP dates: https://aphp.github.io/edsnlp/latest/pipelines/misc/dates/
+
+    Parameters
+    ----------
+    output_label : str, default="date"
+        Label to use for date entities created (the label of the
+        attributes will always be "date" or "duration")
+    attrs_to_copy : list of str, optional
+        Labels of the attributes that should be copied from the input segment
+        to the created date entity. Useful for propagating context attributes
+        (negation, antecedent, etc).
+    uid : str, optional
+        Identifier of the matcher
     """
 
     def __init__(
@@ -35,18 +47,6 @@ class EDSNLPDateMatcher(NEROperation):
         attrs_to_copy: list[str] | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        output_label : str, default="date"
-            Label to use for date entities created (the label of the
-            attributes will always be "date" or "duration")
-        attrs_to_copy : list of str, optional
-            Labels of the attributes that should be copied from the input segment
-            to the created date entity. Useful for propagating context attributes
-            (negation, antecedent, etc).
-        uid : str, optional
-            Identifier of the matcher
-        """
         super().__init__(output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid)
 
         if attrs_to_copy is None:
@@ -59,7 +59,7 @@ class EDSNLPDateMatcher(NEROperation):
         self._edsnlp.add_pipe("eds.dates")
 
     def run(self, segments: list[Segment]) -> list[Entity]:
-        """Find and return date entities for all `segments`
+        """Find and return date entities for all `segments`.
 
         Parameters
         ----------

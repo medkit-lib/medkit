@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[hf-transcriber]`.
-"""
 from __future__ import annotations
 
 __all__ = ["HFTranscriber"]
@@ -27,6 +24,37 @@ class HFTranscriber(Operation):
     created from all the transcriptions of a audio document using
     :func:`~medkit.audio.transcription.TranscribedTextDocument.from_audio_doc
     <TranscribedTextDocument.from_audio_doc>`
+
+    Parameters
+    ----------
+    model : str, default="facebook/s2t-large-librispeech-asr"
+        Name of the ASR model on the Hugging Face models hub. Must be a
+        model compatible with the `AutomaticSpeechRecognitionPipeline`
+        transformers class.
+    output_label : str, default="transcribed_text"
+        Label of the attribute containing the transcribed text that will be
+        attached to the input segments
+    language : str, optional
+        Optional output language to be forced on the model (useful for some
+        multilingual models such as Whisper)
+    add_trailing_dot : bool, default=True
+        If `True`, a dot will be added at the end of each transcription text.
+    capitalize : bool, default=True
+        It `True`, the first letter of each transcription text will be
+        uppercased and the rest lowercased.
+    device : int, default=-1
+        Device to use for pytorch models. Follows the Hugging Face convention
+        (`-1` for cpu and device number for gpu, for instance `0` for "cuda:0")
+    batch_size : int, default=1
+        Size of batches processed by ASR pipeline.
+    hf_auth_token : str, optional
+        HuggingFace Authentication token (to access private models on the
+        hub)
+    cache_dir : str or Path, optional
+        Directory where to store downloaded models. If not set, the default
+        HuggingFace cache dir is used.
+    uid : str, optional
+        Identifier of the transcriber.
     """
 
     def __init__(
@@ -42,37 +70,6 @@ class HFTranscriber(Operation):
         cache_dir: str | Path | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        model : str, default="facebook/s2t-large-librispeech-asr"
-            Name of the ASR model on the Hugging Face models hub. Must be a
-            model compatible with the `AutomaticSpeechRecognitionPipeline`
-            transformers class.
-        output_label : str, default="transcribed_text"
-            Label of the attribute containing the transcribed text that will be
-            attached to the input segments
-        language : str, optional
-            Optional output language to be forced on the model (useful for some
-            multilingual models such as Whisper)
-        add_trailing_dot : bool, default=True
-            If `True`, a dot will be added at the end of each transcription text.
-        capitalize : bool, default=True
-            It `True`, the first letter of each transcription text will be
-            uppercased and the rest lowercased.
-        device : int, default=-1
-            Device to use for pytorch models. Follows the Hugging Face convention
-            (`-1` for cpu and device number for gpu, for instance `0` for "cuda:0")
-        batch_size : int, default=1
-            Size of batches processed by ASR pipeline.
-        hf_auth_token : str, optional
-            HuggingFace Authentication token (to access private models on the
-            hub)
-        cache_dir : str or Path, optional
-            Directory where to store downloaded models. If not set, the default
-            HuggingFace cache dir is used.
-        uid : str, optional
-            Identifier of the transcriber.
-        """
         super().__init__(
             model=model,
             output_label=output_label,
@@ -115,8 +112,10 @@ class HFTranscriber(Operation):
             )
 
     def run(self, segments: list[Segment]):
-        """Add a transcription attribute to each segment with a text value
-        containing the transcribed text.
+        """Run the transcription operation.
+
+        Add a transcription attribute to each segment with a text value containing
+        the transcribed text.
 
         Parameters
         ----------

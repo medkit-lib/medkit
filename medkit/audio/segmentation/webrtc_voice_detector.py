@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[webrtc-voice-detector]`.
-"""
 from __future__ import annotations
 
 __all__ = ["WebRTCVoiceDetector"]
@@ -24,6 +21,24 @@ class WebRTCVoiceDetector(SegmentationOperation):
     considering the percentage of speech/non-speech frames in a wider sliding window.
 
     Input segments must be mono at 8kHZ, 16kHz, 32kHz or 48Khz.
+
+    Parameters
+    ----------
+    output_label : str
+        Label of output speech segments.
+    aggressiveness : {0, 1, 2, 3}, default=2
+        Aggressiveness param passed to `webrtcvad` (the higher, the more likely
+        to detect speech).
+    frame_duration : {10, 20, 30}, default=30
+        Duration in milliseconds of frames passed to `webrtcvad`.
+    nb_frames_in_window : int, default=10
+        Number of frames in the sliding window used when aggregating per-frame VAD
+        results.
+    switch_ratio : float, default=0.9
+        Percentage of speech/non-speech frames required to switch the window speech
+        state when aggregating per-frame VAD results.
+    uid : str, optional
+        Identifier of the detector.
     """
 
     def __init__(
@@ -35,24 +50,6 @@ class WebRTCVoiceDetector(SegmentationOperation):
         switch_ratio: float = 0.9,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        output_label : str
-            Label of output speech segments.
-        aggressiveness : {0, 1, 2, 3}, default=2
-            Aggressiveness param passed to `webrtcvad` (the higher, the more likely
-            to detect speech).
-        frame_duration : {10, 20, 30}, default=30
-            Duration in milliseconds of frames passed to `webrtcvad`.
-        nb_frames_in_window : int, default=10
-            Number of frames in the sliding window used when aggregating per-frame VAD
-            results.
-        switch_ratio : float, default=0.9
-            Percentage of speech/non-speech frames required to switch the window speech
-            state when aggregating per-frame VAD results.
-        uid : str, optional
-            Identifier of the detector.
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -126,7 +123,7 @@ class WebRTCVoiceDetector(SegmentationOperation):
 
     # from https://github.com/wiseman/py-webrtcvad/blob/master/example.py
     def _get_aggregated_vad(self, frames, sample_rate):
-        """Return index ranges of voiced frames using webrtcvad"""
+        """Return index ranges of voiced frames using webrtcvad."""
         # deque for our sliding window ring buffer
         window_ring_buffer = collections.deque(maxlen=self.nb_frames_in_window)
         # we have two states: SPEECH and NONSPEECH (we start in NONSPEECH)

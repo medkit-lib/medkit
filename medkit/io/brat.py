@@ -52,7 +52,24 @@ _CUI_PATTERN = re.compile(r"\b[Cc]\d{7}\b")
 
 
 class BratInputConverter(InputConverter):
-    """Class in charge of converting brat annotations"""
+    """Class in charge of converting brat annotations.
+
+    Parameters
+    ----------
+    detect_cuis_in_notes : bool, default=True
+        If `True`, strings looking like CUIs in annotator notes of entities
+        will be converted to UMLS normalization attributes rather than creating
+        an :class:`~.core.Attribute` with the whole note text as value.
+    notes_label : str, default="brat_note",
+        Label to use for attributes created from annotator notes.
+    uid : str, optional
+        Identifier of the converter.
+
+    Attributes
+    ----------
+    description : str
+        Description of the operation
+    """
 
     def __init__(
         self,
@@ -60,17 +77,6 @@ class BratInputConverter(InputConverter):
         notes_label: str = "brat_note",
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        detect_cuis_in_notes : bool, default=True
-            If `True`, strings looking like CUIs in annotator notes of entities
-            will be converted to UMLS normalization attributes rather than creating
-            an :class:`~.core.Attribute` with the whole note text as value.
-        notes_label : str, default="brat_note",
-            Label to use for attributes created from annotator notes.
-        uid : str, optional
-            Identifier of the converter.
-        """
         if uid is None:
             uid = generate_id()
 
@@ -96,8 +102,10 @@ class BratInputConverter(InputConverter):
         ann_ext: str = ANN_EXT,
         text_ext: str = TEXT_EXT,
     ) -> list[TextDocument]:
-        """Create a list of TextDocuments from a folder containing text files
-        and associated brat annotations files.
+        """Load brat annotations as text documents.
+
+        Create a list of TextDocuments from a folder containing text files and
+        associated brat annotations files.
 
         Parameters
         ----------
@@ -150,7 +158,9 @@ class BratInputConverter(InputConverter):
         return documents
 
     def load_doc(self, ann_path: str | Path, text_path: str | Path) -> TextDocument:
-        """Create a TextDocument from a .ann file and its associated .txt file
+        """Load a brat annotation and text file combo as a text document.
+
+        Create a TextDocument from a .ann file and its associated .txt file.
 
         Parameters
         ----------
@@ -181,7 +191,9 @@ class BratInputConverter(InputConverter):
         return doc
 
     def load_annotations(self, ann_file: str | Path) -> list[TextAnnotation]:
-        """Load a .ann file and return a list of
+        """Load a brat annotation file as a list of annotations.
+
+        Load a .ann file and return a list of
         :class:`~medkit.core.text.annotation.Annotation` objects.
 
         Parameters
@@ -269,13 +281,47 @@ class BratInputConverter(InputConverter):
 
 
 class BratOutputConverter(OutputConverter):
-    """Class in charge of converting a list of TextDocuments into a
-    brat collection file.
+    """Class for converting text documents to a brat collection file.
 
     .. hint::
-        BRAT checks the coherence between span and text for each annotation.
+        BRAT checks for coherence between span and text for each annotation.
         This converter adjusts the text and spans to get the right visualization
         and ensure compatibility.
+
+    Parameters
+    ----------
+    anns_labels : list of str, optional
+        Labels of medkit annotations to convert into Brat annotations.
+        If `None` (default) all the annotations will be converted
+    attrs : list of str, optional
+        Labels of medkit attributes to add in the annotations that will be included.
+        If `None` (default) all medkit attributes found in the segments or relations
+        will be converted to Brat attributes
+    notes_label : str, default="brat_note"
+        Label of attributes that will be converted to annotator notes.
+    ignore_segments : bool, default=True
+        If `True` medkit segments will be ignored. Only entities, attributes and relations
+        will be converted to Brat annotations.  If `False` the medkit segments will be
+        converted to Brat annotations as well.
+    convert_cuis_to_notes : bool, default=True
+        If `True`, UMLS normalization attributes will be converted to
+        annotator notes rather than attributes. For entities with multiple
+        UMLS attributes, CUIs will be separated by spaces (ex: "C0011849 C0004096").
+    create_config : bool, default=True
+        Whether to create a configuration file for the generated collection.
+        This file defines the types of annotations generated, it is necessary for the correct
+        visualization on Brat.
+    top_values_by_attr : int, default=50
+        Defines the number of most common values by attribute to show in the configuration.
+        This is useful when an attribute has a large number of values, only the 'top' ones
+        will be in the config. By default, the top 50 of values by attr will be in the config.
+    uid : str, optional
+        Identifier of the converter
+
+    Attributes
+    ----------
+    description : str
+        Description for the operation
     """
 
     def __init__(
@@ -289,38 +335,6 @@ class BratOutputConverter(OutputConverter):
         top_values_by_attr: int = 50,
         uid: str | None = None,
     ):
-        """Initialize the Brat output converter
-
-        Parameters
-        ----------
-        anns_labels : list of str, optional
-            Labels of medkit annotations to convert into Brat annotations.
-            If `None` (default) all the annotations will be converted
-        attrs : list of str, optional
-            Labels of medkit attributes to add in the annotations that will be included.
-            If `None` (default) all medkit attributes found in the segments or relations
-            will be converted to Brat attributes
-        notes_label : str, default="brat_note"
-            Label of attributes that will be converted to annotator notes.
-        ignore_segments : bool, default=True
-            If `True` medkit segments will be ignored. Only entities, attributes and relations
-            will be converted to Brat annotations.  If `False` the medkit segments will be
-            converted to Brat annotations as well.
-        convert_cuis_to_notes : bool, default=True
-            If `True`, UMLS normalization attributes will be converted to
-            annotator notes rather than attributes. For entities with multiple
-            UMLS attributes, CUIs will be separated by spaces (ex: "C0011849 C0004096").
-        create_config : bool, default=True
-            Whether to create a configuration file for the generated collection.
-            This file defines the types of annotations generated, it is necessary for the correct
-            visualization on Brat.
-        top_values_by_attr : int, default=50
-            Defines the number of most common values by attribute to show in the configuration.
-            This is useful when an attribute has a large number of values, only the 'top' ones
-            will be in the config. By default, the top 50 of values by attr will be in the config.
-        uid : str, optional
-            Identifier of the converter
-        """
         self.uid = uid or generate_id()
         self.anns_labels = anns_labels
         self.attrs = attrs
@@ -347,9 +361,11 @@ class BratOutputConverter(OutputConverter):
         dir_path: str | Path,
         doc_names: list[str] | None = None,
     ):
-        """Convert and save a collection or list of TextDocuments into a Brat collection.
+        """Save text documents as brat files.
+
+        Convert and save a collection or list of TextDocuments into a Brat collection.
         For each collection or list of documents, a folder is created with '.txt' and '.ann'
-        files; an 'annotation.conf' is saved if required.
+        files. A file named 'annotation.conf' may also be saved if required.
 
         Parameters
         ----------
@@ -411,7 +427,7 @@ class BratOutputConverter(OutputConverter):
         config: BratAnnConfiguration,
         raw_text: str,
     ) -> list[BratEntity | BratAttribute | BratRelation | BratNote]:
-        """Convert Segments, Relations and Attributes into brat data structures
+        """Convert Segments, Relations and Attributes into brat data structures.
 
         Parameters
         ----------
@@ -543,6 +559,7 @@ class BratOutputConverter(OutputConverter):
     @staticmethod
     def _ensure_text_and_spans(segment: Segment, raw_text: str) -> tuple[str, list[tuple[int, int]]]:
         """Ensure consistency between the segment and the raw text.
+
         The text of a BRAT annotation can't contain multiple white spaces (including a newline character).
         This method cleans the fragments' text and adjust its spans to point to the same location in the raw text.
 
@@ -586,7 +603,7 @@ class BratOutputConverter(OutputConverter):
         return text_brat, spans_brat
 
     def _convert_segment_to_brat(self, segment: Segment, nb_segment: int, raw_text: str) -> BratEntity:
-        """Get a brat entity from a medkit segment
+        """Get a brat entity from a medkit segment.
 
         Parameters
         ----------
@@ -618,7 +635,7 @@ class BratOutputConverter(OutputConverter):
         nb_relation: int,
         brat_entities_by_segment_id: dict[str, BratEntity],
     ) -> tuple[BratRelation, RelationConf]:
-        """Get a brat relation from a medkit relation
+        """Get a brat relation from a medkit relation.
 
         Parameters
         ----------
@@ -666,7 +683,7 @@ class BratOutputConverter(OutputConverter):
         target_brat_id: str,
         is_from_entity: bool,
     ) -> tuple[BratAttribute, AttributeConf]:
-        """Get a brat attribute from a medkit attribute
+        """Get a brat attribute from a medkit attribute.
 
         Parameters
         ----------
@@ -703,7 +720,7 @@ class BratOutputConverter(OutputConverter):
         nb_note: int,
         target_brat_id: str,
     ) -> BratNote:
-        """Get a brat note from a medkit umls norm attribute
+        """Get a brat note from a medkit umls norm attribute.
 
         Parameters
         ----------
@@ -732,7 +749,7 @@ class BratOutputConverter(OutputConverter):
         nb_note: int,
         target_brat_id: str,
     ) -> BratNote:
-        """Get a brat note from medkit attribute values
+        """Get a brat note from medkit attribute values.
 
         Parameters
         ----------

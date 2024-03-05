@@ -1,7 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[metrics-diarization]`.
-"""
-
 __all__ = ["DiarizationEvaluator", "DiarizationEvaluatorResult"]
 
 import dataclasses
@@ -29,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 @dataclasses.dataclass(frozen=True)
 class DiarizationEvaluatorResult:
-    """Results returned by :class:`~.DiarizationEvaluator`
+    """Results returned by :class:`~.DiarizationEvaluator`.
 
     Attributes
     ----------
@@ -77,6 +73,15 @@ class DiarizationEvaluator:
     Note that values of the reference and predicted speaker attributes (ie
     speaker labels) don't have to be the same, since they will be optimally
     remapped using the Hungarian algorithm.
+
+    Parameters
+    ----------
+    turn_label : str, default="turn"
+        Label of the turn segments on the reference documents
+    speaker_label : str, default="speaker"
+        Label of the speaker attributes on the reference and predicted turn segments
+    collar : float, default=0.0
+        Margin of error (in seconds) around start and end of reference segments
     """
 
     def __init__(
@@ -85,15 +90,6 @@ class DiarizationEvaluator:
         speaker_label: str = "speaker",
         collar: float = 0.0,
     ):
-        """Parameters
-        ----------
-        turn_label : str, default="turn"
-            Label of the turn segments on the reference documents
-        speaker_label : str, default="speaker"
-            Label of the speaker attributes on the reference and predicted turn segments
-        collar : float, default=0.0
-            Margin of error (in seconds) around start and end of reference segments
-        """
         self.turn_label = turn_label
         self.speaker_label = speaker_label
         self.collar = collar
@@ -103,8 +99,7 @@ class DiarizationEvaluator:
         reference: Sequence[AudioDocument],
         predicted: Sequence[Sequence[Segment]],
     ) -> DiarizationEvaluatorResult:
-        """Compute and return the DER for predicted speech turn segments, against
-        reference annotated documents.
+        """Compute and return the DER for predicted speech turn segments, against reference annotated documents.
 
         Parameters
         ----------
@@ -159,9 +154,7 @@ class DiarizationEvaluator:
         )
 
     def _get_pa_annotation(self, segments: Sequence[Segment]) -> PAAnnotation:
-        """Convert list of medkit speech turn segments with speaker attribute to
-        pyannote annotation object
-        """
+        """Convert list of medkit speech turn segments with speaker attribute to pyannote annotation object."""
         pa_ann = PAAnnotation()
 
         for i, seg in enumerate(segments):

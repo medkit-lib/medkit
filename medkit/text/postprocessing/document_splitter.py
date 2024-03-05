@@ -23,6 +23,24 @@ class DocumentSplitter(Operation):
     segment along with their attributes.
 
     This operation can be used to create datasets from medkit text documents.
+
+    Parameters
+    ----------
+    segment_label : str
+        Label of the segments to use as references for the splitter
+    entity_labels : list of str, optional
+        Labels of entities to be included in the mini documents.
+        If None, all entities from the document will be included.
+    attr_labels : list of str, optional
+        Labels of the attributes to be included into the new annotations.
+        If None, all attributes will be included.
+    relation_labels : list of str, optional
+        Labels of relations to be included in the mini documents.
+        If None, all relations will be included.
+    name : str, optional
+        Name describing the splitter (default to the class name).
+    uid : str, Optional
+        Identifier of the operation
     """
 
     def __init__(
@@ -34,26 +52,6 @@ class DocumentSplitter(Operation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Instantiate the document splitter
-
-        Parameters
-        ----------
-        segment_label : str
-            Label of the segments to use as references for the splitter
-        entity_labels : list of str, optional
-            Labels of entities to be included in the mini documents.
-            If None, all entities from the document will be included.
-        attr_labels : list of str, optional
-            Labels of the attributes to be included into the new annotations.
-            If None, all attributes will be included.
-        relation_labels : list of str, optional
-            Labels of relations to be included in the mini documents.
-            If None, all relations will be included.
-        name : str, optional
-            Name describing the splitter (default to the class name).
-        uid : str, Optional
-            Identifier of the operation
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -65,7 +63,7 @@ class DocumentSplitter(Operation):
         self.relation_labels = relation_labels
 
     def run(self, docs: list[TextDocument]) -> list[TextDocument]:
-        """Split docs into mini documents
+        """Split docs into mini documents.
 
         Parameters
         ----------
@@ -127,6 +125,7 @@ class DocumentSplitter(Operation):
         doc_source: TextDocument,
     ) -> TextDocument:
         """Create a TextDocument from a segment and its entities.
+
         The original zone of the segment becomes the text of the document.
 
         Parameters
@@ -242,7 +241,7 @@ class DocumentSplitter(Operation):
         return segment_doc
 
     def _filter_attrs_from_ann(self, ann: TextAnnotation) -> list[Attribute]:
-        """Filter attributes from an annotation using 'attr_labels'"""
+        """Filter attributes from an annotation using 'attr_labels'."""
         return (
             ann.attrs.get()
             if self.attr_labels is None

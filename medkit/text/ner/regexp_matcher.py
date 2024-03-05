@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 @dataclasses.dataclass
 class RegexpMatcherRule:
-    """Regexp-based rule to use with `RegexpMatcher`
+    """Regexp-based rule to use with :class:`~.RegexpMatcher`.
 
     Attributes
     ----------
@@ -85,8 +85,7 @@ class RegexpMatcherRule:
 
 @dataclasses.dataclass
 class RegexpMatcherNormalization:
-    """Descriptor of normalization attributes to attach to entities
-    created from a `RegexpMatcherRule`
+    """Descriptor of normalization attributes to attach to entities created from a :class:`~.RegexpMatcherRule`.
 
     Attributes
     ----------
@@ -104,7 +103,7 @@ class RegexpMatcherNormalization:
 
 
 class RegexpMetadata(TypedDict):
-    """Metadata dict added to entities matched by :class:`.RegexpMatcher`
+    """Metadata dict added to entities matched by :class:`.RegexpMatcher`.
 
     Parameters
     ----------
@@ -124,7 +123,7 @@ _PATH_TO_DEFAULT_RULES = Path(__file__).parent / "regexp_matcher_default_rules.y
 
 
 class RegexpMatcher(NEROperation):
-    """Entity annotator relying on regexp-based rules
+    """Entity annotator relying on regexp-based rules.
 
     For detecting entities, the module uses rules that may be sensitive to unicode or
     not. When the rule is not sensitive to unicode, we try to convert unicode chars to
@@ -141,7 +140,7 @@ class RegexpMatcher(NEROperation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Instantiate the regexp matcher
+        """Instantiate the regexp matcher.
 
         Parameters
         ----------
@@ -190,7 +189,7 @@ class RegexpMatcher(NEROperation):
         self._has_non_unicode_sensitive_rule = any(not r.unicode_sensitive for r in rules)
 
     def run(self, segments: list[Segment]) -> list[Entity]:
-        """Return entities (with optional normalization attributes) matched in `segments`
+        """Return entities (with optional normalization attributes) matched in `segments`.
 
         Parameters
         ----------
@@ -280,7 +279,7 @@ class RegexpMatcher(NEROperation):
 
     @staticmethod
     def load_rules(path_to_rules: Path, encoding: str | None = None) -> list[RegexpMatcherRule]:
-        """Load all rules stored in a yml file
+        """Load all rules stored in a yml file.
 
         Parameters
         ----------
@@ -316,7 +315,7 @@ class RegexpMatcher(NEROperation):
 
     @staticmethod
     def check_rules_sanity(rules: list[RegexpMatcherRule]):
-        """Check consistency of a set of rules"""
+        """Check consistency of a set of rules."""
         if any(r.id is not None for r in rules):
             if not all(r.id is not None for r in rules):
                 msg = "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
@@ -327,7 +326,7 @@ class RegexpMatcher(NEROperation):
 
     @staticmethod
     def save_rules(rules: list[RegexpMatcherRule], path_to_rules: Path, encoding: str | None = None):
-        """Store rules in a yml file
+        """Store rules in a yml file.
 
         Parameters
         ----------

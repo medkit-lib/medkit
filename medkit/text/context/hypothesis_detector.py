@@ -27,7 +27,7 @@ _PATH_TO_DEFAULT_VERBS = Path(__file__).parent / "hypothesis_detector_default_ve
 
 @dataclasses.dataclass
 class HypothesisDetectorRule:
-    """Regexp-based rule to use with `HypothesisDetector`
+    """Regexp-based rule to use with `HypothesisDetector`.
 
     Attributes
     ----------
@@ -59,8 +59,7 @@ class HypothesisDetectorRule:
 
 
 class HypothesisRuleMetadata(TypedDict):
-    """Metadata dict added to hypothesis attributes with `True` value
-    detected by a rule
+    """Metadata added to hypothesis attributes with `True` value detected by a rule.
 
     Parameters
     ----------
@@ -78,8 +77,7 @@ class HypothesisRuleMetadata(TypedDict):
 
 
 class HypothesisVerbMetadata(TypedDict):
-    """Metadata dict added to hypothesis attributes with `True` value
-    detected by a rule.
+    """Metadata added to hypothesis attributes with `True` value detected by a verb.
 
     Parameters
     ----------
@@ -95,8 +93,7 @@ class HypothesisVerbMetadata(TypedDict):
 
 
 class HypothesisDetector(ContextOperation):
-    """Annotator creating hypothesis Attributes with boolean values indicating
-    if an hypothesis has been found.
+    """Annotator detecting and creating hypothesis attributes.
 
     Hypothesis will be considered present either because of the presence of a
     certain text pattern in a segment, or because of the usage of a certain verb
@@ -105,6 +102,32 @@ class HypothesisDetector(ContextOperation):
     Because hypothesis attributes will be attached to whole segments,
     each input segment should be "local"-enough (ie a sentence or a syntagma)
     rather than a big chunk of text.
+
+    Parameters
+    ----------
+    output_label : str, default="hypothesis"
+        The label of the created attributes
+    rules : list of HypothesisDetectorRule, optional
+        The set of rules to use when detecting hypothesis. If none provided,
+        the rules in "hypothesis_detector_default_rules.yml" will be used
+    verbs : dict of str to dict, optional
+        Conjugated verbs forms, to be used in association with `modes_and_tenses`.
+        Conjugated forms of a verb at a specific mode and tense must be provided
+        in nested dicts with the 1st key being the verb's root, the 2d key the mode
+        and the 3d key the tense.
+        For instance verb["aller"]["indicatif]["présent"] would hold the list
+        ["vais", "vas", "va", "allons", aller", "vont"]
+        When `verbs` is provided, `modes_and_tenses` must also be provided.
+        If none provided, the rules in "hypothesis_detector_default_verbs.yml" will
+        be used.
+    modes_and_tenses : list of tuple of str, optional
+        List of tuples of all modes and tenses associated with hypothesis.
+        Will be used to select conjugated forms in `verbs` that denote hypothesis.
+    max_length : int, default=150
+        Maximum number of characters in a hypothesis segment. Segments longer than
+        this will never be considered as hypothesis
+    uid : str, optional
+        Identifier of the detector
     """
 
     def __init__(
@@ -116,34 +139,6 @@ class HypothesisDetector(ContextOperation):
         max_length: int = 150,
         uid: str | None = None,
     ):
-        """Instantiate the hypothesis detector
-
-        Parameters
-        ----------
-        output_label : str, default="hypothesis"
-            The label of the created attributes
-        rules : list of HypothesisDetectorRule, optional
-            The set of rules to use when detecting hypothesis. If none provided,
-            the rules in "hypothesis_detector_default_rules.yml" will be used
-        verbs : dict of str to dict, optional
-            Conjugated verbs forms, to be used in association with `modes_and_tenses`.
-            Conjugated forms of a verb at a specific mode and tense must be provided
-            in nested dicts with the 1st key being the verb's root, the 2d key the mode
-            and the 3d key the tense.
-            For instance verb["aller"]["indicatif]["présent"] would hold the list
-            ["vais", "vas", "va", "allons", aller", "vont"]
-            When `verbs` is provided, `modes_and_tenses` must also be provided.
-            If none provided, the rules in "hypothesis_detector_default_verbs.yml" will
-            be used.
-        modes_and_tenses : list of tuple of str, optional
-            List of tuples of all modes and tenses associated with hypothesis.
-            Will be used to select conjugated forms in `verbs` that denote hypothesis.
-        max_length : int, default=150
-            Maximum number of characters in a hypothesis segment. Segments longer than
-            this will never be considered as hypothesis
-        uid : str, optional
-            Identifier of the detector
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -201,8 +196,10 @@ class HypothesisDetector(ContextOperation):
         self._has_non_unicode_sensitive_rule = any(not r.unicode_sensitive for r in rules)
 
     def run(self, segments: list[Segment]):
-        """Add an hypothesis attribute to each segment with a boolean value
-        indicating if an hypothesis has been detected.
+        """Run the operation.
+
+        Add a hypothesis attribute to each segment with a boolean value
+        indicating if a hypothesis has been detected.
 
         Hypothesis attributes with a `True` value have a metadata dict with
         fields described in either :class:`.HypothesisRuleMetadata` or :class:`.HypothesisVerbMetadata`.
@@ -280,7 +277,8 @@ class HypothesisDetector(ContextOperation):
 
     @staticmethod
     def load_verbs(path_to_verbs: Path, encoding: str | None = None) -> dict[str, dict[str, dict[str, list[str]]]]:
-        """Load all conjugated verb forms stored in a yml file.
+        """Load all conjugated verb forms stored in a YAML file.
+
         Conjugated verb forms at a specific mode and tense must be stored in nested mappings
         with the 1st key being the verb root, the 2d key the mode and the 3d key the tense.
 
@@ -303,7 +301,7 @@ class HypothesisDetector(ContextOperation):
 
     @staticmethod
     def load_rules(path_to_rules: Path, encoding: str | None = None) -> list[HypothesisDetectorRule]:
-        """Load all rules stored in a yml file
+        """Load all rules stored in a YAML file.
 
         Parameters
         ----------
@@ -325,9 +323,7 @@ class HypothesisDetector(ContextOperation):
 
     @classmethod
     def get_example(cls) -> HypothesisDetector:
-        """Instantiate an HypothesisDetector with example rules and verbs,
-        designed for usage with EDS documents
-        """
+        """Instantiate an HypothesisDetector with example rules and verbs, designed for usage with EDS documents."""
         rules = cls.load_rules(_PATH_TO_DEFAULT_RULES, encoding="utf-8")
         verbs = cls.load_verbs(_PATH_TO_DEFAULT_VERBS, encoding="utf-8")
         modes_and_tenses = [
@@ -338,7 +334,7 @@ class HypothesisDetector(ContextOperation):
 
     @staticmethod
     def check_rules_sanity(rules: list[HypothesisDetectorRule]):
-        """Check consistency of a set of rules"""
+        """Check consistency of a set of rules."""
         if any(r.id is not None for r in rules):
             if not all(r.id is not None for r in rules):
                 msg = "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
@@ -353,7 +349,7 @@ class HypothesisDetector(ContextOperation):
         path_to_rules: Path,
         encoding: str | None = None,
     ):
-        """Store rules in a yml file
+        """Store rules in a YAML file.
 
         Parameters
         ----------

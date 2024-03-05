@@ -49,7 +49,7 @@ Valid UMLS semgroups
 
 @dataclasses.dataclass
 class UMLSEntry:
-    """Entry in MRCONSO.RRF file of a UMLS dictionary
+    """Entry in MRCONSO.RRF file of a UMLS dictionary.
 
     Attributes
     ----------
@@ -87,7 +87,7 @@ def load_umls_entries(
     languages: list[str] | None = None,
     show_progress: bool = False,
 ) -> Iterator[UMLSEntry]:
-    """Load all terms and associated CUIs found in a UMLS MRCONSO.RRF file
+    """Load all terms and associated CUIs found in a UMLS MRCONSO.RRF file.
 
     Parameters
     ----------
@@ -170,7 +170,7 @@ def load_umls_entries(
 
 
 def load_semtypes_by_cui(mrsty_file: str | Path) -> dict[str, list[str]]:
-    """Load the list of semtypes associated to each CUI found in a MRSTY.RRF file
+    """Load the list of semtypes associated to each CUI found in a MRSTY.RRF file.
 
     Parameters
     ----------
@@ -202,7 +202,7 @@ _SEMGROUPS_BY_SEMTYPE = None
 
 
 def load_semgroups_by_semtype() -> dict[str, str]:
-    """Load the semgroup associated to each semtype
+    """Load the semgroup associated to each semtype.
 
     Returns
     -------
@@ -230,7 +230,7 @@ def preprocess_term_to_match(
     clean_brackets: bool = False,
     clean_dashes: bool = False,
 ):
-    """Preprocess a UMLS term for matching purposes
+    """Preprocess a UMLS term for matching purposes.
 
     Parameters
     ----------
@@ -266,8 +266,9 @@ _ACRONYM_PATTERN = re.compile(r"^ *(?P<acronym>[^ \(\)]+) *\( *(?P<expanded>[^\(
 
 
 def preprocess_acronym(term: str) -> str | None:
-    """Detect if a term contains an acronym with the expanded form between
-    parenthesis, and return the acronym if that is the case.
+    """Detect if a term contains an acronym with the expanded form between parenthesis.
+
+    Eventually return the acronym if any is detected.
 
     This will work for terms such as: "ECG (ÉlectroCardioGramme)", where the
     acronym can be rebuilt by taking the ASCII version of each uppercase
@@ -304,7 +305,7 @@ def preprocess_acronym(term: str) -> str | None:
 
 
 def guess_umls_version(path: str | Path) -> str:
-    """Try to infer UMLS version (ex: "2021AB") from any UMLS-related path
+    """Try to infer UMLS version (ex: "2021AB") from any UMLS-related path.
 
     Parameters
     ----------

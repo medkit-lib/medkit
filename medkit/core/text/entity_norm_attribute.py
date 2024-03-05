@@ -13,7 +13,7 @@ from medkit.core.attribute import Attribute
 
 @dataclasses.dataclass(init=False)
 class EntityNormAttribute(Attribute):
-    """Normalization attribute linking an entity to an ID in a knowledge base
+    """Normalization attribute linking an entity to an ID in a knowledge base.
 
     Attributes
     ----------

@@ -34,6 +34,7 @@ def extract_anns_and_attrs_from_spacy_doc(
     rebuild_medkit_anns_and_attrs: bool = False,
 ) -> tuple[list[Segment], dict[str, list[Attribute]]]:
     """Given a spacy document, convert selected entities or spans into Segments.
+
     Extract attributes for each annotation in the document.
 
     Parameters
@@ -294,9 +295,7 @@ def build_spacy_doc_from_medkit_segment(
 
 
 def _add_entities_in_spacy_doc(spacy_doc: Doc, entities: list[Entity], attrs: list[str], include_medkit_info: bool):
-    """Convert entities into spacy spans and modifies
-    the entities in the Doc object (doc.ents)
-    """
+    """Convert entities into spaCy spans and modifies the entities in the Doc object."""
     # create an intermediate list to check for overlaps
     spacy_entities = []
     for medkit_ent in entities:
@@ -328,9 +327,7 @@ def _add_segments_in_spacy_doc(
     attrs: list[str],
     include_medkit_info: bool,
 ):
-    """Convert segments into a spacy spans and modifies
-    the spans in the Doc object (doc.spans)
-    """
+    """Convert segments into a spacy spans and modifies the spans in the Doc object."""
     for medkit_seg in segments:
         spacy_span = _segment_to_spacy_span(
             spacy_doc_target=spacy_doc,
@@ -347,7 +344,7 @@ def _add_segments_in_spacy_doc(
 
 
 def _get_defined_spacy_attrs(include_medkit_attrs: bool = False) -> list[str]:
-    """Returns the name of the custom attributes configured in spacy spans.
+    """Return the name of the custom attributes configured in spacy spans.
 
     Parameters
     ----------
@@ -383,7 +380,7 @@ def _define_spacy_doc_extension(custom_attr: str):
 
 
 def _define_default_extensions():
-    """Define default attributes to identify origin from medkit"""
+    """Define default attributes to identify origin from medkit."""
     _define_spacy_doc_extension(_ATTR_MEDKIT_ID)
     _define_spacy_span_extension(_ATTR_MEDKIT_ID)
 
@@ -397,7 +394,7 @@ def _define_attrs_extensions(attrs_to_transfer: list[str]):
 
 
 def _get_span_boundaries(spans: list[AnySpan]) -> tuple[int, int]:
-    """Return boundaries (start,end) from a list of spans"""
+    """Return boundaries (start,end) from a list of spans."""
     spans_norm: list[Span] = span_utils.normalize_spans(spans)
     start = spans_norm[0].start
     end = spans_norm[-1].end
@@ -447,7 +444,7 @@ def _segment_to_spacy_span(
 def _get_text_and_spans_from_span_spacy(
     span_spacy: SpacySpan, medkit_source_ann: Segment | None
 ) -> tuple[str, list[AnySpan]]:
-    """Return text and spans depending on the origin of the spacy span"""
+    """Return text and spans depending on the origin of the spacy span."""
     if medkit_source_ann is None:
         text = span_spacy.text
         spans = [Span(span_spacy.start_char, span_spacy.end_char)]

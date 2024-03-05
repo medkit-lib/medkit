@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class InputConverter:
-    """Abstract class for converting external document to medkit documents"""
+    """Abstract class for converting external document to medkit documents."""
 
     @abc.abstractmethod
     def load(self, **kwargs) -> list[Document]:
@@ -18,7 +18,7 @@ class InputConverter:
 
 
 class OutputConverter:
-    """Abstract class for converting medkit document to external format"""
+    """Abstract class for converting medkit document to external format."""
 
     @abc.abstractmethod
     def save(self, docs: list[Document], **kwargs) -> list | None:

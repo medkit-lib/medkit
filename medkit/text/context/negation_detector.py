@@ -21,7 +21,7 @@ _PATH_TO_DEFAULT_RULES = Path(__file__).parent / "negation_detector_default_rule
 
 @dataclasses.dataclass
 class NegationDetectorRule:
-    """Regexp-based rule to use with `NegationDetector`
+    """Regexp-based rule to use with `NegationDetector`.
 
     Input text may be converted before detecting rule.
 
@@ -70,8 +70,7 @@ class NegationMetadata(TypedDict):
 
 
 class NegationDetector(ContextOperation):
-    """Annotator creating negation Attributes with boolean values indicating
-    if an hypothesis has been found.
+    """Annotator creating negation attributes.
 
     Because negation attributes will be attached to whole annotations,
     each input annotation should be "local"-enough rather than
@@ -91,7 +90,7 @@ class NegationDetector(ContextOperation):
         rules: list[NegationDetectorRule] | None = None,
         uid: str | None = None,
     ):
-        """Instantiate the negation detector
+        """Instantiate the negation detector.
 
         Parameters
         ----------
@@ -135,8 +134,10 @@ class NegationDetector(ContextOperation):
         self._has_non_unicode_sensitive_rule = any(not r.unicode_sensitive for r in rules)
 
     def run(self, segments: list[Segment]):
-        """Add a negation attribute to each segment with a boolean value
-        indicating if an hypothesis has been found.
+        """Run the operation.
+
+        Add a negation attribute to each segment with a boolean value
+        indicating if a hypothesis has been found.
 
         Negation attributes with a `True` value have a metadata dict with
         fields described in :class:`.NegationRuleMetadata`.
@@ -191,7 +192,7 @@ class NegationDetector(ContextOperation):
 
     @staticmethod
     def load_rules(path_to_rules: Path, encoding: str | None = None) -> list[NegationDetectorRule]:
-        """Load all rules stored in a yml file
+        """Load all rules stored in a yml file.
 
         Parameters
         ----------
@@ -213,7 +214,7 @@ class NegationDetector(ContextOperation):
 
     @staticmethod
     def check_rules_sanity(rules: list[NegationDetectorRule]):
-        """Check consistency of a set of rules"""
+        """Check consistency of a set of rules."""
         if any(r.id is not None for r in rules):
             if not all(r.id is not None for r in rules):
                 msg = "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
@@ -224,7 +225,7 @@ class NegationDetector(ContextOperation):
 
     @staticmethod
     def save_rules(rules: list[NegationDetectorRule], path_to_rules: Path, encoding: str | None = None):
-        """Store rules in a yml file
+        """Store rules in a yml file.
 
         Parameters
         ----------

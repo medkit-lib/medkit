@@ -8,7 +8,7 @@ from typing import Any
 
 @dataclass
 class TrainerConfig:
-    """Trainer configuration
+    """Trainer configuration.
 
     Parameters
     ----------

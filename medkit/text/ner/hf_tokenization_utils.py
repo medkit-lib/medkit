@@ -22,7 +22,7 @@ def convert_labels_to_tags(
     labels: list[str],
     tagging_scheme: Literal["bilou", "iob2"] = "bilou",
 ) -> dict[str, int]:
-    """Convert a list of labels in a mapping of NER tags
+    """Convert a list of labels in a mapping of NER tags.
 
     Parameters
     ----------
@@ -55,7 +55,7 @@ def convert_labels_to_tags(
 
 
 def create_entity_tags(nb_tags: int, label: str, tagging_scheme: Literal["bilou", "iob2"]) -> list[str]:
-    """Create a list of tags representing one entity
+    """Create a list of tags representing one entity.
 
     Parameters
     ----------
@@ -172,6 +172,7 @@ def align_and_map_tokens_with_tags(
     map_sub_tokens: bool = True,
 ) -> list[int]:
     """Return a list of tags_ids aligned with the text encoding.
+
     Tags considered as special tokens will have the `SPECIAL_TAG_ID_HF`.
 
     Parameters

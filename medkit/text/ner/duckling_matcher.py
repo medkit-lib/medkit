@@ -37,7 +37,7 @@ class DucklingMatcher(NEROperation):
         attrs_to_copy: list[str] | None = None,
         uid: str | None = None,
     ):
-        """Instantiate the Duckling matcher
+        """Instantiate the Duckling matcher.
 
         Parameters
         ----------
@@ -76,7 +76,7 @@ class DucklingMatcher(NEROperation):
         self._test_connection()
 
     def run(self, segments: list[Segment]) -> list[Entity]:
-        """Return entities for each match in `segments`
+        """Return entities for each match in `segments`.
 
         Parameters
         ----------

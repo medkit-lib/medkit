@@ -13,9 +13,7 @@ def medkit_doc_to_displacy(
     entity_formatter: Callable[[Entity], str] | None = None,
     max_gap_length: int = 3,
 ) -> dict[str, Any]:
-    """Build data dict that can be passed to `displacy.render()`
-    (with `manual=True` and `style="ent"`) to visualize entities of
-    a document.
+    """Build data dictionary for displaCy to visualize a document.
 
     Parameters
     ----------
@@ -54,8 +52,7 @@ def entities_to_displacy(
     entity_formatter: Callable[[Entity], str] | None = None,
     max_gap_length: int = 3,
 ) -> dict[str, Any]:
-    """Build data dict that can be passed to `displacy.render()`
-    (with `manual=True` and `style="ent"`) to visualize entities.
+    """Build data dictionary for displaCy to visualize entities.
 
     Parameters
     ----------

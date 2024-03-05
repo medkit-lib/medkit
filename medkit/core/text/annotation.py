@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 @dataclasses.dataclass(init=False)
 class TextAnnotation(abc.ABC, dict_conv.SubclassMapping):
-    """Base abstract class for all text annotations
+    """Base abstract class for all text annotations.
 
     Attributes
     ----------
@@ -160,7 +160,7 @@ class Segment(TextAnnotation):
 
     @classmethod
     def from_dict(cls, segment_dict: dict[str, Any]) -> Self:
-        """Creates a Segment from a dict
+        """Create a Segment from a dict.
 
         Parameters
         ----------
@@ -282,7 +282,7 @@ class Relation(TextAnnotation):
 
     @classmethod
     def from_dict(cls, relation_dict: dict[str, Any]) -> Self:
-        """Creates a Relation from a dict
+        """Create a Relation from a dict.
 
         Parameters
         ----------
