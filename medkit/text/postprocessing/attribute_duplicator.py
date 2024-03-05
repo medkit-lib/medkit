@@ -13,7 +13,15 @@ if TYPE_CHECKING:
 
 class AttributeDuplicator(Operation):
     """Annotator to copy attributes from a source segment to its nested segments.
-    For each attribute to be duplicated, a new attribute is created in the nested segment
+
+    For each attribute to be duplicated, a new attribute is created in the nested segment.
+
+    Parameters
+    ----------
+    attr_labels : list of str
+        Labels of the attributes to copy
+    uid : str, optional
+        Identifier of the annotator
     """
 
     def __init__(
@@ -21,15 +29,6 @@ class AttributeDuplicator(Operation):
         attr_labels: list[str],
         uid: str | None = None,
     ):
-        """Instantiate the attribute duplicator
-
-        Parameters
-        ----------
-        attr_labels : list of str
-            Labels of the attributes to copy
-        uid : str, optional
-            Identifier of the annotator
-        """
         self.attr_labels = attr_labels
         # Pass all arguments to super (remove self)
         init_args = locals()
@@ -38,6 +37,7 @@ class AttributeDuplicator(Operation):
 
     def run(self, source_segments: list[Segment], target_segments: list[Segment]):
         """Add attributes from source segments to all nested segments.
+
         The nested segments are chosen among the `target_segments` based on their spans.
 
         Parameters

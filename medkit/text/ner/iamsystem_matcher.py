@@ -38,12 +38,13 @@ LabelProvider = Callable[[Sequence[IS_IKeyword]], Optional[str]]
 
 
 class DefaultLabelProvider:
-    """Default entity label provider"""
+    """Default entity label provider."""
 
     @staticmethod
     def __call__(keywords: Sequence[IS_IKeyword]) -> str | None:
-        """Uses the first keyword which implements`SupportEntLabel` protocol and returns
-        `ent_label`. Otherwise, returns None.
+        """Use the first keyword which implements`SupportEntLabel` protocol and returns `ent_label`.
+
+        Otherwise, returns None.
         """
         for kw in keywords:
             if ent_label := getattr(kw, "ent_label", None):
@@ -53,7 +54,7 @@ class DefaultLabelProvider:
 
 
 class IAMSystemMatcher(NEROperation):
-    """Entity annotator and linker based on iamsystem library"""
+    """Entity annotator and linker based on iamsystem library."""
 
     def __init__(
         self,
@@ -63,7 +64,7 @@ class IAMSystemMatcher(NEROperation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Instantiate the operation supporting the iamsystem matcher
+        """Instantiate the operation supporting the iamsystem matcher.
 
         Parameters
         ----------

@@ -13,7 +13,7 @@ from medkit.core.id import generate_id
 
 @dataclasses.dataclass
 class Attribute(dict_conv.SubclassMapping):
-    """Medkit attribute, to be added to an annotation
+    """Medkit attribute, to be added to an annotation.
 
     Attributes
     ----------
@@ -67,16 +67,15 @@ class Attribute(dict_conv.SubclassMapping):
         return attribute_dict
 
     def to_brat(self) -> Any | None:
-        """Return a value compatible with the brat format"""
+        """Return a value compatible with the brat format."""
         return self.value
 
     def to_spacy(self) -> Any | None:
-        """Return a value compatible with spaCy"""
+        """Return a value compatible with spaCy."""
         return self.value
 
     def copy(self) -> Attribute:
-        """Create a new attribute that is a copy of the current instance, but
-        with a new identifier
+        """Create a copy of the attribute with a new identifier.
 
         This is used when we want to duplicate an existing attribute onto a
         different annotation.
@@ -85,7 +84,7 @@ class Attribute(dict_conv.SubclassMapping):
 
     @classmethod
     def from_dict(cls, attribute_dict: dict[str, Any]) -> Self:
-        """Creates an Attribute from a dict
+        """Create an Attribute from a dict.
 
         Parameters
         ----------

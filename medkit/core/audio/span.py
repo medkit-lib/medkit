@@ -23,7 +23,7 @@ class Span(NamedTuple):
 
     @property
     def length(self):
-        """Length of the span, in seconds"""
+        """Length of the span, in seconds."""
         return self.end - self.start
 
     def to_dict(self) -> dict[str, Any]:

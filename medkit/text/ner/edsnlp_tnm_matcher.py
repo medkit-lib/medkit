@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[edsnlp]`.
-"""
 from __future__ import annotations
 
 __all__ = ["EDSNLPTNMMatcher"]
@@ -16,12 +13,25 @@ from medkit.text.spacy.edsnlp import build_tnm_attribute
 
 
 class EDSNLPTNMMatcher(NEROperation):
-    """TNM (Tumour/Node/Metastasis) string matcher based on the
-    `EDS-NPL tnm pipeline <https://aphp.github.io/edsnlp/latest/pipelines/ner/tnm/>`.
+    """TNM (Tumour/Node/Metastasis) string matcher based on the `_EDS-NLP TNM`_ pipeline.
 
     For each TNM string that is found, an entity will be created with an
     :class:`~medkit.text.ner.TNMAttribute` attribute attached to it containing
     normalized values of the TNM components.
+
+    .. _EDS-NLP TNM: https://aphp.github.io/edsnlp/latest/pipelines/ner/tnm/
+
+    Parameters
+    ----------
+    output_label : str, default="TNM"
+        Label to use for TNM entities created (the label of the
+        attributes will always be "TNM")
+    attrs_to_copy : list of str, optional
+        Labels of the attributes that should be copied from the input segment
+        to the created TNM entity. Useful for propagating context attributes
+        (negation, antecedent, etc).
+    uid : str, optional
+        Identifier of the matcher
     """
 
     def __init__(
@@ -30,18 +40,6 @@ class EDSNLPTNMMatcher(NEROperation):
         attrs_to_copy: list[str] | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        output_label : str, default="TNM"
-            Label to use for TNM entities created (the label of the
-            attributes will always be "TNM")
-        attrs_to_copy : list of str, optional
-            Labels of the attributes that should be copied from the input segment
-            to the created TNM entity. Useful for propagating context attributes
-            (negation, antecedent, etc).
-        uid : str, optional
-            Identifier of the matcher
-        """
         super().__init__(output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid)
 
         if attrs_to_copy is None:
@@ -54,7 +52,7 @@ class EDSNLPTNMMatcher(NEROperation):
         self._edsnlp.add_pipe("eds.tnm")
 
     def run(self, segments: list[Segment]) -> list[Entity]:
-        """Find and return TNM entities for all `segments`
+        """Find and return TNM entities for all `segments`.
 
         Parameters
         ----------

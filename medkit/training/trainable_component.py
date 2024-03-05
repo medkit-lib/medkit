@@ -16,17 +16,19 @@ if TYPE_CHECKING:
 
 @runtime_checkable
 class TrainableComponent(Protocol):
-    """TrainableComponent is the base protocol to be trainable in medkit"""
+    """TrainableComponent is the base protocol to be trainable in medkit."""
 
     @property
     def device(self) -> torch.device:
         pass
 
     def configure_optimizer(self, lr: float) -> torch.optim.Optimizer:
-        """Create optimizer using the learning rate"""
+        """Create optimizer using the learning rate."""
 
     def preprocess(self, data_item: Any) -> dict[str, Any]:
-        """Preprocess the input data item and return a dictionary with
+        """Run preprocessing on the input data.
+
+        Preprocess the input data item and return a dictionary with
         everything needed for the forward pass.
 
         This method is intended to preprocess an input, `self.collate` must be
@@ -35,7 +37,7 @@ class TrainableComponent(Protocol):
         """
 
     def collate(self, batch: list[dict[str, Any]]) -> BatchData:
-        """Collate a list of data processed by `preprocess` to form a batch"""
+        """Collate a list of data processed by `preprocess` to form a batch."""
 
     def forward(
         self,
@@ -43,17 +45,34 @@ class TrainableComponent(Protocol):
         return_loss: bool,
         eval_mode: bool,
     ) -> tuple[BatchData, torch.Tensor | None]:
-        """Perform the forward pass on a batch and return the corresponding
+        """Perform the forward pass on a batch.
+
+        Perform the forward pass on a batch and return the corresponding
         output as well as the loss if `return_loss` is True.
 
         Before forwarding the model, this method must set the model to training
         or evaluation mode depending on `eval_mode`. In PyTorch models there are
-        two methods to set the mode `model.train()` and `model.eval()`
+        two methods to set the mode `model.train()` and `model.eval()`.
+
+        Parameters
+        ----------
+        input_batch : BatchData
+            Input batch
+        return_loss : bool
+            Whether to return the computed loss as well
+        eval_mode : bool
+            Whether to set the model to training (False) or evaluation mode (True)
+
+        Returns
+        -------
+        output : BatchData
+            Output after forward pass completion
+        loss: torch.Tensor, optional
+            Loss after forward pass completion, if `return_loss` was set to True.
         """
 
     def save(self, path: str | Path):
-        """Save model to disk"""
+        """Save model to disk."""
 
     def load(self, path: str | Path):
-        """Load weights from disk"""
-        # model.from_pretrained or torch load
+        """Load weights from disk."""

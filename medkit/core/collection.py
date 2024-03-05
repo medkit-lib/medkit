@@ -18,6 +18,13 @@ class Collection:
 
     This class is still a work-in-progress. In the future it should be possible to attach
     additional information to a `Collection`.
+
+    Parameters
+    ----------
+    text_docs : list of TextDocument, optional
+        List of text documents.
+    audio_docs: list of TextDocument, optional
+        List of audio documents.
     """
 
     def __init__(
@@ -26,13 +33,6 @@ class Collection:
         text_docs: list[TextDocument] | None = None,
         audio_docs: list[AudioDocument] | None = None,
     ):
-        """Parameters
-        ----------
-        text_docs : list of TextDocument, optional
-            List of text documents
-        audio_docs: list of TextDocument, optional
-            List of audio documents
-        """
         if text_docs is None and audio_docs is None:
             msg = "Collection must received at least one list of documents at init"
             raise ValueError(msg)
@@ -47,7 +47,7 @@ class Collection:
 
     @property
     def all_docs(self) -> list[Document]:
-        """List of all the documents belonging to the document, whatever they modality."""
+        """Return all documents belonging to the collection."""
         return self.text_docs + self.audio_docs
 
     def to_dict(self) -> dict[str, Any]:

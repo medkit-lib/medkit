@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 @dataclasses.dataclass(init=False)
 class TextDocument(dict_conv.SubclassMapping):
-    """Document holding text annotations
+    """Document holding text annotations.
 
     Annotations must be subclasses of `TextAnnotation`.
 
@@ -127,7 +127,7 @@ class TextDocument(dict_conv.SubclassMapping):
 
     @classmethod
     def from_dict(cls, doc_dict: dict[str, Any]) -> Self:
-        """Creates a TextDocument from a dict
+        """Create a TextDocument from a dict.
 
         Parameters
         ----------
@@ -152,7 +152,7 @@ class TextDocument(dict_conv.SubclassMapping):
 
     @classmethod
     def from_file(cls, path: os.PathLike, encoding: str = "utf-8") -> Self:
-        """Create a document from a text file
+        """Create a document from a text file.
 
         Parameters
         ----------
@@ -178,7 +178,7 @@ class TextDocument(dict_conv.SubclassMapping):
         pattern: str = "*.txt",
         encoding: str = "utf-8",
     ) -> list[Self]:
-        """Create documents from text files in a directory
+        """Create documents from text files in a directory.
 
         Parameters
         ----------
@@ -199,7 +199,7 @@ class TextDocument(dict_conv.SubclassMapping):
         return [cls.from_file(f, encoding) for f in files]
 
     def get_snippet(self, segment: Segment, max_extend_length: int) -> str:
-        """Return a portion of the original text containing the annotation
+        """Return a portion of the original text containing the annotation.
 
         Parameters
         ----------

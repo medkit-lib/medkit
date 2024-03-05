@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[hf-entity-matcher]`.
-"""
 from __future__ import annotations
 
 __all__ = ["HFEntityMatcherTrainable"]
@@ -25,9 +22,34 @@ logger = logging.getLogger(__name__)
 
 
 class HFEntityMatcherTrainable:
-    """Trainable entity matcher based on HuggingFace transformers model
+    """Trainable entity matcher based on HuggingFace transformers model.
+
     Any token classification model from the HuggingFace hub can be used
     (for instance "samrawal/bert-base-uncased_clinical-ner").
+
+    Parameters
+    ----------
+    model_name_or_path : str or Path
+        Name (on the HuggingFace models hub) or path of the NER model. Must be a model compatible
+        with the `TokenClassification` transformers class.
+    labels : list of str
+        List of labels to detect
+    tagging_scheme : {"bilou", "iob2"}
+        Tagging scheme to use in the segment-entities preprocessing and label mapping definition.
+    tag_subtokens : bool, default=False
+        Whether tag subtokens in a word. PreTrained models require a tokenization step.
+        If any word of the segment is not in the vocabulary of the tokenizer used by the PreTrained model,
+        the word is split into subtokens.
+        It is recommended to only tag the first subtoken of a word. However, it is possible to tag all subtokens
+        by setting this value to `True`. It could influence the time and results of fine-tunning.
+    tokenizer_max_length : int, optional
+        Optional max length for the tokenizer, by default the `model_max_length` will be used.
+    hf_auth_token : str, optional
+        HuggingFace Authentication token (to access private models on the
+        hub)
+    device : int, default=-1
+        Device to use for the transformer model. Follows the HuggingFace convention
+        (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
     """
 
     def __init__(
@@ -40,30 +62,6 @@ class HFEntityMatcherTrainable:
         hf_auth_token: str | None = None,
         device: int = -1,
     ):
-        """Parameters
-        ----------
-        model_name_or_path : str or Path
-            Name (on the HuggingFace models hub) or path of the NER model. Must be a model compatible
-            with the `TokenClassification` transformers class.
-        labels : list of str
-            List of labels to detect
-        tagging_scheme : {"bilou", "iob2"}
-            Tagging scheme to use in the segment-entities preprocessing and label mapping definition.
-        tag_subtokens : bool, default=False
-            Whether tag subtokens in a word. PreTrained models require a tokenization step.
-            If any word of the segment is not in the vocabulary of the tokenizer used by the PreTrained model,
-            the word is split into subtokens.
-            It is recommended to only tag the first subtoken of a word. However, it is possible to tag all subtokens
-            by setting this value to `True`. It could influence the time and results of fine-tunning.
-        tokenizer_max_length : int, optional
-            Optional max length for the tokenizer, by default the `model_max_length` will be used.
-        hf_auth_token : str, optional
-            HuggingFace Authentication token (to access private models on the
-            hub)
-        device : int, default=-1
-            Device to use for the transformer model. Follows the HuggingFace convention
-            (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
-        """
         valid_model = hf_utils.check_model_for_task_hf(
             model_name_or_path, "token-classification", hf_auth_token=hf_auth_token
         )
@@ -124,7 +122,7 @@ class HFEntityMatcherTrainable:
         return model_input
 
     def _encode_text(self, text):
-        """Return a EncodingFast instance"""
+        """Return a EncodingFast instance."""
         text_tokenized = self._tokenizer(
             text,
             padding="do_not_pad",
@@ -194,7 +192,7 @@ class HFEntityMatcherTrainable:
         self._model = model
 
     def _get_valid_model_config(self, labels: list[str], hf_auth_token: str | None = None):
-        """Return a config file with the correct mapping of labels"""
+        """Return a config file with the correct mapping of labels."""
         # get possible tags from labels list
         label_to_id = hf_tokenization_utils.convert_labels_to_tags(labels=labels, tagging_scheme=self.tagging_scheme)
         nb_labels = len(label_to_id)

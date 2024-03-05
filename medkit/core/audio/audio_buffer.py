@@ -19,19 +19,20 @@ from medkit.core import dict_conv
 
 
 class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
-    """Audio buffer base class. Gives access to raw audio samples."""
+    """Audio buffer base class. Gives access to raw audio samples.
+
+    Parameters
+    ----------
+    sample_rate:
+        Sample rate of the signal, in samples per second.
+    nb_samples:
+        Duration of the signal in samples.
+    nb_channels:
+        Number of channels in the signal.
+    """
 
     @abc.abstractmethod
     def __init__(self, sample_rate: int, nb_samples: int, nb_channels: int):
-        """Parameters
-        ----------
-        sample_rate:
-            Sample rate of the signal, in samples per second.
-        nb_samples:
-            Duration of the signal in samples.
-        nb_channels:
-            Number of channels in the signal.
-        """
         self.sample_rate = sample_rate
         self.nb_samples = nb_samples
         self.nb_channels = nb_channels
@@ -58,8 +59,7 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
 
     @abc.abstractmethod
     def trim(self, start: int | None, end: int | None) -> AudioBuffer:
-        """Return a new audio buffer pointing to portion of the signal in the original buffer,
-        using boundaries in samples.
+        """Return the signal from the original buffer trimmed by start and end indexes.
 
         Parameters
         ----------
@@ -71,15 +71,17 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
         Returns
         -------
         AudioBuffer:
-            Trimmed audio buffer with new start and end samples, of same type as
-            original audio buffer.
+            Trimmed audio buffer with new start and end samples,
+            of same type as original audio buffer.
         """
 
     def trim_duration(self, start_time: float | None = None, end_time: float | None = None) -> AudioBuffer:
-        """Return a new audio buffer pointing to a portion of the signal in the original buffer,
+        """Return the signal from the original buffer trimmed by start and end times.
+
+        Return a new audio buffer pointing to a portion of the signal in the original buffer,
         using boundaries in seconds. Since `start_time` and `end_time` are in seconds, the exact
-        trim boundaries will be rounded to the nearest sample and will therefore depend on the sampling
-        rate.
+        trim boundaries will be rounded to the nearest sample and will therefore depend on the
+        sampling rate.
 
         Parameters
         ----------
@@ -91,8 +93,8 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
         Returns
         -------
         AudioBuffer:
-            Trimmed audio buffer with new start and end samples, of same type as
-            original audio buffer.
+            Trimmed audio buffer with new start and end samples,
+            of same type as original audio buffer.
         """
         if end_time and end_time > self.duration:
             msg = f"End time {end_time} exceeds duration {self.duration}"
@@ -127,11 +129,24 @@ class AudioBuffer(abc.ABC, dict_conv.SubclassMapping):
 
 
 class FileAudioBuffer(AudioBuffer):
-    """Audio buffer giving access to audio files stored on the filesystem (to use
-    when manipulating unmodified raw audio).
+    """Audio buffer giving access to audio files stored on the filesystem.
 
-    Supports all file formats handled by `libsndfile`
-    (http://www.mega-nerd.com/libsndfile/#Features)
+    To be used when manipulating unmodified raw audio.
+
+    Supports all file formats handled by `libsndfile`_
+
+    .. _libsndfile: http://www.mega-nerd.com/libsndfile/#Features
+
+    Parameters
+    ----------
+    path: str or Path
+        Path to the audio file.
+    trim_start: int, optional
+        First sample of audio file to consider.
+    trim_end: int, optional
+        First sample of audio file to exclude.
+    sf_info: Any, optional
+        Optional metadata dict returned by soundfile.
     """
 
     def __init__(
@@ -141,17 +156,6 @@ class FileAudioBuffer(AudioBuffer):
         trim_end: int | None = None,
         sf_info: Any | None = None,
     ):
-        """Parameters
-        ----------
-        path: str or Path
-            Path to the audio file.
-        trim_start: int, optional
-            First sample of audio file to consider.
-        trim_end: int, optional
-            First sample of audio file to exclude.
-        sf_info: Any, optional
-            Optional metadata dict returned by soundfile.
-        """
         path = Path(path)
         if sf_info is None:
             sf_info = sf.info(path)
@@ -227,18 +231,19 @@ class FileAudioBuffer(AudioBuffer):
 
 
 class MemoryAudioBuffer(AudioBuffer):
-    """Audio buffer giving access to signals stored in memory
-    (to use when reading/writing a modified audio signal).
+    """Audio buffer giving access to signals stored in memory.
+
+    To be used for reading or writing a modified audio signal.
+
+    Parameters
+    ----------
+    signal: ndarray
+        Samples constituting the audio signal, with shape `(nb_channel, nb_samples)`.
+    sample_rate: int
+        Sample rate of the signal, in samples per second.
     """
 
     def __init__(self, signal: np.ndarray, sample_rate: int):
-        """Parameters
-        ----------
-        signal: ndarray
-            Samples constituting the audio signal, with shape `(nb_channel, nb_samples)`.
-        sample_rate: int
-            Sample rate of the signal, in samples per second.
-        """
         nb_channels, nb_samples = signal.shape
 
         super().__init__(sample_rate=sample_rate, nb_samples=nb_samples, nb_channels=nb_channels)
@@ -281,7 +286,7 @@ class MemoryAudioBuffer(AudioBuffer):
 
 
 class PlaceholderAudioBuffer(AudioBuffer):
-    """Placeholder representing a MemoryAudioBuffer for which we have lost the actual signal.
+    """Placeholder for a MemoryAudioBuffer for which we have lost the actual signal.
 
     This class is only here so that MemoryAudioBuffer objects can be converted
     into json/yaml serializable dicts and then unserialized, but no further

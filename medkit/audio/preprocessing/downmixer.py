@@ -8,7 +8,17 @@ from medkit.core.audio import MemoryAudioBuffer, PreprocessingOperation, Segment
 
 
 class Downmixer(PreprocessingOperation):
-    """Downmixing operation converting multichannel audio signals to mono."""
+    """Downmixing operation converting multichannel audio signals to mono.
+
+    Parameters
+    ----------
+    output_label : str
+        Label of output downmixed segments.
+    prevent_clipping : bool, default=True
+        If `True`, normalize downmixed signals by number of channels to prevent clipping.
+    uid : str, optional
+        Identifier of the downmixer.
+    """
 
     def __init__(
         self,
@@ -16,15 +26,6 @@ class Downmixer(PreprocessingOperation):
         prevent_clipping: bool = True,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        output_label : str
-            Label of output downmixed segments.
-        prevent_clipping : bool, default=True
-            If `True`, normalize downmixed signals by number of channels to prevent clipping.
-        uid : str, optional
-            Identifier of the downmixer.
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")

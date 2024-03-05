@@ -35,10 +35,12 @@ _RTTM_FIELDS = [
 
 
 class RTTMInputConverter(InputConverter):
-    """Convert Rich Transcription Time Marked (.rttm) files containing diarization
+    """Class for conversions from Rich Transcription Time Marked (.rttm) into turn segments.
+
+    Convert Rich Transcription Time Marked (.rttm) files containing diarization
     information into turn segments.
 
-    For each turn in a .rttm file, a
+    For each turn in a .rttm file containing diarization information, a
     :class:`~medkit.core.audio.annotation.Segment` will be created, with an
     associated :class:`~medkit.core.Attribute` holding the name of the turn
     speaker as value. The segments can be retrieved directly or as part of an
@@ -47,6 +49,20 @@ class RTTMInputConverter(InputConverter):
     If a :class:`~medkit.core.ProvTracer` is set, provenance information will be
     added for each segment and each attribute (referencing the input converter
     as the operation).
+
+    Parameters
+    ----------
+    turn_label : str, default="turn"
+        Label of segments representing turns in the .rttm file.
+    speaker_label : str, default="speaker"
+        Label of speaker attributes to add to each segment.
+    converter_id : str, optional
+        Identifier of the converter.
+
+    Attributes
+    ----------
+    description : OperationDescription
+        Description for the operation.
     """
 
     def __init__(
@@ -55,15 +71,6 @@ class RTTMInputConverter(InputConverter):
         speaker_label: str = "speaker",
         converter_id: str | None = None,
     ):
-        """Parameters
-        ----------
-        turn_label : str, default="turn"
-            Label of segments representing turns in the .rttm file.
-        speaker_label : str, default="speaker"
-            Label of speaker attributes to add to each segment.
-        converter_id : str, optional
-            Identifier of the converter.
-        """
         if converter_id is None:
             converter_id = generate_id()
 
@@ -98,8 +105,7 @@ class RTTMInputConverter(InputConverter):
         audio_dir: str | Path | None = None,
         audio_ext: str = ".wav",
     ) -> list[AudioDocument]:
-        """Load all .rttm files in a directory into a list of
-        :class:`~medkit.core.audio.document.AudioDocument` objects.
+        """Load all .rttm files in a directory into a list of audio documents.
 
         For each .rttm file, they must be a corresponding audio file with the
         same basename, either in the same directory or in an separated audio
@@ -141,8 +147,7 @@ class RTTMInputConverter(InputConverter):
         return docs
 
     def load_doc(self, rttm_file: str | Path, audio_file: str | Path) -> AudioDocument:
-        """Load a single .rttm file into an
-        :class:`~medkit.core.audio.document.AudioDocument`.
+        """Load a single .rttm file into an audio document.
 
         Parameters
         ----------
@@ -170,8 +175,7 @@ class RTTMInputConverter(InputConverter):
         return doc
 
     def load_turns(self, rttm_file: str | Path, audio_file: str | Path) -> list[Segment]:
-        """Load a .rttm file and return a list of
-        :class:`~medkit.core.audio.annotation.Segment` objects.
+        """Load a .rttm file as a list of segments.
 
         Parameters
         ----------
@@ -221,23 +225,25 @@ class RTTMInputConverter(InputConverter):
 
 
 class RTTMOutputConverter(OutputConverter):
-    """Build Rich Transcription Time Marked (.rttm) files containing diarization
+    """Class for conversions to Rich Transcription Time Marked (.rttm).
+
+    Build Rich Transcription Time Marked (.rttm) files containing diarization
     information from :class:`~medkit.core.audio.annotation.Segment` objects.
 
     There must be a segment for each turn, with an associated
     :class:`~medkit.core.Attribute` holding the name of the turn speaker as
     value. The segments can be passed directly or as part of
     :class:`~medkit.core.audio.document.AudioDocument` instances.
+
+    Parameters
+    ----------
+    turn_label : str, default="turn"
+        Label of segments representing turns in the audio documents.
+    speaker_label : str, default="speaker"
+        Label of speaker attributes attached to each turn segment.
     """
 
     def __init__(self, turn_label: str = "turn", speaker_label: str = "speaker"):
-        """Parameters
-        ----------
-        turn_label : str, default="turn"
-            Label of segments representing turns in the audio documents.
-        speaker_label : str, default="speaker"
-            Label of speaker attributes attached to each turn segment.
-        """
         super().__init__()
 
         self.turn_label = turn_label
@@ -249,8 +255,7 @@ class RTTMOutputConverter(OutputConverter):
         rttm_dir: str | Path,
         doc_names: list[str] | None = None,
     ):
-        """Save :class:`~medkit.core.audio.document.AudioDocument` instances as
-        .rttm files in a directory.
+        """Save a collection of audio documents to RTTM files in a directory.
 
         Parameters
         ----------
@@ -284,8 +289,7 @@ class RTTMOutputConverter(OutputConverter):
         rttm_file: str | Path,
         rttm_doc_id: str | None = None,
     ):
-        """Save a single :class:`~medkit.core.audio.document.AudioDocument` as a
-        .rttm file.
+        """Save a single audio document to a RTTM file.
 
         Parameters
         ----------

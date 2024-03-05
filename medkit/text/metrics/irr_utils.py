@@ -1,4 +1,4 @@
-"""Metrics to assess inter-annotator agreement"""
+"""Metrics to assess inter-annotator agreement."""
 from __future__ import annotations
 
 __all__ = ["krippendorff_alpha"]
@@ -84,8 +84,7 @@ def _compute_expected_disagreement(values_by_unit_matrix: np.ndarray) -> float:
 
 
 def krippendorff_alpha(all_annotators_data: list[list[None | str | int]]) -> float:
-    """Compute Krippendorff's alpha: a coefficient of agreement among many
-    annotators.
+    r"""Compute Krippendorff's alpha: a coefficient of agreement among many annotators.
 
     This coefficient is a generalization of several reliability indices.
     The general form is:

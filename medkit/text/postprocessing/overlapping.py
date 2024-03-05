@@ -6,9 +6,10 @@ from medkit.core.text import Entity, span_utils
 
 
 def filter_overlapping_entities(entities: list[Entity]) -> list[Entity]:
-    """Filter a list of entities and remove overlaps. This method may be
-    useful for the creation of data for named entity recognition, where
-    a part of text can only contain one entity per 'word'.
+    """Filter a list of entities and remove overlaps.
+
+    This method may be useful for the creation of data for named entity recognition,
+    where a part of text can only contain one entity per 'word'.
     When an overlap is detected, the longest entity is preferred.
 
     Parameters

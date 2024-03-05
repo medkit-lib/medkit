@@ -21,7 +21,7 @@ _PATH_TO_DEFAULT_RULES = Path(__file__).parent / "family_detector_default_rules.
 
 @dataclasses.dataclass
 class FamilyDetectorRule:
-    """Regexp-based rule to use with `FamilyDetector`
+    """Regexp-based rule to use with `FamilyDetector`.
 
     Input text may be converted before detecting rule.
 
@@ -70,7 +70,9 @@ class FamilyMetadata(TypedDict):
 
 
 class FamilyDetector(ContextOperation):
-    """Annotator creating family attributes with boolean values
+    """Annotator for creating family attributes.
+
+    Annotator creating family attributes with boolean values
     indicating if a family reference has been detected.
 
     Because family attributes will be attached to whole annotations,
@@ -87,11 +89,23 @@ class FamilyDetector(ContextOperation):
     Note that for better results, family detection should be run at the sentence
     level (ie on sentence segments) rather than at the syntagma level [1].
 
-    [1] N. Garcelon, A. Neuraz, V. Benoit, R. Salomon, A. Burgun, "Improving a
-    full-text search engine: the importance of negation detection and family
-    history context to identify cases in a biomedical data warehouse", Journal
-    of the American Medical Informatics Association, Volume 24, Issue 3, May
-    2017
+    Parameters
+    ----------
+    output_label : str
+        The label of the created attributes
+    rules : list of FamilyDetectorRule, optional
+        The set of rules to use when detecting family references. If none provided,
+        the rules in "family_detector_default_rules.yml" will be used
+    uid : str, optional
+        Identifier of the detector
+
+    References
+    ----------
+    [1] Garcelon, N., Neuraz, A., Benoit, V., Salomon, R., & Burgun, A. (2017).
+        Improving a full-text search engine: the importance of negation detection and family history context
+        to identify cases in a biomedical data warehouse.
+        Journal of the American Medical Informatics Association : JAMIA, 24(3), 607-613.
+        https://doi.org/10.1093/jamia/ocw144
     """
 
     def __init__(
@@ -100,16 +114,6 @@ class FamilyDetector(ContextOperation):
         rules: list[FamilyDetectorRule] | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        output_label : str
-            The label of the created attributes
-        rules : list of FamilyDetectorRule, optional
-            The set of rules to use when detecting family references. If none provided,
-            the rules in "family_detector_default_rules.yml" will be used
-        uid : str, optional
-            Identifier of the detector
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -142,7 +146,9 @@ class FamilyDetector(ContextOperation):
         self._has_non_unicode_sensitive_rule = any(not r.unicode_sensitive for r in rules)
 
     def run(self, segments: list[Segment]):
-        """Add a family attribute to each segment with a boolean value
+        """Run the operation.
+
+        Add a family attribute to each segment with a boolean value
         indicating if a family reference has been detected.
 
         Family attributes with a `True` value have a metadata dict with
@@ -198,7 +204,7 @@ class FamilyDetector(ContextOperation):
 
     @staticmethod
     def load_rules(path_to_rules: Path, encoding: str | None = None) -> list[FamilyDetectorRule]:
-        """Load all rules stored in a yml file
+        """Load all rules stored in a yml file.
 
         Parameters
         ----------
@@ -220,7 +226,7 @@ class FamilyDetector(ContextOperation):
 
     @staticmethod
     def check_rules_sanity(rules: list[FamilyDetectorRule]):
-        """Check consistency of a set of rules"""
+        """Check consistency of a set of rules."""
         if any(r.id is not None for r in rules):
             if not all(r.id is not None for r in rules):
                 msg = "Some rules have ids and other do not. Please provide either ids for all rules or no ids at all"
@@ -235,7 +241,7 @@ class FamilyDetector(ContextOperation):
         path_to_rules: Path,
         encoding: str | None = None,
     ):
-        """Store rules in a yml file
+        """Store rules in a YAML file.
 
         Parameters
         ----------

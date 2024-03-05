@@ -145,7 +145,7 @@ class AudioDocument(dict_conv.SubclassMapping):
 
     @classmethod
     def from_file(cls, path: os.PathLike) -> Self:
-        """Create document from an audio file
+        """Create document from an audio file.
 
         Parameters
         ----------
@@ -169,7 +169,7 @@ class AudioDocument(dict_conv.SubclassMapping):
         path: os.PathLike,
         pattern: str = "*.wav",
     ) -> list[Self]:
-        """Create documents from audio files in a directory
+        """Create documents from audio files in a directory.
 
         Parameters
         ----------

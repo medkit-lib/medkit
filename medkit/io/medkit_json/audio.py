@@ -25,8 +25,7 @@ def load_audio_document(
     anns_input_file: str | Path | None = None,
     encoding: str | None = "utf-8",
 ) -> AudioDocument:
-    """Load an audio document from a medkit-json file generated with
-    :func:`~medkit.io.medkit_json.save_audio_document`
+    """Load a single audio document from JSON.
 
     Parameters
     ----------
@@ -42,6 +41,10 @@ def load_audio_document(
     -------
     AudioDocument
         The audio document in the file
+
+    See Also
+    --------
+    save_audio_document : Save a single audio document to JSON.
     """
     with Path(input_file).open(encoding=encoding) as fp:
         data = json.load(fp)
@@ -56,8 +59,7 @@ def load_audio_document(
 
 
 def load_audio_documents(input_file: str | Path, encoding: str | None = "utf-8") -> Iterator[AudioDocument]:
-    """Load audio documents from a medkit-json file generated with
-    :func:`~medkit.io.medkit_json.save_audio_documents`
+    """Load multiple audio documents from JSON.
 
     Parameters
     ----------
@@ -70,6 +72,10 @@ def load_audio_documents(input_file: str | Path, encoding: str | None = "utf-8")
     -------
     iterator of AudioDocument
         An iterator to the audio documents in the file
+
+    See Also
+    --------
+    save_audio_documents : Save multiple audio documents to JSON.
     """
     with Path(input_file).open(encoding=encoding) as fp:
         line = fp.readline()
@@ -83,8 +89,7 @@ def load_audio_documents(input_file: str | Path, encoding: str | None = "utf-8")
 
 
 def load_audio_anns(input_file: str | Path, encoding: str | None = "utf-8") -> Iterator[Segment]:
-    """Load audio annotations from a medkit-json file generated with
-    :func:`~medkit.io.medkit_json.save_audio_anns`
+    """Load audio annotations from JSON.
 
     Parameters
     ----------
@@ -97,6 +102,10 @@ def load_audio_anns(input_file: str | Path, encoding: str | None = "utf-8") -> I
     -------
     iterator of Segment
         An iterator to the audio annotations in the file
+
+    See Also
+    --------
+    save_audio_anns : Save audio annotations to JSON.
     """
     with Path(input_file).open(encoding=encoding) as fp:
         line = fp.readline()
@@ -116,7 +125,7 @@ def save_audio_document(
     anns_output_file: str | Path | None = None,
     encoding: str | None = "utf-8",
 ):
-    """Save an audio document into a medkit-json file.
+    """Save a single audio document to JSON.
 
     Parameters
     ----------
@@ -132,6 +141,10 @@ def save_audio_document(
         If not provided, `output_file` will be used with an extra "_anns" suffix.
     encoding : str, default="utf-8"
         Optional encoding of `output_file` and `anns_output_file`
+
+    See Also
+    --------
+    load_audio_document : Load a single audio document from JSON.
     """
     output_file = Path(output_file)
     anns_output_file = Path(anns_output_file) if anns_output_file else None
@@ -158,7 +171,7 @@ def save_audio_documents(
     output_file: str | Path,
     encoding: str | None = "utf-8",
 ):
-    """Save audio documents into a medkit-json file.
+    """Save multiple audio documents to JSON.
 
     Parameters
     ----------
@@ -168,6 +181,10 @@ def save_audio_documents(
         Path of the generated medkit-json file
     encoding : str, default="utf-8"
         Optional encoding of `output_file`
+
+    See Also
+    --------
+    load_audio_documents : Load multiple audio documents from JSON.
     """
     header = build_header(content_type=ContentType.AUDIO_DOCUMENT_LIST)
     with Path(output_file).open(mode="w", encoding=encoding) as fp:
@@ -183,7 +200,7 @@ def save_audio_anns(
     output_file: str | Path,
     encoding: str | None = "utf-8",
 ):
-    """Save audio annotations into a medkit-json file.
+    """Save audio annotations to JSON.
 
     Parameters
     ----------
@@ -193,6 +210,10 @@ def save_audio_anns(
         Path of the generated medkit-json file
     encoding : str, default="utf-8"
         Optional encoding of `output_file`
+
+    See Also
+    --------
+    load_audio_anns : Load audio annotations to JSON.
     """
     header = build_header(content_type=ContentType.AUDIO_ANNOTATION_LIST)
     with Path(output_file).open(mode="w", encoding=encoding) as fp:

@@ -24,8 +24,10 @@ def save_prov_to_dot(
     max_sub_prov_depth: int | None = None,
     show_attr_links: bool = True,
 ):
-    """Generate a graphviz-compatible .dot file from a
-    :class:`~medkit.core.ProvTracer` for visualization.
+    """Save provenance to a DOT graph file.
+
+    Generate a graphviz-compatible .dot file from a :class:`~medkit.core.ProvTracer`
+    for visualization.
 
     Parameters
     ----------

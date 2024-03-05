@@ -13,7 +13,7 @@ from medkit.core.text import EntityNormAttribute
 
 @dataclasses.dataclass(init=False)
 class UMLSNormAttribute(EntityNormAttribute):
-    """Normalization attribute linking an entity to a CUI in the UMLS knowledge base
+    """Normalization attribute linking an entity to a CUI in the UMLS knowledge base.
 
     Attributes
     ----------

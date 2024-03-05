@@ -8,7 +8,7 @@ from medkit.core.text import Segment, span_utils
 
 
 def _create_segments_tree(target_segments: list[Segment]) -> IntervalTree:
-    """Use the normalized spans of the segments to create an interval tree
+    """Use the normalized spans of the segments to create an interval tree.
 
     Parameters
     ----------
@@ -40,6 +40,7 @@ def compute_nested_segments(
     target_segments: list[Segment],
 ) -> list[tuple[Segment, list[Segment]]]:
     """Return source segments aligned with its nested segments.
+
     Only nested segments fully contained in the `source_segments` are returned.
 
     Parameters

@@ -252,7 +252,7 @@ select = [
   # pep8-naming
   "N",
   # pydocstyle
-  #"D",
+  "D",
   # pyupgrade
   "UP",
   # flake8-bandit
@@ -319,6 +319,18 @@ select = [
 ignore = [
   # missing-trailing-comma
   "COM812",
+  # Missing docstring in public module
+  "D100",
+  # Missing docstring in public class
+  "D101",
+  # Missing docstring in public method
+  "D102",
+  # Missing docstring in public function
+  "D103",
+  # Missing docstring in public package
+  "D104",
+  # Missing docstring in magic method
+  "D105",
   # single-line-implicit-string-concatenation
   "ISC001",
   # too many branches, arguments, statements...
@@ -338,6 +350,9 @@ mark-parentheses = true
 [tool.ruff.lint.isort]
 known-first-party = ["medkit"]
 
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
 [tool.ruff.lint.per-file-ignores]
 "medkit/io/_brat_utils.py" = ["A001", "A002", "A003"]
 "medkit/io/doccano.py" = ["A003"]
@@ -348,7 +363,7 @@ known-first-party = ["medkit"]
 "medkit/tools/e3c_corpus.py" = ["A003", "S314"]
 "medkit/training/trainer.py" = ["NPY002"]
 "tests/unit/text/ner/test_nlstruct_entity_matcher.py" = ["A003"]
-"tests/**" = ["E402", "PLR2004", "S101"]
+"tests/**" = ["E402", "D", "PLR2004", "S101"]
 
 [tool.ruff.format]
 quote-style = "double"

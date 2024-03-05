@@ -10,7 +10,20 @@ _EPS = 1e-12  # epsilon value to avoid zero-div
 
 
 class PowerNormalizer(PreprocessingOperation):
-    """Normalization operation setting the RMS power of each audio signal to a target value."""
+    """Normalization operation setting the RMS power of each audio signal to a target value.
+
+    Parameters
+    ----------
+    output_label : str
+        Label of output normalized segments.
+    target_value : float, default=1.0
+        Value to set the RMS power of each segment to.
+    channel_wise : bool, default=False
+        If `True`, the normalization is performed per-channel, thus modifying
+        the balance of multichannel signals.
+    uid : str, optional
+        Identifier of the normalizer.
+    """
 
     def __init__(
         self,
@@ -19,18 +32,6 @@ class PowerNormalizer(PreprocessingOperation):
         channel_wise: bool = False,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        output_label : str
-            Label of output normalized segments.
-        target_value : float, default=1.0
-            Value to set the RMS power of each segment to.
-        channel_wise : bool, default=False
-            If `True`, the normalization is performed per-channel, thus modifying
-            the balance of multichannel signals.
-        uid : str, optional
-            Identifier of the normalizer.
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")

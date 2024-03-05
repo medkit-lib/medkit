@@ -9,7 +9,7 @@ from typing_extensions import Protocol, Self
 
 
 class BatchData(dict):
-    """A BatchData pack data allowing both column and row access"""
+    """A BatchData pack data allowing both column and row access."""
 
     def __getitem__(self, index: int) -> dict[str, list[Any] | torch.Tensor]:
         if isinstance(index, str):
@@ -18,7 +18,7 @@ class BatchData(dict):
         return {key: values[index] for key, values in self.items()}
 
     def to_device(self, device: torch.device) -> Self:
-        """Ensure that Tensors in the BatchData object are on the specified `device`
+        """Ensure that Tensors in the BatchData object are on the specified `device`.
 
         Parameters
         ----------
@@ -42,10 +42,10 @@ class BatchData(dict):
 
 @runtime_checkable
 class MetricsComputer(Protocol):
-    "A MetricsComputer is the base protocol to compute metrics in training"
+    """A MetricsComputer is the base protocol to compute metrics in training."""
 
     def prepare_batch(self, model_output: BatchData, input_batch: BatchData) -> dict[str, list[Any]]:
-        """Prepare a batch of data to compute the metrics
+        """Prepare a batch of data to compute the metrics.
 
         Parameters
         ----------
@@ -61,7 +61,7 @@ class MetricsComputer(Protocol):
         """
 
     def compute(self, all_data: dict[str, list[Any]]) -> dict[str, float]:
-        """Compute metrics using 'all_data'
+        """Compute metrics using 'all_data'.
 
         Parameters
         ----------

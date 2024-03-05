@@ -36,7 +36,7 @@ class AnySpan(abc.ABC, dict_conv.SubclassMapping):
 
 @dataclasses.dataclass(frozen=True)
 class Span(AnySpan):
-    """Slice of text extracted from the original text
+    """Slice of text extracted from the original text.
 
     Parameters
     ----------
@@ -59,12 +59,12 @@ class Span(AnySpan):
         return span_dict
 
     def overlaps(self, other: Span):
-        """Test if 2 spans reference at least one character in common"""
+        """Test if 2 spans reference at least one character in common."""
         return (self.start < other.end) and (self.end > other.start)
 
     @classmethod
     def from_dict(cls, span_dict: dict[str, Any]) -> Self:
-        """Creates a Span from a dict
+        """Create a Span from a dict.
 
         Parameters
         ----------
@@ -76,7 +76,7 @@ class Span(AnySpan):
 
 @dataclasses.dataclass
 class ModifiedSpan(AnySpan):
-    """Slice of text not present in the original text
+    """Slice of text not present in the original text.
 
     Parameters
     ----------
@@ -100,7 +100,7 @@ class ModifiedSpan(AnySpan):
 
     @classmethod
     def from_dict(cls, modified_span_dict: dict[str, Any]) -> Self:
-        """Creates a Modified from a dict
+        """Create a Modified from a dict.
 
         Parameters
         ----------

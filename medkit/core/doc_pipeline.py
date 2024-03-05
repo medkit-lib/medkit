@@ -14,9 +14,41 @@ if TYPE_CHECKING:
 
 
 class DocPipeline(DocOperation, Generic[AnnotationType]):
-    """Wrapper around the `Pipeline` class that runs a pipeline on a list
+    """Convenience wrapper to facilitate running pipelines on a collection of documents.
+
+    Wrapper around the `Pipeline` class that runs a pipeline on a list
     (or collection) of documents, retrieving input annotations from each document
     and attaching output annotations back to documents.
+
+    Parameters
+    ----------
+    pipeline : Pipeline
+        Pipeline to execute on documents.
+        Annotations given to `pipeline` (corresponding to its `input_keys`) will
+        be retrieved from documents, according to `labels_by_input`.
+        Annotations returned by `pipeline` (corresponding to its `output_keys`)
+        will be added to documents.
+    labels_by_input_key : dict of str to list of str, optional
+        Optional labels of existing annotations that should be retrieved from
+        documents and passed to the pipeline as input. One list of labels
+        per input key.
+
+        When `labels_by_input_key` is not provided, it is assumed that the
+        `pipeline` just expects the document raw segments as input.
+
+        For the use case where the documents contain pre-existing sentence segments
+        labelled as "SENTENCE", that we want to pass the "sentences" input
+        key of the pipeline:
+
+    Examples
+    --------
+    >>> doc_pipeline = DocPipeline(
+    >>>     pipeline,
+    >>>     labels_by_input={"sentences": ["SENTENCE"]},
+    >>> )
+
+    Because the values of `labels_by_input_key` are lists (one per input),
+    it is possible to use annotation with different labels for the same input key.
     """
 
     def __init__(
@@ -25,38 +57,6 @@ class DocPipeline(DocOperation, Generic[AnnotationType]):
         labels_by_input_key: dict[str, list[str]] | None = None,
         uid: str | None = None,
     ):
-        """Initialize the pipeline
-
-        Parameters
-        ----------
-        pipeline : Pipeline
-            Pipeline to execute on documents.
-            Annotations given to `pipeline` (corresponding to its `input_keys`) will
-            be retrieved from documents, according to `labels_by_input`.
-            Annotations returned by `pipeline` (corresponding to its `output_keys`)
-            will be added to documents.
-        labels_by_input_key : dict of str to list of str, optional
-            Optional labels of existing annotations that should be retrieved from
-            documents and passed to the pipeline as input. One list of labels
-            per input key.
-
-            When `labels_by_input_key` is not provided, it is assumed that the
-            `pipeline` just expects the document raw segments as input.
-
-            For the use case where the documents contain pre-existing sentence segments
-            labelled as "SENTENCE", that we want to pass the "sentences" input
-            key of the pipeline:
-
-        Examples
-        --------
-        >>> doc_pipeline = DocPipeline(
-        >>>     pipeline,
-        >>>     labels_by_input={"sentences": ["SENTENCE"]},
-        >>> )
-
-        Because the values of `labels_by_input_key` are lists (one per input),
-        it is possible to use annotation with different labels for the same input key.
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -69,8 +69,7 @@ class DocPipeline(DocOperation, Generic[AnnotationType]):
         self.pipeline.set_prov_tracer(prov_tracer)
 
     def run(self, docs: list[Document[AnnotationType]]) -> None:
-        """Run the pipeline on a list of documents, adding
-        the output annotations to each document
+        """Run the pipeline on a list of documents, adding the output annotations to each document.
 
         Parameters
         ----------

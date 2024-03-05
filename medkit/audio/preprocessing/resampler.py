@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[resampler]`.
-"""
 from __future__ import annotations
 
 __all__ = ["Resampler"]
@@ -11,7 +8,20 @@ from medkit.core.audio import MemoryAudioBuffer, PreprocessingOperation, Segment
 
 
 class Resampler(PreprocessingOperation):
-    """Resampling operation relying on the resampy package."""
+    """Resampling operation relying on the resampy package.
+
+    Parameters
+    ----------
+    output_label : str
+        Label of output resampled segments.
+    sample_rate : int
+        Target sample rate to resample to, in samples per second.
+    fast : bool, default=False
+        If `True`, prefer speed over quality and use resampy's "kaiser_fast" filter
+        instead of "kaiser_best".
+    uid : str, optional
+        Identifier of the resampler.
+    """
 
     def __init__(
         self,
@@ -20,18 +30,6 @@ class Resampler(PreprocessingOperation):
         fast: bool = False,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        output_label : str
-            Label of output resampled segments.
-        sample_rate : int
-            Target sample rate to resample to, in samples per second.
-        fast : bool, default=False
-            If `True`, prefer speed over quality and use resampy's "kaiser_fast" filter
-            instead of "kaiser_best".
-        uid : str, optional
-            Identifier of the resampler.
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")

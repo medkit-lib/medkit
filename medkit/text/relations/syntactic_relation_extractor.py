@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[syntactic-relation-extractor]`.
-"""
 from __future__ import annotations
 
 __all__ = ["SyntacticRelationExtractor"]
@@ -25,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 class SyntacticRelationExtractor(DocOperation):
     """Extractor of syntactic relations between entities in a TextDocument.
+
     The relation relies on the dependency parser from a spacy pipeline.
     A transition-based dependency parser defines a dependency tag for each
     token (word) in a document. This relation extractor uses syntactic neighbours
@@ -38,6 +36,31 @@ class SyntacticRelationExtractor(DocOperation):
     target labels are provided, the 'SyntacticRelationExtractor' will detect
     relations among all entities in the document, and the order of the relation
     will be the syntactic order.
+
+    Parameters
+    ----------
+    name_spacy_model : str, optional
+        Name or path of a spacy pipeline to load, it should include a
+        syntactic dependency parser. To obtain consistent results,
+        the spacy model should have the same language as the documents
+        in which relations should be found.
+    relation_label : str, optional
+        Label of identified relations
+    entities_source : list of str, optional
+        Labels of medkit entities to use as source of the relation.
+        If `None`, any entity can be used as source.
+    entities_target : list of str, optional
+        Labels of medkit entities to use as target of the relation.
+        If `None`, any entity can be used as target.
+    name : str, optional
+        Name describing the relation extractor (defaults to the class name)
+    uid : str, optional
+        Identifier of the relation extractor
+
+    Raises
+    ------
+    ValueError
+        If the spacy model defined by `name_spacy_model` does not parse a document
     """
 
     _DEFAULT_NAME_SPACY_MODEL = "fr_core_news_sm"
@@ -52,33 +75,6 @@ class SyntacticRelationExtractor(DocOperation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Initialize the syntactic relation extractor
-
-        Parameters
-        ----------
-        name_spacy_model : str, optional
-            Name or path of a spacy pipeline to load, it should include a
-            syntactic dependency parser. To obtain consistent results,
-            the spacy model should have the same language as the documents
-            in which relations should be found.
-        relation_label : str, optional
-            Label of identified relations
-        entities_source : list of str, optional
-            Labels of medkit entities to use as source of the relation.
-            If `None`, any entity can be used as source.
-        entities_target : list of str, optional
-            Labels of medkit entities to use as target of the relation.
-            If `None`, any entity can be used as target.
-        name : str, optional
-            Name describing the relation extractor (defaults to the class name)
-        uid : str, optional
-            Identifier of the relation extractor
-
-        Raises
-        ------
-        ValueError
-            If the spacy model defined by `name_spacy_model` does not parse a document
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -105,7 +101,7 @@ class SyntacticRelationExtractor(DocOperation):
             self._entities_labels = None
 
     def run(self, documents: list[TextDocument]):
-        """Add relations to each document from `documents`
+        """Add relations to each document from `documents`.
 
         Parameters
         ----------
@@ -129,6 +125,7 @@ class SyntacticRelationExtractor(DocOperation):
 
     def _find_syntactic_relations(self, spacy_doc: Doc):
         """Find syntactic relations from entities present in the same sentence.
+
         For each dependency found, a new relation is created.
 
         Parameters

@@ -1,6 +1,3 @@
-"""This package needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit[edsnlp]`.
-"""
 from __future__ import annotations
 
 __all__ = [
@@ -44,8 +41,7 @@ if TYPE_CHECKING:
 
 
 def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
-    """Build a medkit date attribute from an EDS-NLP attribute with a date object
-    as value.
+    """Build a medkit date attribute from an EDS-NLP attribute with a date object as value.
 
     Parameters
     ----------
@@ -93,8 +89,7 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
 
 
 def build_duration_attribute(spacy_span: SpacySpan, spacy_label: str) -> DurationAttribute:
-    """Build a medkit duration attribute from an EDS-NLP attribute with a duration
-    object as value.
+    """Build a medkit duration attribute from an EDS-NLP attribute with a duration object as value.
 
     Parameters
     ----------
@@ -123,8 +118,7 @@ def build_duration_attribute(spacy_span: SpacySpan, spacy_label: str) -> Duratio
 
 
 def build_adicap_attribute(spacy_span: SpacySpan, spacy_label: str) -> ADICAPNormAttribute:
-    """Build a medkit ADICAP normalization attribute from an EDS-NLP attribute with
-    an ADICAP object as value.
+    """Build a medkit ADICAP normalization attribute from an EDS-NLP attribute with an ADICAP object as value.
 
     Parameters
     ----------
@@ -152,8 +146,7 @@ def build_adicap_attribute(spacy_span: SpacySpan, spacy_label: str) -> ADICAPNor
 
 
 def build_tnm_attribute(spacy_span: SpacySpan, spacy_label: str) -> TNMAttribute:
-    """Build a medkit TNM attribute from an EDS-NLP attribute with a TNM object as
-    value.
+    """Build a medkit TNM attribute from an EDS-NLP attribute with a TNM object as value.
 
     Parameters
     ----------
@@ -184,8 +177,7 @@ def build_tnm_attribute(spacy_span: SpacySpan, spacy_label: str) -> TNMAttribute
 
 
 def build_measurement_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
-    """Build a medkit attribute from an EDS-NLP attribute with a measurement object
-    as value.
+    """Build a medkit attribute from an EDS-NLP attribute with a measurement object as value.
 
     Parameters
     ----------
@@ -266,7 +258,7 @@ _ATTR_LABELS_TO_IGNORE = {
 
 
 class EDSNLPPipeline(SpacyPipeline):
-    """Segment annotator relying on an EDS-NLP pipeline"""
+    """Segment annotator relying on an EDS-NLP pipeline."""
 
     def __init__(
         self,
@@ -278,7 +270,7 @@ class EDSNLPPipeline(SpacyPipeline):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Initialize the segment annotator
+        """Initialize the segment annotator.
 
         Parameters
         ----------
@@ -329,7 +321,7 @@ class EDSNLPPipeline(SpacyPipeline):
 
 
 class EDSNLPDocPipeline(SpacyDocPipeline):
-    """DocPipeline to obtain annotations created using EDS-NLP"""
+    """DocPipeline to obtain annotations created using EDS-NLP."""
 
     def __init__(
         self,
@@ -343,7 +335,7 @@ class EDSNLPDocPipeline(SpacyDocPipeline):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Initialize the pipeline
+        """Initialize the pipeline.
 
         Parameters
         ----------

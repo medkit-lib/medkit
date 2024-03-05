@@ -11,8 +11,7 @@ from medkit.core.attribute_container import AttributeContainer
 
 @runtime_checkable
 class Document(Protocol[AnnotationType]):
-    """Base document protocol that must be implemented by document classes of all
-    modalities (text, audio, etc).
+    """Base protocol for document classes of any modality (text, audio, etc).
 
     Documents can contain :class:`~medkit.core.annotation.Annotation` objects.
 

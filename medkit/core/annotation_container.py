@@ -21,16 +21,14 @@ class AnnotationContainer(Generic[AnnotationType]):
 
     This global store may be initialized using :class:~medkit.core.GlobalStore.
     Otherwise, a default one (i.e. dict store) is used.
+
+    Parameters
+    ----------
+    doc_id : str
+        The identifier of the document which annotations belong to.
     """
 
     def __init__(self, doc_id: str):
-        """Instantiate the annotation container
-
-        Parameters
-        ----------
-        doc_id : str
-            The identifier of the document which annotations belong to.
-        """
         self._store: Store = GlobalStore.get_store()
         self._doc_id = doc_id
         self._ann_ids: list[str] = []
@@ -72,24 +70,21 @@ class AnnotationContainer(Generic[AnnotationType]):
             self._ann_ids_by_key[key].append(uid)
 
     def __len__(self) -> int:
-        """Add support for calling `len()`"""
+        """Add support for calling `len()`."""
         return len(self._ann_ids)
 
     def __iter__(self) -> Iterator[AnnotationType]:
-        """Add support for iterating over an `AnnotationContainer` (will yield each
-        attribute)
-        """
+        """Add support for iterating over each attribute."""
         return iter(self.get_by_id(uid) for uid in self._ann_ids)
 
     def __getitem__(self, key: int | slice) -> AnnotationType | list[AnnotationType]:
-        """Add support for subscript access"""
+        """Add support for subscript access."""
         if isinstance(key, slice):
             return [self.get_by_id(uid) for uid in self._ann_ids[key]]
         return self.get_by_id(self._ann_ids[key])
 
     def get(self, *, label: str | None = None, key: str | None = None) -> list[AnnotationType]:
-        """Return a list of the annotations of the document, optionally filtering
-        by label or key.
+        """Return a list of the annotations of the document.
 
         Parameters
         ----------
@@ -102,11 +97,9 @@ class AnnotationContainer(Generic[AnnotationType]):
         return [self.get_by_id(uid) for uid in uids]
 
     def get_ids(self, *, label: str | None = None, key: str | None = None) -> Iterator[str]:
-        """Return an iterator of the identifiers of the annotations of the
-        document, optionally filtering by label or key.
+        """Return an iterator of the identifiers of the annotations of the document.
 
-        This method is provided, so it is easier to implement additional
-        filtering in subclasses.
+        This method is provided to facilitate additional filtering by subclasses.
 
         Parameters
         ----------

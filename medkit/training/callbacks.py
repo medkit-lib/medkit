@@ -12,32 +12,32 @@ if TYPE_CHECKING:
 
 
 class TrainerCallback:
-    """A TrainerCallback is the base class for trainer callbacks"""
+    """A TrainerCallback is the base class for trainer callbacks."""
 
     def on_train_begin(self, config: TrainerConfig):
-        """Event called at the beginning of training"""
+        """Event called at the beginning of training."""
 
     def on_train_end(self):
-        """Event called at the end of training"""
+        """Event called at the end of training."""
 
     def on_epoch_begin(self, epoch: int):
-        """Event called at the beginning of an epoch"""
+        """Event called at the beginning of an epoch."""
 
     def on_epoch_end(self, metrics: dict[str, float], epoch: int, epoch_time: float):
-        """Event called at the end of an epoch"""
+        """Event called at the end of an epoch."""
 
     def on_step_begin(self, step_idx: int, nb_batches: int, phase: str):
-        """Event called at the beginning of a step in training"""
+        """Event called at the beginning of a step in training."""
 
     def on_step_end(self, step_idx: int, nb_batches: int, phase: str):
-        """Event called at the end of a step in training"""
+        """Event called at the end of a step in training."""
 
     def on_save(self, checkpoint_dir: str):
-        """Event called on saving a checkpoint"""
+        """Event called on saving a checkpoint."""
 
 
 class DefaultPrinterCallback(TrainerCallback):
-    """Default implementation of :class:`~.training.TrainerCallback`"""
+    """Default implementation of :class:`~.training.TrainerCallback`."""
 
     def __init__(self):
         self.logger = logging.getLogger(__class__.__name__)

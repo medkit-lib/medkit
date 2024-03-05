@@ -22,6 +22,7 @@ if TYPE_CHECKING:
 
 class ContextOperation(Operation):
     """Abstract operation for context detection.
+
     It uses a list of segments as input for running the operation and creates attributes
     that are directly appended to these segments.
     """
@@ -33,6 +34,7 @@ class ContextOperation(Operation):
 
 class NEROperation(Operation):
     """Abstract operation for detecting entities.
+
     It uses a list of segments as input and produces a list of detected entities.
     """
 
@@ -43,6 +45,7 @@ class NEROperation(Operation):
 
 class SegmentationOperation(Operation):
     """Abstract operation for segmenting text.
+
     It uses a list of segments as input and produces a list of new segments.
     """
 
@@ -69,16 +72,16 @@ class _CustomTextOperation(Operation):
 
     It uses an user-defined function in the `run` method.
     It handles all provenance settings based on the function type.
+
+    Parameters
+    ----------
+    name : str
+        Name of the operation used for provenance info
+    uid : str, optional
+        Identifier of the operation
     """
 
     def __init__(self, name: str, uid: str | None = None):
-        """Parameters
-        ----------
-        name : str
-            Name of the operation used for provenance info
-        uid : str, optional
-            Identifier of the operation
-        """
         # Pass all arguments to super (remove self)
         init_args = locals()
         init_args.pop("self")
@@ -92,7 +95,7 @@ class _CustomTextOperation(Operation):
         self._prov_tracer = prov_tracer
 
     def set_function(self, function: Callable, function_type: CustomTextOpType, **kwargs: Any):
-        """Assign a user-defined function to the operation
+        """Assign a user-defined function to the operation.
 
         Parameters
         ----------
@@ -103,19 +106,14 @@ class _CustomTextOperation(Operation):
             Supported values are defined in :class:`~medkit.core.text.CustomTextOpType`
         **kwargs
             Additional arguments of the callable function
-
-        Returns
-        -------
-
         """
         self._function = function
         self._function_type = function_type
         self._kwargs = kwargs
         self.description.config["function_type"] = function_type.name
-        # TODO: check signature according to type
 
     def run(self, all_input_data: list[Any]) -> list[Any]:
-        """Run the custom operation on a list of input data and outputs a list of data
+        """Run the custom operation on a list of input data and outputs a list of data.
 
         This method uses the user-defined function depending on its type on a
         batch of data.
@@ -181,7 +179,7 @@ def create_text_operation(
     name: str | None = None,
     args: dict | None = None,
 ) -> _CustomTextOperation:
-    """Function for instantiating a custom test operation from a user-defined function
+    """Instantiate a custom text operation from a user-defined function.
 
     Parameters
     ----------

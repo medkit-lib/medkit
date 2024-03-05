@@ -40,7 +40,7 @@ def replace(
     ranges: list[tuple[int, int]],
     replacement_texts: list[str],
 ) -> tuple[str, list[AnySpan]]:
-    """Replace parts of a text, and update accordingly its associated spans
+    """Replace parts of a text, and update accordingly its associated spans.
 
     Parameters
     ----------
@@ -205,7 +205,7 @@ def remove(
     spans: list[AnySpan],
     ranges: list[tuple[int, int]],
 ) -> tuple[str, list[AnySpan]]:
-    """Remove parts of a text, while also removing accordingly its associated spans
+    """Remove parts of a text, while also removing accordingly its associated spans.
 
     Parameters
     ----------
@@ -252,7 +252,7 @@ def extract(
     spans: list[AnySpan],
     ranges: list[tuple[int, int]],
 ) -> tuple[str, list[AnySpan]]:
-    """Extract parts of a text as well as its associated spans
+    """Extract parts of a text as well as its associated spans.
 
     Parameters
     ----------
@@ -304,7 +304,7 @@ def insert(
     positions: list[int],
     insertion_texts: list[str],
 ) -> tuple[str, list[AnySpan]]:
-    """Insert strings in text, and update accordingly its associated spans
+    """Insert strings in text, and update accordingly its associated spans.
 
     Parameters
     ----------
@@ -375,7 +375,7 @@ def move(
     range: tuple[int, int],  # noqa: A002
     destination: int,
 ) -> tuple[str, list[AnySpan]]:
-    """Move part of a text to another position, also moving its associated spans
+    """Move part of a text to another position, also moving its associated spans.
 
     Parameters
     ----------
@@ -439,7 +439,7 @@ def _move_in_spans(spans, range, destination):  # noqa: A002
 
 
 def concatenate(texts: list[str], all_spans: list[list[AnySpan]]) -> tuple[str, list[AnySpan]]:
-    """Concatenate text and span objects"""
+    """Concatenate text and span objects."""
     assert _lists_have_same_dimension(texts, all_spans), "Text and all_spans should have the same dimension"
     text = "".join(texts)
     span = [sp for spans in all_spans for sp in spans]
@@ -448,7 +448,9 @@ def concatenate(texts: list[str], all_spans: list[list[AnySpan]]) -> tuple[str, 
 
 
 def normalize_spans(spans: list[AnySpan]) -> list[Span]:
-    """Return a transformed of `spans` in which all instances of ModifiedSpan are
+    """Normalize spans.
+
+    Return a transformed `spans` in which all instances of ModifiedSpan are
     replaced by the spans they refer to, spans are sorted and contiguous spans are merged.
 
     Parameters

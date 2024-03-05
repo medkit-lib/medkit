@@ -1,7 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[hf-translator]`.
-"""
-
 from __future__ import annotations
 
 __all__ = ["HFTranslator"]
@@ -22,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class HFTranslator(Operation):
-    """Translator based on HuggingFace transformers model
+    """Translator based on HuggingFace transformers model.
 
     Any translation model from the HuggingFace hub can be used.
 
@@ -36,6 +32,35 @@ class HFTranslator(Operation):
     sentence will be translated and the others will be discarded (this might vary with the model).
     The formatting will not be preserved. Note that the translation and alignment models have a
     maximum token length (typically 512) so there is a hard limit on the length of each segment anyway.
+
+    Parameters
+    ----------
+    output_label : str, optional
+        Label of the translated segments
+    translation_model : str or Path, optional
+        Name (on the HuggingFace models hub) or path of the translation model. Must be a model compatible
+        with the `TranslationPipeline` transformers class.
+    alignment_model : str or Path, optional
+        Name (on the HuggingFace models hub) or path of the alignment model. Must be a multilingual BERT model
+        compatible with the `BertModel` transformers class.
+    alignment_layer : int, default=8
+        Index of the layer in the alignment model that contains the token embeddings
+        (the original and translated embedding will be. compared)
+    alignment_threshold : float, default=1e-3
+        Threshold value used to decide if embeddings are similar enough to be aligned
+    device : int, default=-1
+        Device to use for transformers models. Follows the HuggingFace convention
+        (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0")
+    batch_size : int, default=1
+        Number of segments in batches processed by translation and alignment models
+    hf_auth_token : str, optional
+        HuggingFace Authentication token (to access private models on the
+        hub)
+    cache_dir : str or Path, optional
+        Directory where to store downloaded models. If not set, the default
+        HuggingFace cache dir is used.
+    uid : str, optional
+        Identifier of the translator
     """
 
     _DEFAULT_LABEL = "translation"
@@ -55,35 +80,6 @@ class HFTranslator(Operation):
         cache_dir: str | Path | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        output_label : str, optional
-            Label of the translated segments
-        translation_model : str or Path, optional
-            Name (on the HuggingFace models hub) or path of the translation model. Must be a model compatible
-            with the `TranslationPipeline` transformers class.
-        alignment_model : str or Path, optional
-            Name (on the HuggingFace models hub) or path of the alignment model. Must be a multilingual BERT model
-            compatible with the `BertModel` transformers class.
-        alignment_layer : int, default=8
-            Index of the layer in the alignment model that contains the token embeddings
-            (the original and translated embedding will be. compared)
-        alignment_threshold : float, default=1e-3
-            Threshold value used to decide if embeddings are similar enough to be aligned
-        device : int, default=-1
-            Device to use for transformers models. Follows the HuggingFace convention
-            (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0")
-        batch_size : int, default=1
-            Number of segments in batches processed by translation and alignment models
-        hf_auth_token : str, optional
-            HuggingFace Authentication token (to access private models on the
-            hub)
-        cache_dir : str or Path, optional
-            Directory where to store downloaded models. If not set, the default
-            HuggingFace cache dir is used.
-        uid : str, optional
-            Identifier of the translator
-        """
         # Pass all arguments to super (remove self and confidential hf_auth_token)
         init_args = locals()
         init_args.pop("self")
@@ -127,7 +123,7 @@ class HFTranslator(Operation):
         )
 
     def run(self, segments: list[Segment]) -> list[Segment]:
-        """Translate short segments (can't contain multiple sentences)
+        """Translate short segments (can't contain multiple sentences).
 
         Parameters
         ----------
@@ -164,8 +160,9 @@ class HFTranslator(Operation):
             yield translated_segment
 
     def _get_translated_spans(self, alignment, translated_text, original_text, original_spans):
-        """Compute spans for translated segments, making translated words reference words
-        in original text through ModifiedSpans when possible
+        """Compute spans for translated segments.
+
+        Making translated words reference words in original text through ModifiedSpans when possible.
         """
         # build translated spans, which will contains:
         # - ModifiedSpans with no replacement_spans, for non-aligned parts of translated text
@@ -307,9 +304,10 @@ class _Aligner:
         return word_alignments
 
     def _encode_text(self, text):
-        """Return a BatchEncoder instance
-        (useful for converting token back to words and CharSpans,
-        but requires a TokenizerFast)
+        """Return a BatchEncoder instance.
+
+        Thi is useful for converting token back to words and CharSpans,
+        but requires a TokenizerFast.
         """
         return self._tokenizer(
             text,
@@ -322,9 +320,7 @@ class _Aligner:
     def _token_alignment_to_word_alignment(
         self, token_alignment, source_encoding, target_encoding, batch_index
     ) -> _AlignmentDict:
-        """Convert BERT token alignments computed from the model to word alignments,
-        (using characters ranges of aligned words)
-        """
+        """Convert BERT token alignments computed from the model to word alignments."""
         source_word_ids = source_encoding.word_ids(batch_index)
         target_word_ids = target_encoding.word_ids(batch_index)
 

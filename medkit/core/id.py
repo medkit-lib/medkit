@@ -10,6 +10,7 @@ def generate_id() -> str:
 
 def generate_deterministic_id(reference_id: str) -> uuid.UUID:
     """Generate a deterministic UUID based on reference_id.
+
     The generated UUID will be the same if the reference_id is the same.
 
     Parameters

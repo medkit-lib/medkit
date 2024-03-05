@@ -12,8 +12,7 @@ if TYPE_CHECKING:
 
 @runtime_checkable
 class Annotation(Protocol):
-    """Base annotation protocol that must be implemented by annotations classes of all
-    modalities (text, audio, etc).
+    """Base annotation protocol for any modality (text, audio, etc.).
 
     Annotations can be attached to :class:`~medkit.core.document.Document`
     objects and can contain :class:`~medkit.core.attribute.Attribute` objects.

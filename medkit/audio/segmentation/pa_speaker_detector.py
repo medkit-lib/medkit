@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[pa-speaker-detector]`.
-"""
 from __future__ import annotations
 
 __all__ = ["PASpeakerDetector"]
@@ -32,7 +29,7 @@ _DURATION_MARGIN = 0.1
 
 
 class PASpeakerDetector(SegmentationOperation):
-    """Speaker diarization operation relying on `pyannote.audio`
+    """Speaker diarization operation relying on `pyannote.audio`.
 
     Each input segment will be split into several sub-segments corresponding
     to speech turn, and an attribute will be attached to each of these sub-segments
@@ -50,6 +47,34 @@ class PASpeakerDetector(SegmentationOperation):
     - group voice segments by speakers using a clustering algorithm such as
       agglomerative clustering, HMM, etc.
 
+    Parameters
+    ----------
+    model : str or Path
+        Name (on the HuggingFace models hub) or path of a pretrained
+        pipeline. When a path, should point to the .yaml file containing the
+        pipeline configuration.
+    output_label : str
+        Label of generated turn segments.
+    min_nb_speakers : int, optional
+        Minimum number of speakers expected to be found.
+    max_nb_speakers : int, optional
+        Maximum number of speakers expected to be found.
+    min_duration : float, default=0.1
+        Minimum duration of speech segments, in seconds (short segments will
+        be discarded).
+    device : int, default=-1
+        Device to use for pytorch models. Follows the Hugging Face
+        convention (`-1` for cpu and device number for gpu, for instance `0`
+        for "cuda:0").
+    segmentation_batch_size : int, default=1
+        Number of input segments in batches processed by segmentation model.
+    embedding_batch_size : int, default=1
+        Number of pre-segmented audios in batches processed by embedding model.
+    hf_auth_token : str, optional
+        HuggingFace Authentication token (to access private models on the
+        hub)
+    uid : str, optional
+        Identifier of the detector.
     """
 
     def __init__(
@@ -65,35 +90,6 @@ class PASpeakerDetector(SegmentationOperation):
         hf_auth_token: str | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        model : str or Path
-            Name (on the HuggingFace models hub) or path of a pretrained
-            pipeline. When a path, should point to the .yaml file containing the
-            pipeline configuration.
-        output_label : str
-            Label of generated turn segments.
-        min_nb_speakers : int, optional
-            Minimum number of speakers expected to be found.
-        max_nb_speakers : int, optional
-            Maximum number of speakers expected to be found.
-        min_duration : float, default=0.1
-            Minimum duration of speech segments, in seconds (short segments will
-            be discarded).
-        device : int, default=-1
-            Device to use for pytorch models. Follows the Hugging Face
-            convention (`-1` for cpu and device number for gpu, for instance `0`
-            for "cuda:0").
-        segmentation_batch_size : int, default=1
-            Number of input segments in batches processed by segmentation model.
-        embedding_batch_size : int, default=1
-            Number of pre-segmented audios in batches processed by embedding model.
-        hf_auth_token : str, optional
-            HuggingFace Authentication token (to access private models on the
-            hub)
-        uid : str, optional
-            Identifier of the detector.
-        """
         # Pass all arguments to super (remove self and confidential hf_auth_token)
         init_args = locals()
         init_args.pop("self")

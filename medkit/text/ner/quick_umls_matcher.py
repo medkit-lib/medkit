@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[quick-umls-matcher]`.
-"""
 from __future__ import annotations
 
 __all__ = ["QuickUMLSMatcher"]
@@ -97,8 +94,7 @@ class QuickUMLSMatcher(NEROperation):
         lowercase: bool = False,
         normalize_unicode: bool = False,
     ):
-        """Register path and settings of a QuickUMLS installation performed
-        with `python -m quickumls.install`
+        """Register path and settings of a QuickUMLS installation.
 
         Parameters
         ----------
@@ -120,7 +116,7 @@ class QuickUMLSMatcher(NEROperation):
 
     @classmethod
     def clear_installs(cls):
-        """Remove all QuickUMLS installation registered with `add_install`"""
+        """Remove all QuickUMLS installation registered with `add_install`."""
         cls._install_paths.clear()
 
     @classmethod
@@ -131,7 +127,7 @@ class QuickUMLSMatcher(NEROperation):
         lowercase: bool = False,
         normalize_unicode: bool = False,
     ) -> str:
-        """Find a QuickUMLS install with corresponding settings
+        """Find a QuickUMLS install with corresponding settings.
 
         The QuickUMLS install must have been previously registered with `add_install`.
         """
@@ -163,7 +159,7 @@ class QuickUMLSMatcher(NEROperation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Instantiate the QuickUMLS matcher
+        """Instantiate the QuickUMLS matcher.
 
         Parameters
         ----------
@@ -245,7 +241,7 @@ class QuickUMLSMatcher(NEROperation):
 
     @staticmethod
     def _get_label_mapping(output_label: None | str | dict[str, str]) -> dict[str, str]:
-        """Return label mapping according to `output_label`"""
+        """Return label mapping according to `output_label`."""
         if output_label is None:
             return umls_utils.SEMGROUP_LABELS
 
@@ -259,7 +255,7 @@ class QuickUMLSMatcher(NEROperation):
         return None
 
     def run(self, segments: list[Segment]) -> list[Entity]:
-        """Return entities (with UMLS normalization attributes) for each match in `segments`
+        """Return entities (with UMLS normalization attributes) for each match in `segments`.
 
         Parameters
         ----------

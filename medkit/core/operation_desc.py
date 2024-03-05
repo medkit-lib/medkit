@@ -8,7 +8,7 @@ from typing import Any
 
 @dataclasses.dataclass
 class OperationDescription:
-    """Description of a specific instance of an operation
+    """Description of a specific instance of an operation.
 
     Attributes
     ----------

@@ -11,6 +11,7 @@ from medkit.core.store import GlobalStore, Store
 
 class AttributeContainer:
     """Manage a list of attributes attached to another data structure.
+
     For example, it may be a document or an annotation.
 
     This behaves more or less like a list: calling `len()` and iterating are
@@ -30,24 +31,21 @@ class AttributeContainer:
         self._attr_ids_by_label: dict[str, list[str]] = {}
 
     def __len__(self) -> int:
-        """Add support for calling `len()`"""
+        """Add support for calling `len()`."""
         return len(self._attr_ids)
 
     def __iter__(self) -> Iterator[Attribute]:
-        """Add support for iterating over an `AttributeContainer` (will yield each
-        attribute)
-        """
+        """Add support for iterating over each attribute."""
         return iter(self.get_by_id(uid) for uid in self._attr_ids)
 
     def __getitem__(self, key: int | slice) -> Attribute | list[Attribute]:
-        """Add support for subscript access"""
+        """Add support for subscript access."""
         if isinstance(key, slice):
             return [self.get_by_id(uid) for uid in self._attr_ids[key]]
         return self.get_by_id(self._attr_ids[key])
 
     def get(self, *, label: str | None = None) -> list[Attribute]:
-        """Return a list of the attributes of the annotation, optionally filtering
-        by label.
+        """Return a list of the attributes of the annotation.
 
         Parameters
         ----------

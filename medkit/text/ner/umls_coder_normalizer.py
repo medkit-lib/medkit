@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[umls-coder-normalizer]`.
-"""
 from __future__ import annotations
 
 __all__ = ["UMLSCoderNormalizer"]
@@ -52,8 +49,9 @@ class _UMLSEmbeddingsParams(NamedTuple):
 
 
 class UMLSCoderNormalizer(Operation):
-    """Normalizer adding UMLS normalization attributes to
-    pre-existing entities. Based on https://github.com/GanjinZero/CODER/.
+    """Normalizer adding UMLS normalization attributes to pre-existing entities.
+
+    Based on https://github.com/GanjinZero/CODER/.
 
     An UMLS `MRCONSO.RRF` file is needed. The normalizer identifies UMLS concepts by
     comparing embeddings of reference UMLS terms with the embeddings of the input
@@ -68,7 +66,61 @@ class UMLSCoderNormalizer(Operation):
     of embeddings (`model`, `summary_method`, etc) is changed, then another `embeddings_cache_dir`
     must be used, or `embeddings_cache_dir` must be deleted so it can be created properly.
 
-    If the umls embeddings are too big to be held in memory, use `nb_umls_embeddings_chunks`.
+    If the UMLS embeddings are too big to be held in memory, use `nb_umls_embeddings_chunks`.
+
+    Parameters
+    ----------
+    umls_mrconso_file : str or Path
+        Path to the UMLS `MRCONSO.RRF` file.
+    language : str
+        Language of the UMLS terms to use (ex: `"ENG"`, `"FRE"`).
+    model : str or Path
+        Name on the Hugging Face hub or path to the transformers model that will be used to extract
+        embeddings (ex: `"GanjinZero/UMLSBert_ENG"`).
+    embeddings_cache_dir : str or Path
+        Path to the directory into which pre-computed embeddings of UMLS terms should be cached.
+        If it doesn't exist yet, the embeddings will be automatically generated (it can take a long
+        time) and stored there, ready to be reused on further instantiations.
+        If it already exists, a check will be done to make sure the params used when the embeddings
+        were computed are consistent with the params of the current instance.
+    summary_method : {"mean", "cls"}, default="cls"
+        If set to `"mean"`, the embeddings extracted will be the mean of the pooling layers
+        of the model. Otherwise, when set to `"cls"`, the last hidden layer will be used.
+    normalize_embeddings : bool, default=True
+        Whether to normalize the extracted embeddings.
+    lowercase : bool, default=False
+        Whether to use lowercased versions of UMLS terms and input entities.
+    normalize_unicode : bool, default=False
+        Whether to use ASCII-only versions of UMLS terms and input entities
+        (non-ASCII chars replaced by closest ASCII chars).
+    threshold : float, optional
+        Minimum similarity threshold (between 0.0 and 1.0) between the embeddings
+        of an entity and of an UMLS term for a normalization attribute to be added.
+    max_nb_matches : int, default=1
+        Maximum number of normalization attributes to add to each entity.
+    device : int, default=-1
+        Device to use for transformers models. Follows the Hugging Face convention
+        (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
+    batch_size : int, default=128
+        Number of entities in batches processed by the embeddings extraction pipeline.
+    hf_auth_token : str, optional
+        HuggingFace Authentication token (to access private models on the hub)
+    nb_umls_embeddings_chunks : int, optional
+        Number of umls embeddings chunks to load at the same time when computing
+        embeddings similarities. (a chunk contains 65536 embeddings).
+        If `None`, all pre-computed umls embeddings are pre-loaded in memory and
+        similaries are computed in one shot. Otherwise, at each call to `run()`,
+        umls embeddings are loaded by groups of chunks and similaries are computed
+        for each group.
+        Use this when umls embeddings are too big to be fully loaded in memory.
+        The higher this value, the more memory needed.
+    hf_cache_dir: str or Path, optional
+        Directory where to store downloaded models. If not set, the default
+        HuggingFace cache dir is used.
+    name : str, optional
+        Name describing the normalizer (defaults to the class name).
+    uid : str, optional
+        Identifier of the normalizer.
     """
 
     def __init__(
@@ -91,60 +143,6 @@ class UMLSCoderNormalizer(Operation):
         name: str | None = None,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        umls_mrconso_file : str or Path
-            Path to the UMLS `MRCONSO.RRF` file.
-        language : str
-            Language of the UMLS terms to use (ex: `"ENG"`, `"FRE"`).
-        model : str or Path
-            Name on the Hugging Face hub or path to the transformers model that will be used to extract
-            embeddings (ex: `"GanjinZero/UMLSBert_ENG"`).
-        embeddings_cache_dir : str or Path
-            Path to the directory into which pre-computed embeddings of UMLS terms should be cached.
-            If it doesn't exist yet, the embeddings will be automatically generated (it can take a long
-            time) and stored there, ready to be reused on further instantiations.
-            If it already exists, a check will be done to make sure the params used when the embeddings
-            were computed are consistent with the params of the current instance.
-        summary_method : {"mean", "cls"}, default="cls"
-            If set to `"mean"`, the embeddings extracted will be the mean of the pooling layers
-            of the model. Otherwise, when set to `"cls"`, the last hidden layer will be used.
-        normalize_embeddings : bool, default=True
-            Whether to normalize the extracted embeddings.
-        lowercase : bool, default=False
-            Whether to use lowercased versions of UMLS terms and input entities.
-        normalize_unicode : bool, default=False
-            Whether to use ASCII-only versions of UMLS terms and input entities
-            (non-ASCII chars replaced by closest ASCII chars).
-        threshold : float, optional
-            Minimum similarity threshold (between 0.0 and 1.0) between the embeddings
-            of an entity and of an UMLS term for a normalization attribute to be added.
-        max_nb_matches : int, default=1
-            Maximum number of normalization attributes to add to each entity.
-        device : int, default=-1
-            Device to use for transformers models. Follows the Hugging Face convention
-            (-1 for "cpu" and device number for gpu, for instance 0 for "cuda:0").
-        batch_size : int, default=128
-            Number of entities in batches processed by the embeddings extraction pipeline.
-        hf_auth_token : str, optional
-            HuggingFace Authentication token (to access private models on the hub)
-        nb_umls_embeddings_chunks : int, optional
-            Number of umls embeddings chunks to load at the same time when computing
-            embeddings similarities. (a chunk contains 65536 embeddings).
-            If `None`, all pre-computed umls embeddings are pre-loaded in memory and
-            similaries are computed in one shot. Otherwise, at each call to `run()`,
-            umls embeddings are loaded by groups of chunks and similaries are computed
-            for each group.
-            Use this when umls embeddings are too big to be fully loaded in memory.
-            The higher this value, the more memory needed.
-        hf_cache_dir: str or Path, optional
-            Directory where to store downloaded models. If not set, the default
-            HuggingFace cache dir is used.
-        name : str, optional
-            Name describing the normalizer (defaults to the class name).
-        uid : str, optional
-            Identifier of the normalizer.
-        """
         # Pass all arguments to super (remove self and confidential hf_auth_token)
         init_args = locals()
         init_args.pop("self")
@@ -362,7 +360,7 @@ class UMLSCoderNormalizer(Operation):
 
 
 class _EmbeddingsPipeline(FeatureExtractionPipeline):
-    """Extract embeddings from a pipeline"""
+    """Extract embeddings from a pipeline."""
 
     _EPS = 1e-12
 
@@ -381,11 +379,12 @@ class _EmbeddingsPipeline(FeatureExtractionPipeline):
         self.normalize = normalize
 
     def _ensure_tensor_on_device(self, inputs, device):
-        """Hack to force tensors to be kept on pipeline device. The base hugging
-        face pipeline tries to move the model outputs back to the cpu before
-        returning them but we want to keep them on the gpu if they are, because
-        we want to still be on the gpu when doing big similarity matrix multiplication
-        between entities embeddings and umls embeddings
+        """Hack to force tensors to be kept on pipeline device.
+
+        The base hugging face pipeline tries to move the model outputs back to the cpu
+        before returning them. However, we want to keep them on the gpu if they are,
+        because we want to still be on the GPU when doing big similarity matrix multiplication
+        between entities and UMLS embeddings.
         """
         return super()._ensure_tensor_on_device(inputs, self.device)
 

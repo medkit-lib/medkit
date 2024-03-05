@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[metrics-text-classification]`.
-"""
 from __future__ import annotations
 
 __all__ = ["TextClassificationEvaluator"]
@@ -20,10 +17,10 @@ logger = logging.getLogger(__name__)
 
 
 class TextClassificationEvaluator:
-    """An evaluator for attributes of TextDocuments"""
+    """An evaluator for attributes of TextDocuments."""
 
     def __init__(self, attr_label: str):
-        """Initialize the text classification evaluator
+        """Initialize the text classification evaluator.
 
         Parameters
         ----------
@@ -33,7 +30,7 @@ class TextClassificationEvaluator:
         self.attr_label = attr_label
 
     def _extract_attr_values(self, docs: list[TextDocument]) -> list[str | int | bool]:
-        """Prepare docs attrs to compute the metric
+        """Prepare docs attrs to compute the metric.
 
         Parameters
         ----------
@@ -74,6 +71,7 @@ class TextClassificationEvaluator:
         average: Literal["macro", "weighted"] = "macro",
     ) -> dict[str, float | int]:
         """Compute classification metrics of document attributes giving annotated documents.
+
         This method uses `sklearn.metrics.classification_report` to compute
         precision, recall and F1-score for value of the attribute.
 
@@ -127,6 +125,7 @@ class TextClassificationEvaluator:
         self, docs_annotator_1: list[TextDocument], docs_annotator_2: list[TextDocument]
     ) -> dict[str, float | int]:
         """Compute the cohen's kappa score, an inter-rated agreement score between two annotators.
+
         This method uses 'sklearn' as backend to compute the level of agreement.
 
         .. warning::
@@ -156,8 +155,7 @@ class TextClassificationEvaluator:
         }
 
     def compute_krippendorff_alpha(self, docs_annotators: list[list[TextDocument]]) -> dict[str, float | int]:
-        """Compute the Krippendorff alpha score, an inter-rated agreement score between
-        multiple annotators.
+        """Compute the Krippendorff alpha score, an inter-rated agreement score between multiple annotators.
 
         .. warning::
             Documents must be sorted to calculate the metric.

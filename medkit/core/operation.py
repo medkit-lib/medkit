@@ -14,7 +14,25 @@ if TYPE_CHECKING:
 
 
 class Operation(abc.ABC):
-    """Abstract class for all annotator modules"""
+    """Abstract class for all annotator modules.
+
+    Parameters
+    ----------
+    uid: str, optional
+        Operation identifier
+    name: str, optional
+        Operation name (defaults to class name)
+    kwargs:
+        All other arguments of the child init useful to describe the operation
+
+    Examples
+    --------
+    In the `__init__` function of your annotator, use:
+
+    >>> init_args = locals()
+    >>> init_args.pop("self")
+    >>> super().__init__(**init_args)
+    """
 
     uid: str
     _description: OperationDescription | None = None
@@ -22,27 +40,6 @@ class Operation(abc.ABC):
 
     @abc.abstractmethod
     def __init__(self, uid: str | None = None, name: str | None = None, **kwargs):
-        """Common initialization for all annotators:
-          * assigning identifier to operation
-          * storing class name, name and config in description
-
-        Parameters
-        ----------
-        uid: str, optional
-            Operation identifier
-        name: str, optional
-            Operation name (defaults to class name)
-        kwargs:
-            All other arguments of the child init useful to describe the operation
-
-        Examples
-        --------
-        In the `__init__` function of your annotator, use:
-
-        >>> init_args = locals()
-        >>> init_args.pop("self")
-        >>> super().__init__(**init_args)
-        """
         if uid is None:
             uid = generate_id()
         if name is None:
@@ -78,6 +75,7 @@ class Operation(abc.ABC):
 
 class DocOperation(Operation):
     """Abstract operation directly executed on text documents.
+
     It uses a list of documents as input for running the operation and creates
     annotations that are directly appended to these documents.
     """

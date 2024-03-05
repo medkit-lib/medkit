@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[sb-transcriber]`.
-"""
 from __future__ import annotations
 
 __all__ = ["SBTranscriber"]
@@ -25,6 +22,34 @@ class SBTranscriber(Operation):
     created from all the transcriptions of a audio document using
     :func:`~medkit.audio.transcription.TranscribedTextDocument.from_audio_doc
     <TranscribedTextDocument.from_audio_doc>`
+
+    Parameters
+    ----------
+    model : str or Path
+        Name of the model on the Hugging Face models hub, or local path.
+    needs_decoder : bool
+        Whether the model should be used with the speechbrain
+        `EncoderDecoderASR` class or the `EncoderASR` class. If unsure,
+        check the code snippets on the model card on the hub.
+    output_label : str, default="transcribed_text"
+        Label of the attribute containing the transcribed text that will be
+        attached to the input segments
+    add_trailing_dot : bool, default=True
+        If `True`, a dot will be added at the end of each transcription text.
+    capitalize : bool, default=True
+        It `True`, the first letter of each transcription text will be
+        uppercased and the rest lowercased.
+    cache_dir : str or Path, optional
+        Directory where to store the downloaded model. If `None`,
+        speechbrain will use "pretrained_models/" and "model_checkpoints/"
+        directories in the current working directory.
+    device : int, default=-1
+        Device to use for pytorch models. Follows the Hugging Face convention
+        (`-1` for cpu and device number for gpu, for instance `0` for "cuda:0")
+    batch_size : int, default=1
+        Number of segments in batches processed by the model.
+    uid : str, optional
+        Identifier of the transcriber.
     """
 
     def __init__(
@@ -39,34 +64,6 @@ class SBTranscriber(Operation):
         batch_size: int = 1,
         uid: str | None = None,
     ):
-        """Parameters
-        ----------
-        model : str or Path
-            Name of the model on the Hugging Face models hub, or local path.
-        needs_decoder : bool
-            Whether the model should be used with the speechbrain
-            `EncoderDecoderASR` class or the `EncoderASR` class. If unsure,
-            check the code snippets on the model card on the hub.
-        output_label : str, default="transcribed_text"
-            Label of the attribute containing the transcribed text that will be
-            attached to the input segments
-        add_trailing_dot : bool, default=True
-            If `True`, a dot will be added at the end of each transcription text.
-        capitalize : bool, default=True
-            It `True`, the first letter of each transcription text will be
-            uppercased and the rest lowercased.
-        cache_dir : str or Path, optional
-            Directory where to store the downloaded model. If `None`,
-            speechbrain will use "pretrained_models/" and "model_checkpoints/"
-            directories in the current working directory.
-        device : int, default=-1
-            Device to use for pytorch models. Follows the Hugging Face convention
-            (`-1` for cpu and device number for gpu, for instance `0` for "cuda:0")
-        batch_size : int, default=1
-            Number of segments in batches processed by the model.
-        uid : str, optional
-            Identifier of the transcriber.
-        """
         if cache_dir is not None:
             cache_dir = Path(cache_dir)
 
@@ -98,8 +95,10 @@ class SBTranscriber(Operation):
         self._sample_rate = self._asr.audio_normalizer.sample_rate
 
     def run(self, segments: list[Segment]):
-        """Add a transcription attribute to each segment with a text value
-        containing the transcribed text.
+        """Run the transcription operation.
+
+        Add a transcription attribute to each segment with a text value containing
+        the transcribed text.
 
         Parameters
         ----------

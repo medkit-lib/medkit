@@ -1,6 +1,3 @@
-"""This module needs extra-dependencies not installed as core dependencies of medkit.
-To install them, use `pip install medkit-lib[srt-io-convert]`.
-"""
 from __future__ import annotations
 
 __all__ = ["SRTInputConverter", "SRTOutputConverter"]
@@ -24,8 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 class SRTInputConverter(InputConverter):
-    """Convert .srt files containing transcription information into turn segments
-    with transcription attributes.
+    """Convert .srt files containing transcription information into turn segments with transcription attributes.
 
     For each turn in a .srt file, a
     :class:`~medkit.core.audio.annotation.Segment` will be created, with an
@@ -36,6 +32,15 @@ class SRTInputConverter(InputConverter):
     If a :class:`~medkit.core.ProvTracer` is set, provenance information will be
     added for each segment and each attribute (referencing the input converter
     as the operation).
+
+    Parameters
+    ----------
+    turn_segment_label : str, default="turn"
+        Label to use for segments representing turns in the .srt file.
+    transcription_attr_label : str, default="transcribed_text"
+        Label to use for segments attributes containing the transcribed text.
+    converter_id : str, optional
+        Identifier of the converter.
     """
 
     def __init__(
@@ -44,15 +49,6 @@ class SRTInputConverter(InputConverter):
         transcription_attr_label: str = "transcribed_text",
         converter_id: str | None = None,
     ):
-        """Parameters
-        ----------
-        turn_segment_label : str, default="turn"
-            Label to use for segments representing turns in the .srt file.
-        transcription_attr_label : str, default="transcribed_text"
-            Label to use for segments attributes containing the transcribed text.
-        converter_id : str, optional
-            Identifier of the converter.
-        """
         if converter_id is None:
             converter_id = generate_id()
 
@@ -91,8 +87,7 @@ class SRTInputConverter(InputConverter):
         audio_dir: str | Path | None = None,
         audio_ext: str = ".wav",
     ) -> list[AudioDocument]:
-        """Load all .srt files in a directory into a list of
-        :class:`~medkit.core.audio.document.AudioDocument` objects.
+        """Load all .srt files in a directory into a list of audio documents.
 
         For each .srt file, they must be a corresponding audio file with the
         same basename, either in the same directory or in an separated audio
@@ -133,9 +128,7 @@ class SRTInputConverter(InputConverter):
         return docs
 
     def load_doc(self, srt_file: str | Path, audio_file: str | Path) -> AudioDocument:
-        """Load a single .srt file into an
-        :class:`~medkit.core.audio.document.AudioDocument` containing
-        turn segments with transcription attributes.
+        """Load a single .srt file into an audio document containing turn segments with transcription attributes.
 
         Parameters
         ----------
@@ -162,9 +155,7 @@ class SRTInputConverter(InputConverter):
         return doc
 
     def load_segments(self, srt_file: str | Path, audio_file: str | Path) -> list[Segment]:
-        """Load a .srt file and return a list of
-        :class:`~medkit.core.audio.annotation.Segment` objects corresponding to
-        turns, with transcription attributes.
+        """Load a .srt file and return a list of segments corresponding to turns with transcription attributes.
 
         Parameters
         ----------
@@ -204,13 +195,19 @@ class SRTInputConverter(InputConverter):
 
 
 class SRTOutputConverter(OutputConverter):
-    """Build .srt files containing transcription information from
-    :class:`~medkit.core.audio.annotation.Segment` objects.
+    """Build .srt files containing transcription information from segments.
 
     There must be a segment for each turn, with an associated
     :class:`~medkit.core.Attribute` holding the transcribed text as
     value. The segments can be passed directly or as part of
     :class:`~medkit.core.audio.document.AudioDocument` instances.
+
+    Parameters
+    ----------
+    segment_turn_label : str, default="turn"
+        Label of segments representing turns in the audio documents.
+    transcription_attr_label : str, default="transcribed_text"
+        Label of segments attributes containing the transcribed text.
     """
 
     def __init__(
@@ -218,13 +215,6 @@ class SRTOutputConverter(OutputConverter):
         segment_turn_label: str = "turn",
         transcription_attr_label: str = "transcribed_text",
     ):
-        """Parameters
-        ----------
-        segment_turn_label : str, default="turn"
-            Label of segments representing turns in the audio documents.
-        transcription_attr_label : str, default="transcribed_text"
-            Label of segments attributes containing the transcribed text.
-        """
         super().__init__()
 
         self.segment_turn_label = segment_turn_label
@@ -236,8 +226,7 @@ class SRTOutputConverter(OutputConverter):
         srt_dir: str | Path,
         doc_names: list[str] | None = None,
     ):
-        """Save :class:`~medkit.core.audio.document.AudioDocument` instances as
-        .srt files in a directory.
+        """Save multiple audio documents as .srt files in a directory.
 
         Parameters
         ----------
@@ -269,8 +258,7 @@ class SRTOutputConverter(OutputConverter):
         doc: AudioDocument,
         srt_file: str | Path,
     ):
-        """Save a single :class:`~medkit.core.audio.document.AudioDocument` as a
-        .srt file.
+        """Save a single audio document as a .srt file.
 
         Parameters
         ----------
@@ -285,8 +273,7 @@ class SRTOutputConverter(OutputConverter):
         self.save_segments(segments, srt_file)
 
     def save_segments(self, segments: list[Segment], srt_file: str | Path):
-        """Save :class:`~medkit.core.audio.annotation.Segment` objects representing
-        turns into a .srt file.
+        """Save segments representing turns into a .srt file.
 
         Parameters
         ----------
