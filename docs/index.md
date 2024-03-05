@@ -16,7 +16,7 @@ with a strong dedication to open-source and community development.
 ::::{grid} 2
 :gutter: 2
 
-:::{grid-item-card} User Guide
+:::{grid-item-card} {octicon}`people;2em;sd-mr-1` User Guide
 
 To get started with `medkit`
 
@@ -24,7 +24,7 @@ To get started with `medkit`
 [Learn more »](user_guide/first_steps)
 :::
 
-:::{grid-item-card} Tutorial
+:::{grid-item-card} {octicon}`rocket;2em;sd-mr-1` Tutorial
 
 To walk through `medkit` features
 
@@ -32,7 +32,7 @@ To walk through `medkit` features
 [Learn more »](tutorial/entity_matching)
 :::
 
-:::{grid-item-card} Cookbook
+:::{grid-item-card} {octicon}`book;2em;sd-mr-1` Cookbook
 
 To learn `medkit` by examples
 
@@ -40,7 +40,7 @@ To learn `medkit` by examples
 [Learn more »](examples/spans)
 :::
 
-:::{grid-item-card} Reference
+:::{grid-item-card} {octicon}`search;2em;sd-mr-1` Reference
 
 For developers and contributors
 
@@ -56,7 +56,7 @@ Please check the **BREAKING CHANGES** section of the project's changelog for det
 :::
 
 ```{toctree}
-:caption: User Guide
+:caption: 👥 User Guide
 :hidden:
 :titlesonly:
 
@@ -68,7 +68,7 @@ user_guide/module
 ```
 
 ```{toctree}
-:caption: Tutorial
+:caption: 🚀 Tutorial
 :hidden:
 :titlesonly:
 
@@ -78,7 +78,7 @@ tutorial/text_segmentation/index
 ```
 
 ```{toctree}
-:caption: Cookbook
+:caption: 📖 Cookbook
 :hidden:
 :titlesonly:
 
@@ -97,7 +97,7 @@ examples/ontotox
 ```
 
 ```{toctree}
-:caption: Reference
+:caption: 🔍 Reference
 :hidden:
 :titlesonly:
 
