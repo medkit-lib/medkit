@@ -171,7 +171,7 @@ docs = [
 ]
 
 [project.urls]
-Changelog = "https://github.com/medkit-lib/medkit/blob/main/CHANGELOG.md"
+Changelog = "https://medkit.readthedocs.io/changelog.html"
 Documentation = "https://medkit.readthedocs.io"
 Issues = "https://github.com/medkit-lib/medkit/issues"
 Source = "https://github.com/medkit-lib/medkit"
