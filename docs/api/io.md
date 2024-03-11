@@ -1,101 +1,122 @@
-# I/O components
+# I/O Components
 
 This page lists all components for converting and loading/saving data.
 
-:::{note}
-For more details about public APIs, refer to
-{mod}`medkit.io`.
-:::
+For more details about public APIs, please refer to {mod}`medkit.io`.
+
+```{contents} Table of Contents
+:depth: 3
+```
 
 ## medkit-json
 
-medkit has some utilities to export and import medkit documents to json format.
+`medkit` has some utilities to export and import documents saved as JSON format.
 
-You can use {mod}`medkit.io.medkit_json.save_text_documents` to save a list of documents, and then {mod}`medkit.io.medkit_json.load_text_documents` to load them in medkit.
+You can use {mod}`medkit.io.medkit_json.save_text_documents` to save a list of documents,
+and then {mod}`medkit.io.medkit_json.load_text_documents` to load them within `medkit`.
 
 :::{warning}
-`load_text_documents` is a generator function that returns a generator iterator.
-That avoids keeping data in memory.
+`load_text_documents` is a generator function yielding a single document per iteration,
+to prevent accidental memory spikes if the corpus is large.
 
-Pay attention that the generator variable becomes empty after the first iteration.
+To load the full corpus in memory, you may consume the generator in a list with:
 
-However, if you need to keep all the list in memory, you may cast it to a list:
 ```python
 from medkit.io.medkit_json import load_text_documents
 
-MEDKIT_JSONL_PATH = "path_to_medkit_jsonl_file"
-
-docs = list(load_text_documents(MEDKIT_JSONL_PATH))
+docs = list(load_text_documents("/path/to/medkit/documents.jsonl"))
 ```
 :::
 
-For more details, refer to {mod}`medkit.io.medkit_json`.
+For more details, please refer to {mod}`medkit.io.medkit_json`.
 
 (api:io:brat)=
 ## Brat
 
-Brat is a web-based tool for text annotation. Medkit supports the **input** and **output** conversion of text documents. 
+[Brat](https://brat.nlplab.org) is a web-based tool for text annotation.
+`medkit` supports input and output conversions of Brat text documents. 
+
+For more details about the public API, please refer to {mod}`medkit.io.brat`.
 
 :::{seealso}
-For more details, refer to {mod}`medkit.io.brat`.
 You may refer to this [example](../examples/brat_io.md) for more information.
 :::
 
-
 ## Doccano
 
-[Doccano](https://github.com/doccano/doccano) is a text annotation tool from multiple tasks. Medkit supports the **input** and **output** conversion of doccano files (.JSONL format). 
+[Doccano](https://github.com/doccano/doccano) is a text annotation tool from multiple tasks.
+`medkit` supports input and output conversions of doccano files (saved in JSONL format). 
 
-You can load annotations from a .jsonl file or a zip directory.
+You can load annotations from a JSONL file or a ZIP directory.
 
 ### Supported tasks
-| Doccano Project                  	| Task for io converter                                                                                                     	|
-|----------------------------------	|---------------------------------------------------------------------------------------------------------------------------	|
-| Sequence labeling                	| {class}`medkit.io.doccano.DoccanoTask.SEQUENCE_LABELING` <br> i.e : `{'text':...,'label':[(int,int,label)]}`              	|
-| Sequence labeling with relations 	| {class}`medkit.io.doccano.DoccanoTask.RELATION_EXTRACTION` <br>i.e : `{'text':...,'entities':[{...}],'relations':[{...}]}` 	|
-| Text Classification              	| {class}`medkit.io.doccano.DoccanoTask.TEXT_CLASSIFICATION`<br>i.e : `{'text':...,'label':[str]}`                          	|
 
-### Client configuration
+```{list-table}
+* - Doccano Project
+  - Task for converter
+  - Example
+* - Sequence labeling
+  - {class}`medkit.io.doccano.DoccanoTask.SEQUENCE_LABELING`
+  - `{'label': [(int, int, str)], 'text': ...}`{l=python}
+* - Relation extraction
+  - {class}`medkit.io.doccano.DoccanoTask.TEXT_CLASSIFICATION`
+  - `{'label': [str], 'text': ...}`{l=python}
+```
 
-The doccano user interface allows custom configuration over certain annotation parameters. The {class}`medkit.io.doccano.DoccanoClientConfig` class contains the configuration to be used by the input converter. 
+### Client Configuration
 
-You can modify the settings depending on the configuration of your project. If you don't provide a config, the converter will use the default doccano configuration.
+The doccano user interface allows custom configuration over certain annotation parameters.
+The {class}`medkit.io.doccano.DoccanoClientConfig` class contains the configuration to be used by the input converter. 
 
+You can modify the settings depending on the configuration of your project.
+If no custom configuration is provided, the converter will use the default doccano configuration.
 
-:::{note}
-**Metadata**
+:::{note} Metadata
 
-- Doccano to medkit: All the extra fields are imported as a dictionary in `TextDocument.metadata`
-- Medkit to Doccano: The `TextDocument.metadata` is exported as extra fields in the output data. You can set `include_metadata` to False to remove the extra fields.
+- Doccano to `medkit`: All the extra fields are imported as a dictionary in `TextDocument.metadata`
+- `medkit` to Doccano: The `TextDocument.metadata` are exported as extra fields to the output data.
+  Set `include_metadata` to `False` to exclude the extra fields.
 :::
 
-For more details, refer to {mod}`medkit.io.doccano`.
+For more details, please refer to {mod}`medkit.io.doccano`.
 
 (api:io:spacy)=
-## Spacy
+## spaCy
 
-Medkit supports the **input** and **output** conversion of spacy documents.
+`medkit` supports input and output conversions of spaCy documents.
 
 :::{important}
-For using spacy converters, you need to install [spacy](https://spacy.io/).
-These dependencies may be installed with `pip install medkit-lib[spacy]`
+Using spaCy converters requires additional dependencies:
+
+```console
+pip install 'medkit-lib[spacy]'
+```
 :::
 
 :::{seealso}
 You may refer to this [example](../examples/spacy/index.md) for more information.
 :::
 
-For more details, refer to {mod}`medkit.io.spacy`.
-
-
+For more details, please refer to {mod}`medkit.io.spacy`.
 
 ## RTTM
 
-Rich Transcription Time Marked (.rttm) files contains diarization information. 
-Medkit supports input and output conversion of audio documents.
+Rich Transcription Time Marked files (saved with .rttm extension) contains diarization information. 
+`medkit` supports input and output conversions of audio documents in RTTM format.
 
 For more details, refer to {mod}`medkit.io.rttm`.
 
 ## SRT
+
+SRT files (saved with .srt extension) contains transcription information associated with an audio recording.
+`medkit` supports input and output conversions of audio transcription in SRT format.
+
+:::{important}
+Using SRT converters requires additional dependencies:
+
+```console
+pip install 'medkit-lib[srt-io-converter]'
+```
+:::
 
 For more details, refer to {mod}`medkit.io.srt`.

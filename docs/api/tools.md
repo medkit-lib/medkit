@@ -2,54 +2,51 @@
 
 This page lists miscellaneous utility components.
 
-:::{note}
-For more details about public APIs, refer to
-{mod}`medkit.tools`.
-:::
+For more details about public APIs, refer to {mod}`medkit.tools`.
 
-## Save provenance to .dot
-
-Helper function to generate [graphviz](https://graphviz.org/)-compatible .dot
-files from provenance data. For more details, refer to
-{func}`medkit.tools.save_prov_to_dot`.
-
-## HuggingFace utils
-
-Helper functions for operations using [HuggingFace](https://huggingface.co/) models. For more details,
-refer to {mod}`medkit.tools.hf_utils`.
-
-## mtsamples utils
-
-:::{note}
-For more details about mtsamples data, refer to {mod}`medkit.tools.mtsamples`
-:::
-
-The functions provided by this module automatically download mtsamples data into
-a cache directory before loading / converting into medkit format.
-
-For example, if you want to load the ten first mtsamples text documents:
-
+```{contents} Table of Contents
+:depth: 3
 ```
-from medkit.tools.mtsamples import convert_mtsamples_to_medkit, load_mtsamples
+
+## Provenance
+
+Helper function to generate a [Graphviz](https://graphviz.org/docs/layouts/dot/) layout from provenance data
+and save it to the dot format for easier visualization.
+
+Refer to {func}`medkit.tools.save_prov_to_dot`.
+
+## HuggingFace
+
+Helper functions for operations using [HuggingFace](https://huggingface.co/) models.
+
+Refer to {mod}`medkit.tools.hf_utils`.
+
+## mtsamples
+
+Helper functions to facilitate downloads of `mtsamples` data into a cache directory
+before loading and converting them to `medkit` format.
+
+For example, to load the first ten sample text documents:
+
+```python
+from medkit.tools.mtsamples import load_mtsamples
 
 docs = load_mtsamples(nb_max=10)
 ```
 
-## e3c corpus utils
+For more details about `mtsamples` data, please refer to {mod}`medkit.tools.mtsamples`.
 
-:::{note}
-For more details about e3c corpus data, refer to {mod}`medkit.tools.e3c_corpus`
-:::
+## E3C corpus
 
-The E3C corpus is available for download on:
-* the [E3C Project Web Site](https://live.european-language-grid.eu/catalogue/corpus/7618/download/)
-* or the [Github Project - V2.0.0](https://github.com/hltfbk/E3C-Corpus/tree/v2.0.0)
+The E3C corpus may be downloaded from:
+- the [E3C project's website](https://live.european-language-grid.eu/catalogue/corpus/7618/download/);
+- the [E3C GitHub releases](https://github.com/hltfbk/E3C-Corpus/releases).
 
-Once downloaded and unzipped, you may :
+Once downloaded and unzipped, you may:
 
-* load the data collection into medkit text documents
+- load the data collection into `medkit` text documents:
 
-```
+```python
 from pathlib import Path
 from medkit.tools.e3c_corpus import load_data_collection
 
@@ -58,9 +55,9 @@ data_collection_layer1 = Path("/tmp/E3C-Corpus-2.0.0/data_collection/French/laye
 docs = load_data_collection(data_collection_layer1)
 ```
 
-* convert the data collection to medkit text documents.
+- convert the data collection to `medkit` text documents:
 
-```
+```python
 from pathlib import Path
 from medkit.tools.e3c_corpus import convert_data_collection_to_medkit
 
@@ -75,9 +72,9 @@ for layer in layers:
     )
 ```
 
-* load the annotated data into medkit text documents
+- load the annotated data into `medkit` text documents:
 
-```
+```python
 from pathlib import Path
 from medkit.tools.e3c_corpus import load_data_annotation
 
@@ -86,9 +83,9 @@ data_annotation_layer1 = Path("/tmp/E3C-Corpus-2.0.0/data_annotation/French/laye
 docs = load_data_annotation(data_annotation_layer1)
 ```
 
-* convert the annotated data to medkit text documents.
+- convert the annotated data to `medkit` text documents.
 
-```
+```python
 from pathlib import Path
 from medkit.tools.e3c_corpus import convert_data_annotation_to_medkit
 
@@ -102,3 +99,5 @@ for layer in layers:
         dir_path=dir_path, output_file=medkit_file
     )
 ```
+
+For more details about E3C corpus data, please refer to {mod}`medkit.tools.e3c_corpus`.
