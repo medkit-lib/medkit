@@ -14,6 +14,17 @@ MEDKIT_JSON_VERSION = "0.2"
 
 
 class ContentType(enum.Enum):
+    """Type of content
+
+    Attributes
+    ----------
+    TEXT_DOCUMENT : Text document
+    TEXT_DOCUMENT_LIST : List of text documents
+    TEXT_ANNOTATION_LIST : List of text annotations
+    AUDIO_DOCUMENT : Audio document
+    AUDIO_DOCUMENT_LIST : List of audio documents
+    AUDIO_ANNOTATION_LIST : List of audio annotations
+    """
     TEXT_DOCUMENT = "text_document"
     TEXT_DOCUMENT_LIST = "text_document_list"
     TEXT_ANNOTATION_LIST = "text_annotation_list"

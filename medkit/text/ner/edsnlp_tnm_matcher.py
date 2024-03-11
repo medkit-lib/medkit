@@ -13,7 +13,7 @@ from medkit.text.spacy.edsnlp import build_tnm_attribute
 
 
 class EDSNLPTNMMatcher(NEROperation):
-    """TNM (Tumour/Node/Metastasis) string matcher based on the `_EDS-NLP TNM`_ pipeline.
+    """TNM (Tumour/Node/Metastasis) string matcher based on the `EDS-NLP TNM`_ pipeline.
 
     For each TNM string that is found, an entity will be created with an
     :class:`~medkit.text.ner.TNMAttribute` attribute attached to it containing

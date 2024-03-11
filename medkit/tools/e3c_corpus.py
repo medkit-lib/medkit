@@ -2,7 +2,7 @@
 
 Notes
 -----
-The `E3C corpus <https://github.com/hltfbk/E3C-Corpus>`_ is released under a
+The `E3C corpus <https://github.com/hltfbk/E3C-Corpus>`_ [1]_ [2]_ is released under a
 Creative Commons NonCommercial license (CC-BY-NC).
 
 
