@@ -1,19 +1,18 @@
-# Core text components
+# Text Components
 
-This page contains all core text concepts of medkit.
+This page contains all core text concepts of `medkit`.
 
-:::{note}
-For more details about public APIs, refer to
-{mod}`medkit.core.text`.
-:::
+For more details about public APIs, please refer to {mod}`medkit.core.text`.
 
-## Document, Annotations & Attributes
+```{contents} Table of Contents
+:depth: 3
+```
 
-The {class}`~.text.TextDocument` class implements the
-{class}`~.core.Document` protocol. It allows to store subclasses of
-{class}`~.text.TextAnnotation`, which implements the
-{class}`~.core.annotation.Annotation` protocol.
+## Data Structures
 
+The {class}`~.text.TextDocument` class implements the {class}`~.core.Document` protocol.
+It allows to store subclasses of {class}`~.text.TextAnnotation`,
+which implements the {class}`~.core.annotation.Annotation` protocol.
 
 ```{mermaid}
 :align: center
@@ -44,49 +43,42 @@ classDiagram
 
 ### Document
 
-{class}`~.text.TextDocument` relies on {class}`~.text.TextAnnotationContainer`,
-a subclass of {class}`~.core.AnnotationContainer`, to manage the annotations,
+{class}`~.text.TextDocument` relies on {class}`~.text.TextAnnotationContainer` to manage the annotations.
 
-Given a text document named `doc`
+Given a text document named `doc`, one can:
 
-* User can browse segments, entities, and relations
-  ```
-  for entity in doc.anns.entities:
+- browse segments, entities, and relations:
+
+```python
+for entity in doc.anns.entities:
     ...
 
-  for segment in doc.anns.segments:
+for segment in doc.anns.segments:
     ...
 
-  for relation in doc.anns.relations:
+for relation in doc.anns.relations:
     ...
-  ```
-* User can filter segments, entities and relations
-  ```
-    sentences_segments = doc.get_segments(label="sentences")
-    disorder_entities = doc.get_entities(label="disorder)
-
-    entity = <my entity>
-    relations = doc.get_relations(label="before", source_id=entity.uid)
-  ```
-
-```{note}
-For common interfaces provided by core components, you can refer to
-[Document](api:core:document).
 ```
+
+* get and filter segments, entities and relations:
+
+```python
+sentences_segments = doc.get_segments(label="sentences")
+disorder_entities = doc.get_entities(label="disorder")
+
+entity = ...
+relations = doc.get_relations(label="before", source_id=entity.uid)
+```
+
+For more details on common interfaces provided by core components,
+please refer to [Document](api:core:document).
 
 ### Annotations
 
-For text modality, {class}`~.text.TextDocument` can only contain
-{class}`~.text.TextAnnotation`s.
+For the text modality, {class}`~.text.TextDocument` can only contain multiple {class}`~.text.TextAnnotation`.
 
-:::{note}
-For more details about public APIs, refer to {mod}`medkit.core.text.annotation`).
-:::
-
-Three subclasses are defined:
-{class}`~medkit.core.text.annotation.Segment`,
-{class}`~medkit.core.text.annotation.Entity` and
-{class}`~medkit.core.text.annotation.Relation`
+Three subclasses are defined {class}`~medkit.core.text.annotation.Segment`,
+{class}`~medkit.core.text.annotation.Entity` and {class}`~medkit.core.text.annotation.Relation`.
 
 ```{mermaid}
 :align: center
@@ -107,62 +99,50 @@ classDiagram
 ```
 
 :::{note}
-Each text annotation class inherits from the common interfaces provided by the
-core component (cf. [Annotation](api:core:annotation))
+Each text annotation class inherits from the common interfaces
+provided by the core component (cf. [Annotation](api:core:annotation)).
 :::
+
+For more details about public APIs, please refer to {mod}`medkit.core.text.annotation`.
 
 ### Attributes
 
-Text annotations can receive attributes, which will be instances of the core
-{class}`~.core.Attribute` class.
+Text annotations can receive attributes, which will be instances of the core {class}`~.core.Attribute` class.
 
-Among attributes, {mod}`medkit.core.text` proposes
-{class}`~medkit.core.text.entity_norm_attribute.EntityNormAttribute`, to be used
-for normalization attributes, in order to have a common structure for
-normalization information, independently of the operation used to create it.
-
+Among attributes, {mod}`medkit.core.text` proposes {class}`~medkit.core.text.entity_norm_attribute.EntityNormAttribute`,
+to be used for normalization attributes, in order to have a common structure for normalization information,
+independently of the operation used to create it.
 
 (api:core-text:span)=
 ## Spans
 
-medkit relies on the concept of spans for following all text modifications
-made by the different operations.
+`medkit` relies on the concept of spans for following all text modifications made by the different operations.
 
-:::{note}
-For more details about public APIs, refer to
-{mod}`medkit.core.text.span`.
-:::
+`medkit` also proposes a set of utilities for manipulating these spans when implementing new operations.
 
-medkit also proposes a set of utilities for manipulating these spans if we need
-it when implementing a new medkit operation.
-
-:::{note}
-For more details about public APIs, refer to  {mod}`medkit.core.text.span_utils`.
-:::
+For more details about public APIs, please refer to {mod}`medkit.core.text.span`
+and {mod}`medkit.core.text.span_utils`.
 
 :::{seealso}
-You may also take a look to the [spans notebook example](../examples/spans).
+You may also take a look to the [spans examples](../examples/spans).
 :::
 
+## Text Utilities
 
-## Text utilities
+These utilities have some preconfigured patterns for preprocessing text documents without destruction.
+They are not designed to be used directly, but rather inside a cleaning operation.
 
-These utilities have some preconfigured patterns for preprocessing text documents without destruction. They are not really supposed to be used directly, but rather inside a cleaning operation.
-
-:::{note}
-For more details about public APIs, refer to {mod}`medkit.core.text.utils`.
-:::
+For more details about public APIs, please refer to {mod}`medkit.core.text.utils`.
 
 :::{seealso}
- Medkit provides the {class}`~medkit.text.preprocessing.eds_cleaner.EDSCleaner` class that combines all these utilities to clean french documents (related to EDS documents coming from PDF).
+`medkit` provides a {class}`~medkit.text.preprocessing.eds_cleaner.EDSCleaner` class,
+which combines all these utilities to clean French documents (related to EDS documents coming from PDF).
 :::
-
 
 ## Operations
 
 Abstract subclasses of {class}`~.core.Operation` have been defined for text
 to ease the development of text operations according to `run` operations.
-
 
 ```{eval-rst}
 .. autoclasstree:: medkit.core.operation medkit.core.text.operation
@@ -172,15 +152,12 @@ to ease the development of text operations according to `run` operations.
     :caption: Operation hierarchy
 ```
 
-:::{note}
-For more details about public APIs, refer to {mod}`medkit.core.text.operation`.
-:::
-
 Internal class `_CustomTextOperation` has been implemented to allow user to
-call {func}`~.text.create_text_operation` for easily instantiating a custom
-text operation.
+call {func}`~.text.create_text_operation` for easier instantiation of custom
+text operations.
+
+For more details about public APIs, please refer to {mod}`medkit.core.text.operation`.
 
 :::{seealso}
-You may refer to this [tutorial](../examples/custom_text_operation) as example
-of definition of custom operation.
+Please refer to this [tutorial](../examples/custom_text_operation) for examples of custom operation.
 :::

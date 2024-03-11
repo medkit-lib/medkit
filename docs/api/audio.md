@@ -1,114 +1,108 @@
-# Audio operations
+# Audio Processing
 
-This page lists all components related to audio processing.
+This page lists and explains all components related to audio processing.
 
+For more details about the public API, please refer to {mod}`medkit.audio`.
 
+```{contents} Table of Contents
+:depth: 3
+```
 
-:::{note}
-For more details about all sub-packages, refer to
-{mod}`medkit.audio`.
-:::
+## Preprocessing Operations
 
-## Pre-processing operations
+This section provides some information about how to use preprocessing modules for audio.
 
-This section provides some information about how to use preprocessing modules
-for audio.
-
-:::{note}
 For more details about public APIs, refer to {mod}`medkit.audio.preprocessing`.
-:::
 
 ### Downmixer
 
-For more details, refer to {mod}`medkit.audio.preprocessing.downmixer`.
+Refer to {mod}`medkit.audio.preprocessing.downmixer`.
 
-### Power normalizer
+### Power Normalizer
 
-For more details, refer to {mod}`medkit.audio.preprocessing.power_normalizer`.
+Refer to {mod}`medkit.audio.preprocessing.power_normalizer`.
 
 ### Resampler
 
-:::{important}
-{class}`~.audio.preprocessing.resampler.Resampler` needs additional dependencies
-that can be installed with `pip install medkit-lib[resampler]`
-:::
+Refer to {mod}`medkit.audio.preprocessing.resampler`.
 
-For more details, refer to {mod}`medkit.audio.preprocessing.resampler`.
+::::{important}
+{class}`~.audio.preprocessing.resampler.Resampler` requires additional dependencies:
 
-## Segmentation operations
-
-This section lists audio segmentation operations. They are part of the
-{mod}`medkit.audio.segmentation` module.
-
-
-### WebRTC voice detector
-
-For more details, refer to
-{mod}`medkit.audio.segmentation.webrtc_voice_detector`.
-
-### Pyannote speaker detector
-
-:::{important}
-{class}`~.audio.segmentation.pa_speaker_detector.PASpeakerDetector` is an experimental feature.
-It depends on a version of pyannote-audio that [is not released yet](https://github.com/pyannote/pyannote-audio/issues/1460) on PyPI.
-:::
-
-To install it, you may use the `JSALT2023` tag :
-
+```console
+pip install 'medkit-lib[resampler]'
 ```
-pip install https://github.com/pyannote/pyannote-audio/archive/refs/tags/JSALT2023.tar.gz
-```
+::::
 
-For more details, refer to {mod}`medkit.audio.segmentation.pa_speaker_detector`.
+## Segmentation Operations
+
+This section lists audio segmentation operations,
+which are included in the {mod}`medkit.audio.segmentation` module.
+
+### WebRTC Voice Detector
+
+Refer to {mod}`medkit.audio.segmentation.webrtc_voice_detector`.
+
+### Speaker Detector
+
+Refer to {mod}`medkit.audio.segmentation.pa_speaker_detector`.
+
+::::{important}
+{class}`~.audio.segmentation.pa_speaker_detector.PASpeakerDetector` requires additional dependencies:
+
+```console
+pip install 'medkit[pa-speaker-detector]'
+```
+::::
 
 ## Audio Transcription
 
-This section lists operations and other components to use to perform audio
-transcription.
+This section lists operations used to perform audio transcription.
 They are part of the {mod}`medkit.audio.transcription` module.
 
 {class}`~.audio.transcription.DocTranscriber` is the operation handling the
 transformation of {class}`~.core.audio.AudioDocument` instances into
-{class}`~.audio.transcription.TranscribedTextDocument` instances (subclass of
-{class}`~.core.text.TextDocument`).
+{class}`~.audio.transcription.TranscribedTextDocument` instances.
 
 The actual conversion from text to audio is delegated to operation complying
 with the {class}`~.audio.transcription.TranscriptionOperation` protocol.
 {class}`~.audio.transcription.hf_transcriber.HFTranscriber` and
 {class}`~.audio.transcription.sb_transcriber.SBTranscriber` are implementations
-of {class}`~.audio.transcription.TranscriptionOperation`, allowing to use
-HuggingFace transformer models and speechbrain models respectively.
+of {class}`~.audio.transcription.TranscriptionOperation`,
+which use HuggingFace transformer and SpeechBrain models respectively.
 
 ### DocTranscriber
 
-For more details, refer to {mod}`medkit.audio.transcription.doc_transcriber`.
+Refer to {mod}`medkit.audio.transcription.doc_transcriber`.
 
 ### TranscribedTextDocument
 
-For more details, refer to {mod}`medkit.audio.transcription.transcribed_text_document`.
+Refer to {mod}`medkit.audio.transcription.transcribed_text_document`.
 
 ### HFTranscriber
 
-:::{important}
-{class}`~.audio.transcription.hf_transcriber.HFTranscriber` needs additional
-dependencies that can be installed with 
-`pip install medkit-lib[hf-transcriber]`
-:::
+Refer to {mod}`medkit.audio.transcription.hf_transcriber`.
 
-For more details, refer to
-{mod}`medkit.audio.transcription.hf_transcriber`.
+::::{important}
+{class}`~.audio.transcription.hf_transcriber.HFTranscriber` requires additional dependencies:
+
+```
+pip install 'medkit-lib[hf-transcriber]'
+```
+::::
 
 ### SBTranscriber
 
-:::{important}
-{class}`~.audio.transcription.sb_transcriber.SBTranscriber` needs additional
-dependencies that can be installed with
-`pip install medkit-lib[sb-transcriber]`
-:::
+Refer to {mod}`medkit.audio.transcription.sb_transcriber`.
 
-For more details, refer to
-{mod}`medkit.audio.transcription.sb_transcriber`.
+::::{important}
+{class}`~.audio.transcription.sb_transcriber.SBTranscriber` requires additional dependencies:
 
-# Metrics
+```
+pip install 'medkit-lib[sb-transcriber]'
+```
+::::
 
-The module {mod}`medkit.audio.metrics` provides components to evaluate audio annotations.
+## Metrics
+
+Module {mod}`medkit.audio.metrics` provides components to evaluate audio annotations.

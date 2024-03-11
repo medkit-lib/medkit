@@ -1,32 +1,33 @@
-# Core components
+# Core Components
 
-This page contains all core concepts of medkit.
+This page explains all core concepts defined in `medkit`.
 
-:::{note}
-For more details about public APIs, refer to {mod}`medkit.core`.
-:::
+For more details, please refer to {mod}`medkit.core`.
 
-## Documents, Annotations & Attributes
+```{contents} Table of Contents
+:depth: 3
+```
 
-Medkit documents classes are used to:
-* access to raw data,
-* store relevant annotations extracted from the raw data.
+## Data Structures
+
+`medkit` document classes are used to access raw data,
+as well as store annotations extracted from these raw data.
 
 The {class}`~.core.Document` and {class}`~.core.annotation.Annotation` protocols
-are defined inside {mod}`medkit.core`. They define common properties and
-methods across all modalities. These protocols are then implemented for each
-modality (text, audio, image, etc), with additional logic specific to the
-modality.
+are defined inside {mod}`medkit.core`.
+They define common properties and methods across all modalities.
+These protocols are then implemented for each modality (text, audio, image, etc.),
+with additional logic specific to the modality.
 
 To facilitate the implementation of the {class}`~.core.Document` protocol,
-an {class}`~.core.AnnotationContainer` class is provided. It behaves like a list of
-annotations, with additional filtering methods and support for non-memory
-storage.
+the {class}`~.core.AnnotationContainer` class is provided.
+It behaves like a list of annotations, with additional filtering methods
+and support for non-memory storage.
 
-{mod}`medkit.core` also defines the {class}`~.core.Attribute` class, that
-can directly be used to attach attributes to annotations of any modality.
-Similarly to {class}`~.core.AnnotationContainer`, the role of this container is to
-provide additional methods for facilitating access to the list of attributes
+{mod}`medkit.core` also defines the {class}`~.core.Attribute` class,
+which can be used to attach attributes to annotations for any modality.
+Similarly to {class}`~.core.AnnotationContainer`, the role of this container is
+to provide additional methods for facilitating access to the list of attributes
 belonging to an annotation.
 
 ```{mermaid}
@@ -55,96 +56,86 @@ classDiagram
     Annotation *-- Attribute : contains\n(AttributeContainer)
 ```
 
-Currently, {mod}`medkit.core.text` implements a
-{class}`~.text.TextDocument` class and a corresponding set of
-{class}`~.text.TextAnnotation` subclasses, and similarly
-{mod}`medkit.core.audio` provides an {class}`~.audio.AudioDocument` class
+Currently, {mod}`medkit.core.text` implements a {class}`~.text.TextDocument` class
+and a corresponding set of {class}`~.text.TextAnnotation` subclasses.
+Similarly, {mod}`medkit.core.audio` provides an {class}`~.audio.AudioDocument` class
 and a corresponding {class}`~medkit.core.audio.annotation.Segment`.
-Both modality also subclass {class}`~.core.AnnotationContainer` to add some
-modality-specific logic or filtering.
+Both modality are also subclasses of {class}`~.core.AnnotationContainer`
+to provide some modality-specific logic or filtering.
 
-To get more details about each modality, you can refer to their documentation:
-* [core text](core_text.md)
-* [core audio](core_audio.md)
+You may refer to the documentation specific to [audio](core_audio.md) and [text](core_text.md) modalities.
 
 (api:core:document)=
 ### Document
 
-{class}`~.core.Document` protocol class provides the minimal data structure
-for a medkit document.
-For example, each document (whatever the modality) is linked to an annotation
-container for the same modality.
+The {class}`~.core.Document` protocol defines the minimal data structure for a `medkit` document.
+Regardless of the modality, each document is linked to a corresponding annotation container.
 
-{class}`~.core.AnnotationContainer` class provides a set of methods (e.g., add/get)
-to be implemented for each modality.
+The {class}`~.core.AnnotationContainer` class provides a set of methods to be implemented for each modality.
 
-The goal is to provide user with a minimum set of common interfaces for
-accessing to the document annotations whatever the modality.
+The goal is to provide users with a minimum set of common interfaces
+for accessing to the document annotations whatever the modality.
 
-Given a document named `doc` from any modality
+Given a document named `doc`, one can:
 
-* User can browse the document annotations
-  ```
-  for ann in doc.anns:
+- browse its annotations:
+
+```python
+for ann in doc.anns:
     ...
-  ```
-* User can add a new annotation to the document
-  ```
-  ann = <my annotation>
-  doc.anns.add(ann)
-  ```
-* User can get the document annotations filtered by label
-  ```
-  anns = doc.anns.get(label="disorder")
-  ```
+```
 
-:::{note}
-For more details about their implementation, refer to
-{class}`medkit.core.document.Document` and
-{class}`medkit.core.annotation_container.AnnotationContainer`.
-:::
+- add a new annotation:
+
+```python
+doc.anns.add(...)
+```
+
+- get annotations filtered by label:
+
+```python
+disorders = doc.anns.get(label="disorder")
+```
+
+For more details about the public API, please refer to {class}`medkit.core.document.Document`
+and {class}`medkit.core.annotation_container.AnnotationContainer`.
 
 (api:core:annotation)=
-### Annotation & Attribute
+### Annotations and Attributes
 
-{class}`~medkit.core.annotation.Annotation` protocol class provides the minimal
-data structure for a medkit annotation.
+The {class}`~medkit.core.annotation.Annotation` protocol class provides the minimal data structure
+for a `medkit` annotation. Each annotation is linked to an attribute container.
 
-For example, each annotation is linked to an attribute container.
+The {class}`~.core.AttributeContainer` class provides a set of common interfaces
+for accessing attributes (`~.core.Attribute`) associated to an annotation,
+regardless of the underlying modality.
 
-{class}`~.core.AttributeContainer` class provides a set of common interfaces for
-accessing to the annotation {class}`~.core.Attribute` whatever the modality.
+Given an annotation `ann`, one can:
 
-Given an annotation `ann` from any modality:
+- browse the annotation attributes:
 
-* User may browse the annotation attributes
-  ```
-  for attr in ann.attrs:
+```python
+for attr in ann.attrs:
     ...
-  ```
-* User may add a new attribute to an annotation
-  ```
-  attr = <my attribute>
-  ann.attrs.add(attr)
-  ```
-* User may get the annotation attributes filtered by label
-  ```
-  attrs = ann.attrs.get(label="NORMALIZATION")
-  ```
+```
 
-### Collection
+- add a new attribute
 
-{class}`~.core.Collection` class allows to manipulate a set of {class}`~.core.Document`.
+```python
+ann.attrs.add(...)
+```
 
-:::{warning}
-This work is still under development. It may be changed in the future.
-:::
+- get attributes filtered by label:
+
+```python
+normalized = ann.attrs.get(label="NORMALIZATION")
+```
 
 (api:core:operations)=
 ## Operations
 
 The {class}`~.core.Operation` abstract class groups all necessary methods for
-being compatible with medkit processing pipeline and provenance.
+being compatible with `medkit` processing pipeline and provenance.
 
 We have defined different subclasses depending on the nature of the operation,
 including text-specific and audio-specific operations in {mod}`medkit.core.text`
@@ -154,10 +145,10 @@ To get more details about each modality, you can refer to their documentation:
 * [core text](core_text.md)
 * [core audio](core_audio.md)
 
-
 For all operations inheriting from {class}`~.core.Operation` abstract class,
 these 4 lines shall be added in `__init__` method:
-```
+
+```python
 def __init__(self, ..., uid=None):
     ...
     # Pass all arguments to super (remove self)
@@ -168,69 +159,26 @@ def __init__(self, ..., uid=None):
 
 Each operation is described with {class}`~.core.OperationDescription`.
 
-
-
-
 ## Converters
 
 Two abstract classes have been defined for managing document conversion
-between medkit format and another one.
+between `medkit` format and another one.
 
-:::{note}
 For more details about the public APIs, refer to {mod}`medkit.core.conversion`.
-:::
-
 
 (api:core:pipeline)=
 ## Pipeline
 
 {class}`~.core.Pipeline` allows to chain several operations.
 
-To better understand how to declare and use medkit pipelines, you may refer
+To better understand how to declare and use `medkit` pipelines, you may refer
 to the [pipeline tutorial](../user_guide/pipeline).
-
-:::{note}
-For more details about the public APIs, refer to {mod}`medkit.core.pipeline`.
-:::
 
 The {class}`~medkit.core.doc_pipeline.DocPipeline` class is a wrapper allowing
 to run an annotation pipeline on a list of documents by automatically attach
 output annotations to these documents.
 
-## Store
-
-A store is an object responsible for keeping the annotations of a document
-(through an {class}`~.core.AnnotationContainer`) or the attributes of an
-annotation (through an {class}`~.core.AttributeContainer`).
-
-The {class}`~medkit.core.store.Store` protocol defines the method that a store
-must implement. For now, we only provide a single implement of this protocol
-based on a dictionary, but in the future we will probably provide other
-implementations relying on databases.
-
-Users can also implement their own store based on their needs.
-
-:::{warning}
-This work is still under development. It may be changed in the future.
-:::
-
-:::{note}
-For more details about the public APIs, refer to {mod}`medkit.core.store`.
-:::
-
-### Global store
-
-To store all data items in the same location, a global store is used for your
-application.
-If you have not set your own store, the global store will automatically use the
-simple internal dict store.
-
-If you implement your own store, we suggest to call
-{meth}`medkit.core.store.GlobalStore.init_store` before initializing any other
-medkit  component.
-
-{class}`~.core.GlobalStore` provides initialization, access and removal methods
-for the global store.
+For more details about the public APIs, refer to {mod}`medkit.core.pipeline`.
 
 (api:core:provenance)=
 ## Provenance
@@ -239,7 +187,7 @@ for the global store.
 This work is still under development. It may be changed in the future.
 :::
 
-Provenance is a medkit concept allowing to track all operations and
+Provenance is a `medkit` concept allowing to track all operations and
 their role in new knowledge extraction.
 
 With this mechanism, we will be able to provide the provenance information
@@ -251,6 +199,4 @@ For better understanding this concept, you may follow the
 ["how to make your own module"](../user_guide/module) to know what you have to
 do to enable provenance.
 
-:::{note}
 For more details about the public APIs, refer to {mod}`medkit.core.prov_tracer`.
-:::
