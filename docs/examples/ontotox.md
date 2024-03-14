@@ -27,7 +27,7 @@ We combine the following operations in a medkit pipeline to get the entities.
 - UMLSMatcher: Detects chemotherapy toxicity entities using the ontotox prepared terms
 - RegexMatcher: Detects grading information using regular expressions
 
-```python
+```{code} python
 from medkit.core import DocPipeline, Pipeline, PipelineStep
 from medkit.core.text import TextDocument
 from medkit.text.context import FamilyDetector, HypothesisDetector, NegationDetector
@@ -35,9 +35,6 @@ from medkit.text.ner import RegexpMatcher, RegexpMatcherRule, UMLSMatcher
 from medkit.text.preprocessing import EDSCleaner
 from medkit.text.relations.syntactic_relation_extractor import SyntacticRelationExtractor
 from medkit.text.segmentation import SentenceTokenizer, SyntagmaTokenizer
-```
-
-```python
 
 def show_relations(doc):
     relations = doc.anns.get_relations()
@@ -70,7 +67,7 @@ def show_entity_context(entity):
 
 We want to add the entities in the document, so we need to use a `DocPipeline` to do it. Let's define this component using the steps for entity detection.
 
-```python
+```{code} python
 # preprocessing and tokenization
 eds_cleaner = EDSCleaner()
 sentence_tokenizer = SentenceTokenizer()
@@ -110,7 +107,7 @@ umls_matcher = UMLSMatcher(
 )
 ```
 
-```python
+```{code} python
 # build the pipeline
 pipeline_entities = Pipeline(
     steps=[
@@ -140,14 +137,14 @@ pipeline_entities = Pipeline(
 
 As we have already defined the input and output keys in the pipeline, all that remains is to define the `full_text` key : the raw text
 
-```python
+```{code} python
 entities_detector = DocPipeline(
     pipeline=pipeline_entities,
     labels_by_input_key={"full_text": [TextDocument.RAW_LABEL]},
 )
 ```
 
-```python
+```{code} python
 # Testing the 'entities_detector' with a phrase
 doc = TextDocument("Une dysarthrie de grade 3. Pas de perte de poids")
 entities_detector.run([doc])
@@ -156,7 +153,8 @@ entities_detector.run([doc])
 for entity in doc.anns.entities:
     show_entity_context(entity)
 ```
-```
+
+```text
 disorder : dysarthrie
 Normalization: umls:C0013362
 family: False
@@ -185,7 +183,7 @@ The second part extracts the Relations. In this case, we are looking to find rel
 You can change the tagger (a spacy nlp object), the `relation_extractor` uses the french tagger by default.
 :::
 
-```python
+```{code} python
 relation_extractor = SyntacticRelationExtractor(
     entities_target=["grade"],relation_label="has_grade"
 )
@@ -193,7 +191,7 @@ relation_extractor = SyntacticRelationExtractor(
 
 **Define the ontotox pipeline**
 
-```python
+```{code} python
 # build the pipeline
 ontoTOX_pipeline = Pipeline(
     steps=[
@@ -207,7 +205,7 @@ ontoTOX_pipeline = Pipeline(
 
 ## Running the OntoTOX pipeline
 
-```python
+```{code} python
 # Create a doc with the ontotox examples
 docs = TextDocument.from_dir("../data/text/ontotox/docs")
 
@@ -218,7 +216,7 @@ ontoTOX_pipeline.run(docs)
 
 Let's look in detail the first document
 
-```python
+```{code} python
 doc = docs[0]
 print(f"\"{doc.text}\"")
 
@@ -229,7 +227,8 @@ for entity in doc.anns.get_entities():
 # Show relations
 show_relations(doc)
 ```
-```
+
+```text
 "Pas de perte de poids.
 Le patient présente une dysarthrie de grade 3.
 Douleurs abdominales    : grade 1.
@@ -276,7 +275,7 @@ The "dysarthrie"(disorder) and "grade 3"(grade) are related. Dependency: [nmod,l
 The "Douleurs abdominales"(disorder) and "grade 1"(grade) are related. Dependency: [nsubj,right_to_left] 
 ```
 
-```python
+```{code} python
 for doc in docs[1:]:
     print(f"\"{doc.text}\"")
     print("Entities:")
@@ -287,7 +286,7 @@ for doc in docs[1:]:
     print("\u2500" * 10)
 ```
 
-```
+```text
 "Le patient présente une oesophagite peptique de grade 2.
 Pas de thrombopénie.
 Il présente cependant également une alopécie sévère et un amaigrissment.
@@ -355,11 +354,9 @@ This is how we have implemented ontotox in medkit, using the extracted informati
 Medkit includes some helpers to define simple operations, you may see this [tutorial](../examples/custom_text_operation) for more information.
 :::
 
-```python
+```{code} python
 from medkit.core.text import CustomTextOpType,create_text_operation
-```
 
-```python
 new_doc = TextDocument("Le patient présente une dysarthrie mais pas de grade 3")
 ontoTOX_pipeline.run([new_doc])
 
@@ -369,7 +366,8 @@ for entity in new_doc.anns.entities:
 show_relations(new_doc)
 print("\u2500" * 10)
 ```
-```
+
+```text
 disorder : dysarthrie
 Normalization: umls:C0013362
 family: False
@@ -386,23 +384,24 @@ The "dysarthrie"(disorder) and "grade 3"(grade) are related. Dependency: [conj,l
 
 ──────────
 ```
+
 **Define the filter method**
 
-```python
+```{code} python
 def filter_negated_entities(entity):
     attr = entity.attrs.get(label="negation")
     # only keep entities without negation (negation is false)
     return len(attr)>0 and attr[0].value is False
 ```
 
-```python
+```{code} python
 filter_operation = create_text_operation(function=filter_negated_entities, 
                                          function_type=CustomTextOpType.FILTER)
 ```
 
 **Define the new pipeline**
 
-```python
+```{code} python
 # add the filter operation
 steps_with_filter = entities_detector.pipeline.steps + [PipelineStep(filter_operation,
                                                                     input_keys=["entities_umls","entities_grade"],
@@ -427,7 +426,7 @@ ontoTOX_pipeline_filter = Pipeline(
 )
 ```
 
-```python
+```{code} python
 new_doc = TextDocument("Le patient présente une dysarthrie mais pas de grade 3")
 ontoTOX_pipeline_filter.run([new_doc])
 

@@ -1,16 +1,3 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.14.0
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-
 # Detecting text duplicates
 
 Medkit provides support for detecting duplicates (zones of identical text)
@@ -22,7 +9,8 @@ library developed at the HEGP.
 No optional dependencies are required to use
 {class}`~.preprocessing.DuplicateFinder` but it may perform faster if the `ncls`
 package is installed:
-```
+
+```console
 pip install ncls
 ```
 
@@ -40,7 +28,7 @@ For the purpose of this tutorial, we have created 2 folders, each folder
 containing 2 text files regarding the same patient. The contents of one of the
 documents of the first patient were copy-pasted into the other document:
 
-```{code-cell}
+```{code} python
 from pathlib import Path
 
 main_dir = Path("data/duplicate_detection")
@@ -48,7 +36,7 @@ file_1 = main_dir / "patient_1/a10320aa-2008_04_13.txt"
 print(file_1.read_text())
 ```
 
-```{code-cell}
+```{code} python
 file_2 = main_dir / "patient_1/f1d3e530-2008_04_14.txt"
 print(file_2.read_text())
 ```
@@ -56,7 +44,7 @@ print(file_2.read_text())
 Let's create a list of
 collections, with one collection per patient:
 
-```{code-cell}
+```{code} python
 from medkit.core import Collection
 from medkit.core.text import TextDocument
 
@@ -74,7 +62,7 @@ for patient_subdir in sorted(main_dir.glob("*")):
 
 Let's now instantiate a duplicate finder and run in on our collections:
 
-```{code-cell}
+```{code} python
 from medkit.text.preprocessing import DuplicateFinder
 
 dup_finder = DuplicateFinder(output_label="duplicate")
@@ -113,7 +101,7 @@ Let's rebuild our collection of text documents, adding a `"creation_date"` entry
 to the metadata of each doc (that we extract from the filename for the purpose
 of the example):
 
-```{code-cell}
+```{code} python
 collections = []
 for patient_subdir in sorted(main_dir.glob("*")):
     docs = []
@@ -130,7 +118,7 @@ for patient_subdir in sorted(main_dir.glob("*")):
 
 and let's use that metadata when finding duplicates:
 
-```{code-cell}
+```{code} python
 # tell DuplicateFinder to use the "creation_date" metadata to order documents
 dup_finder = DuplicateFinder(output_label="duplicate", date_metadata_key="creation_date")
 dup_finder.run(collections)
@@ -153,7 +141,7 @@ added to documents[^1].
 Let's see an example of how to run a minimalistic NER pipeline on the
 non-duplicate zones of our documents:
 
-```{code-cell}
+```{code} python
 from medkit.core import DocPipeline, Pipeline, PipelineStep
 from medkit.text.segmentation import SentenceTokenizer
 from medkit.text.ner import RegexpMatcher, RegexpMatcherRule
@@ -191,9 +179,7 @@ for collection in collections:
 
 Let's now visualize the annotations of the 2 documents of the first patient:
 
-```{code-cell} ipython3
-:tags: [scroll-output]
-
+```{code} python
 from spacy import displacy
 from medkit.text.spacy.displacy_utils import medkit_doc_to_displacy
 
@@ -202,9 +188,7 @@ displacy_data = medkit_doc_to_displacy(doc_1)
 displacy.render(displacy_data, manual=True, style="ent")
 ```
 
-```{code-cell} ipython3
-:tags: [scroll-output]
-
+```{code} python
 doc_2 = collections[0].text_docs[1]
 displacy_data = medkit_doc_to_displacy(doc_2)
 displacy.render(displacy_data, manual=True, style="ent")

@@ -1,17 +1,3 @@
----
-jupytext:
-  formats: md:myst
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.14.4
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-
 # Computing metrics on an audio dataset
 
 This demo shows how to compute diarization and transcription metrics on an audio
@@ -19,10 +5,8 @@ dataset such as [simsamu](https://huggingface.co/datasets/medkit/simsamu)
 
 Download the dataset from the HuggingFace hub:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 import huggingface_hub as hf_hub
-from medkit.io import SRTInputConverter
 
 simsamu_dir = hf_hub.snapshot_download("medkit/simsamu", repo_type="dataset")
 ```
@@ -31,8 +15,7 @@ Load the `.m4a` audio files into audio documents, as well as reference
 diarization and transcription annotated documents from corresponding `.rttm` and
 `.srt` files:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from pathlib import Path
 from medkit.core.audio import AudioDocument
 from medkit.io.rttm import RTTMInputConverter
@@ -58,8 +41,8 @@ for rec_dir in sorted(Path(simsamu_dir).glob("*"))[:4]:
 
     # convert m4a to wav with ffmpeg
     wav_file = m4a_file.with_suffix(".wav")
-    if not wav_file.exists():
-        !ffmpeg -i {m4a_file} -acodec pcm_s16le -ac 1 -ar 16000 {wav_file}
+    # if not wav_file.exists():
+    #     !ffmpeg -i {m4a_file} -acodec pcm_s16le -ac 1 -ar 16000 {wav_file}
 
     # load empty audio doc
     doc = AudioDocument.from_file(wav_file)
@@ -74,8 +57,7 @@ for rec_dir in sorted(Path(simsamu_dir).glob("*"))[:4]:
 
 Initialize the diarization operation with the [simsamu-diarization pipeline](https://huggingface.co/medkit/simsamu-diarization)
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 import torch
 from medkit.audio.segmentation.pa_speaker_detector import PASpeakerDetector
 
@@ -94,8 +76,7 @@ speaker_detector = PASpeakerDetector(
 
 Initialize the transcription operation with the [simsamu-transcription model](https://huggingface.co/medkit/simsamu-transcription):
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from medkit.audio.transcription.sb_transcriber import SBTranscriber
 
 transcriber = SBTranscriber(
@@ -109,8 +90,7 @@ transcriber = SBTranscriber(
 
 Diarize and transcribe all documents:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from tqdm import tqdm
 
 # list of list of segments, per document
@@ -125,8 +105,7 @@ for doc in tqdm(docs):
 
 Compute the DER (Diarization Error Rate):
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from medkit.audio.metrics.diarization import DiarizationEvaluator
 
 diarization_evaluator = DiarizationEvaluator(
@@ -145,8 +124,7 @@ der=13.45%
 
 Compute the WER (Word Error Rate) and CER (Character Error Rate):
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from medkit.audio.metrics.transcription import TranscriptionEvaluator
 
 transcription_evaluator = TranscriptionEvaluator(

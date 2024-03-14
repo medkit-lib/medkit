@@ -1,16 +1,3 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.14.0
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-
 # Using EDS-NLP with medkit 
 
 [EDS-NLP](https://aphp.github.io/edsnlp/) provides a set of
@@ -20,16 +7,16 @@ EDS-NLP within medkit is supported, as we will see.
 
 To follow this tutorial, you will need to install medkit spaCy support and
 EDS-NLP with
-```{code-cell} ipython3
-:tags: [remove-output]
 
+```console
 pip install 'medkit-lib[edsnlp]'
 ```
+
 ## Running an EDS-NLP spaCy pipeline on entire documents
 
 We will need a sample text document to annotate:
 
-```{code-cell} ipython3
+```{code} python
 from medkit.core.text import TextDocument
 
 text = """COMPTE RENDU D'HOSPITALISATION
@@ -42,9 +29,7 @@ doc = TextDocument(text)
 
 and a spaCy pipeline with a few EDS-NLP components:
 
-```{code-cell} ipython3
-:tags: [remove-output]
-
+```{code} python
 import spacy
 
 nlp = spacy.blank("eds")
@@ -71,8 +56,7 @@ a dedicated {class}`~.EDSNLPDocPipeline` operation, with some additional support
 for specific EDS-NLP components:
 
 
-```{code-cell} ipython3
-:tags: [remove-output]
+```{code} python
 from medkit.text.spacy.edsnlp import EDSNLPDocPipeline
 
 eds_nlp_pipeline = EDSNLPDocPipeline(nlp)
@@ -80,13 +64,13 @@ eds_nlp_pipeline = EDSNLPDocPipeline(nlp)
 
 The operation is executed by applying its `run()` method on a list of documents:
 
-```{code-cell} ipython3
+```{code} python
 eds_nlp_pipeline.run([doc])
 ```
 
 Let's look at the entities and segments that were found:
 
-```{code-cell} ipython3
+```{code} python
 for entity in doc.anns.entities:
     print(f"{entity.label}: {entity.text!r}")
 for segment in doc.anns.segments:
@@ -95,7 +79,7 @@ for segment in doc.anns.segments:
 
 Here are the attributes attached to the `"covid"` entity:
 
-```{code-cell} ipython3
+```{code} python
 entity = doc.anns.get_entities(label="covid")[0]
 for attr in entity.attrs:
     print(f"{attr.label}={attr.value}")
@@ -103,7 +87,7 @@ for attr in entity.attrs:
 
 and the attributes of the first `"dates"` segment:
 
-```{code-cell} ipython3
+```{code} python
 date_seg = doc.anns.get_segments(label="dates")[0]
 for attr in date_seg.attrs:
     print(f"{attr.label}={attr.value}")
@@ -111,7 +95,7 @@ for attr in date_seg.attrs:
 
 Let's now examine more closely the `"date"` attribute:
 
-```{code-cell} ipython3
+```{code} python
 date_seg = doc.anns.get_segments(label="dates")[0]
 date_attr = date_seg.attrs.get(label="date")[0]
 date_attr
@@ -121,7 +105,8 @@ This attribute is an instance of {class}`~medkit.text.ner.DateAttribute`, a
 subclass of {class}`~medkit.core.Attribute`.It has `year`, `month`, `day` (etc)
 fields containing the different parts of the date that was detected, as well as
 a normalized string representation in its `value` field:
-```{code-cell} ipython3
+
+```{code} python
 date_attr.value
 ```
 
@@ -137,13 +122,13 @@ Here are the supported EDS-NLP attributes values and the corresponding medkit cl
 - `RelativeDate` (created by `eds.dates`): {class}`medkit.text.ner.RelativeDateAttribute`
 - `Duration` (created by `eds.dates`): {class}`medkit.text.ner.DurationAttribute`
 
-```{note}
+:::{note}
 The transformations performed by {class}`~.EDSNLPDocPipeline` can be overridden
 or extended with the `medkit_attribute_factories` init parameter. For a list of
 all the default transformations, see
 {const}`~medkit.text.spacy.edsnlp.DEFAULT_ATTRIBUTE_FACTORIES` and corresponding
 functions in {mod}`medkit.text.spacy.edsnlp`.
-```
+:::
 
 ## Running an EDL-NLP spaCy pipeline at the annotation level
 
@@ -154,8 +139,7 @@ pipeline on text annotations instead of a document with
 using pure medkit operations for sentence tokenization and entity matching, and
 EDS-NLP spaCy components for covid entity matching:
 
-```{code-cell} ipython3
-:tags: [remove-output]
+```{code} python
 from medkit.core import Pipeline, PipelineStep
 from medkit.text.ner import RegexpMatcher, RegexpMatcherRule
 from medkit.text.segmentation import SentenceTokenizer
@@ -179,7 +163,7 @@ pipeline = Pipeline(
 )
 ```
 
-```{code-cell} ipython3
+```{code} python
 doc = TextDocument(text)
 entities = pipeline.run([doc.raw_segment])
 for entity in entities:

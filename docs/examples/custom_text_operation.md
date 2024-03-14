@@ -1,16 +1,3 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.14.7
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-
 # Creating a custom text operation
 
 If you want to initialize a custom text operation from a simple user-defined function, you can take a look to the following examples.
@@ -26,7 +13,7 @@ In this example, Jane wants to detect some entities (problems) from a raw text.
 
 ### 1. Create medkit document
 
-```{code-cell} ipython3
+```{code} python
 from medkit.core.text import TextDocument
 
 text = "The patient has asthma and is using ventoline. The patient has diabetes"
@@ -38,7 +25,7 @@ doc = TextDocument(text=text)
 Jane would like to reuse a collegue's file containing a list of regular expression rules for detecting entities.
 To this purpose, she had to split text into sentences before using the `RegexpMatcher` component.
 
-```{code-cell} ipython3
+```{code} python
 from medkit.text.segmentation import SentenceTokenizer
 
 sentence_tokenizer = SentenceTokenizer()
@@ -46,12 +33,13 @@ sentence_tokenizer = SentenceTokenizer()
 
 In real life, Jane should load the rules from a path using this instruction:
 
-```
+```{code} python
 regexp_rules = RegexpMatcher.load_rules(path_to_rules_file)
 ```
+
 But for this example, it is simpler for us to define this set of rules manually.
 
-```{code-cell} ipython3
+```{code} python
 from medkit.text.ner import RegexpMatcher, RegexpMatcherRule
 
 regexp_rules = [
@@ -61,7 +49,7 @@ regexp_rules = [
        ]
 ```
 
-```{code-cell} ipython3
+```{code} python
 regexp_matcher = RegexpMatcher(rules=regexp_rules)
 ```
 
@@ -71,7 +59,7 @@ As `RegexpMatcher` is based on her collegue's file, Jane would like to add a fil
 
 For that, she has to define her own filter function and use medkit tools to instantiate this custom operation.
 
-```{code-cell} ipython3
+```{code} python
 from medkit.core.text import Entity
 
 def keep_entities_with_label_problem(entity):
@@ -90,7 +78,7 @@ filter_operation = create_text_operation(function=keep_entities_with_label_probl
 
 ### 4. Construct and run the pipeline
 
-```{code-cell} ipython3
+```{code} python
 from medkit.core import Pipeline, PipelineStep
 
 steps=[
@@ -118,7 +106,7 @@ There are 3 results.
 
 **IMPORTANT: the following code is only for demo purpose, all pipeline steps are executed, we just select what pipeline outputs**
 
-```{code-cell} ipython3
+```{code} python
 pipeline = Pipeline(
     steps=steps,
     input_keys=["raw_text"],
@@ -139,7 +127,7 @@ In this example, Jane wants to pre-process the text before detecting entities.
 
 ### 1. Create medkit document
 
-```{code-cell} ipython3
+```{code} python
 from medkit.core.text import TextDocument
 
 text = """IRM : Lésion de la CPMI périphérique,
@@ -153,7 +141,7 @@ doc = TextDocument(text=text)
 Jane wants to use a dictionary to convert all abbreviations into their long text.
 To make it, she may define a custom function and use medkit `span_utils` to preserve spans during text modifications.
 
-```{code-cell} ipython3
+```{code} python
 import re
 from typing import Dict
 from medkit.core.text import Segment, span_utils
@@ -206,7 +194,7 @@ After executing the operation on the document raw text, we can observe that the 
 * a text with abbreviations replaced by their long text,
 * spans which is a mix of modified spans (for replaced parts of text) and original spans (for not replaced text).
 
-```{code-cell} ipython3
+```{code} python
 segments = preprocessing_operation.run([doc.raw_segment])
 
 for segment in segments:
@@ -225,7 +213,7 @@ In this example, Jane wants to count detected UMLS cui on a set of documents.
 In this example, we use translated .uid documents.
 For more info, you may refer to {mod}`medkit.tools.mtsamples`.
 
-```{code-cell} ipython3
+```{code} python
 from medkit.tools.mtsamples import load_mtsamples
 
 docs = load_mtsamples(nb_max=10)
@@ -239,13 +227,13 @@ print(docs[0].text)
 
 Let's initialize same operations as above (i.e., sentence tokenizer, then regexp matcher with default rules) without the filter operation.
 
-```{code-cell} ipython3
+```{code} python
 from medkit.text.segmentation import SentenceTokenizer
 
 sentence_tokenizer = SentenceTokenizer()
 ```
 
-```{code-cell} ipython3
+```{code} python
 from medkit.text.ner import RegexpMatcher
 
 regexp_matcher = RegexpMatcher()
@@ -258,7 +246,7 @@ regexp_matcher = RegexpMatcher()
 The extraction function is defined with a label parameter for filtering entities.
 Our custom operation allows to retrieve only attributes from entity with `disorder` label.
 
-```{code-cell} ipython3
+```{code} python
 import re
 from typing import List
 from medkit.core.text import Entity, UMLSNormAttribute
@@ -281,7 +269,7 @@ attr_extraction_operation = create_text_operation(
 
 When running the pipeline on the set of documents, the output is a list of umls normalization attributes.
 
-```{code-cell} ipython3
+```{code} python
 from medkit.core import Pipeline, PipelineStep
 
 steps=[
@@ -297,7 +285,7 @@ pipeline = Pipeline(
 )
 ```
 
-```{code-cell} ipython3
+```{code} python
 attrs = pipeline.run([doc.raw_segment for doc in docs])
 attrs[:5]
 ```
@@ -306,12 +294,12 @@ attrs[:5]
 
 Now, Jane can analyze the number of cuis detected on her set of documents.
 
-```{code-cell} ipython3
+```{code} python
 import pandas as pd
 df = pd.DataFrame.from_records([attr.to_dict() for attr in attrs], columns=["cui", "umls_version"])
 print(df)
 ```
 
-```{code-cell} ipython3
+```{code} python
 df.value_counts(subset="cui")
 ```

@@ -1,16 +1,3 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.14.0
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-
 # Cleaning text with a predefined operation
 
 +++
@@ -23,7 +10,7 @@ In this example, we will use a predefined {class}`~medkit.text.preprocessing.eds
 
 Consider the following document:
 
-```{code-cell} ipython3
+```{code} python
 # You can download the file available in source code
 # !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/examples/input/text/text_to_clean.txt
 
@@ -52,7 +39,7 @@ The main idea is to transform the `raw_segment` and keep track of the modificati
 The `EDSCleaner` is configurable, we initialize `keep_endlines=True` to facilitate the visualization. Otherwise, the output segment would be a plain text with no newlines `(\n)` characters. 
 
 
-```{code-cell} ipython3
+```{code} python
 from medkit.text.preprocessing import EDSCleaner
 
 eds_cleaner = EDSCleaner(keep_endlines=True)
@@ -69,16 +56,16 @@ The class works on `Segments`. In the `run` method it performs several operation
 * Deletes multiple newline characters.
 * Deletes multiple whitespaces. 
 
-```{note}
+:::{note}
 There are two special operations that process parentheses and dots near French keywords such as Dr., Mme. and others. To enable/disable these operations you can use `handle_parentheses_eds` and `handle_points_eds`.
-```
+:::
 
 ## Extract text from the clean text
 
 Now that we have a **clean segment**, we can run an operation on the new segment. We can detect the sentences, for example.
 
 
-```{code-cell} ipython3
+```{code} python
 from medkit.text.segmentation import SentenceTokenizer
 
 sentences = SentenceTokenizer().run([clean_segment])
@@ -91,7 +78,7 @@ for sent in sentences:
 The span of each generated sentence contains the modifications made by *eds_cleaner* object. Let's look at the second sentence:  
 
 
-```{code-cell} ipython3
+```{code} python
 sentence = sentences[1]
 print(f"text={sentence.text!r}")
 print("spans=\n","\n".join(f"{sp}" for sp in sentence.spans))
@@ -105,7 +92,7 @@ Since the sentence contains the information from the original spans, it will alw
 
 To get the original spans, we can use {func}`~medkit.core.text.span_utils.normalize_spans`. Next, we can extract the raw text using {func}`~medkit.core.text.span_utils.extract`. 
 
-```{code-cell} ipython3
+```{code} python
 from medkit.core.text.span_utils import normalize_spans, extract
 
 spans_sentence = normalize_spans(sentence.spans)
@@ -116,8 +103,7 @@ print(f"- Sentence in the ORIGINAL version:\n \"{extracted_text}\"")
 
 That's how an operation transforms text and extracts information without losing the raw text.  
 
-```{seealso}
+:::{seealso}
 For further information on the utilities used in this class, see {class}`~medkit.core.text.utils`. 
 To see more examples of span operations [here](../examples/spans)
-
-```
+:::

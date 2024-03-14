@@ -1,16 +1,3 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.14.5
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-
 # IAMSystem Matcher
 
 +++
@@ -23,7 +10,7 @@ This tutorial will show an example of iamsystem matcher operation usage.
 
 For beginners, let's create a medkit text document from the following text.
 
-```{code-cell} ipython
+```{code} python
 from medkit.core.text import TextDocument
 
 text = """Le patient présente une asténie de grade 2 et une anémie de grade 3. 
@@ -35,7 +22,7 @@ doc = TextDocument(text=text)
 
 The full raw text can be accessed through the `text` attribute:
 
-```{code-cell} ipython3
+```{code} python
 print(doc.text)
 ```
 
@@ -47,7 +34,7 @@ Before using entity matcher, we want to split the raw text in sentences, and the
 
 First, let's configure the three text operations.
 
-```{code-cell} ipython
+```{code} python
 from medkit.text.segmentation import SentenceTokenizer, SyntagmaTokenizer
 from medkit.text.context import NegationDetector, NegationDetectorRule, FamilyDetector, FamilyDetectorRule
 
@@ -63,7 +50,7 @@ fam_detector = FamilyDetector(output_label="family")
 
 Now, let's run the operations.
 
-```{code-cell} ipython
+```{code} python
 sentences = sent_tokenizer.run([doc.raw_segment])
 neg_detector.run(sentences)
 fam_detector.run(sentences)
@@ -90,7 +77,7 @@ In the same manner, the sentence `Il n'a pas de vascularite` contains a negation
 Let's configure the iam system matcher
 (cf. [iamsystem official documentation](https://iamsystem-python.readthedocs.io/en/latest/)).
 
-```{code-cell} ipython
+```{code} python
 from medkit.text.ner.iamsystem_matcher import MedkitKeyword
 
 from iamsystem import Matcher
@@ -133,7 +120,7 @@ In this example, we have defined two keywords then configured matcher with:
 
 Now, let's configure and run our medkit operation : {class}`~.text.ner.iamsystem_matcher.IAMSystemMatcher`.
 
-```{code-cell} ipython
+```{code} python
 from medkit.text.ner.iamsystem_matcher import IAMSystemMatcher
 
 # Configuring medkit operation with iam system matcher and
@@ -155,5 +142,4 @@ for entity in entities:
     print(f"is_negated = {entity.attrs.get(label='is_negated')}")
     print(f"family = {entity.attrs.get(label='family')}")
     print(f"spans = {entity.spans}\n")
-
 ```
