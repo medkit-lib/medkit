@@ -43,6 +43,7 @@ html_theme_options = {
     "path_to_docs": "docs",
     "repository_url": "https://github.com/medkit-lib/medkit",
     "repository_branch": "main",
+    "navigation_with_keys": False,
 }
 html_title = "medkit documentation"
 html_logo = "_static/medkit-logo.png"
