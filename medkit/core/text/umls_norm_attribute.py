@@ -8,7 +8,7 @@ from typing import Any
 from typing_extensions import Self
 
 from medkit.core import dict_conv
-from medkit.core.text import EntityNormAttribute
+from medkit.core.text.entity_norm_attribute import EntityNormAttribute
 
 
 @dataclasses.dataclass(init=False)

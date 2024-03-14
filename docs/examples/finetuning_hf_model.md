@@ -1,24 +1,13 @@
----
-jupytext:
-    formats: md:myst
-    text_representation:
-        extension: .md
-        format_name: myst
-        format_version: 0.13
-        jupytext_version: 1.13.8
-kernelspec:
-    display_name: Python 3 (ipykernel)
-    language: python
-    name: python3
----
-
 # Fine-tuning a Transformers model with medkit
 
-```{note}
+:::{note}
 This example may require optional modules from medkit, use the following to install them:
 
-`pip install medkit-lib[training,hf-entity-matcher]`
+```console
+pip install 'medkit-lib[training,hf-entity-matcher]'
 ```
+:::
+
 In recent years, Large Language Models (LLMs) have achieved very good performance in natural language processing (NLP) tasks.  However, training a LLM (involving billions of parameters) from scratch requires a lot of resources and large quantities of text. 
 
 Since these models are trained on general domain data, they learn complex patterns. We can adapt (fine-tune) the last layers to a specific task using our data and low resources. LLMs are PreTrained and accessible with libraries like [🤗 **Transformers**](https://huggingface.co/docs/transformers/index). Medkit has some components to fine-tune these models.
@@ -31,9 +20,7 @@ biomedical article titles and medication leaflets, in french. Entities were
 annotated with UMLS semantic groups labels (ex: "ANAT", "CHEMI", "DISO", "PROC",
 etc). The dataset is available in the BRAT format. Let's download it:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
-
+```{code} python
 import os
 import urllib
 import zipfile
@@ -41,17 +28,16 @@ import zipfile
 QUAERO_URL = "https://quaerofrenchmed.limsi.fr/QUAERO_FrenchMed_brat.zip"
 QUAERO_DIR = "QUAERO_FrenchMed/corpus/"
 
-if not os.path.exists(QUAERO_DIR):
-    # download and unzip quaero dataset
-    !wget -O quaero.zip https://quaerofrenchmed.limsi.fr/QUAERO_FrenchMed_brat.zip
-    !unzip -o ./quaero.zip
+# if not os.path.exists(QUAERO_DIR):
+#     !wget -O quaero.zip https://quaerofrenchmed.limsi.fr/QUAERO_FrenchMed_brat.zip
+#     !unzip -o ./quaero.zip
 ```
 
 The corpus has been pre-split into train/dev/test groups, and inside each split
 the documents are grouped between EMEA files (drug leaflets) and MEDLINES files
 (article titles):
 
-```
+```text
 QUAERO_FrenchMed/corpus
 ├── train
 │   ├── EMEA
@@ -82,8 +68,7 @@ Instead of directly loading all the documents and annotations in each subdirecto
 {meth}`~.io.BratInputConverter.load_annotations()` and filter the annotations with
 `filter_overlapping_entities()`:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from glob import glob
 from medkit.core.text import TextDocument
 from medkit.io.brat import BratInputConverter
@@ -125,8 +110,7 @@ to be usable during training. Here is the code to split each EMEA doc by
 sentence and create new mini-docs for each sentence with the entities they
 contain:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from medkit.core.text import Entity, Span
 from medkit.text.segmentation import SentenceTokenizer
 from medkit.text.postprocessing import DocumentSplitter
@@ -162,8 +146,7 @@ test_docs_emea_sentences = split_emea_docs(test_docs_emea)
 Let's save this preprocessed version of our dataset in medkit json files, so we
 can reuse easily another time if needed:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 import shutil
 from medkit.io import medkit_json
 
@@ -199,8 +182,7 @@ It allows us to get the following metrics:
  
 We will use the IOB2 tagging scheme to classify the tokens before computing the metrics. The metrics are computed in strict mode, which means that each token of the entity has to be properly labelled for the entity to be considered as properly identified.
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from pprint import pprint
 from medkit.text.ner import UMLSMatcher
 from medkit.text.metrics.ner import SeqEvalEvaluator
@@ -272,12 +254,14 @@ umls_matcher_scores = ner_metrics_evaluator.compute(test_docs, predicted_entitie
 pprint(umls_matcher_scores)
 ```
 
-```
-{'accuracy': 0.7683723661992512,
- 'macro_f1-score': 0.4246273234375716,
- 'macro_precision': 0.5621040123228653,
- 'macro_recall': 0.3528176174287537,
- 'support': 4085}
+```python
+{
+    'accuracy': 0.7683723661992512,
+    'macro_f1-score': 0.4246273234375716,
+    'macro_precision': 0.5621040123228653,
+    'macro_recall': 0.3528176174287537,
+    'support': 4085,
+}
 ```
 
 We reach a f1-score of approximately 42%.
@@ -296,8 +280,7 @@ Medkit provides simple training tools that make it possible to train or fine-tun
 
 Let's define a trainable instance for this example:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 import torch
 from medkit.text.ner.hf_entity_matcher import HFEntityMatcher
 
@@ -324,8 +307,7 @@ trainable_matcher = HFEntityMatcher.make_trainable(
 At this point, we have prepared the data and the component to fine-tune. All we
 need to do is define the trainer with its configuration
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from medkit.training import TrainerConfig, Trainer
 from medkit.text.metrics.ner import SeqEvalMetricsComputer
 
@@ -369,16 +351,14 @@ trainer = Trainer(
 We can now run the training loop with `trainer.train()`. It returns a dictionary
 with the training history and saves a checkpoint with the tuned model:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 # Run training and keep history of losses and metrics
 history = trainer.train()
 ```
 
 Let's take a look at how the metrics evolved during the training:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 recall = [epoch["eval"]["macro_recall"] for epoch in history]
 precision = [epoch["eval"]["macro_precision"] for epoch in history]
 f1_score = [epoch["eval"]["macro_f1-score"] for epoch in history]
@@ -389,14 +369,13 @@ plt.plot(f1_score, label="f1_score")
 plt.legend()
 ```
 
-![png](finetuning_hf_model_plot.png)
+![](finetuning_hf_model_plot.png)
 
 After 10 epochs, we should reach a f1-score around 50% on the dev split. Let's
 look at the final metrics on the test split. For this we will reinstantiate an
 `HFEntityMatcher` with the last checkpoint:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from glob import glob
 
 # Retrieve best checkpoint and use it to instantiate the HuggingFace entity matcher
@@ -413,12 +392,15 @@ for test_doc in test_docs:
 metrics = ner_metrics_evaluator.compute(test_docs, predicted_entities)
 pprint(metrics)
 ```
-```
-{'accuracy': 0.8604727993539387,
- 'macro_f1-score': 0.48133173293574166,
- 'macro_precision': 0.5292726724036432,
- 'macro_recall': 0.4690750888795575,
- 'support': 4085}
+
+```python
+{
+    'accuracy': 0.8604727993539387,
+    'macro_f1-score': 0.48133173293574166,
+    'macro_precision': 0.5292726724036432,
+    'macro_recall': 0.4690750888795575,
+    'support': 4085,
+}
 ```
 
 Our fine-tuned BERT model has a better f1-score than the fuzzy simstring matcher (48% vs 42%), thanks to its better recall (47% vs 35%).

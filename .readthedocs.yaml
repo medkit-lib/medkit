@@ -6,10 +6,6 @@ python:
       path: .
       extra_requirements:
         - docs
-        - metrics-ner
-        - nlstruct
-        - srt-io-converter
-        - webrtc-voice-detector
 
 build:
   os: ubuntu-22.04
@@ -18,6 +14,3 @@ build:
   apt_packages:
     - graphviz
     - libsndfile1
-  jobs:
-    pre_build:
-      - jupyter-book config sphinx docs/

@@ -1,17 +1,3 @@
----
-jupytext:
-  formats: md:myst
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.14.4
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-    
 # Make your own module
 
 Here is a tutorial for developing your own operation module.
@@ -26,7 +12,8 @@ You can find several examples of implemented modules in [medkit.text](../api/tex
 
 For all operations inheriting from `Operation` abstract class, these 4 lines
 shall be added in `__init__` method:
-```
+
+```python
 def __init__(self, ..., uid=None):
     ...
     # Pass all arguments to super (remove self)
@@ -36,7 +23,8 @@ def __init__(self, ..., uid=None):
 ```
 
 Here is an example of a custom segmentation module:
-```
+
+```python
 class MyTokenizer(SegmentationOperation):
 
     def __init__(
@@ -67,7 +55,7 @@ Here is an example of an implementation of our tokenizer. It uses a private
 method which processes each segment to return a list of tokens for this 
 segment.
 
-```
+```python
 class MyTokenizer(SegmentationOperation):
     ...
     def run(self, segments: List[Segment]) -> List[Segment]:
@@ -94,7 +82,7 @@ An example of the functions' usage is available [here](../examples/spans).
 Here is an example of our tokenizer which role is to cut the segment in two 
 segments.
 
-```
+```python
 class MyTokenizer(SegmentationOperation):
     ...
     def _mytokenmethod(self, segment):
@@ -149,7 +137,7 @@ Here is our example which store information about:
 * which operation produces it (i.e., MyTokenizer)
 * the source item which has been processed
 
-```
+```python
 class MyTokenizer(SegmentationOperation):
     ...
     def _mytokenmethod(self, segment):
@@ -178,7 +166,7 @@ To illustrate what we have seen in a more concrete manner, here is a fictional
 "days of the week" matcher that takes text segments as input a return entities
 for week days:
 
-```{code-cell} ipython3
+:::{code}
 import re
 from medkit.core import Operation
 from medkit.core.text import Entity, span_utils
@@ -234,7 +222,7 @@ class DayMatcher(Operation):
                         )
 
         return entities
-```
+:::
 
 Note than since this is a entity matcher, adding support for `attrs_to_copy`
-would be nice (cf [Context detection](context_detection.md)).
+would be nice (cf [Context detection](../tutorial/context_detection.md)).

@@ -1,16 +1,3 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.14.0
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-
 # Brat integration
 
 +++
@@ -28,7 +15,7 @@ In this example, we will show how to import Brat annotated files into medkit and
 Consider this text file: 
 
 +++
-```{code-cell} ipython3
+```{code} python
 # You can download the file available in source code
 # !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/examples/input/brat/doc_01.txt
 
@@ -41,7 +28,7 @@ print(Path("./input/brat/doc_01.txt").read_text(encoding="utf-8"))
 
 It has the following brat annotation file:
 
-```{code-cell} ipython3
+```{code} python
 # You can download the file available in source code
 # !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/examples/input/brat/doc_01.ann
 
@@ -52,11 +39,11 @@ print(Path("./input/brat/doc_01.ann").read_text(encoding="utf-8"))
 
 To load Brat Files, medkit provides the {class}`~medkit.io.brat.BratInputConverter` class. This converter returns a list of `TextDocument`. 
 
-```{tip}
+:::{tip}
 You can enable provenance tracing by assigning a {class}`~medkit.core.ProvTracer` object to the BratInputConverter with the `set_prov_tracer()` method.
-```
+:::
 
-```{code-cell} ipython3
+```{code} python
 from medkit.io.brat import BratInputConverter
 
 # Define Input Converter 
@@ -78,7 +65,7 @@ print(f"Where {len(entities_disease)} annotations have 'disease' as label")
 The created document contains the annotations defined in the brat annotation file. 
 We can show the entities information, for example.
 
-```{code-cell} ipython3
+```{code} python
 for entity in medkit_doc.anns.get_entities():
     print(f"label={entity.label}, spans={entity.spans}, text={entity.text!r}")
 ```
@@ -99,7 +86,7 @@ If you also want to include the segments in the brat collection, the parameter `
 To facilitate integration and ensure correct visualisation, medkit automatically generates an `annotation.conf` for each collection.
  
 +++
-```{code-cell} ipython3
+```{code} python
 from medkit.io.brat import BratOutputConverter
 
 # Define Output Converter with default params,
@@ -118,9 +105,9 @@ The collection is saved on disk including the following files:
 
 By default the name is the `document_id`, you can change it using the `doc_names` parameter.
 
-```{note}
+:::{note}
 Since the values of the attributes in brat must be defined in the configuration, medkit shows the top50 for each attribute. In case you want to show more values in the configuration, you can change `top_values_by_attr` in the brat output converter.
- ```
+:::
 
 :::{seealso}
 cf. [Brat IO module](api:io:brat).

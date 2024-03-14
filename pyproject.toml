@@ -160,18 +160,18 @@ all = [
     webrtc-voice-detector]""",
 ]
 docs = [
-  "jupyter-book==1.0.*",
-  "matplotlib",
-  "pandas>=1.4",
-  "spacy>=3.4",
+  "myst-parser",
+  "numpydoc",
+  "sphinx>=7,<8",
+  "sphinx-autoapi",
   "sphinx-autobuild",
-  "sphinx-book-theme>=1.1.2",
-  "sphinx-toolbox",
+  "sphinx-book-theme",
+  "sphinx-design",
   "sphinxcontrib-mermaid",
 ]
 
 [project.urls]
-Changelog = "https://github.com/medkit-lib/medkit/blob/main/CHANGELOG.md"
+Changelog = "https://medkit.readthedocs.io/changelog.html"
 Documentation = "https://medkit.readthedocs.io"
 Issues = "https://github.com/medkit-lib/medkit/issues"
 Source = "https://github.com/medkit-lib/medkit"
@@ -205,19 +205,21 @@ cov = [
 ]
 
 [tool.hatch.envs.docs]
-features = [
-  "docs",
-  "metrics-ner",
-  "nlstruct",
-  "srt-io-converter",
-  "webrtc-voice-detector",
+dependencies = [
+  "myst-parser",
+  "numpydoc",
+  "sphinx>=7,<8",
+  "sphinx-autoapi",
+  "sphinx-autobuild",
+  "sphinx-book-theme",
+  "sphinx-design",
+  "sphinxcontrib-mermaid",
 ]
-python = "3.10"
 
 [tool.hatch.envs.docs.scripts]
-config = "jupyter-book config sphinx docs/"
-build = "sphinx-build docs/ {args:docs/_build/html}"
-serve = "sphinx-autobuild docs/ {args:docs/_build/html}"
+clean = "rm -rf docs/_build"
+build = "sphinx-build docs/ docs/_build/html {args}"
+serve = "sphinx-autobuild docs/ docs/_build/html {args}"
 
 [tool.coverage.run]
 source_pkgs = ["medkit", "tests"]

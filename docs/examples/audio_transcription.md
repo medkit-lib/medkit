@@ -1,17 +1,3 @@
----
-jupytext:
-  formats: md:myst
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.14.4
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-
 # Audio transcription
 
 This demo shows how to transcribe an audio document and then perform text
@@ -22,7 +8,7 @@ operations on it.
 Instantiate an {class}`~.core.audio.AudioDocument` with a
 {class}`~.core.audio.FileAudioBuffer`:
 
-```{code-cell} ipython3
+```{code} python
 from pathlib import Path
 import IPython.display
 from medkit.core.audio import AudioDocument, FileAudioBuffer
@@ -41,7 +27,7 @@ Prepare pipeline to perform voice detection on audio documents, using a
 also use other segmentation operations such as
 {class}`~.audio.segmentation.pa_speaker_detector.PASpeakerDetector` ):
 
-```{code-cell} ipython3
+```{code} python
 from medkit.core import Pipeline, PipelineStep, DocPipeline
 from medkit.audio.preprocessing import Downmixer
 from medkit.audio.segmentation.webrtc_voice_detector import WebRTCVoiceDetector
@@ -74,7 +60,7 @@ audio_doc_pipeline = DocPipeline(audio_pipeline)
 
 Run voice detection on audio document:
 
-```{code-cell} ipython3
+```{code} python
 audio_doc_pipeline.run([audio_doc])
 for seg in audio_doc.anns.get(label="voice"):
     print(f"label={seg.label}, span={seg.span}")
@@ -89,8 +75,7 @@ transcriber creating text segments from audio segments (you can also use other
 transcription operations such as
 {class}`~.audio.transcription.sb_transcriber.SBTranscriber`):
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from medkit.audio.transcription import DocTranscriber
 from medkit.audio.transcription.hf_transcriber import HFTranscriber
 
@@ -109,8 +94,7 @@ doc_transcriber = DocTranscriber(
 
 Transcribe audio document:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 transcribed_doc = doc_transcriber.run([audio_doc])[0]
 print(f"fulltext={transcribed_doc.text!r}", end="\n\n")
 for seg in transcribed_doc.anns.get(label="transcription"):
@@ -128,8 +112,7 @@ label=transcription, text=' I also have high blood pressure.'
 
 Run text entity matching on transcribed document:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 from medkit.core.text import TextDocument
 from medkit.text.ner import RegexpMatcher, RegexpMatcherRule
 
@@ -152,8 +135,7 @@ text_doc_pipeline.run([transcribed_doc])
 
 Locate matched entities in original audio:
 
-```{code-cell} ipython3
-:tags: [skip-execution]
+```{code} python
 entities = transcribed_doc.anns.get_entities()
 
 for entity in entities:
@@ -165,8 +147,7 @@ for entity in entities:
     IPython.display.display(IPython.display.Audio(data=audio.read(), rate=audio.sample_rate))
 ```
 
-```{code-cell} ipython3
-:tags: [remove-input]
+```{code} python
 # hardcoded display of audio spans to workaround
 # the fact that cells are not executed
 print("label=problem, text='headaches'")
