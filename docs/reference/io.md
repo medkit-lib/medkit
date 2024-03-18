@@ -39,7 +39,7 @@ For more details, please refer to {mod}`medkit.io.medkit_json`.
 For more details about the public API, please refer to {mod}`medkit.io.brat`.
 
 :::{seealso}
-You may refer to this [example](../examples/brat_io.md) for more information.
+You may refer to this [example](../cookbook/brat_io.md) for more information.
 :::
 
 ## Doccano
@@ -94,7 +94,7 @@ pip install 'medkit-lib[spacy]'
 :::
 
 :::{seealso}
-You may refer to this [example](../examples/spacy/index.md) for more information.
+You may refer to this [example](../cookbook/spacy/index.md) for more information.
 :::
 
 For more details, please refer to {mod}`medkit.io.spacy`.

@@ -124,7 +124,7 @@ For more details about public APIs, please refer to {mod}`medkit.core.text.span`
 and {mod}`medkit.core.text.span_utils`.
 
 :::{seealso}
-You may also take a look to the [spans examples](../examples/spans).
+You may also take a look to the [spans examples](../cookbook/spans).
 :::
 
 ## Text Utilities
@@ -159,5 +159,5 @@ text operations.
 For more details about public APIs, please refer to {mod}`medkit.core.text.operation`.
 
 :::{seealso}
-Please refer to this [tutorial](../examples/custom_text_operation) for examples of custom operation.
+Please refer to this [example](../cookbook/custom_text_operation) for examples of custom operation.
 :::

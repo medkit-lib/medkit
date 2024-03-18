@@ -40,7 +40,7 @@ a trainable version of {class}`~.text.ner.hf_entity_matcher.HFEntityMatcher`.
 
 As you can see, an operation can contain a trainable component and expose it using the `make_trainable()` method. 
 
-Please refer to this [example](../examples/finetuning_hf_model.md) for a fine-tuning case for entity detection.
+Please refer to this [example](../cookbook/finetuning_hf_model.md) for a fine-tuning case for entity detection.
 
 :::{important}
 Currently, `medkit` only supports the training of components using **PyTorch**.

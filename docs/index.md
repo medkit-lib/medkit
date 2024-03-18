@@ -37,7 +37,7 @@ To walk through `medkit` features
 To learn `medkit` by examples
 
 +++
-[Learn more »](examples/spans)
+[Learn more »](cookbook/spans)
 :::
 
 :::{grid-item-card} {octicon}`search;2em;sd-mr-1` Reference
@@ -45,7 +45,7 @@ To learn `medkit` by examples
 For developers and contributors
 
 +++
-[Learn more »](api/core)
+[Learn more »](reference/core)
 :::
 ::::
 
@@ -82,18 +82,18 @@ tutorial/text_segmentation/index
 :hidden:
 :titlesonly:
 
-examples/spans
-examples/cleaning_text
-examples/brat_io
-examples/spacy/index
-examples/custom_text_operation
-examples/edsnlp
-examples/iamsystem
-examples/finetuning_hf_model
-examples/detecting_text_duplicates
-examples/audio_transcription
-examples/audio_dataset_metrics
-examples/ontotox
+cookbook/spans
+cookbook/cleaning_text
+cookbook/brat_io
+cookbook/spacy/index
+cookbook/custom_text_operation
+cookbook/edsnlp
+cookbook/iamsystem
+cookbook/finetuning_hf_model
+cookbook/detecting_text_duplicates
+cookbook/audio_transcription
+cookbook/audio_dataset_metrics
+cookbook/ontotox
 ```
 
 ```{toctree}
@@ -101,15 +101,15 @@ examples/ontotox
 :hidden:
 :titlesonly:
 
-api/_generated/index
-api/audio
-api/core
-api/core_audio
-api/core_text
-api/io
-api/text
-api/training
-api/tools
+reference/api/index
+reference/audio
+reference/core
+reference/core_audio
+reference/core_text
+reference/io
+reference/text
+reference/tools
+reference/training
 changelog
 license
 ```

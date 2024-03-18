@@ -3,12 +3,12 @@
 Here is a tutorial for developing your own operation module.
 For more information, you can refer to [API documentation](api:core:operations).
 
-If you want to create a custom text operation from a user-defined function, you can refer to this [example](../examples/custom_text_operation).
+If you want to create a custom text operation from a user-defined function, you can refer to this [example](../cookbook/custom_text_operation).
 
 ## 1. Creating your class
 
 We have defined several abstract classes you can use as parent class.
-You can find several examples of implemented modules in [medkit.text](../api/text).
+You can find several examples of implemented modules in [medkit.text](../reference/text).
 
 For all operations inheriting from `Operation` abstract class, these 4 lines
 shall be added in `__init__` method:
@@ -77,7 +77,7 @@ For more information, you can refer to [API documentation](api:core-text:span).
 A set of utils functions have been implemented to help you to keep span 
 information all along your processing pipeline.
 
-An example of the functions' usage is available [here](../examples/spans).
+An example of the functions' usage is available [here](../cookbook/spans).
 
 Here is an example of our tokenizer which role is to cut the segment in two 
 segments.

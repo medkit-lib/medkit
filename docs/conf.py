@@ -27,7 +27,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # https://sphinx-autoapi.readthedocs.io/en/latest/reference/config.html
 
 autoapi_dirs = ["../medkit"]
-autoapi_root = "api/_generated"
+autoapi_root = "reference/api"
 
 # -- myst_parser configuration -----------------------------------------------
 # https://myst-parser.readthedocs.io/en/latest/configuration.html
