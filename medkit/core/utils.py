@@ -50,7 +50,7 @@ def batch_list(values: list[Any], batch_size: int) -> Iterator[list[Any]]:
         be smaller).
     """
     for i in range(0, len(values), batch_size):
-        yield list[i : i + batch_size]
+        yield values[i : i + batch_size]
 
 
 def modules_are_available(modules: list[str]):
