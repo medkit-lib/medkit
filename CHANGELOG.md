@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.14.0 (2024-03-18)
+
+### Changed
+
+- Backport or use itertools.batched from Python 3.12
+
+### Fixed
+
+- Use fork of mtsamplesFR under medkit-lib
+- Fix returned value in batching utility
+
 ## 0.13.1 (2024-02-20)
 
 ### Fixed
