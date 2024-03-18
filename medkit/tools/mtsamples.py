@@ -10,7 +10,7 @@ This repository contains:
 
 Both of which are made available under the CC0-1.0 license.
 
-.. _mtsamplesFR: https://github.com/neurazlab/mtsamplesFR
+.. _mtsamplesFR: https://github.com/medkit-lib/mtsamplesFR
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ from pathlib import Path
 from medkit.core.text import TextDocument
 from medkit.io.medkit_json import save_text_documents
 
-_REPO_URL: str = "https://raw.githubusercontent.com/aneuraz/mtsamplesFR/master/data/"
+_REPO_URL: str = "https://raw.githubusercontent.com/medkit-lib/mtsamplesFR/master/data/"
 _MTSAMPLES_FILE: str = "mtsamples.csv"
 _MTSAMPLES_TRANSLATED_FILE: str = "mtsamples_translated.json"
 
