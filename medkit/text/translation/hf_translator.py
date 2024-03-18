@@ -9,7 +9,7 @@ import torch
 import transformers
 from transformers import BertModel, BertTokenizerFast, TranslationPipeline
 
-import medkit.core.utils
+from medkit._compat import batched
 from medkit.core import Operation
 from medkit.core.text import ModifiedSpan, Segment, span_utils
 
@@ -261,9 +261,9 @@ class _Aligner:
         assert len(source_texts) == len(target_texts), "Must have same number of source and target texts"
 
         alignments = []
-        source_text_batches_iter = medkit.core.utils.batch_list(source_texts, self._batch_size)
-        target_text_batches_iter = medkit.core.utils.batch_list(target_texts, self._batch_size)
-        for source_text_batch, target_text_batch in zip(source_text_batches_iter, target_text_batches_iter):
+        source_text_batches = batched(source_texts, self._batch_size)
+        target_text_batches = batched(target_texts, self._batch_size)
+        for source_text_batch, target_text_batch in zip(source_text_batches, target_text_batches):
             alignments += self._align_batch(source_text_batch, target_text_batch)
         return alignments
 

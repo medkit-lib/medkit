@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 import speechbrain as sb
 
-import medkit.core.utils
+from medkit._compat import batched
 from medkit.core import Attribute, Operation
 
 if TYPE_CHECKING:
@@ -128,7 +128,7 @@ class SBTranscriber(Operation):
         texts = []
 
         # group audios in batch of same length with padding
-        for batched_audios in medkit.core.utils.batch_list(audios, self.batch_size):
+        for batched_audios in batched(audios, self.batch_size):
             padded_batch = sb.dataio.batch.PaddedBatch([{"wav": a.read().reshape((-1,))} for a in batched_audios])
             padded_batch.to(self._torch_device)
 
