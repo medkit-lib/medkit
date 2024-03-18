@@ -105,5 +105,5 @@ That's how an operation transforms text and extracts information without losing 
 
 :::{seealso}
 For further information on the utilities used in this class, see {class}`~medkit.core.text.utils`. 
-To see more examples of span operations [here](../examples/spans)
+To see more examples of span operations [here](./spans)
 :::

@@ -351,7 +351,7 @@ The "Douleurs abdominales"(disorder) and "Grade 1"(grade) are related. Dependenc
 This is how we have implemented ontotox in medkit, using the extracted information we could now filter out relations containing negated entities, for example. 
 
 :::{note}
-Medkit includes some helpers to define simple operations, you may see this [tutorial](../examples/custom_text_operation) for more information.
+Medkit includes some helpers to define simple operations, you may see this [example](./custom_text_operation) for more information.
 :::
 
 ```{code} python
@@ -449,5 +449,5 @@ hypothesis: False
 ```
 
 :::{seealso}
-[Here](../api/text) you can find more information about the text operations.
+[Here](../reference/text) you can find more information about the text operations.
 :::

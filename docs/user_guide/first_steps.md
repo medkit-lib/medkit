@@ -336,7 +336,7 @@ In this tutorial, we have:
 The operations used throughout this tutorial are rather basic ones, mostly rule-based,
 but there are many more available in `medkit`,
 including model-based NER operations.
-You can learn more about them in the [API reference](../api/text.md).
+You can learn more about them in the [API reference](../reference/text.md).
 
 To dive further into `medkit`, you might be interested in an overview
 of the [various entity matching methods available in medkit](../tutorial/entity_matching.md),

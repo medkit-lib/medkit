@@ -240,7 +240,7 @@ In this case, we recommend to use {class}`~.text.preprocessing.CharReplacer`.
 `medkit` also provides an operation for cleaning text up.
 This module has been implemented for a specific case of EDS documents.
 
-For more details, please check out this [example](../examples/cleaning_text.md)
+For more details, please check out this [example](../cookbook/cleaning_text.md)
 which makes use of class {class}`~.text.preprocessing.EDSCleaner`.
 
 (api:text:segmentation_modules)=
@@ -342,7 +342,7 @@ which allows user:
 * to associate `kb_name` to `kb_id`
 * to provide a medkit entity label (e.g., category) associated to the IAM system entity label (i.e., text to search).
 
-For more details, please check out the [IAMsystem matcher example](../examples/iamsystem).
+For more details, please check out the [IAMsystem matcher example](../cookbook/iamsystem).
 
 [IAMsystem]: https://iamsystem-python.readthedocs.io
 [IEntity]: https://iamsystem-python.readthedocs.io/getstarted.html#with-a-custom-of-keyword-subclass
@@ -677,12 +677,12 @@ trainer = Trainer(..., metrics_computer=seqeval_mc)
 ```
 
 For more details, please refer to {class}`~.text.metrics.ner.SeqEvalMetricsComputer` and
-the [training API](../api/training.md).
+the [training API](../reference/training.md).
 
 :::{hint}
 There is a utility to convert labels to NER tags if required, see {mod}`~.text.ner.hf_tokenization_utils`. 
 :::
 
 :::{seealso}
-You may check out this [fine-tuning example](../examples/finetuning_hf_model.md).
+You may check out this [fine-tuning example](../cookbook/finetuning_hf_model.md).
 :::
