@@ -1,4 +1,5 @@
 """Metrics to assess inter-annotator agreement."""
+
 from __future__ import annotations
 
 __all__ = ["krippendorff_alpha"]

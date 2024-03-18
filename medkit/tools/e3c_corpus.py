@@ -16,6 +16,7 @@ References
     Natural Language Engineering, 1-19. doi:10.1017/S1351324923000335
 
 """
+
 from __future__ import annotations
 
 __all__ = [

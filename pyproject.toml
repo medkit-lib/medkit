@@ -362,7 +362,7 @@ convention = "numpy"
 "medkit/tools/e3c_corpus.py" = ["A003", "S314"]
 "medkit/training/trainer.py" = ["NPY002"]
 "tests/unit/text/ner/test_nlstruct_entity_matcher.py" = ["A003"]
-"tests/**" = ["E402", "D", "PLR2004", "S101"]
+"tests/**" = ["A003", "E402", "D", "PLR2004", "S101"]
 
 [tool.ruff.format]
 quote-style = "double"
