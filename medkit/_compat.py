@@ -1,12 +1,18 @@
 from __future__ import annotations
 
 import sys
-from typing import Any, Iterable
+from typing import Any
+
+if sys.version_info >= (3, 9):
+    from collections.abc import Iterable, Iterator
+else:
+    from typing import Iterable, Iterator
+
 
 __all__ = ["batched"]
 
 
-def _batched(iterable: Iterable[Any], n: int) -> tuple[Any, ...]:
+def _batched(iterable: Iterable[Any], n: int) -> Iterator[tuple[Any, ...]]:
     """Batch data from an iterable into n-sized tuples.
 
     The last tuple may be shorter than the requested batch size.
