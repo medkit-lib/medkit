@@ -1,0 +1,511 @@
+[
+  {
+    "text": "Des commentaires spécifiques et des recommandations de prudence concernant la méningite , l ’ élévation des taux de créatine phosphokinase et les effets indésirables sur le SNC figurent à la rubrique 4 . 4 .",
+    "spans": [
+      {
+        "text": "méningite",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle désigne une maladie ou une inflammation des membranes qui entourent le cerveau et la moelle épinière."
+      },
+      {
+        "text": "créatine phosphokinase",
+        "is_entity": true,
+        "label": "Médicament",
+        "reason": " cette enzyme est souvent utilisée comme marqueur de la toxicité d'un médicament sur les muscles."
+      },
+      {
+        "text": "effets indésirables",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle fait référence à des problèmes médicaux ou des complications liés à un traitement ou à une condition spécifique."
+      },
+      {
+        "text": "recommandations",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " il s'agit d'une instruction ou d'une démarche à suivre."
+      },
+      {
+        "text": "SNC",
+        "is_entity": true,
+        "label": "Anatomie",
+        "reason": " il s'agit d'une référence à la structure du système nerveux central."
+      }
+    ]
+  },
+  {
+    "text": "Dans les études de perfusion intraveineuse , des volontaires sains de sexe masculin ont reçu le ziconotide à des doses atteignant 70 000 µg / jour ou 3 , 200 fois la dose journalière maximale recommandée par voie intrarachidienne .",
+    "spans": [
+      {
+        "text": "intrarachidienne",
+        "is_entity": true,
+        "label": "Anatomie",
+        "reason": " elle fait référence à une localisation spécifique dans le corps humain."
+      },
+      {
+        "text": "ziconotide",
+        "is_entity": true,
+        "label": "Médicament",
+        "reason": " c'est le nom du médicament mentionné dans la phrase."
+      },
+      {
+        "text": "recommandée",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " il s'agit d'une indication ou d'une instruction liée à une procédure de dosage."
+      },
+      {
+        "text": "perfusion",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " cela décrit une méthode spécifique utilisée dans les études sur l'administration intraveineuse du médicament."
+      },
+      {
+        "text": "sexe masculin",
+        "is_entity": true,
+        "label": "Physiologie",
+        "reason": " il s'agit d'une caractéristique biologique liée à la physiologie humaine."
+      },
+      {
+        "text": "études",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " il s'agit d'une description des activités de recherche ou d'expérimentation menées dans le cadre de cette étude."
+      },
+      {
+        "text": "volontaires",
+        "is_entity": true,
+        "label": "Organisme",
+        "reason": " elle fait référence à un groupe spécifique de personnes mentionnées dans le texte."
+      }
+    ]
+  },
+  {
+    "text": "Une hypotension orthostatique a été observée chez presque tous les sujets ayant reçu de fortes doses intraveineuses de ziconotide .",
+    "spans": [
+      {
+        "text": "ziconotide",
+        "is_entity": true,
+        "label": "Médicament",
+        "reason": " il s'agit du nom d'un médicament mentionné dans la phrase."
+      },
+      {
+        "text": "hypotension orthostatique",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " il s'agit d'une condition médicale qui décrit une baisse significative de la pression artérielle lors du passage de la position allongée à la position debout."
+      },
+      {
+        "text": "sujets",
+        "is_entity": true,
+        "label": "Organisme",
+        "reason": " cette partie de phrase fait référence aux individus concernés par l'observation mentionnée précédemment."
+      }
+    ]
+  },
+  {
+    "text": "La posologie maximale recommandée par voie intrarachidienne est de 21 , 6 µg / jour .",
+    "spans": [
+      {
+        "text": "recommandée",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " il s'agit d'une instruction ou d'une directive."
+      },
+      {
+        "text": "intrarachidienne",
+        "is_entity": true,
+        "label": "Anatomie",
+        "reason": " elle fait référence à une localisation anatomique spécifique."
+      }
+    ]
+  },
+  {
+    "text": "Dans les études cliniques , la dose maximale prévue de ziconotide administré par voie intrarachidienne était de 912 µg / jour après une augmentation posologique sur 7 jours .",
+    "spans": [
+      {
+        "text": "intrarachidienne",
+        "is_entity": true,
+        "label": "Anatomie",
+        "reason": " elle fait référence à la localisation de l'administration de la dose maximale prévue de ziconotide, qui se fait dans l'espace intrarachidien."
+      },
+      {
+        "text": "administré",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " elle indique une action spécifique réalisée dans le cadre d'une procédure médicale."
+      },
+      {
+        "text": "ziconotide",
+        "is_entity": true,
+        "label": "Médicament",
+        "reason": " il s'agit du nom d'un médicament spécifique mentionné dans le texte."
+      },
+      {
+        "text": "études cliniques",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " il s'agit d'une mention spécifique à une méthode d'investigation ou de recherche utilisée dans le texte."
+      }
+    ]
+  },
+  {
+    "text": "La plupart des patients sous observation ont récupéré dans les 24 heures suivant l",
+    "spans": [
+      {
+        "text": "observation",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle fait référence à une étude ou surveillance relative à la santé ou aux maladies."
+      },
+      {
+        "text": "récupéré",
+        "is_entity": true,
+        "label": "Physiologie",
+        "reason": " cela relève du fonctionnement normal du corps humain."
+      },
+      {
+        "text": "patients",
+        "is_entity": true,
+        "label": "Organisme",
+        "reason": " elle se réfère à un groupe d'individus qui sont observés dans le contexte d'une étude ou d'une recherche médicale."
+      }
+    ]
+  },
+  {
+    "text": "L ’ Agence européenne du médicament ( EMEA ) réévaluera chaque année toute nouvelle information qui pourrait être fournie , et si nécessaire cet RCP sera mis à jour .",
+    "spans": [
+      {
+        "text": "médicament",
+        "is_entity": true,
+        "label": "Médicament",
+        "reason": " il s'agit de l'objet principal du texte et de l'information centrale liée à l'Agence européenne du médicament."
+      },
+      {
+        "text": "réévaluera",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " cela décrit une action spécifique et une méthode de travail utilisée par l'Agence européenne du médicament."
+      }
+    ]
+  },
+  {
+    "text": "De nombreux patients répondant au traitement obtiennent une analgésie quasi-maximale dans les heures suivant l",
+    "spans": [
+      {
+        "text": "traitement",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " il s'agit d'une action ou d'une méthode spécifique mise en place pour soigner les patients."
+      },
+      {
+        "text": "patients",
+        "is_entity": true,
+        "label": "Organisme",
+        "reason": " elle fait référence à un groupe d'individus."
+      }
+    ]
+  },
+  {
+    "text": "Les effets indésirables neurologiques , notamment les sensations vertigineuses , les nausées et les troubles de la démarche semblent corrélées avec les concentrations céphalo-rachidiennes mais aucune relation définitive n",
+    "spans": [
+      {
+        "text": "nausées",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elles désignent des symptômes qui peuvent être associés à une maladie ou un trouble médical."
+      },
+      {
+        "text": "neurologiques",
+        "is_entity": true,
+        "label": "Anatomie",
+        "reason": " elle fait référence à une catégorie spécifique de troubles liés au système nerveux."
+      },
+      {
+        "text": "troubles de la démarche",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle décrit une altération fonctionnelle ou un problème de santé lié à la manière de marcher."
+      },
+      {
+        "text": "sensations vertigineuses",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elles sont des symptômes inhabituels pouvant indiquer la présence d'une maladie ou d'un trouble médical."
+      },
+      {
+        "text": "effets indésirables",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle fait référence à des troubles ou symptômes indésirables provenant d'une maladie ou d'une condition médicale."
+      }
+    ]
+  },
+  {
+    "text": "Pour limiter la survenue d ’ effets indésirables graves , il est recommandé de ne pas dépasser 21 , 6 µg / jour .",
+    "spans": [
+      {
+        "text": "effets indésirables",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " ils peuvent être liés à des troubles de santé."
+      },
+      {
+        "text": "recommandé",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " il s'agit d'une instruction ou d'une recommandation donnée aux personnes concernées."
+      }
+    ]
+  },
+  {
+    "text": "Cependant , dans les études cliniques , on a observé que les patients qui tolèrent des doses de 21 , 6 µg / jour après une augmentation progressive des",
+    "spans": [
+      {
+        "text": "patients",
+        "is_entity": true,
+        "label": "Organisme",
+        "reason": " elle se réfère à des individus vivants étudiés dans le contexte des essais cliniques."
+      },
+      {
+        "text": "études cliniques",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " elle décrit une méthode ou un processus utilisé dans la recherche ou l'analyse médicale."
+      },
+      {
+        "text": "tolèrent",
+        "is_entity": true,
+        "label": "Physiologie",
+        "reason": " elle indique que cette capacité à supporter des doses de médicaments est liée au fonctionnement physique du corps."
+      }
+    ]
+  },
+  {
+    "text": "8 doses pendant une période de 3 à 4 semaines , tolèrent généralement des doses plus élevées , pouvant atteindre 48 , 0 µg / jour .",
+    "spans": [
+      {
+        "text": "tolèrent",
+        "is_entity": true,
+        "label": "Physiologie",
+        "reason": " cela concerne la capacité du corps à supporter des doses plus élevées."
+      }
+    ]
+  },
+  {
+    "text": "Toutefois , compte tenu des données limitées disponibles , l ’ apparition d ’ une accoutumance ne peut être exclue .",
+    "spans": [
+      {
+        "text": "accoutumance",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle fait référence à une condition médicale ou une maladie."
+      }
+    ]
+  },
+  {
+    "text": "La perméabilité du cathéter intrarachidien doit être examinée en cas de nécessité d ’ une augmentation continue des doses de ziconotide n",
+    "spans": [
+      {
+        "text": "intrarachidien",
+        "is_entity": true,
+        "label": "Anatomie",
+        "reason": " cette partie spécifie le lieu d'implantation du cathéter."
+      },
+      {
+        "text": "cathéter",
+        "is_entity": true,
+        "label": "Appareil",
+        "reason": " il s'agit d'un instrument médical utilisé pour administrer le ziconotide."
+      },
+      {
+        "text": "ziconotide",
+        "is_entity": true,
+        "label": "Médicament",
+        "reason": " il s'agit du nom d'un médicament spécifique mentionné dans le texte."
+      },
+      {
+        "text": "perméabilité",
+        "is_entity": true,
+        "label": "Phénomène",
+        "reason": " il s'agit d'un aspect ou d'un processus spécifique qui est observé ou décrit."
+      }
+    ]
+  },
+  {
+    "text": "Trois études cliniques du ziconotide intrarachidien contrôlées contre placebo ont été réalisées .",
+    "spans": [
+      {
+        "text": "placebo",
+        "is_entity": true,
+        "label": "Médicament",
+        "reason": " cela fait référence à une substance utilisée à des fins thérapeutiques dans le cadre des études cliniques."
+      },
+      {
+        "text": "études cliniques",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " elles font référence à des recherches menées dans le cadre d'une méthodologie spécifique."
+      },
+      {
+        "text": "intrarachidien",
+        "is_entity": true,
+        "label": "Anatomie",
+        "reason": " cette expression fait référence à la localisation spécifique de l'administration du ziconotide dans la colonne vertébrale."
+      },
+      {
+        "text": "ziconotide",
+        "is_entity": true,
+        "label": "Médicament",
+        "reason": " il s'agit du nom d'un médicament spécifique mentionné dans la phrase."
+      }
+    ]
+  },
+  {
+    "text": "Score EVA moyen à la fin du titrage de doses initial , en mm ( ET )",
+    "spans": [
+      {
+        "text": "EVA",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " il s'agit d'un indicateur utilisé dans une procédure de mesure."
+      }
+    ]
+  },
+  {
+    "text": "Placebo ( n = 86 )",
+    "spans": [
+      {
+        "text": "Placebo",
+        "is_entity": true,
+        "label": "Médicament",
+        "reason": " un placebo est une substance qui ressemble à un médicament mais qui ne contient pas de principe actif."
+      }
+    ]
+  },
+  {
+    "text": "L ’ étiologie de la douleur dans les études 95 - 001 ( douleur cancéreuse ) et 96 - 002 ( douleur non cancéreuse ) variait , incluant des douleurs osseuses ( n = 380 ), due principalement à des métastases osseuses ( n = 34 ), une myélopathie ( n = 38 ), dont la moitié présentait un traumatisme médullaire avec paralysie ( n = 19 ), neuropathie ( n = 79 ), radiculopathie ( n = 24 ), douleur médullaire ( n = 91 ) due principalement à l ’ échec d ’ une intervention chirurgicale au niveau dorsal ( n = 82 ) et autres étiologies ( n = 82 ).",
+    "spans": [
+      {
+        "text": "neuropathie",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " il s'agit d'une condition médicale caractérisée par des lésions ou des dysfonctionnements du système nerveux périphérique."
+      },
+      {
+        "text": "métastases osseuses",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle désigne une maladie liée à l'extension de cellules cancéreuses aux os."
+      },
+      {
+        "text": "douleur",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle fait référence à une condition médicale ou une affection susceptible de causer une souffrance ou un malaise physique."
+      },
+      {
+        "text": "myélopathie",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle désigne une affection au niveau de la moelle épinière."
+      },
+      {
+        "text": "médullaire",
+        "is_entity": true,
+        "label": "Anatomie",
+        "reason": " elle fait référence à une localisation spécifique dans la moelle épinière."
+      },
+      {
+        "text": "douleur cancéreuse",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " il s'agit d'une condition médicale liée à la présence de cancer."
+      },
+      {
+        "text": "paralysie",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle fait référence à une condition médicale caractérisée par la perte partielle ou totale de la fonction motrice d'une ou de plusieurs parties du corps."
+      },
+      {
+        "text": "traumatisme",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " cette dernière fait référence à une condition médicale liée à une blessure physique."
+      },
+      {
+        "text": "douleur",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle décrit une condition médicale problématique liée à la santé."
+      },
+      {
+        "text": "douleur",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle fait référence à une condition médicale ou un trouble physique."
+      },
+      {
+        "text": "études",
+        "is_entity": true,
+        "label": "Procédure",
+        "reason": " elle décrit la procédure de recherche et d'analyse utilisée pour collecter et étudier les données concernant l'étiologie de la douleur dans les études."
+      },
+      {
+        "text": "cancéreuse",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle décrit une condition médicale relative au cancer."
+      },
+      {
+        "text": "intervention chirurgicale",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle fait référence à une procédure médicale liée à une pathologie."
+      },
+      {
+        "text": "médullaire",
+        "is_entity": true,
+        "label": "Anatomie",
+        "reason": " cette partie de phrase fait référence à une localisation anatomique précise, à savoir la moelle épinière."
+      },
+      {
+        "text": "dorsal",
+        "is_entity": true,
+        "label": "Anatomie",
+        "reason": " elle fait référence à une localisation spécifique du corps."
+      },
+      {
+        "text": "radiculopathie",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " cette expression désigne une maladie ou un trouble touchant les racines nerveuses de la moelle épinière."
+      },
+      {
+        "text": "douleurs osseuses",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle désigne une condition médicale liée aux os."
+      }
+    ]
+  },
+  {
+    "text": "Certains patients présentaient plusieurs causes de douleur .",
+    "spans": [
+      {
+        "text": "douleur",
+        "is_entity": true,
+        "label": "Pathologie",
+        "reason": " elle est causée par une certaine maladie ou condition médicale."
+      },
+      {
+        "text": "patients",
+        "is_entity": true,
+        "label": "Organisme",
+        "reason": " elle se réfère à un groupe de personnes ou d'individus appartenant à un organisme spécifique."
+      }
+    ]
+  }
+]
