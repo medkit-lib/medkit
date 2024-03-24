@@ -27,6 +27,10 @@ jobs:
         include:
           - os: macos-13
             python-version: '3.11'
+          - os: macos-14
+            python-version: '3.11'
+          - os: windows-latest
+            python-version: '3.11'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
