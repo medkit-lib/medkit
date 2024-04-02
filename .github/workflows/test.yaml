@@ -37,6 +37,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
+      - name: Fix pipx permissions
+        if: matrix.os == 'macos-14'
+        run: |
+          for d in "$PIPX_HOME" "$PIPX_BIN_DIR" ; do
+            if [[ -n "$d" ]] ; then
+              sudo mkdir -p "$d"
+              sudo chown -R $(id -u) "$d"
+            fi
+          done
       - name: Install Hatch
         run: pipx install hatch
       - name: Run tests
