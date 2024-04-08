@@ -1,15 +1,6 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.16.1
----
+# Training
 
-# Fine-tuning
-
-```{code-cell}
+```{code} python
 import torch
 from medkit.training import TrainerConfig, Trainer
 from medkit.text.metrics.ner import SeqEvalMetricsComputer
@@ -27,7 +18,7 @@ for c in ['quaero','e3c', 'casm2']:
     test += list(load_text_documents(f"/content/drive/MyDrive/datasets/{c}/test.jsonl"))
 ```
 
-```{code-cell}
+```{code} python
 CHECKPOINT_DIR = "checkpoints_drbert/"
 
 DEVICE = 0 if torch.cuda.is_available() else -1
@@ -73,7 +64,7 @@ os.rename(checkpoint_path, f'{CHECKPOINT_DIR}/DrBert-Generalized')
 shutil.move(f'{CHECKPOINT_DIR}/DrBert-Generalized','/content/drive/MyDrive/models')
 ```
 
-```{code-cell}
+```{code} python
 CHECKPOINT_DIR = "checkpoints_cam/"
 
 DEVICE = 0 if torch.cuda.is_available() else -1

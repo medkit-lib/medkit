@@ -1,19 +1,6 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.16.1
-kernelspec:
-  display_name: .venv
-  language: python
-  name: python3
----
-
 # Evaluation
 
-```{code-cell} ipython3
+```{code} python
 from medkit.io.medkit_json import load_text_documents
 from medkit.core.text import TextDocument
 from pathlib import Path
@@ -110,17 +97,17 @@ def test(_doc, open_ai_key="", _labels_remapping={"ANAT": "ANAT", "CHEM": "CHEM"
     display(HTML("".join(html_datas)))
 ```
 
-```{code-cell} ipython3
+```{code} python
 #Charge une partie du split de test du corpus QUAERO déja pre-processé
 docs = list(load_text_documents("datasets/quaero/test.jsonl"))[:100]
 ```
 
-```{code-cell} ipython3
+```{code} python
 #Evalue plusieurs outils de NER et renvoie un tableau de comparaison
 eval(docs)
 ```
 
-```{code-cell} ipython3
+```{code} python
 #Affiche les annotations de différent outils de NER sur un document du split
 test(docs[12], open_ai_key="")
 ```
