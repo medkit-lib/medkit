@@ -1,19 +1,6 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.16.1
-kernelspec:
-  display_name: .venv
-  language: python
-  name: python3
----
+# Preprocessing
 
-# Data loading
-
-```{code-cell} ipython3
+```{code} python
 from glob import glob
 from medkit.core.text import TextDocument
 from medkit.io.brat import BratInputConverter
@@ -170,26 +157,26 @@ def load_processed_mtsamples():
     return mt_splitted, specs
 ```
 
-```{code-cell} ipython3
+```{code} python
 quaero, specs_quaero = load_quaero()
 e3c, specs_e3c = load_e3c()
 casm2, specs_casm2 = load_casm2()
 #mt, specs_mt = load_processed_mtsamples()
 ```
 
-```{code-cell} ipython3
+```{code} python
 specs_quaero.T
 ```
 
-```{code-cell} ipython3
+```{code} python
 specs_e3c.T
 ```
 
-```{code-cell} ipython3
+```{code} python
 specs_casm2.T
 ```
 
-```{code-cell} ipython3
+```{code} python
 corpus = {'quaero':quaero, 'e3c':e3c, 'casm2':casm2}
 
 for corpa_name, corpa in corpus.items():
