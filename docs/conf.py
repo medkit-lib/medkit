@@ -15,7 +15,7 @@ project_copyright = f"2022-2024, {author}"
 
 extensions = [
     "autoapi.extension",
-    "myst_parser",
+    "myst_nb",
     "numpydoc",
     "sphinxcontrib.mermaid",
     "sphinx_design",

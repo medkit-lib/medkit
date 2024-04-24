@@ -15,13 +15,13 @@ or because we will afterward perform some context detection operation at the sen
 
 Let's start by loading a medical report to work on:
 
-:::{code}
+```{code} python
 from pathlib import Path
 from medkit.core.text import TextDocument
 
 doc = TextDocument.from_file(Path("../data/mtsamplesfr/1.txt"))
 print(doc.text)
-:::
+```
 
 We will now use a sentence tokenizing operation to create and display sentence segments.
 As seen [before](../user_guide/first_steps.md), the sentence tokenizer expects
@@ -30,7 +30,7 @@ Since we don't have any segments yet on our document,
 we use {class}`medkit.core.text.document.TextDocument`.raw_segment,
 which is a special segment that contains the full unprocessed text.
 
-:::{code}
+```{code} python
 from medkit.text.segmentation import SentenceTokenizer
 
 # By default, SentenceTokenizer will use a list of punctuation chars to detect sentences.
@@ -49,7 +49,7 @@ sentence_segs = sentence_tokenizer.run([doc.raw_segment])
 # Print all returned sentence segments
 for sentence_seg in sentence_segs:
     print(sentence_seg.text, end="\n\n")
-:::
+```
 
 ## Regular expression matching
 
@@ -60,7 +60,7 @@ We are going to use regular expressions to match entities
 that cannot be detected by a dictionary-based approach,
 such as age and weight indications:
 
-:::{code}
+```{code} python
 from medkit.text.ner import RegexpMatcher, RegexpMatcherRule
 
 # Rule with simple regexps to match age and weights
@@ -94,29 +94,29 @@ regexp_matcher = RegexpMatcher(rules=[regexp_rule_1, regexp_rule_2])
 entities = regexp_matcher.run(sentence_segs)
 for entity in entities:
     print(entity.text, entity.label)
-:::
+```
 
 Let's visualize them with `displacy`, using {func}`~medkit.text.spacy.displacy_utils.entities_to_displacy`
 (similar to {func}`~medkit.text.spacy.displacy_utils.medkit_doc_to_displacy`but we can pass it
 a list of entities rather than a `TextDocument`):
 
-:::{code}
+```{code} python
 from spacy import displacy
 from medkit.text.spacy.displacy_utils import entities_to_displacy
 
 displacy_data = entities_to_displacy(entities, doc.text)
 displacy.render(displacy_data, manual=True, style="ent")
-:::
+```
 
 Note that you can save a particular list of regexp rules into a yaml file
 using {func}`~medkit.text.ner.RegexpMatcher.save_rules`,
 and reload them with {func}`~medkit.text.ner.RegexpMatcher.load_rules`.
 This makes rules easier to share and reuse:
 
-:::{code}
+```{code} python
 RegexpMatcher.save_rules([regexp_rule_1, regexp_rule_2], "weight_and_age_rules.yml")
 rules = RegexpMatcher.load_rules("weight_and_age_rules.yml")
-:::
+```
 
 `medkit` comes with a list of predefined regexp rules,
 available at https://github.com/medkit-lib/medkit/blob/main/medkit/text/ner/regexp_matcher_default_rules.yml,
@@ -136,12 +136,12 @@ Let's take a look at it:
 [^atc_footnote]: This file was created by Bastien Rance, reusing scripts originally from
 Sébastien Cossin
 
-:::{code}
+```{code} python
 import pandas as pd
 
 drugs = pd.read_csv("../data/bdpm.csv")
 drugs.head(n=10)
-:::
+```
 
 Rather than regular expressions, we will use similarity-based matching
 using the {class}`~medkit.text.ner.SimstringMatcher` operation.
@@ -151,7 +151,7 @@ will be more tolerant to small spelling errors than the exact matching of a regu
 We are going to create a rule for each commercial name, and to each rule we will attach
 the ATC identifier of each molecule when we know them:
 
-:::{code}
+```{code} python
 from medkit.text.ner import SimstringMatcher, SimstringMatcherRule, SimstringMatcherNormalization
 
 simstring_rules = []
@@ -199,7 +199,7 @@ for entity in entities:
     for norm_attr in entity.attrs.norms:
         print(norm_attr.kb_name, norm_attr.kb_id)
     print()
-:::
+```
 
 ## Advanced entity matching with IAMSystem
 
@@ -212,7 +212,7 @@ even when the dictionary of terms to match is very large.
 
 Let's see how to use it to match a couple of manually-defined terms:
 
-:::{code}
+```{code} python
 from iamsystem import Matcher, ESpellWiseAlgo
 from medkit.text.ner.iamsystem_matcher import IAMSystemMatcher
 
@@ -234,7 +234,7 @@ entities = iam_system_matcher.run(sentence_segs)
 
 for entity in entities:
     print(entity.label, ":", entity.text)
-:::
+```
 
 To learn more about the possibilities of `IAMSystem`,
 please refer to its [documentation](https://iamsystem-python.readthedocs.io/en/).
@@ -268,7 +268,7 @@ To download them, you must request a license on the [UMLS website].
 
 [UMLS website]: https://www.nlm.nih.gov/research/umls/index.html
 
-:::{code}
+```{code} python
 from medkit.text.ner import UMLSMatcher
 
 # Codes of UMLS semantic groups to take into account
@@ -312,81 +312,7 @@ def custom_formatter(entity):
 
 displacy_data = entities_to_displacy(entities, doc.text, entity_formatter=custom_formatter)
 displacy.render(displacy_data, manual=True, style="ent")
-:::
-
-
-<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">PLAINTE PRINCIPALE :<br>
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Thrombocytose essentielle<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0040028)</span></mark>
-.<br><br>ANTÉCÉDENTS DE LA 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">MALADIE<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0012634)</span></mark>
- ACTUELLE : <br>C'est un M. de 64 ans que je suis pour une 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">thrombocytose essentielle<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0040028)</span></mark>
-. Il a été initialement diagnostiqué lorsqu'il a vu un hématologue pour la première fois le 09/07/07. A cette époque, son nombre de 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">plaquettes<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">anatomy (C0005821)</span></mark>
- était de 1 240 000. Il a d'abord commencé à prendre de l'Hydrea 1000 mg par jour. Le 07/11/07, il a subi une 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">biopsie de moelle osseuse<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">procedure (C0005954)</span></mark>
-, qui a montré une 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">thrombocytose essentielle<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0040028)</span></mark>
-. Il était positif pour la 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">mutation JAK-2<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C3267069)</span></mark>
-. Le 11/06/07, ses 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">plaquettes<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">anatomy (C0005821)</span></mark>
- étaient à 766 000. Sa dose actuelle d'Hydrea est maintenant de 1500 mg les lundis et vendredis et de 1000 mg tous les autres jours. Il a déménagé à ABCD en décembre 2009 pour tenter d'améliorer la 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">polyarthrite rhumatoïde<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0003873)</span></mark>
- de sa 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">femme<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">living_being (C0043210)</span></mark>
-. Dans l'ensemble, il se porte bien. Il a un bon niveau d'énergie et son statut de performance 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">ECOG<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">procedure (C0430797)</span></mark>
- est de 0. Absence de 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">fièvre<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0015967)</span></mark>
-, 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">frissons<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0085593)</span></mark>
- ou 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">sueurs nocturnes<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0028081)</span></mark>
-. Pas d'
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">adénopathie<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0497156)</span></mark>
-. Pas de nausées ni de vomissements. Aucun changement dans les habitudes intestinales ou vésicales.<br><br>
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">MÉDICAMENTS<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">chemical (C0013227)</span></mark>
- ACTUELS : <br>Hydrea 1500 mg les lundis et vendredis et 1000 mg les autres jours de la semaine, Mecir 1cp/j, 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">vitamine D<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">chemical (C0042866)</span></mark>
- 1/j, 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">aspirine<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">chemical (C0004057)</span></mark>
- 80 mg 1/j et 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">vitamine C<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">chemical (C0003968)</span></mark>
- 1/j <br><br>ALLERGIES : <br>Aucune 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">allergie médicamenteuse<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0013182)</span></mark>
- connue.<br><br>EXAMEN DES SYSTÈMES <br>Correspondant à l'histoire de la 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">maladie<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0012634)</span></mark>
-. Pas d'autre signes.<br><br>ANTÉCÉDENTS MÉDICAUX :<br>1. 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Appendicectomie<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">procedure (C0003611)</span></mark>
-.<br>2. 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Amygdalectomie<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">procedure (C0040423)</span></mark>
- et une 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">adénoïdectomie<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">procedure (C0001425)</span></mark>
-.<br>3. 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Chirurgie<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">procedure (C0543467)</span></mark>
- bilatérale de la 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">cataracte<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0086543)</span></mark>
-.<br>4. HTA.<br><br>MODE DE VIE : <br>Il a des antécédents de 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">tabagisme<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0040332)</span></mark>
- qu'il a arrêté à l'âge de 37 ans. Il consomme une boisson alcoolisée par jour. Il est 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">marié<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">living_being (C0015209)</span></mark>
-. Il est directeur de laboratoire à la 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">retraite<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0035345)</span></mark>
-.<br><br>
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">ANTÉCÉDENTS FAMILIAUX<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0241889)</span></mark>
- : <br>Antécédents de 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">tumeur solide<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0280100)</span></mark>
- dans sa 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">famille<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">living_being (C0015576)</span></mark>
-
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">mais<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">object (C1138842)</span></mark>
- aucun d'
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">hémopathies malignes<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">disorder (C0376545)</span></mark>
-.<br><br>
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">EXAMEN PHYSIQUE<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">procedure (C0031809)</span></mark>
- :<br>Le patient pèse 85.7 kg.<br></div></span>
-
+```
 
 ## Finding entities with BERT models
 
@@ -410,7 +336,7 @@ to perform [entity matching](https://huggingface.co/medkit/DrBERT-CASM2).
 Let's use this model using {class}`~medkit.text.ner.hf_entity_matcher.HFEntityMatcher`
 to look for entities in our document:
 
-:::{code}
+```{code} python
 from medkit.text.ner.hf_entity_matcher import HFEntityMatcher
 
 # HFEntityMatcher just needs the name of a model on the HuggingFace hub or a path to a local checkpoint
@@ -425,76 +351,7 @@ entities = bert_matcher.run(sentence_segs)
 
 displacy_data = entities_to_displacy(entities, doc.text)
 displacy.render(docs=displacy_data, manual=True, style="ent")
-:::
-
-<span class="tex2jax_ignore"><div class="entities" style="line-height: 2.5; direction: ltr">PLAINTE PRINCIPALE :<br>
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Thrombocytose essentielle<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
-.<br><br>ANTÉCÉDENTS DE LA MALADIE ACTUELLE : <br>C'est un M. de 64 ans que je suis pour une 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">thrombocytose essentielle<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
-. Il a été initialement diagnostiqué lorsqu'il a vu un hématologue pour la première fois le 09/07/07. A cette époque, son 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">nombre<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">test</span></mark>
- de 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">plaquettes<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">test</span></mark>
- était de 1 240 000. Il a d'abord commencé à prendre de l'
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Hydrea<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">treatment</span></mark>
- 1000 mg par jour. Le 07/11/07, il a subi une 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">biopsie de moelle osseuse<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">test</span></mark>
-, qui a montré une 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">thrombocytose essentielle<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
-. Il était positif pour la 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">mutation JAK-2<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
-. Le 11/06/07, ses plaquettes étaient à 766 000. Sa dose actuelle d'
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Hydrea<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">treatment</span></mark>
- est maintenant de 1500 mg les lundis et vendredis et de 1000 mg tous les autres jours. Il a déménagé à ABCD en décembre 2009 pour tenter d'améliorer la 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">polyarthrite rhumatoïde<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
- de sa femme. Dans l'ensemble, il se porte bien. Il a un bon niveau 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">d<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">test</span></mark>
-'
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">énergie<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">test</span></mark>
- et son 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">statut de performance ECOG<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">test</span></mark>
- est de 0. Absence de 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">fièvre<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
-, 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">frissons<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
- ou 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">sueurs nocturnes<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
-. Pas d'
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">adénopathie<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
-. Pas de 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">nausées<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
- ni de 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">vomissements<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
-. Aucun changement dans les habitudes intestinales ou vésicales.<br><br>MÉDICAMENTS ACTUELS : <br>Hydrea 1500 mg les lundis et vendredis et 1000 mg les autres jours de la semaine, Mecir 1cp/j, 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">vitamine D<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">treatment</span></mark>
- 1/j, 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">aspirine<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">treatment</span></mark>
- 80 mg 1/j et 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">vitamine C<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">treatment</span></mark>
- 1/j <br><br>ALLERGIES : <br>Aucune 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">allergie médicamenteuse<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
- connue.<br><br>
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">EXAMEN DES SYSTÈMES<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">test</span></mark>
- <br>Correspondant à l'histoire de la maladie. Pas d'autre signes.<br><br>ANTÉCÉDENTS MÉDICAUX :<br>1. 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Appendicectomie<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">treatment</span></mark>
-.<br>2. 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Amygdalectomie<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">treatment</span></mark>
- et une 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">adénoïdectomie<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">treatment</span></mark>
-.<br>3. 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">Chirurgie bilatérale de la cataracte<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">treatment</span></mark>
-.<br>4. HTA.<br><br>MODE DE VIE : <br>Il a des antécédents de 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">tabagisme<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
- qu'il a arrêté à l'âge de 37 ans. Il consomme une boisson alcoolisée par jour. Il est marié. Il est directeur de laboratoire à la retraite.<br><br>ANTÉCÉDENTS FAMILIAUX : <br>Antécédents de 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">tumeur solide<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
- dans sa famille mais aucun d'
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">hémopathies malignes<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
-.<br><br>
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">EXAMEN PHYSIQUE<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">test</span></mark>
- :<br>Le patient 
-<mark class="entity" style="background: #ddd; padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 1; border-radius: 0.35em;">pèse<span style="font-size: 0.8em; font-weight: bold; line-height: 1; border-radius: 0.35em; vertical-align: middle; margin-left: 0.5rem">problem</span></mark>
- 85.7 kg.<br></div></span>
-
+```
 
 Note that the entities obtained with `HFEntityMatcher` don't have any normalization attributes attached to them.
 
@@ -503,35 +360,35 @@ Note that the entities obtained with `HFEntityMatcher` don't have any normalizat
 Let's consider a more realistic case in which we are dealing with a collection of documents
 rather than a unique document:
 
-:::{code}
+```{code} python
 from glob import glob
 
 # Let's load all of our sample documents
 docs = TextDocument.from_dir(Path("../data/mtsamplesfr/"))
 print(len(docs))
-:::
+```
 
 It is possible to run the sentence splitting and entity matching operations on all documents at once:
 
-:::{code}
+```{code} python
 sentence_segs = sentence_tokenizer.run([d.raw_segment for d in docs])
 entities = regexp_matcher.run(sentence_segs)
 for entity in entities:
     print(entity.label, entity.text)
-:::
+```
 
 Here, `entities` contains a list of entities found by the regexp matcher across all of our documents.
 But if we want to attach the entities back to the document they belong to,
 then we need to process each document independently:
 
-:::{code}
+```{code} python
 for doc in docs:
     clean_text_segs = sentence_tokenizer.run([doc.raw_segment])
     sentence_segs = sentence_tokenizer.run(clean_text_segs)
     entities = regexp_matcher.run(sentence_segs)
     for entity in entities:
         doc.anns.add(entity)
-:::
+```
 
 When using [pipelines](../user_guide/pipeline.md),
 this last use case is covered using {class}`~medkit.core.DocPipeline`.
@@ -549,8 +406,8 @@ so you can use them anywhere else within `medkit`. See the [module](../user_guid
 
 Contributions to `medkit` are welcome, feel free to submit your operations.
 
-:::{code}
+```{code} python
 import os
 
 os.unlink("weight_and_age_rules.yml")
-:::
+```

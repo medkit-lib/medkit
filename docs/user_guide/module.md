@@ -57,14 +57,17 @@ segment.
 
 ```python
 class MyTokenizer(SegmentationOperation):
-    ...
+    
+    def _tokenize(self, segment: Segment) -> Segment:
+        """Custom method for segment tokenization."""
+        ...
+    
     def run(self, segments: List[Segment]) -> List[Segment]:
-        # Here is your code for the tokenizer:
-        # * process each input
         return [
             token
             for segment in segments
-            for token in self._mytokenmethod(segment) 
+            for token in self._tokenize(segment)
+        ]
 ```
 
 ## 3. Make your operation non-destructive (for text)
@@ -85,7 +88,7 @@ segments.
 ```python
 class MyTokenizer(SegmentationOperation):
     ...
-    def _mytokenmethod(self, segment):
+    def _tokenize(self, segment):
         # process the segment (e.g., cut the segment)
         size = len(segment)
         cut_index = size // 2
@@ -140,7 +143,7 @@ Here is our example which store information about:
 ```python
 class MyTokenizer(SegmentationOperation):
     ...
-    def _mytokenmethod(self, segment):
+    def _tokenize(self, segment):
         ...
         
         # save the provenance data for this operation
@@ -166,7 +169,7 @@ To illustrate what we have seen in a more concrete manner, here is a fictional
 "days of the week" matcher that takes text segments as input a return entities
 for week days:
 
-:::{code}
+```python
 import re
 from medkit.core import Operation
 from medkit.core.text import Entity, span_utils
@@ -222,7 +225,7 @@ class DayMatcher(Operation):
                         )
 
         return entities
-:::
+```
 
 Note than since this is a entity matcher, adding support for `attrs_to_copy`
 would be nice (cf [Context detection](../tutorial/context_detection.md)).

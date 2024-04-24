@@ -164,9 +164,10 @@ all = [
     webrtc-voice-detector]""",
 ]
 docs = [
-  "myst-parser",
+  "myst-nb",
   "numpydoc",
-  "sphinx>=7,<8",
+  "pandas",
+  "sphinx",
   "sphinx-autoapi",
   "sphinx-autobuild",
   "sphinx-book-theme",
@@ -207,15 +208,20 @@ cov = [
 
 [tool.hatch.envs.docs]
 dependencies = [
-  "myst-parser",
+  "myst-nb",
   "numpydoc",
-  "sphinx>=7,<8",
+  "pandas",
+  "sphinx",
   "sphinx-autoapi",
   "sphinx-autobuild",
   "sphinx-book-theme",
   "sphinx-design",
   "sphinxcontrib-mermaid",
 ]
+features = [
+  "spacy",
+]
+python = "3.12"
 
 [tool.hatch.envs.docs.scripts]
 clean = "rm -rf docs/_build"
