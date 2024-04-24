@@ -8,7 +8,7 @@ and how to create pipelines to enrich documents.
 Let's reuse the preprocessing, segmentation, context detection and entity recognition operations
 from the [First steps](./first_steps.md) tutorial:
 
-:::{code}
+```{code} python
 from medkit.text.preprocessing import RegexpReplacer
 from medkit.text.segmentation import SentenceTokenizer, SyntagmaTokenizer
 from medkit.text.context import NegationDetector, NegationDetectorRule
@@ -30,14 +30,14 @@ syntagma_tokenizer = SyntagmaTokenizer(
 )
 
 # context detection 
-neg_rules = [
+negation_rules = [
     NegationDetectorRule(regexp=r"\bpas\s*d[' e]\b"),
     NegationDetectorRule(regexp=r"\bsans\b", exclusion_regexps=[r"\bsans\s*doute\b"]),
     NegationDetectorRule(regexp=r"\bne\s*semble\s*pas"),
 ]
 negation_detector = NegationDetector(
     output_label="is_negated",
-    rules=neg_rules,
+    rules=negation_rules,
 )
 
 # entity recognition
@@ -50,13 +50,13 @@ regexp_rules = [
     RegexpMatcherRule(regexp=r"\bnasonex?\b", label="treatment", case_sensitive=False),
 ]
 regexp_matcher = RegexpMatcher(rules=regexp_rules, attrs_to_copy=["is_negated"])
-:::
+```
 
 Each of these operations features a `run()` method, which could be called sequentially.
 Data need to be routed manually between inputs and outputs for each operation,
 using a document's raw text segment as initial input:
 
-:::{code}
+```{code} python
 from pathlib import Path
 from medkit.core.text import TextDocument
 
@@ -74,7 +74,7 @@ syntagmas = syntagma_tokenizer.run(sentences)
 # but rather appends attributes to the segments it received.
 negation_detector.run(syntagmas)
 entities = regexp_matcher.run(syntagmas)
-:::
+```
 
 This way of coding is useful for interactive exploration of `medkit`.
 In the next section, we will introduce a different way using `Pipeline` objects.
@@ -105,7 +105,7 @@ But we also need to "connect" the operations together,
 i.e. to indicate which output of an operation should be fed as input to another operation.
 This is the purpose of the {class}`~medkit.core.PipelineStep` objects:
 
-:::{code}
+```{code} python
 from medkit.core import PipelineStep
 
 steps = [
@@ -115,13 +115,13 @@ steps = [
     PipelineStep(negation_detector, input_keys=["syntagmas"], output_keys=[]),  # no output
     PipelineStep(regexp_matcher, input_keys=["syntagmas"], output_keys=["entities"]),
 ]
-:::
+```
 
 Each `PipelineStep` associates an operation with input and output _keys_.
 Pipeline steps with matching input and output keys will be connected to each other.
 The resulting pipeline can be represented like this:
 
-:::{mermaid}
+```{mermaid}
 ---
 align: center
 ---
@@ -143,11 +143,11 @@ graph TD
     F --> G
 
     classDef io fill:#fff4dd,stroke:#edb:
-:::
+```
 
 Pipeline steps can then be used to instantiate a {class}`~medkit.core.Pipeline` object:
 
-:::{code}
+```{code} python
 from medkit.core import Pipeline
 
 pipeline = Pipeline(
@@ -162,7 +162,7 @@ pipeline = Pipeline(
     # (and therefore that it should be the output of the regexp matcher)
     output_keys=["entities"]
 )
-:::
+```
 
 The resulting pipeline is functionally equivalent to some operation
 processing full text segments as input and returning entities with family attributes as output.
@@ -171,13 +171,13 @@ but more complex pipelines with multiple inputs and outputs are supported.
 
 Like any other operation, the pipeline can be evaluated using its `run` method: 
 
-:::{code}
+```{code} python
 entities = pipeline.run([doc.raw_segment])
 
 for entity in entities:
     neg_attr = entity.attrs.get(label="is_negated")[0]
     print(f"text='{entity.text}', label={entity.label}, is_negated={neg_attr.value}")
-:::
+```
 
 ## Nested pipelines
 
@@ -188,7 +188,7 @@ which can be used, tested and exercised in isolation.
 In our example, we can use this feature to regroup together our regexp replacer,
 sentence tokenizer and family detector into a context sub-pipeline:
 
-:::{code}
+```{code} python
 # Context pipeline that receives full text segments
 # and returns preprocessed syntagmas segments with negation attributes.
 context_pipeline = Pipeline(
@@ -197,20 +197,20 @@ context_pipeline = Pipeline(
     name="context",
     steps=[
         PipelineStep(regexp_replacer, input_keys=["full_text"], output_keys=["clean_text"]),
-        PipelineStep(sent_tokenizer, input_keys=["clean_text"], output_keys=["sentences"]),
-        PipelineStep(synt_tokenizer, input_keys=["sentences"], output_keys=["syntagmas"]),
-        PipelineStep(neg_detector, input_keys=["syntagmas"], output_keys=[]),
+        PipelineStep(sentence_tokenizer, input_keys=["clean_text"], output_keys=["sentences"]),
+        PipelineStep(syntagma_tokenizer, input_keys=["sentences"], output_keys=["syntagmas"]),
+        PipelineStep(negation_detector, input_keys=["syntagmas"], output_keys=[]),
     ],
     input_keys=["full_text"],
     output_keys=["syntagmas"],
 )
-:::
+```
 
 Likewise, we can introduce a NER sub-pipelines
 composed of a UMLS-based matching operation (see also [Entity Matching](../tutorial/entity_matching.md))
 grouped with the previously defined regexp matcher:
 
-:::{code}
+```{code} python
 from medkit.text.ner import UMLSMatcher
 
 umls_matcher = UMLSMatcher(
@@ -231,7 +231,7 @@ ner_pipeline = Pipeline(
     input_keys=["syntagmas"],
     output_keys=["entities"],
 )
-:::
+```
 
 Since both pipeline steps feature the same output key (_entities_),
 the pipeline will return a list containing the entities matched by
@@ -239,7 +239,7 @@ both the regexp matcher and the UMLS matcher.
 
 The NER and context sub-pipelines can now be sequenced with:
 
-:::{code}
+```{code} python
 pipeline = Pipeline(
     steps=[
         PipelineStep(context_pipeline, input_keys=["full_text"], output_keys=["syntagmas"]),
@@ -248,7 +248,7 @@ pipeline = Pipeline(
     input_keys=["full_text"],
     output_keys=["entities"],
 )
-:::
+```
 
 which can be represented like this:
 
@@ -287,14 +287,14 @@ graph TD
 
 Let's run the pipeline and verify entities with negation attributes:
 
-:::{code}
+```{code} python
 entities = pipeline.run([doc.raw_segment])
 
 for entity in entities:
     neg_attr = entity.attrs.get(label="is_negated")[0]
     print(entity.label, ":", entity.text)
     print("negation:", neg_attr.value, end="\n\n")
-:::
+```
 
 ```text
 problem : allergies
@@ -393,28 +393,28 @@ To scale the processing of such pipeline to a collection of documents,
 one needs to iterate over each document manually to obtain its entities
 rather than processing all the documents at once:
 
-:::{code}
+```{code} python
 docs = TextDocument.from_dir(Path("..data/text"))
 
 for doc in docs:
     entities = pipeline.run([doc.raw_segment])
     for entity in entities:
         doc.anns.add(entity)
-:::
+```
 
 To handle this common use case, `medkit` provides a {class}`~medkit.core.DocPipeline` class,
 which wraps a `Pipeline` instance and run it on a list of documents.
 
 Here is an example of its usage:
 
-:::{code}
+```{code} python
 from medkit.core import DocPipeline
 
 docs = TextDocument.from_dir(Path("..data/text"))
 
 doc_pipeline = DocPipeline(pipeline=pipeline)
 doc_pipeline.run(docs)
-:::
+```
 
 ## Summary
 

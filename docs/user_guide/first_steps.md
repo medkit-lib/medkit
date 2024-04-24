@@ -8,7 +8,7 @@ and context detection operations.
 
 For starters, let's load a text file using the {class}`~medkit.core.text.TextDocument` class:
 
-:::{code}
+```{code} python
 # You can download the file available in source code
 # !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/data/text/1.txt
 
@@ -16,13 +16,13 @@ from pathlib import Path
 from medkit.core.text import TextDocument
 
 doc = TextDocument.from_file(Path("../data/text/1.txt"))
-:::
+```
 
 The full raw text can be accessed through the `text` attribute:
 
-:::{code}
+```{code} python
 print(doc.text)
-:::
+```
 
 A `TextDocument` can store {class}`~medkit.core.text.TextAnnotation` objects.
 For now, our document is free of annotations.
@@ -36,14 +36,14 @@ documents in sentences.
 including a rule-based {class}`~medkit.text.segmentation.SentenceTokenizer` class
 that relies on a list of punctuation characters.
 
-:::{code}
+```{code} python
 from medkit.text.segmentation import SentenceTokenizer
 
 sent_tokenizer = SentenceTokenizer(
     output_label="sentence",
     punct_chars=[".", "?", "!"],
 )
-:::
+```
 
 As all operations, `SentenceTokenizer` defines a `run()` method.
 
@@ -54,14 +54,14 @@ and returns a list of `Segment` objects.
 Here, we can pass a special `Segment` containing the full text of the document,
 which can be retrieved through the `raw_segment` attribute of `TextDocument`:
 
-:::{code}
+```{code} python
 sentences = sent_tokenizer.run([doc.raw_segment])
 
 for sentence in sentences:
     print(f"uid={sentence.uid}")
     print(f"text={sentence.text!r}")
     print(f"spans={sentence.spans}, label={sentence.label}\n")
-:::
+```
 
 Each segment features:
  - an `uid` attribute, which unique value is automatically generated;
@@ -76,10 +76,10 @@ Each segment features:
 If you take a look at the 13th and 14th detected sentences,
 you will notice something strange:
 
-:::{code}
+```{code} python
 print(repr(sentences[12].text))
 print(repr(sentences[13].text))
-:::
+```
 
 This is actually one sentence that was split into two segments,
 because the sentence tokenizer incorrectly considers the dot in the decimal weight value
@@ -92,12 +92,12 @@ For this, we can use the {class}`~medkit.text.preprocessing.RegexpReplacer` clas
 a regexp-based "search-and-replace" operation.
 As other `medkit` operations, it can be configured with a set of user-determined rules:
 
-:::{code}
+```{code} python
 from medkit.text.preprocessing import RegexpReplacer
 
 rule = (r"(?<=\d)\.(?=\d)", ",")  # => (pattern to replace, new text)
 regexp_replacer = RegexpReplacer(output_label="clean_text", rules=[rule])
-:::
+```
 
 The `run()` method of the normalizer takes a list of `Segment` objects
 and returns a list of new `Segment` objects, one for each input `Segment`.
@@ -105,18 +105,18 @@ In our case we only want to preprocess the full raw text segment,
 and we will only receive one preprocessed segment,
 so we can call it with:
 
-:::{code}
+```{code} python
 clean_segment = regexp_replacer.run([doc.raw_segment])[0]
 print(clean_segment.text)
-:::
+```
 
 We may use again our previously-defined sentence tokenizer again,
 but this time on the preprocessed text:
 
-:::{code}
+```{code} python
 sentences = sent_tokenizer.run([clean_segment])
 print(sentences[12].text)
-:::
+```
 
 Problem fixed!
 
@@ -126,7 +126,7 @@ The `medkit` library also comes with operations to perform NER (named entity rec
 for instance with {class}`~medkit.text.ner.regexp_matcher.RegexpMatcher`.
 Let's instantiate one with a few simple rules:
 
-:::{code}
+```{code} python
 from medkit.text.ner import RegexpMatcher, RegexpMatcherRule
 
 regexp_rules = [
@@ -138,7 +138,7 @@ regexp_rules = [
     RegexpMatcherRule(regexp=r"\bnasonex?\b", label="treatment", case_sensitive=False),
 ]
 regexp_matcher = RegexpMatcher(rules=regexp_rules)
-:::
+```
 
 As you can see, you can also define some rules that ignore case distinctions
 by setting `case-sensitive` parameter to `False`.
@@ -162,13 +162,13 @@ representing the entities that were matched (`Entity` is a subclass of `Segment`
 As input, it expects a list of `Segment` objects.
 Let's give it the sentences returned by the sentence tokenizer:
 
-:::{code}
+```{code} python
 entities = regexp_matcher.run(sentences)
 
 for entity in entities:
     print(f"uid={entity.uid}")
     print(f"text={entity.text!r}, spans={entity.spans}, label={entity.label}\n")
-:::
+```
 
 Just like sentences, each entity features `uid`, `text`, `spans` and `label` attributes
 (in this case, determined by the rule that was used to match it).
@@ -192,7 +192,7 @@ accessible through their {class}`~medkit.core.AttributeContainer`).
 Let's instantiate a `NegationDetector` with a couple of simplistic handcrafted rules
 and run it on our sentences:
 
-:::{code}
+```{code} python
 from medkit.text.context import NegationDetector, NegationDetectorRule
 
 neg_rules = [
@@ -202,7 +202,7 @@ neg_rules = [
 ]
 neg_detector = NegationDetector(output_label="is_negated", rules=neg_rules)
 neg_detector.run(sentences)
-:::
+```
 
 :::{note}
 Similarly to `RegexpMatcher`, `DetectionDetector` also comes with a set of default rules
@@ -213,12 +213,12 @@ located in the `medkit.text.context` module.
 
 And now, let's look at which sentence have been detected as being negated:
 
-:::{code}
+```{code} python
 for sentence in sentences:
     neg_attr = sentence.attrs.get(label="is_negated")[0]
     if neg_attr.value:
         print(sentence.text)
-:::
+```
 
 Our simple negation detector does not work too bad,
 but sometimes some part of the sentence is tagged with a negation whilst the rest does not,
@@ -235,7 +235,7 @@ which are stored in file `default_syntagma_definition.yml`
 located in the `medkit.text.segmentation` module.
 :::
 
-:::{code}
+```{code} python
 from medkit.text.segmentation import SyntagmaTokenizer
 
 synt_tokenizer = SyntagmaTokenizer(
@@ -249,7 +249,7 @@ for syntagma in syntagmas:
     neg_attr = syntagma.attrs.get(label="is_negated")[0]
     if neg_attr.value:
         print(syntagma.text)
-:::
+```
 
 We now have some information about negation attached to syntagmas,
 but the end goal is really to know, for each entity,
@@ -268,14 +268,14 @@ Let's again use a `RegexpMatcher` to find some entities,
 but this time from syntagmas rather than from sentences,
 and using `attrs_to_copy` to copy negation attributes:
 
-:::{code}
+```{code} python
 regexp_matcher = RegexpMatcher(rules=regexp_rules, attrs_to_copy=["is_negated"])
 entities = regexp_matcher.run(syntagmas)
 
 for entity in entities:
     neg_attr = entity.attrs.get(label="is_negated")[0]
     print(f"text='{entity.text}', label={entity.label}, is_negated={neg_attr.value}")
-:::
+```
 
 We now have a negation `Attribute` for each entity!
 
@@ -293,21 +293,21 @@ an instance of {class}`~medkit.core.text.TextAnnotationContainer`)
 that behaves roughly like a list but also offers additional filtering methods.
 Annotations can be added by calling its `add()` method:
 
-:::{code}
+```{code} python
 for entity in entities:
     doc.anns.add(entity)
-:::
+```
 
 The document and its corresponding entities can be exported to supported formats
 such as brat (see {class}`~medkit.io.brat.BratOutputConverter`)
 or Doccano (see {class}`~medkit.io.doccano.DoccanoOutputConverter`),
 or serialized to JSON (see {mod}`~medkit.io.medkit_json`):
 
-:::{code}
+```{code} python
 from medkit.io import medkit_json
 
 medkit_json.save_text_document(doc, "doc_1.json")
-:::
+```
 
 ## Visualizing entities with displacy
 
@@ -316,13 +316,13 @@ a visualization tool part of the [spaCy](https://spacy.io/) NLP library.
 `medkit` provides helper functions to facilitate the use of `displacy`
 in the {mod}`~medkit.text.spacy.displacy_utils` module:
 
-:::{code}
+```{code} python
 from spacy import displacy
 from medkit.text.spacy.displacy_utils import medkit_doc_to_displacy
 
 displacy_data = medkit_doc_to_displacy(doc)
 displacy.render(displacy_data, manual=True, style="ent")
-:::
+```
 
 ## Wrapping it up
 
