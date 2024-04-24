@@ -50,7 +50,7 @@ dependencies = [
   "smart-open",
   "soundfile",
   "tqdm",
-  "typing-extensions",
+  "typing-extensions>=4.6.0",
   "wheel",
 ]
 
