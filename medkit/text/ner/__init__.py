@@ -9,8 +9,6 @@ __all__ = [
     "SimstringMatcherRule",
     "SimstringMatcherNormalization",
     "UMLSMatcher",
-    "IAMSystemMatcher",
-    "MedkitKeyword",
     "DateAttribute",
     "DurationAttribute",
     "RelativeDateAttribute",
@@ -26,12 +24,15 @@ from medkit.text.ner.date_attribute import (
     RelativeDateDirection,
 )
 from medkit.text.ner.duckling_matcher import DucklingMatcher
-from medkit.text.ner.iamsystem_matcher import IAMSystemMatcher, MedkitKeyword
 from medkit.text.ner.regexp_matcher import RegexpMatcher, RegexpMatcherNormalization, RegexpMatcherRule, RegexpMetadata
 from medkit.text.ner.simstring_matcher import SimstringMatcher, SimstringMatcherNormalization, SimstringMatcherRule
 from medkit.text.ner.umls_matcher import UMLSMatcher
 
-# quick_umls module
+# iamsystem matcher
+if modules_are_available(["iamsystem"]):
+    __all__ += ["iamsystem_matcher"]
+
+# quickumls matcher
 if modules_are_available(["packaging", "quickumls"]):
     __all__ += ["quick_umls_matcher"]
 

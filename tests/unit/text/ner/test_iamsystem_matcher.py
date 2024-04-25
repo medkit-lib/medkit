@@ -1,3 +1,7 @@
+import pytest
+
+pytest.importorskip(modname="iamsystem", reason="iamsystem is not installed")
+
 from iamsystem import Entity as Term
 from iamsystem import Matcher
 

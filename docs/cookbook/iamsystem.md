@@ -1,10 +1,14 @@
 # IAMSystem Matcher
 
-+++
+This section showcases an example using the IAMSystem matcher.
 
-This tutorial will show an example of iamsystem matcher operation usage.
+:::{note}
+This section requires optional dependencies, use the following to install them:
 
-+++
+```console
+pip install 'medkit-lib[iamsystem-matcher]'
+```
+:::
 
 ## Loading a text document
 

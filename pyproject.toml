@@ -42,10 +42,10 @@ dependencies = [
   "anyascii",
   "duptextfinder>=0.3.0",
   "flashtext>=2.7",
-  "iamsystem>=0.6.0",
   "intervaltree",
   "numpy",
   "pyaml",
+  "pysimstring",
   "requests",
   "smart-open",
   "soundfile",
@@ -74,6 +74,9 @@ hf-translator = [
 ]
 hf-utils = [
   "transformers>=4.21",
+]
+iamsystem-matcher = [
+  "iamsystem>=0.6.0",
 ]
 metrics-diarization = [
   "pyannote-core>=5.0",
@@ -143,6 +146,7 @@ all = [
     hf-transcriber,\
     hf-translator,\
     hf-utils,\
+    iamsystem-matcher,\
     metrics-diarization,\
     metrics-text-classification,\
     metrics-ner,metrics-transcription,\
