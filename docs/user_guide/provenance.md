@@ -120,13 +120,22 @@ You will need to install `graphviz` on your system to be able to run the followi
 
 :::{code}
 from pathlib import Path
-import subprocess
 from IPython.display import Image
 from medkit.tools import save_prov_to_dot
 
-def display_dot(dot_file):
+def display_dot(dot_file: Path) -> Image:
+    import subprocess
+    import warnings
+
     png_file =  dot_file.with_suffix(".png")
-    subprocess.run(["dot", "-Tpng", dot_file, "-o", png_file])
+    try:
+        subprocess.run(["dot", "-Tpng", dot_file, "-o", png_file])
+    except FileNotFoundError:
+        msg = (
+            "The dot executable was not found, "
+            "please make sure graphviz in installed."
+        )
+        warnings.warn(msg)
     return Image(png_file)
 
 output_dir = Path("_out")
