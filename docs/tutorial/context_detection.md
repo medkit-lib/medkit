@@ -13,19 +13,23 @@ kernelspec:
 # Context Detection
 
 In this tutorial, we will use rule-based operations to attach additional contextual information to entities,
-such has:
+such as:
 - the section in which the entity is located;
 - is the entity negated;
 - whether it appears as part of an hypothesis;
 - whether it is related to the patient or part of their family's medical history.
 
-Let's start by loading a document:
+Let's start by loading a medical report to work on:
 
 ```{code-cell} ipython3
 from pathlib import Path
 from medkit.core.text import TextDocument
 
-doc = TextDocument.from_file(Path("../data/mtsamplesfr/1.txt"))
+# In case this notebook is executed outside medkit, download the example data with:
+# !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/data/mtsamplesfr/1.txt
+# and adjust the path below.
+doc_file = Path("../data/mtsamplesfr/1.txt")
+doc = TextDocument.from_file(doc_file)
 print(doc.text)
 ```
 

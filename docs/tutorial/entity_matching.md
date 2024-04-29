@@ -19,7 +19,11 @@ Let's start by loading a medical report to work on:
 from pathlib import Path
 from medkit.core.text import TextDocument
 
-doc = TextDocument.from_file(Path("../data/mtsamplesfr/1.txt"))
+# In case this notebook is executed outside medkit, download the example data with:
+# !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/data/mtsamplesfr/1.txt
+# and adjust the path below.
+doc_file = Path("../data/mtsamplesfr/1.txt")
+doc = TextDocument.from_file(doc_file)
 print(doc.text)
 ```
 
