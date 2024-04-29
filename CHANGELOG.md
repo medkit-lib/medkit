@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.15.0 (2024-04-29)
+
+### BREAKING CHANGES
+
+- Make iamsystem an optional dependency
+
+### Fixed
+
+- Add notice for downloading example documents
+- Warn if dot is unavailable when displaying provenance graph
+- Require typing-extensions >= 4.6.0
+
 ## 0.14.1 (2024-04-08)
 
 ### Fixed
