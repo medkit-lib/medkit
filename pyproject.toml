@@ -51,7 +51,6 @@ dependencies = [
   "soundfile",
   "tqdm",
   "typing-extensions>=4.6.0",
-  "wheel",
 ]
 
 [project.optional-dependencies]
