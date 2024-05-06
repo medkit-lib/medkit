@@ -363,6 +363,7 @@ known-first-party = ["medkit"]
 convention = "numpy"
 
 [tool.ruff.lint.per-file-ignores]
+"medkit/core/id.py" = ["S311"]
 "medkit/io/_brat_utils.py" = ["A001", "A002", "A003"]
 "medkit/io/doccano.py" = ["A003"]
 "medkit/text/context/family_detector.py" = ["A003"]
