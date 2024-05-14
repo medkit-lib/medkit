@@ -6,16 +6,12 @@ transformers = pytest.importorskip(modname="transformers", reason="transformers 
 torch = pytest.importorskip(modname="torch", reason="torch is not installed")
 
 from medkit.core.text import Entity, Span, TextDocument
+from medkit.text.metrics.ner import SeqEvalMetricsComputer
 from medkit.text.ner.hf_entity_matcher import HFEntityMatcher
-from medkit.tools import modules_are_available
 from medkit.training import Trainer, TrainerConfig
 
 _TOKENIZER_MAX_LENGTH = 24
 _MODEL_NER_CLINICAL = "samrawal/bert-base-uncased_clinical-ner"
-
-TEST_WITH_METRICS = modules_are_available(["seqeval"])
-if TEST_WITH_METRICS:
-    from medkit.text.metrics.ner import SeqEvalMetricsComputer
 
 
 # Creating a tiny model with the original vocabulary
@@ -101,7 +97,6 @@ def test_trainer_default(train_data, eval_data, tmp_path):
     shutil.rmtree(output_dir)
 
 
-@pytest.mark.skipif(not TEST_WITH_METRICS, reason="seqeval is not available")
 def test_trainer_with_seqeval(train_data, eval_data, tmp_path):
     matcher = HFEntityMatcher.make_trainable(
         model_name_or_path=tmp_path / "tiny_bert",

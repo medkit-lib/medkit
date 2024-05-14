@@ -5,14 +5,11 @@ __all__ = ["UMLSCoderNormalizer"]
 from pathlib import Path
 from typing import Any, NamedTuple
 
-import pandas as pd
-import torch
-import transformers
 import yaml
-from transformers import FeatureExtractionPipeline, PreTrainedModel, PreTrainedTokenizer
 from typing_extensions import Literal
 
 from medkit._compat import batched
+from medkit._import import import_optional
 from medkit.core import Operation
 from medkit.core.text import Entity, UMLSNormAttribute
 from medkit.text.ner.umls_utils import (
@@ -20,6 +17,10 @@ from medkit.text.ner.umls_utils import (
     load_umls_entries,
     preprocess_term_to_match,
 )
+
+pd = import_optional("pandas")
+torch = import_optional("torch")
+transformers = import_optional("transformers")
 
 _PARAMS_FILENAME = "params.yml"
 _TERMS_FILENAME = "terms.feather"
@@ -359,15 +360,15 @@ class UMLSCoderNormalizer(Operation):
             )
 
 
-class _EmbeddingsPipeline(FeatureExtractionPipeline):
+class _EmbeddingsPipeline(transformers.FeatureExtractionPipeline):
     """Extract embeddings from a pipeline."""
 
     _EPS = 1e-12
 
     def __init__(
         self,
-        model: PreTrainedModel,
-        tokenizer: PreTrainedTokenizer,
+        model: transformers.PreTrainedModel,
+        tokenizer: transformers.PreTrainedTokenizer,
         summary_method: Literal["mean", "cls"],
         normalize: bool = True,
         *args,

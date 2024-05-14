@@ -4,14 +4,15 @@ __all__ = ["HFEntityMatcher"]
 
 from typing import TYPE_CHECKING, Iterator
 
-import transformers
-from transformers import TokenClassificationPipeline
 from typing_extensions import Literal
 
+from medkit._import import import_optional
 from medkit.core import Attribute
 from medkit.core.text import Entity, NEROperation, Segment, span_utils
 from medkit.text.ner.hf_entity_matcher_trainable import HFEntityMatcherTrainable
 from medkit.tools import hf_utils
+
+transformers = import_optional("transformers")
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -91,7 +92,7 @@ class HFEntityMatcher(NEROperation):
             task="token-classification",
             model=self.model,
             aggregation_strategy=aggregation_strategy,
-            pipeline_class=TokenClassificationPipeline,
+            pipeline_class=transformers.TokenClassificationPipeline,
             device=device,
             batch_size=batch_size,
             token=hf_auth_token,

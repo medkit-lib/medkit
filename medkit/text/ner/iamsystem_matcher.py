@@ -5,10 +5,7 @@ __all__ = ["IAMSystemMatcher", "MedkitKeyword"]
 from dataclasses import dataclass
 from typing import Callable, Optional, Sequence
 
-from iamsystem import Annotation as IS_Annotation
-from iamsystem import IKeyword as IS_IKeyword
-from iamsystem import Matcher as IS_Matcher
-
+from medkit._import import import_optional
 from medkit.core.text import (
     Entity,
     EntityNormAttribute,
@@ -16,6 +13,8 @@ from medkit.core.text import (
     Segment,
     span_utils,
 )
+
+iamsystem = import_optional("iamsystem")
 
 
 @dataclass
@@ -34,14 +33,14 @@ class MedkitKeyword:
     ent_label: str | None
 
 
-LabelProvider = Callable[[Sequence[IS_IKeyword]], Optional[str]]
+LabelProvider = Callable[[Sequence[iamsystem.IKeyword]], Optional[str]]
 
 
 class DefaultLabelProvider:
     """Default entity label provider."""
 
     @staticmethod
-    def __call__(keywords: Sequence[IS_IKeyword]) -> str | None:
+    def __call__(keywords: Sequence[iamsystem.IKeyword]) -> str | None:
         """Use the first keyword which implements`SupportEntLabel` protocol and returns `ent_label`.
 
         Otherwise, returns None.
@@ -58,7 +57,7 @@ class IAMSystemMatcher(NEROperation):
 
     def __init__(
         self,
-        matcher: IS_Matcher,
+        matcher: iamsystem.Matcher,
         label_provider: LabelProvider | None = None,
         attrs_to_copy: list[str] | None = None,
         name: str | None = None,
@@ -68,7 +67,7 @@ class IAMSystemMatcher(NEROperation):
 
         Parameters
         ----------
-        matcher : IS_Matcher
+        matcher : iamsystem.Matcher
             IAM system Matcher
         label_provider : LabelProvider, optional
             Callable providing the output label to set for detected entity.
@@ -105,7 +104,7 @@ class IAMSystemMatcher(NEROperation):
             for ann in self.matcher.annot_text(segment.text)
         ]
 
-    def _create_entity_from_iamsystem_ann(self, ann: IS_Annotation, segment: Segment):
+    def _create_entity_from_iamsystem_ann(self, ann: iamsystem.Annotation, segment: Segment):
         ranges = []
         positions = []
         pos = 0

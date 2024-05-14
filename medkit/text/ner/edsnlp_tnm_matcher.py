@@ -4,8 +4,6 @@ __all__ = ["EDSNLPTNMMatcher"]
 
 from typing import Iterator
 
-import spacy
-
 from medkit.core.text import Entity, Segment, span_utils
 from medkit.core.text.operation import NEROperation
 from medkit.text.ner.tnm_attribute import TNMAttribute
@@ -40,6 +38,8 @@ class EDSNLPTNMMatcher(NEROperation):
         attrs_to_copy: list[str] | None = None,
         uid: str | None = None,
     ):
+        import spacy
+
         super().__init__(output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid)
 
         if attrs_to_copy is None:

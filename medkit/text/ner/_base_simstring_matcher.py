@@ -19,7 +19,7 @@ from typing_extensions import Literal
 
 try:
     import spacy
-except ImportError:
+except ModuleNotFoundError:
     spacy = None
 
 

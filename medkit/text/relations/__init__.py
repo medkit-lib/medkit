@@ -1,7 +1,8 @@
 __all__ = []
 
-from medkit.core.utils import modules_are_available
+try:
+    from medkit.text.relations.syntactic_relation_extractor import SyntacticRelationExtractor
 
-# Syntactic Relation Extractor optional module
-if modules_are_available(["spacy"]):
-    __all__ += ["syntactic_relation_extractor"]
+    __all__ += ["SyntacticRelationExtractor"]
+except ModuleNotFoundError:
+    pass

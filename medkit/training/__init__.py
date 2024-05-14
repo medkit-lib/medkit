@@ -1,3 +1,7 @@
+from medkit._import import import_optional
+
+_ = import_optional("torch", extra="training")
+
 __all__ = [
     "TrainerCallback",
     "DefaultPrinterCallback",
@@ -8,15 +12,8 @@ __all__ = [
     "TrainableComponent",
 ]
 
-# Verify that torch is installed
-from medkit.core.utils import modules_are_available
-
-if not modules_are_available(["torch"]):
-    msg = "Requires torch install for importing medkit.training module"
-    raise ImportError(msg)
-
-from medkit.training.callbacks import DefaultPrinterCallback, TrainerCallback
-from medkit.training.trainable_component import TrainableComponent
-from medkit.training.trainer import Trainer
-from medkit.training.trainer_config import TrainerConfig
-from medkit.training.utils import BatchData, MetricsComputer
+from medkit.training.callbacks import DefaultPrinterCallback, TrainerCallback  # noqa: E402
+from medkit.training.trainable_component import TrainableComponent  # noqa: E402
+from medkit.training.trainer import Trainer  # noqa: E402
+from medkit.training.trainer_config import TrainerConfig  # noqa: E402
+from medkit.training.utils import BatchData, MetricsComputer  # noqa: E402

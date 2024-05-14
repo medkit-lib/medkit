@@ -5,13 +5,13 @@ __all__ = ["HFTranslator"]
 from collections import defaultdict
 from typing import TYPE_CHECKING, Iterator
 
-import torch
-import transformers
-from transformers import BertModel, BertTokenizerFast, TranslationPipeline
-
 from medkit._compat import batched
+from medkit._import import import_optional
 from medkit.core import Operation
 from medkit.core.text import ModifiedSpan, Segment, span_utils
+
+torch = import_optional("torch")
+transformers = import_optional("transformers")
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -106,7 +106,7 @@ class HFTranslator(Operation):
         self._translation_pipeline = transformers.pipeline(
             task=task,
             model=self.translation_model,
-            pipeline_class=TranslationPipeline,
+            pipeline_class=transformers.TranslationPipeline,
             device=self.device,
             batch_size=self.batch_size,
             token=hf_auth_token,
@@ -233,7 +233,7 @@ class _Aligner:
     ):
         self._device = torch.device("cpu" if device < 0 else f"cuda:{device}")
         self._batch_size = batch_size
-        self._model = BertModel.from_pretrained(
+        self._model = transformers.BertModel.from_pretrained(
             model,
             output_hidden_states=True,
             token=hf_auth_token,
@@ -241,7 +241,7 @@ class _Aligner:
         ).to(self._device)
         self._layer_index = layer_index
         self._threshold: float = threshold
-        self._tokenizer = BertTokenizerFast.from_pretrained(model, token=hf_auth_token)
+        self._tokenizer = transformers.BertTokenizerFast.from_pretrained(model, token=hf_auth_token)
 
     def align(self, source_texts: list[str], target_texts: list[str]) -> list[_AlignmentDict]:
         """Compute word alignments between two lists of texts in different languages.

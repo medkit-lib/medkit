@@ -5,10 +5,7 @@ __all__ = ["NLStructEntityMatcher"]
 from pathlib import Path
 from typing import Iterator
 
-import huggingface_hub
-import nlstruct
-import torch
-
+from medkit._import import import_optional
 from medkit.core import Attribute
 from medkit.core.text import Entity, NEROperation, Segment, span_utils
 
@@ -18,6 +15,10 @@ _TXT_FILES = "*.txt"
 # name of nlstruct registry to fix the config
 _CONCAT_REGISTRY_NAME = "concat"
 _EMBEDDING_REGISTRY_NAME = "word_embeddings"
+
+huggingface_hub = import_optional("huggingface_hub")
+nlstruct = import_optional("nlstruct")
+torch = import_optional("torch")
 
 
 class NLStructEntityMatcher(NEROperation):

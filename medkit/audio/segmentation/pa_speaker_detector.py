@@ -13,12 +13,14 @@ from typing import TYPE_CHECKING, Iterator
 # we import pandas manually first.
 # So as a workaround, we always import pandas before importing something from pyannote
 import pandas as pd  # noqa: F401
-import torch
-from pyannote.audio import Pipeline
-from pyannote.audio.pipelines import SpeakerDiarization
 
+from medkit._import import import_optional
 from medkit.core import Attribute
 from medkit.core.audio import Segment, SegmentationOperation, Span
+
+audio = import_optional("pyannote.audio")
+torch = import_optional("torch")
+
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -102,11 +104,11 @@ class PASpeakerDetector(SegmentationOperation):
         self.min_duration = min_duration
 
         torch_device = torch.device("cpu" if device < 0 else f"cuda:{device}")
-        self._pipeline = Pipeline.from_pretrained(model, use_auth_token=hf_auth_token)
+        self._pipeline = audio.Pipeline.from_pretrained(model, use_auth_token=hf_auth_token)
         if self._pipeline is None:
             msg = f"Could not instantiate pretrained pipeline with '{model}'"
             raise ValueError(msg)
-        if not isinstance(self._pipeline, SpeakerDiarization):
+        if not isinstance(self._pipeline, audio.pipelines.SpeakerDiarization):
             msg = (
                 f"'{model}' does not correspond to a SpeakerDiarization pipeline. Got"
                 f" object of type {type(self._pipeline)}"

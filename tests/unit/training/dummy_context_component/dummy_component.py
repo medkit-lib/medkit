@@ -3,9 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 
 import torch
-from tests.unit.training.dummy_model import DummyTextCat, DummyTextCatConfig, DummyTokenizer
 
 from medkit.training import BatchData
+from tests.unit.training.dummy_context_component.dummy_model import DummyTextCat, DummyTextCatConfig, DummyTokenizer
 
 PYTORCH_MODEL_NAME = "pytorch_model.bin"
 

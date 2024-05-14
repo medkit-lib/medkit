@@ -5,10 +5,10 @@ __all__ = ["HFTranscriber"]
 
 from typing import TYPE_CHECKING
 
-import transformers
-from transformers import AutomaticSpeechRecognitionPipeline
-
+from medkit._import import import_optional
 from medkit.core import Attribute, Operation
+
+transformers = import_optional("transformers")
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -99,7 +99,7 @@ class HFTranscriber(Operation):
             task=task,
             model=self.model_name,
             feature_extractor=self.model_name,
-            pipeline_class=AutomaticSpeechRecognitionPipeline,
+            pipeline_class=transformers.AutomaticSpeechRecognitionPipeline,
             device=self.device,
             batch_size=batch_size,
             token=hf_auth_token,

@@ -13,12 +13,17 @@ from typing import Sequence
 # we import pandas manually first.
 # So as a workaround, we always import pandas before importing something from pyannote
 import pandas as pd  # noqa: F401
-from pyannote.core.annotation import Annotation as PAAnnotation
-from pyannote.core.annotation import Segment as PASegment
-from pyannote.core.annotation import Timeline as PATimeline
-from pyannote.metrics.diarization import GreedyDiarizationErrorRate
 
+from medkit._import import import_optional
 from medkit.core.audio import AudioDocument, Segment
+
+_ = import_optional("pyannote.core", extra="metrics-diarization")
+_ = import_optional("pyannote.metrics", extra="metrics-diarization")
+
+from pyannote.core.annotation import Annotation as PAAnnotation  # noqa: E402
+from pyannote.core.annotation import Segment as PASegment  # noqa: E402
+from pyannote.core.annotation import Timeline as PATimeline  # noqa: E402
+from pyannote.metrics.diarization import GreedyDiarizationErrorRate  # noqa: E402
 
 logger = logging.getLogger(__name__)
 

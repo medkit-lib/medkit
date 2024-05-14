@@ -5,7 +5,14 @@ __all__ = ["TNMAttribute"]
 import dataclasses
 from typing import Any, ClassVar
 
-from edsnlp.pipelines.ner.tnm.model import (
+from typing_extensions import Self
+
+from medkit._import import import_optional
+from medkit.core import Attribute, dict_conv
+
+_ = import_optional("edsnlp", extra="edsnlp")
+
+from edsnlp.pipelines.ner.tnm.model import (  # noqa: E402
     TNM,
     Metastasis,
     Node,
@@ -13,9 +20,6 @@ from edsnlp.pipelines.ner.tnm.model import (
     Specification,
     Tumour,
 )
-from typing_extensions import Self
-
-from medkit.core import Attribute, dict_conv
 
 
 @dataclasses.dataclass

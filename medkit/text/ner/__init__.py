@@ -15,7 +15,6 @@ __all__ = [
     "RelativeDateDirection",
 ]
 
-from medkit.core.utils import modules_are_available
 from medkit.text.ner.adicap_norm_attribute import ADICAPNormAttribute
 from medkit.text.ner.date_attribute import (
     DateAttribute,
@@ -28,23 +27,46 @@ from medkit.text.ner.regexp_matcher import RegexpMatcher, RegexpMatcherNormaliza
 from medkit.text.ner.simstring_matcher import SimstringMatcher, SimstringMatcherNormalization, SimstringMatcherRule
 from medkit.text.ner.umls_matcher import UMLSMatcher
 
-# iamsystem matcher
-if modules_are_available(["iamsystem"]):
-    __all__ += ["iamsystem_matcher"]
+try:
+    from medkit.text.ner.iamsystem_matcher import IAMSystemMatcher
 
-# quickumls matcher
-if modules_are_available(["packaging", "quickumls"]):
-    __all__ += ["quick_umls_matcher"]
+    __all__ += ["IAMSystemMatcher"]
+except ModuleNotFoundError:
+    pass
 
-# HF entity matcher
-if modules_are_available(["torch", "transformers"]):
-    __all__ += ["hf_entity_matcher", "hf_entity_matcher_trainable"]
+try:
+    from medkit.text.ner.quick_umls_matcher import QuickUMLSMatcher
 
-if modules_are_available(["pandas", "torch", "transformers"]):
-    __all__ += ["umls_coder_normalizer"]
+    __all__ += ["QuickUMLSMatcher"]
+except ModuleNotFoundError:
+    pass
 
-if modules_are_available(["edsnlp"]):
-    __all__ += ["tnm_attribute"]
+try:
+    from medkit.text.ner.hf_entity_matcher import HFEntityMatcher
+    from medkit.text.ner.hf_entity_matcher_trainable import HFEntityMatcherTrainable
 
-if modules_are_available(["nlstruct", "torch", "huggingface_hub"]):
-    __all__ += ["nlstruct_entity_matcher"]
+    __all__ += ["HFEntityMatcher", "HFEntityMatcherTrainable"]
+except ModuleNotFoundError:
+    pass
+
+
+try:
+    from medkit.text.ner.umls_coder_normalizer import UMLSCoderNormalizer
+
+    __all__ += ["UMLSCoderNormalizer"]
+except ModuleNotFoundError:
+    pass
+
+try:
+    from medkit.text.ner.tnm_attribute import TNMAttribute
+
+    __all__ += ["TNMAttribute"]
+except ModuleNotFoundError:
+    pass
+
+try:
+    from medkit.text.ner.nlstruct_entity_matcher import NLStructEntityMatcher
+
+    __all__ += ["NLStructEntityMatcher"]
+except ModuleNotFoundError:
+    pass

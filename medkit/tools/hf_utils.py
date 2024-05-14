@@ -5,7 +5,9 @@ __all__ = ["check_model_for_task_hf"]
 
 from typing import TYPE_CHECKING
 
-import transformers
+from medkit._import import import_optional
+
+transformers = import_optional("transformers")
 
 if TYPE_CHECKING:
     from pathlib import Path

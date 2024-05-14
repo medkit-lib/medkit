@@ -4,12 +4,14 @@ __all__ = ["SeqEvalEvaluator", "SeqEvalMetricsComputer"]
 
 from typing import TYPE_CHECKING, Any
 
-from seqeval.metrics import accuracy_score, classification_report
-from seqeval.scheme import BILOU, IOB2
 from typing_extensions import Literal
 
+from medkit._import import import_optional
 from medkit.core.text import Entity, TextDocument, span_utils
 from medkit.text.ner import hf_tokenization_utils
+
+metrics = import_optional("seqeval.metrics", extra="metrics-ner")
+scheme_ = import_optional("seqeval.scheme", extra="metrics-ner")
 
 if TYPE_CHECKING:
     from medkit.training.utils import BatchData
@@ -25,11 +27,11 @@ def _compute_seqeval_from_dict(
     """Compute seqeval metrics using preprocessed data."""
     # internal configuration for seqeval
     # 'bilou' only works with 'strict' mode
-    scheme = BILOU if tagging_scheme == "bilou" else IOB2
+    scheme = scheme_.BILOU if tagging_scheme == "bilou" else scheme_.IOB2
     mode = "strict" if tagging_scheme == "bilou" else None
 
     # returns precision, recall, F1 score for each class.
-    report = classification_report(
+    report = metrics.classification_report(
         y_true=y_true_all,
         y_pred=y_pred_all,
         scheme=scheme,
@@ -40,7 +42,7 @@ def _compute_seqeval_from_dict(
     # add average metrics
     scores = {f"{average}_{key}": value for key, value in report[f"{average} avg"].items()}
     scores["support"] = scores.pop(f"{average}_support")
-    scores["accuracy"] = accuracy_score(y_true=y_true_all, y_pred=y_pred_all)
+    scores["accuracy"] = metrics.accuracy_score(y_true=y_true_all, y_pred=y_pred_all)
 
     if return_metrics_by_label:
         for value_key in report:
