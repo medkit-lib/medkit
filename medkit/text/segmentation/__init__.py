@@ -6,11 +6,13 @@ __all__ = [
 ]
 
 
-from medkit.core.utils import modules_are_available
 from medkit.text.segmentation.section_tokenizer import SectionModificationRule, SectionTokenizer
 from medkit.text.segmentation.sentence_tokenizer import SentenceTokenizer
 from medkit.text.segmentation.syntagma_tokenizer import SyntagmaTokenizer
 
-# Rush sentence tokenizer optional module
-if modules_are_available(["PyRuSH"]):
-    __all__ += ["rush_sentence_tokenizer"]
+try:
+    from medkit.text.segmentation.rush_sentence_tokenizer import RushSentenceTokenizer
+
+    __all__ += ["RushSentenceTokenizer"]
+except ModuleNotFoundError:
+    pass

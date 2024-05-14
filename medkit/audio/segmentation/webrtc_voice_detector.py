@@ -6,10 +6,12 @@ import collections
 from typing import Iterator
 
 import numpy as np
-import webrtcvad
 from typing_extensions import Literal
 
+from medkit._import import import_optional
 from medkit.core.audio import Segment, SegmentationOperation, Span
+
+webrtcvad = import_optional("webrtcvad")
 
 _SUPPORTED_SAMPLE_RATES = {8000, 16000, 32000, 48000}
 

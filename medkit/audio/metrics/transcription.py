@@ -8,9 +8,10 @@ import logging
 import string
 from typing import TYPE_CHECKING, Sequence
 
-from speechbrain.utils.metric_stats import ErrorRateStats
-
+from medkit._import import import_optional
 from medkit.text.utils.decoding import get_ascii_from_unicode
+
+_ = import_optional("speechbrain", extra="metrics-transcription")
 
 if TYPE_CHECKING:
     from medkit.core.audio import AudioDocument, Segment
@@ -136,6 +137,8 @@ class TranscriptionEvaluator:
         TranscriptionEvaluatorResult
             Computed metrics
         """
+        from speechbrain.utils.metric_stats import ErrorRateStats
+
         if len(reference) != len(predicted):
             msg = "Reference and predicted must have the same length"
             raise ValueError(msg)

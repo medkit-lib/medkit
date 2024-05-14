@@ -1,9 +1,15 @@
 __all__ = []
 
-from medkit.core.utils import modules_are_available
+try:
+    from medkit.audio.segmentation.pa_speaker_detector import PASpeakerDetector
 
-if modules_are_available(["webrtcvad"]):
-    __all__ += ["webrtc_voice_detector"]
+    __all__ += ["PASpeakerDetector"]
+except ModuleNotFoundError:
+    pass
 
-if modules_are_available(["pyannote"]) and modules_are_available(["torch", "pyannote.audio"]):
-    __all__ += ["pa_speaker_detector"]
+try:
+    from medkit.audio.segmentation.webrtc_voice_detector import WebRTCVoiceDetector
+
+    __all__ += ["WebRTCVoiceDetector"]
+except ModuleNotFoundError:
+    pass

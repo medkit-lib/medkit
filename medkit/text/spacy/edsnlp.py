@@ -13,17 +13,9 @@ __all__ = [
 
 from typing import TYPE_CHECKING, Callable
 
-from edsnlp.pipelines.misc.dates.models import AbsoluteDate as EDSNLP_AbsoluteDate
-from edsnlp.pipelines.misc.dates.models import Direction as EDSNLP_Direction
-from edsnlp.pipelines.misc.dates.models import Duration as EDSNLP_Duration
-from edsnlp.pipelines.misc.dates.models import RelativeDate as EDSNLP_RelativeDate
-from edsnlp.pipelines.misc.measurements.measurements import (
-    SimpleMeasurement as EDSNLP_SimpleMeasurement,
-)
-from edsnlp.pipelines.ner.adicap.models import AdicapCode as EDSNLP_AdicapCode
-from edsnlp.pipelines.ner.tnm.model import TNM as EDSNLP_TNM
 from spacy.tokens.underscore import Underscore
 
+from medkit._import import import_optional
 from medkit.core import Attribute
 from medkit.text.ner import (
     ADICAPNormAttribute,
@@ -34,6 +26,8 @@ from medkit.text.ner import (
 )
 from medkit.text.ner.tnm_attribute import TNMAttribute
 from medkit.text.spacy import SpacyDocPipeline, SpacyPipeline
+
+_ = import_optional("edsnlp")
 
 if TYPE_CHECKING:
     from spacy import Language
@@ -57,8 +51,10 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
         :class:`~medkit.text.ner.RelativeDateAttribute` instance, depending on
         the EDS-NLP attribute
     """
+    from edsnlp.pipelines.misc.dates import models
+
     value = spacy_span._.get(spacy_label)
-    if isinstance(value, EDSNLP_AbsoluteDate):
+    if isinstance(value, models.AbsoluteDate):
         return DateAttribute(
             label=spacy_label,
             year=value.year,
@@ -68,9 +64,9 @@ def build_date_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attribute:
             minute=value.minute,
             second=value.second,
         )
-    elif isinstance(value, EDSNLP_RelativeDate):  # noqa: RET505
+    elif isinstance(value, models.RelativeDate):  # noqa: RET505
         direction = (
-            RelativeDateDirection.PAST if value.direction is EDSNLP_Direction.PAST else RelativeDateDirection.FUTURE
+            RelativeDateDirection.PAST if value.direction == models.Direction.PAST else RelativeDateDirection.FUTURE
         )
         return RelativeDateAttribute(
             label=spacy_label,
@@ -103,8 +99,10 @@ def build_duration_attribute(spacy_span: SpacySpan, spacy_label: str) -> Duratio
     DurationAttribute
         Medkit duration attribute
     """
+    from edsnlp.pipelines.misc.dates import models
+
     value = spacy_span._.get(spacy_label)
-    assert isinstance(value, EDSNLP_Duration)
+    assert isinstance(value, models.Duration)
     return DurationAttribute(
         label=spacy_label,
         years=value.year,
@@ -132,8 +130,10 @@ def build_adicap_attribute(spacy_span: SpacySpan, spacy_label: str) -> ADICAPNor
     ADICAPNormAttribute
         Medkit ADICAP normalization attribute
     """
+    from edsnlp.pipelines.ner.adicap import models
+
     value = spacy_span._.get(spacy_label)
-    assert isinstance(value, EDSNLP_AdicapCode)
+    assert isinstance(value, models.AdicapCode)
     return ADICAPNormAttribute(
         code=value.code,
         sampling_mode=value.sampling_mode,
@@ -160,8 +160,10 @@ def build_tnm_attribute(spacy_span: SpacySpan, spacy_label: str) -> TNMAttribute
     TNMAttribute
         Medkit TNM attribute
     """
+    from edsnlp.pipelines.ner.tnm import model
+
     value = spacy_span._.get(spacy_label)
-    assert isinstance(value, EDSNLP_TNM)
+    assert isinstance(value, model.TNM)
     return TNMAttribute(
         prefix=value.prefix,
         tumour=value.tumour,
@@ -191,8 +193,10 @@ def build_measurement_attribute(spacy_span: SpacySpan, spacy_label: str) -> Attr
     Attribute
         Medkit attribute with normalized measurement value and "unit" metadata
     """
+    from edsnlp.pipelines.misc.measurements import measurements
+
     value = spacy_span._.get(spacy_label)
-    assert isinstance(value, EDSNLP_SimpleMeasurement)
+    assert isinstance(value, measurements.SimpleMeasurement)
     return Attribute(label=spacy_label, value=value.value, metadata={"unit": value.unit})
 
 

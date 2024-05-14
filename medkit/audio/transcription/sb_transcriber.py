@@ -5,10 +5,11 @@ __all__ = ["SBTranscriber"]
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import speechbrain as sb
-
 from medkit._compat import batched
+from medkit._import import import_optional
 from medkit.core import Attribute, Operation
+
+speechbrain = import_optional("speechbrain")
 
 if TYPE_CHECKING:
     from medkit.core.audio import AudioBuffer, Segment
@@ -88,7 +89,7 @@ class SBTranscriber(Operation):
         self.batch_size = batch_size
         self._torch_device = "cpu" if self.device < 0 else f"cuda:{self.device}"
 
-        asr_class = sb.pretrained.EncoderDecoderASR if needs_decoder else sb.pretrained.EncoderASR
+        asr_class = speechbrain.pretrained.EncoderDecoderASR if needs_decoder else speechbrain.pretrained.EncoderASR
 
         self._asr = asr_class.from_hparams(source=model, savedir=cache_dir, run_opts={"device": self._torch_device})
 
@@ -129,7 +130,9 @@ class SBTranscriber(Operation):
 
         # group audios in batch of same length with padding
         for batched_audios in batched(audios, self.batch_size):
-            padded_batch = sb.dataio.batch.PaddedBatch([{"wav": a.read().reshape((-1,))} for a in batched_audios])
+            padded_batch = speechbrain.dataio.batch.PaddedBatch(
+                [{"wav": a.read().reshape((-1,))} for a in batched_audios]
+            )
             padded_batch.to(self._torch_device)
 
             batch_texts, _ = self._asr.transcribe_batch(padded_batch.wav.data, padded_batch.wav.lengths)

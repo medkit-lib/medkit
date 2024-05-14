@@ -2,9 +2,11 @@ from __future__ import annotations
 
 __all__ = ["Resampler"]
 
-import resampy
 
+from medkit._import import import_optional
 from medkit.core.audio import MemoryAudioBuffer, PreprocessingOperation, Segment
+
+resampy = import_optional("resampy")
 
 
 class Resampler(PreprocessingOperation):

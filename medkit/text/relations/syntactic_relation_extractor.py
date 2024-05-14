@@ -5,11 +5,12 @@ __all__ = ["SyntacticRelationExtractor"]
 import logging
 from typing import TYPE_CHECKING
 
-import spacy
-
+from medkit._import import import_optional
 from medkit.core.operation import DocOperation
 from medkit.core.text import Relation, TextDocument
 from medkit.text.spacy import spacy_utils
+
+spacy = import_optional("spacy")
 
 if TYPE_CHECKING:
     from pathlib import Path

@@ -5,10 +5,12 @@ __all__ = ["TextClassificationEvaluator"]
 import logging
 from typing import TYPE_CHECKING
 
-from sklearn.metrics import classification_report, cohen_kappa_score
 from typing_extensions import Literal
 
+from medkit._import import import_optional
 from medkit.text.metrics.irr_utils import krippendorff_alpha
+
+metrics = import_optional("sklearn.metrics", extra="metrics-text-classification")
 
 if TYPE_CHECKING:
     from medkit.core.text import TextDocument
@@ -100,7 +102,7 @@ class TextClassificationEvaluator:
         true_tags = self._extract_attr_values(true_docs)
         pred_tags = self._extract_attr_values(predicted_docs)
 
-        report = classification_report(
+        report = metrics.classification_report(
             y_true=true_tags,
             y_pred=pred_tags,
             output_dict=True,
@@ -150,7 +152,7 @@ class TextClassificationEvaluator:
         ann2_tags = self._extract_attr_values(docs_annotator_2)
 
         return {
-            "cohen_kappa": cohen_kappa_score(y1=ann1_tags, y2=ann2_tags),
+            "cohen_kappa": metrics.cohen_kappa_score(y1=ann1_tags, y2=ann2_tags),
             "support": len(ann1_tags),
         }
 

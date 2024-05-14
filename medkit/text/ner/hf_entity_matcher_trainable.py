@@ -5,13 +5,15 @@ __all__ = ["HFEntityMatcherTrainable"]
 import logging
 from typing import TYPE_CHECKING, Any
 
-import torch
-import transformers
 from typing_extensions import Literal
 
+from medkit._import import import_optional
 from medkit.text.ner import hf_tokenization_utils
 from medkit.tools import hf_utils
 from medkit.training.utils import BatchData
+
+torch = import_optional("torch", extra="hf-entity-matcher")
+transformers = import_optional("transformers", extra="hf-entity-matcher")
 
 if TYPE_CHECKING:
     from pathlib import Path

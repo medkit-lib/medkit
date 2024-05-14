@@ -4,12 +4,9 @@ __all__ = ["QuickUMLSMatcher"]
 
 from typing import TYPE_CHECKING, ClassVar, Iterator, NamedTuple
 
-import quickumls.about
-import quickumls.constants
-from packaging.version import parse as parse_version
-from quickumls import QuickUMLS
 from typing_extensions import Literal
 
+from medkit._import import import_optional
 from medkit.core.text import (
     Entity,
     NEROperation,
@@ -18,6 +15,9 @@ from medkit.core.text import (
     span_utils,
 )
 from medkit.text.ner import umls_utils
+
+quickumls = import_optional("quickumls")
+version = import_optional("packaging.version")
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -31,7 +31,7 @@ def _fix_spacy_language_map():
     if _spacy_language_map_fixed:
         return
 
-    if parse_version(quickumls.about.__version__) < parse_version("1.4.1"):
+    if version.Version(quickumls.about.__version__) < version.Version("1.4.1"):
         for key, value in quickumls.constants.SPACY_LANGUAGE_MAP.items():
             ext = "_core_web_sm" if value == "en" else "_core_news_sm"
             quickumls.constants.SPACY_LANGUAGE_MAP[key] = value + ext
@@ -222,7 +222,7 @@ class QuickUMLSMatcher(NEROperation):
         self.attrs_to_copy = attrs_to_copy
 
         path_to_install = self._get_path_to_install(version, language, lowercase, normalize_unicode)
-        self._matcher = QuickUMLS(
+        self._matcher = quickumls.QuickUMLS(
             quickumls_fp=path_to_install,
             overlapping_criteria=overlapping,
             threshold=threshold,

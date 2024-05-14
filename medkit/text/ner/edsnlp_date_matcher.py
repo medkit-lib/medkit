@@ -4,8 +4,6 @@ __all__ = ["EDSNLPDateMatcher"]
 
 from typing import Iterator
 
-import spacy
-
 from medkit.core.text import Entity, Segment, span_utils
 from medkit.core.text.operation import NEROperation
 from medkit.text.spacy.edsnlp import build_date_attribute, build_duration_attribute
@@ -47,6 +45,8 @@ class EDSNLPDateMatcher(NEROperation):
         attrs_to_copy: list[str] | None = None,
         uid: str | None = None,
     ):
+        import spacy
+
         super().__init__(output_label=output_label, attrs_to_copy=attrs_to_copy, uid=uid)
 
         if attrs_to_copy is None:

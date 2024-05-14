@@ -6,9 +6,10 @@ import re
 from pathlib import Path
 from typing import Iterator
 
-from PyRuSH import RuSH
-
+from medkit._import import import_optional
 from medkit.core.text import Segment, SegmentationOperation, span_utils
+
+PyRuSH = import_optional("PyRuSH")
 
 _PATH_TO_DEFAULT_RULES = Path(__file__).parent / "rush_sentence_tokenizer_default_rules.tsv"
 
@@ -60,7 +61,7 @@ class RushSentenceTokenizer(SegmentationOperation):
         self.path_to_rules = path_to_rules
         self.keep_newlines = keep_newlines
         self.attrs_to_copy = attrs_to_copy
-        self._rush = RuSH(str(path_to_rules))
+        self._rush = PyRuSH.RuSH(str(path_to_rules))
 
     def run(self, segments: list[Segment]) -> list[Segment]:
         """Return sentences detected in `segments`.
