@@ -42,7 +42,7 @@ class _MockedPipeline:
 @pytest.fixture(scope="module", autouse=True)
 def _mocked_pipeline(module_mocker):
     module_mocker.patch(
-        "medkit.text.ner.hf_entity_matcher.hf_utils.check_model_for_task_HF",
+        "medkit.tools.hf_utils.check_model_for_task_hf",
         return_value=True,
     )
     module_mocker.patch("transformers.pipeline", _MockedPipeline)
