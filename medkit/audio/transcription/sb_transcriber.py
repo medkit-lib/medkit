@@ -89,7 +89,9 @@ class SBTranscriber(Operation):
         self.batch_size = batch_size
         self._torch_device = "cpu" if self.device < 0 else f"cuda:{self.device}"
 
-        asr_class = speechbrain.pretrained.EncoderDecoderASR if needs_decoder else speechbrain.pretrained.EncoderASR
+        asr_class = (
+            speechbrain.inference.ASR.EncoderDecoderASR if needs_decoder else speechbrain.inference.ASR.EncoderASR
+        )
 
         self._asr = asr_class.from_hparams(source=model, savedir=cache_dir, run_opts={"device": self._torch_device})
 

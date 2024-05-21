@@ -56,8 +56,8 @@ class _MockAudioNormalizer:
 
 @pytest.fixture(scope="module", autouse=True)
 def _mocked_asr(module_mocker):
-    module_mocker.patch("speechbrain.pretrained.EncoderASR", _MockSpeechbrainASR)
-    module_mocker.patch("speechbrain.pretrained.EncoderDecoderASR", _MockSpeechbrainASR)
+    module_mocker.patch("speechbrain.inference.ASR.EncoderASR", _MockSpeechbrainASR)
+    module_mocker.patch("speechbrain.inference.ASR.EncoderDecoderASR", _MockSpeechbrainASR)
 
 
 def _gen_segment(nb_samples) -> Segment:
