@@ -54,10 +54,8 @@ class SyntagmaTokenizer(SegmentationOperation):
             attrs_to_copy = []
 
         self.output_label = output_label
-        self.separators = separators
         self.strip_chars = strip_chars
-        if separators is None:
-            self.separators = self.load_syntagma_definition(_PATH_TO_DEFAULT_RULES, encoding="utf-8")
+        self.separators = separators or self.load_syntagma_definition(_PATH_TO_DEFAULT_RULES, encoding="utf-8")
         self.attrs_to_copy = attrs_to_copy
 
     def run(self, segments: list[Segment]) -> list[Segment]:

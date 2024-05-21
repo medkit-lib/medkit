@@ -152,14 +152,11 @@ class SectionTokenizer(SegmentationOperation):
     def _get_sections_to_rename(self, match: list[tuple]):
         match_type = [m[0] for m in match]
         map_index_new_name = {}
-        list_to_process = ()
         for rule in self.section_rules:
-            if rule.order == "BEFORE":
-                # Change section name if section is before one of the listed sections
-                list_to_process = enumerate(match_type)
-            elif rule.order == "AFTER":
+            list_to_process = list(enumerate(match_type))
+            if rule.order == "AFTER":
                 # Change section name if the section is after one of the listed sections
-                list_to_process = reversed(list(enumerate(match_type)))
+                list_to_process = list(reversed(list_to_process))
 
             # Navigate in list according to the order defined above
             candidate_sections = []
@@ -235,7 +232,8 @@ class SectionTokenizer(SegmentationOperation):
             File encoding
         """
         with Path(filepath).open(mode="w", encoding=encoding) as fp:
-            data = {"sections": section_dict, "rules": []}
-            for rule in section_rules:
-                data["rules"].append(dataclasses.asdict(rule))
+            data = {
+                "sections": section_dict,
+                "rules": [dataclasses.asdict(rule) for rule in section_rules],
+            }
             yaml.safe_dump(data, fp, allow_unicode=True, encoding=encoding)
