@@ -6,6 +6,8 @@ python:
       path: .
       extra_requirements:
         - docs
+        - hf-entity-matcher
+        - spacy
 
 build:
   os: ubuntu-22.04
