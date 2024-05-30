@@ -164,7 +164,6 @@ all = [
     webrtc-voice-detector]""",
 ]
 docs = [
-  "hf-utils",
   "myst-nb",
   "numpydoc",
   "pandas",
@@ -210,6 +209,7 @@ cov = [
 [tool.hatch.envs.docs]
 features = [
   "docs",
+  "hf-utils",
   "spacy",
 ]
 python = "3.12"
