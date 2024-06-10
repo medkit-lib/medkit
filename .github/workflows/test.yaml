@@ -36,6 +36,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - name: Install Hatch
-        run: pipx install hatch
+        uses: pypa/hatch@install
       - name: Run tests
         run: hatch run +py=${{ matrix.python-version }} cov
