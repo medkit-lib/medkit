@@ -7,6 +7,7 @@ __all__ = [
     "build_simstring_matcher_databases",
 ]
 
+import collections
 import dataclasses
 import math
 import re
@@ -385,35 +386,24 @@ def build_simstring_matcher_databases(
     rules : iterable of BaseSimstringMatcherRule
         Rules to add to databases
     """
-    # the params passed to simstring.writer are copy/pasted from QuickUMLS
-    # cf https://github.com/Georgetown-IR-Lab/QuickUMLS/blob/1.4.0/quickumls/toolbox.py#L173
-    simstring_db_writer = simstring.writer(
-        str(simstring_db_file),
-        3,  # unit of character n-grams
-        False,  # represent begin and end of strings in n-grams
-        True,  # use unicode mode
-    )
-
-    # writeback=True needed because we are updating the values in the mapping,
-    # not just writing
-    rules_db = shelve.open(str(rules_db_file), flag="n", writeback=True)  # noqa: S301
-
-    # add rules to databases
+    # Prepare rules mapping for persistence, as:
+    # term -> list of rules
+    rules_mapping = collections.defaultdict(list)
     for rule in rules:
-        term_to_match = rule.term
+        term = anyascii(rule.term.lower())
+        rules_mapping[term].append(rule)
 
-        # apply preprocessing
-        term_to_match = anyascii(term_to_match.lower())
+    # Persist rules mapping in new shelf.
+    with shelve.open(str(rules_db_file), flag="n") as rules_db:  # noqa: S301
+        rules_db.update(rules_mapping)
 
-        # add to simstring db
-        simstring_db_writer.insert(term_to_match)
-        # add to rules db
-        if term_to_match not in rules_db:
-            rules_db[term_to_match] = []
-        rules_db[term_to_match].append(rule)
-    simstring_db_writer.close()
-    rules_db.sync()
-    rules_db.close()
+    # Update simstring db with terms in rules mapping.
+    # The simstring.writer parameters are taken from QuickUMLS,
+    # see https://github.com/Georgetown-IR-Lab/QuickUMLS/blob/1.4.0/quickumls/toolbox.py#L169.
+    simstring_db = simstring.writer(str(simstring_db_file), n=3, be=False, unicode=True)
+    for term in rules_mapping:
+        simstring_db.insert(term)
+    simstring_db.close()
 
 
 _TOKENIZATION_PATTERN = re.compile(r"\w+|[^\w ]")
