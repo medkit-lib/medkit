@@ -19,7 +19,7 @@ class Resampler(PreprocessingOperation):
     sample_rate : int
         Target sample rate to resample to, in samples per second.
     fast : bool, default=False
-        If `True`, prefer speed over quality and use resampy's "kaiser_fast" filter
+        If `True`, prefer speed to quality and use resampy's "kaiser_fast" filter
         instead of "kaiser_best".
     uid : str, optional
         Identifier of the resampler.
