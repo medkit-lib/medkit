@@ -95,6 +95,7 @@ cookbook/audio_transcription
 cookbook/audio_dataset_metrics
 cookbook/ontotox
 cookbook/ner_benchmark/index
+cookbook/drug_ner_eval/index
 ```
 
 ```{toctree}
