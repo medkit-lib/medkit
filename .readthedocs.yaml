@@ -5,8 +5,10 @@ python:
     - method: pip
       path: .
       extra_requirements:
+        - deid
         - docs
         - hf-entity-matcher
+        - metrics-ner
         - spacy
 
 build:

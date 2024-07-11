@@ -212,8 +212,10 @@ cov = [
 
 [tool.hatch.envs.docs]
 features = [
+  "deid",
   "docs",
   "hf-entity-matcher",
+  "metrics-ner",
   "spacy",
 ]
 python = "3.12"
