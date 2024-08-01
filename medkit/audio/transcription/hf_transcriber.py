@@ -21,7 +21,7 @@ class HFTranscriber(Operation):
 
     For each segment given as input, a transcription attribute will be created
     with the transcribed text as value. If needed, a text document can later be
-    created from all the transcriptions of a audio document using
+    created from all the transcriptions of an audio document using
     :func:`~medkit.audio.transcription.TranscribedTextDocument.from_audio_doc
     <TranscribedTextDocument.from_audio_doc>`
 

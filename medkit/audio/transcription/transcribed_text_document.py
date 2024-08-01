@@ -28,9 +28,8 @@ class TranscribedTextDocument(TextDocument):
         Mapping between text characters spans in this document and
         corresponding audio spans in the original audio.
     audio_doc_id: str, optional
-        Id of the original
-        :class:`~medkit.core.audio.document.AudioDocument` that was
-        transcribed, if known.
+        Identifier for the original :class:`~medkit.core.audio.document.AudioDocument`
+        that was transcribed, if known.
     anns: sequence of TextAnnotation, optional
         Annotations of the document.
     attrs: sequence of Attribute, optional
@@ -75,8 +74,7 @@ class TranscribedTextDocument(TextDocument):
         the span 15 to 25, then the containing audio span will be the one ranging
         from 1.0 to 20.0 seconds.
 
-        Note that some text annotations maybe be contained in more that one
-        audio spans.
+        Note that some text annotations maybe be contained in more than one audio spans.
 
         Parameters
         ----------

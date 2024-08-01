@@ -54,6 +54,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+deid = [
+  "presidio-analyzer >=2.2.33,<3",
+]
 edsnlp = [
   "edsnlp>=0.9",
 ]
@@ -140,6 +143,7 @@ webrtc-voice-detector = [
 ]
 all = [
   """medkit-lib[\
+    deid,\
     edsnlp,\
     hf-entity-matcher,\
     hf-transcriber,\
@@ -208,8 +212,10 @@ cov = [
 
 [tool.hatch.envs.docs]
 features = [
+  "deid",
   "docs",
   "hf-entity-matcher",
+  "metrics-ner",
   "spacy",
 ]
 python = "3.12"

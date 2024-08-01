@@ -7,6 +7,7 @@ __all__ = [
     "build_simstring_matcher_databases",
 ]
 
+import collections
 import dataclasses
 import math
 import re
@@ -59,8 +60,7 @@ class BaseSimstringMatcherRule:
         Whether to use ASCII-only versions of the rule term and input texts when
         looking for matches (non-ASCII chars replaced by closest ASCII chars).
     normalizations : list of BaseSimstringMatcherNormalization, optional
-        Optional list of normalization attributes that should be attached to the
-        entities created
+        List of normalization attributes that should be attached to the entities created.
     """
 
     term: str
@@ -157,7 +157,7 @@ class BaseSimstringMatcher(NEROperation):
     similarity : str, default="jaccard"
         Similarity metric to use.
     spacy_tokenization_language : str, optional
-        2-letter code (ex: "fr", "en", etc) designating the language of the
+        2-letter code (ex: "fr", "en", etc.) designating the language of the
         spacy model to use for tokenization. If provided, spacy will be used
         to tokenize input segments and filter out some tokens based on their
         part-of-speech tags, such as determinants, conjunctions and
@@ -174,7 +174,7 @@ class BaseSimstringMatcher(NEROperation):
     attrs_to_copy : list of str, optional
         Labels of the attributes that should be copied from the source
         segment to the created entity. Useful for propagating context
-        attributes (negation, antecedent, etc).
+        attributes (negation, antecedent, etc.).
     name : str, optional
         Name describing the matcher (defaults to the class name).
     uid : str, optional
@@ -386,38 +386,27 @@ def build_simstring_matcher_databases(
     rules : iterable of BaseSimstringMatcherRule
         Rules to add to databases
     """
-    # the params passed to simstring.writer are copy/pasted from QuickUMLS
-    # cf https://github.com/Georgetown-IR-Lab/QuickUMLS/blob/a3ba0b3559da2574a907f4d41aa0f2c1c0d5ce0a/quickumls/toolbox.py#L173
-    simstring_db_writer = simstring.writer(
-        str(simstring_db_file),
-        3,  # unit of character n-grams
-        False,  # represent begin and end of strings in n-grams
-        True,  # use unicode mode
-    )
-
-    # writeback=True needed because we are updating the values in the mapping,
-    # not just writing
-    rules_db = shelve.open(str(rules_db_file), flag="n", writeback=True)  # noqa: S301
-
-    # add rules to databases
+    # Prepare rules mapping for persistence, as:
+    # term -> list of rules
+    rules_mapping = collections.defaultdict(list)
     for rule in rules:
-        term_to_match = rule.term
+        term = anyascii(rule.term.lower())
+        rules_mapping[term].append(rule)
 
-        # apply preprocessing
-        term_to_match = anyascii(term_to_match.lower())
+    # Persist rules mapping in new shelf.
+    with shelve.open(str(rules_db_file), flag="n") as rules_db:  # noqa: S301
+        rules_db.update(rules_mapping)
 
-        # add to simstring db
-        simstring_db_writer.insert(term_to_match)
-        # add to rules db
-        if term_to_match not in rules_db:
-            rules_db[term_to_match] = []
-        rules_db[term_to_match].append(rule)
-    simstring_db_writer.close()
-    rules_db.sync()
-    rules_db.close()
+    # Update simstring db with terms in rules mapping.
+    # The simstring.writer parameters are taken from QuickUMLS,
+    # see https://github.com/Georgetown-IR-Lab/QuickUMLS/blob/1.4.0/quickumls/toolbox.py#L169.
+    simstring_db = simstring.writer(str(simstring_db_file), n=3, be=False, unicode=True)
+    for term in rules_mapping:
+        simstring_db.insert(term)
+    simstring_db.close()
 
 
-_TOKENIZATION_PATTERN = re.compile(r"[\w]+|[^\w ]")
+_TOKENIZATION_PATTERN = re.compile(r"\w+|[^\w ]")
 
 
 def _build_candidate_ranges_with_regexp(text: str, min_length: int, max_length: int) -> Iterator[tuple[int, int]]:
@@ -476,7 +465,7 @@ def _build_candidate_ranges_with_regexp(text: str, min_length: int, max_length: 
             # candidate is too long, stop appending tokens
             if length > max_length:
                 break
-            yield (start, end)
+            yield start, end
 
 
 def _build_candidate_ranges_with_spacy(
@@ -517,7 +506,7 @@ def _build_candidate_ranges_with_spacy(
     ['I have', 'have', 'have type', 'type', 'type 2', '2 diabetes', 'diabetes']
     """
 
-    # don't allow candidates to start or end with pre/post positions,
+    # don't allow candidates to start or end with adpositions,
     # determinants or conjunctions
     def is_invalid_boundary_token(token):
         return token.is_punct or token.is_space or token.pos_ in ("ADP", "DET", "SCONJ", "CCONJ", "CONJ")
@@ -544,7 +533,7 @@ def _build_candidate_ranges_with_spacy(
             # candidate is too long, stop appending tokens
             if length > max_length:
                 break
-            yield (span.start_char, span.end_char)
+            yield span.start_char, span.end_char
 
 
 def _get_similarity_score(text_1, text_2, similarity_name, ngram_size=3):
