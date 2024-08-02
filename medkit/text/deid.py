@@ -106,11 +106,16 @@ class FrDateRecognizer(PatternRecognizer):
 
 class FrAgeRecognizer(PatternRecognizer):
     """
-    Recognizes French Phone Age using regex.
+    Recognizer for French age.
 
-    :param patterns: List of patterns to be used by this recognizer
-    :param supported_language: Language this recognizer supports
-    :param supported_entity: The entity this recognizer can detect
+    Parameters
+    ----------
+    patterns : list of Pattern, optional
+        User-defined patterns to be used by the recognizer
+    supported_language : str, default='fr'
+        Supported language declared by the recognizer
+    supported_entity : str, default='FR_DATE'
+        Supported entity detected by the recognizer
     """
 
     PATTERNS: ClassVar[list[Pattern]] = [
