@@ -106,14 +106,13 @@ pa-speaker-detector = [
 ]
 quick-umls = [
   "packaging",
-  "quickumls>=1.4",
-  "unqlite>=0.9.6",
+  "quickumls>=1.4; python_version<'3.12'",
 ]
 resampler = [
   "resampy>=0.4",
 ]
 rush-sentence-tokenizer = [
-  "PyRush>=1.0",
+  "PyRush>=1.0; python_version<'3.12'",
 ]
 sb-transcriber = [
   "speechbrain>=0.5",
