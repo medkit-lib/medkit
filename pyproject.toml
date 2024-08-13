@@ -217,7 +217,7 @@ features = [
   "metrics-ner",
   "spacy",
 ]
-python = "3.12"
+python = "3.11"
 
 [tool.hatch.envs.docs.scripts]
 clean = "rm -rf docs/_build"
