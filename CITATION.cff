@@ -1,0 +1,47 @@
+# Citation File Format <https://doi.org/10.5281/zenodo.1003149>
+abstract: 'Phenotyping consists in applying algorithms to identify individuals associated with a specific, potentially complex, trait or condition, typically out of a collection of Electronic Health Records (EHRs). Because a lot of the clinical information of EHRs are lying in texts, phenotyping from text takes an important role in studies that rely on the secondary use of EHRs. However, the heterogeneity and highly specialized aspect of both the content and form of clinical texts makes this task particularly tedious, and is the source of time and cost constraints in observational studies. To facilitate the development, evaluation and reproductibility of phenotyping pipelines, we developed an open-source Python library named medkit. It enables composing data processing pipelines made of easy-to-reuse software bricks, named medkit operations. In addition to the core of the library, we share the operations and pipelines we already developed and invite the phenotyping community for their reuse and enrichment.'
+authors:
+  - family-names: Neuraz
+    given-names: Antoine
+    orcid: 0000-0001-7142-6728
+  - family-names: Vaillant
+    given-names: Ghislain
+    orcid: 0000-0003-0267-3033
+  - family-names: Arias
+    given-names: Camila
+  - family-names: Birot
+    given-names: Olivier
+  - family-names: Huynh
+    given-names: Kim-Tam
+  - family-names: Thibaut
+    given-names: Fabacher
+  - family-names: Alice
+    given-names: Rogier
+    orcid: 0000-0002-5499-3197
+  - family-names: Nicolas
+    given-names: Garcelon
+    orcid: 0000-0002-3326-2811
+  - family-names: Ivan
+    given-names: Lerner
+    orcid: 0000-0002-5466-1707
+  - family-names: Rance
+    given-names: Bastien
+    orcid: 0000-0003-4417-1197
+  - family-names: Coulet
+    given-names: Adrien
+    orcid: 0000-0002-1466-062X
+cff-version: '1.2.0'
+date-released: '2024-08-30'
+doi: 10.48550/arXiv.2409.00164
+keywords:
+  - clinical texts
+  - feature extraction
+  - open science
+  - phenotyping
+  - reproducible computing
+license: MIT
+message: 'If you use this software, please cite it using the metadata from this file.'
+repository-code: https://github.com/medkit-lib/medkit
+title: 'Facilitating phenotyping from clinical texts: the medkit library'
+type: software
+url: https://www.medkit-lib.org/
