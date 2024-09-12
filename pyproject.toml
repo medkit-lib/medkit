@@ -209,6 +209,11 @@ cov = [
   "cov-report",
 ]
 
+[tool.hatch.envs.types]
+dependencies = ["mypy"]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args}"
+
 [tool.hatch.envs.docs]
 features = [
   "deid",
@@ -239,6 +244,13 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
+
+[tool.mypy]
+files = ["medkit"]
+disable_error_code = ["import-not-found", "import-untyped"]
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
 
 [tool.ruff]
 line-length = 120
