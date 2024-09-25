@@ -184,51 +184,6 @@ Documentation = "https://medkit.readthedocs.io"
 Issues = "https://github.com/medkit-lib/medkit/issues"
 Source = "https://github.com/medkit-lib/medkit"
 
-[tool.hatch.build.targets.wheel]
-packages = ["medkit"]
-
-[tool.hatch.envs.default]
-dependencies = [
-  "coverage[toml]",
-  "pytest",
-  "pytest-mock",
-]
-
-[[tool.hatch.envs.default.matrix]]
-python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
-
-[tool.hatch.envs.default.scripts]
-test = "pytest tests/unit"
-cov-test = "coverage run -m pytest tests/unit"
-cov-report = [
-  "coverage combine",
-  "coverage report",
-]
-cov = [
-  "cov-test",
-  "cov-report",
-]
-
-[tool.hatch.envs.types]
-dependencies = ["mypy"]
-[tool.hatch.envs.types.scripts]
-check = "mypy --install-types --non-interactive {args}"
-
-[tool.hatch.envs.docs]
-features = [
-  "deid",
-  "docs",
-  "hf-entity-matcher",
-  "metrics-ner",
-  "spacy",
-]
-python = "3.11"
-
-[tool.hatch.envs.docs.scripts]
-clean = "rm -rf docs/_build"
-build = "sphinx-build docs/ docs/_build/html {args}"
-serve = "sphinx-autobuild docs/ docs/_build/html {args}"
-
 [tool.coverage.run]
 source_pkgs = ["medkit", "tests"]
 branch = true
@@ -251,6 +206,12 @@ disable_error_code = ["import-not-found", "import-untyped"]
 warn_unused_configs = true
 warn_redundant_casts = true
 warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+addopts = [
+  "--cov=medkit",
+  "--cov-report=term-missing:skip-covered",
+]
 
 [tool.ruff]
 line-length = 120

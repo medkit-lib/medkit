@@ -38,4 +38,4 @@ jobs:
       - name: Install Hatch
         uses: pypa/hatch@install
       - name: Run tests
-        run: hatch run +py=${{ matrix.python-version }} cov
+        run: hatch run +py=${{ matrix.python-version }} test:cov tests/unit
