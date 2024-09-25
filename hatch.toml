@@ -1,0 +1,34 @@
+[build.targets.wheel]
+packages = ["medkit"]
+
+[envs.docs]
+python = "3.11"
+features = [
+  "deid",
+  "docs",
+  "hf-entity-matcher",
+  "metrics-ner",
+  "spacy",
+]
+[envs.docs.scripts]
+clean = "rm -rf docs/_build"
+build = "sphinx-build docs/ docs/_build/html {args}"
+serve = "sphinx-autobuild docs/ docs/_build/html {args}"
+
+[envs.test]
+dependencies = [
+  "coverage[toml]",
+  "pytest",
+  "pytest-cov",
+  "pytest-mock",
+]
+[envs.test.scripts]
+cov = "pytest --cov-config=pyproject.toml {args}"
+no-cov = "cov --no-cov {args}"
+[[envs.test.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+[envs.types]
+dependencies = ["mypy"]
+[envs.types.scripts]
+check = "mypy --install-types --non-interactive {args}"
