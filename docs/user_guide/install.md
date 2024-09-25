@@ -55,7 +55,7 @@ Please follow its [installation instructions](https://hatch.pypa.io/latest/insta
 The project can be deployed in a virtual environment and tested with:
 
 ```console
-hatch run test
+hatch run test:no-cov tests/unit
 ```
 
 The corresponding documentation can be built with:
