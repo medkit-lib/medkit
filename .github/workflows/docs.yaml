@@ -1,10 +1,13 @@
 name: docs
 
 on:
-  # Run on pull requests targeting the main branch
+  # Run on pull requests
   pull_request:
-    branches:
-      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
 
   # Run on commits pushed to the main branch
   push:
@@ -25,6 +28,7 @@ jobs:
     permissions:
       contents: read
     runs-on: ubuntu-latest
+    if: ${{ !github.event.pull_request.draft }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
