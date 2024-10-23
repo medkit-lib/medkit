@@ -41,18 +41,3 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: './docs/_build/html'
-
-  # Deployment job
-  deploy:
-    needs: build
-    permissions:
-      pages: write
-      id-token: write
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy documentation
-        id: deployment
-        uses: actions/deploy-pages@v4

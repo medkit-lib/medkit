@@ -8,9 +8,9 @@ on:
 permissions:
   contents: read
 
-# Adapted from <https://docs.pypi.org/trusted-publishers/using-a-publisher/>
 jobs:
-  pypi:
+  # Adapted from <https://docs.pypi.org/trusted-publishers/using-a-publisher/>
+  publish-pypi:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -23,3 +23,21 @@ jobs:
         run: pipx run build
       - name: publish
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  # Adapted from <https://stackoverflow.com/questions/60355925/share-artifacts-between-workflows-github-actions>
+  build-docs:
+    uses: './.github/workflows/docs.yaml'
+
+  publish-docs:
+    needs: build-docs
+    permissions:
+      pages: write
+      id-token: write
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy documentation
+        id: deployment
+        uses: actions/deploy-pages@v4
