@@ -8,6 +8,9 @@ kernelspec:
   display_name: Python 3
   language: python
   name: python3
+metadata:
+  execution:
+    timeout: 300
 ---
 
 # Context Detection
