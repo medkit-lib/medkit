@@ -12,7 +12,7 @@ Consider the following document:
 
 ```{code} python
 # You can download the file available in source code
-# !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/examples/input/text/text_to_clean.txt
+# !wget https://raw.githubusercontent.com/medkit-lib/medkit/main/docs/cookbook/input/text/text_to_clean.txt
 
 from pathlib import Path
 from medkit.core.text import TextDocument
