@@ -128,7 +128,7 @@ class NLStructEntityMatcher(NEROperation):
 
         # Force the filename to use the checkpoint directory
         checkpoint_filepath = checkpoint_filepaths[0]
-        loaded = torch.load(checkpoint_filepath, map_location=device)
+        loaded = torch.load(checkpoint_filepath, map_location=device, weights_only=False)
         config = loaded["config"]
 
         # modify config if the encoder is a 'concat'model
