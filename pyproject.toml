@@ -180,10 +180,11 @@ docs = [
 ]
 
 [project.urls]
-Changelog = "https://medkit.readthedocs.io/en/stable/changelog.html"
-Documentation = "https://medkit.readthedocs.io"
-Issues = "https://github.com/medkit-lib/medkit/issues"
-Source = "https://github.com/medkit-lib/medkit"
+homepage = "https://medkit-lib.org"
+source = "https://github.com/medkit-lib/medkit"
+changelog = "https://medkit-lib.org/changelog.html"
+documentation = "https://medkit-lib.org/user_guide"
+issues = "https://github.com/medkit-lib/medkit/issues"
 
 [tool.coverage.run]
 source_pkgs = ["medkit", "tests"]
