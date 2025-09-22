@@ -186,22 +186,6 @@ changelog = "https://medkit-lib.org/changelog.html"
 documentation = "https://medkit-lib.org/user_guide"
 issues = "https://github.com/medkit-lib/medkit/issues"
 
-[tool.coverage.run]
-source_pkgs = ["medkit", "tests"]
-branch = true
-parallel = true
-
-[tool.coverage.paths]
-medkit = ["medkit", "*/medkit/medkit"]
-tests = ["tests", "*/medkit/tests"]
-
-[tool.coverage.report]
-exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
-]
-
 [tool.mypy]
 files = ["medkit"]
 disable_error_code = ["import-not-found", "import-untyped"]
@@ -211,8 +195,14 @@ warn_unused_ignores = true
 
 [tool.pytest.ini_options]
 addopts = [
+  "--strict-config",
+  "--strict-markers",
+  "-s",
+  "-ra",
+#  "--doctest-modules",
+#  "--doctest-continue-on-failure",
   "--cov=medkit",
-  "--cov-report=term-missing:skip-covered",
+  "--cov-report=term",
 ]
 
 [tool.ruff]
