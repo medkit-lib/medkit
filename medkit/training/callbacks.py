@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING
 from tqdm import tqdm
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from medkit.training.trainer_config import TrainerConfig
 
 
@@ -23,7 +25,7 @@ class TrainerCallback:
     def on_epoch_begin(self, epoch: int):
         """Event called at the beginning of an epoch."""
 
-    def on_epoch_end(self, metrics: dict[str, float], epoch: int, epoch_time: float):
+    def on_epoch_end(self, metrics: Mapping[str, Mapping[str, float]], epoch: int, epoch_duration: float):
         """Event called at the end of an epoch."""
 
     def on_step_begin(self, step_idx: int, nb_batches: int, phase: str):
@@ -66,7 +68,7 @@ class DefaultPrinterCallback(TrainerCallback):
         )
         self.logger.info(message)
 
-    def on_epoch_end(self, metrics, epoch, epoch_duration):
+    def on_epoch_end(self, metrics: Mapping[str, Mapping[str, float]], epoch: int, epoch_duration: float):
         message = f"Epoch {epoch} ended (duration: {epoch_duration:.2f}s)\n"
 
         train_metrics = metrics.get("train", None)

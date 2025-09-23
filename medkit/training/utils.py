@@ -5,7 +5,7 @@ __all__ = ["BatchData", "MetricsComputer"]
 from typing import Any, runtime_checkable
 
 import torch
-from typing_extensions import Protocol, Self
+from typing_extensions import Protocol
 
 
 class BatchData(dict):
@@ -17,7 +17,7 @@ class BatchData(dict):
             return inner_dict[index]
         return {key: values[index] for key, values in self.items()}
 
-    def to_device(self, device: torch.device) -> Self:
+    def to_device(self, device: torch.device) -> BatchData:
         """Ensure that Tensors in the BatchData object are on the specified `device`.
 
         Parameters
