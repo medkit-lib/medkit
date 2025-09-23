@@ -17,7 +17,6 @@ serve = "sphinx-autobuild docs/ docs/_build/html {args}"
 
 [envs.test]
 dependencies = [
-  "coverage[toml]",
   "pytest",
   "pytest-cov",
   "pytest-mock",
