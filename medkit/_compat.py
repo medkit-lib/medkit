@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 import sys
 from typing import Any
 
@@ -22,14 +23,13 @@ def _batched(iterable: Iterable[Any], n: int) -> Iterator[tuple[Any, ...]]:
     >>> list(_batched("ABCDEFG", 3))
     [('A', 'B', 'C'), ('D', 'E', 'F'), ('G',)]
     """
-    from itertools import islice
 
     if n < 1:
         msg = "batch size must be at least one"
         raise ValueError(msg)
 
     it = iter(iterable)
-    while batch := tuple(islice(it, n)):
+    while batch := tuple(itertools.islice(it, n)):
         yield batch
 
 
