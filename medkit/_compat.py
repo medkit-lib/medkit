@@ -23,7 +23,6 @@ def _batched(iterable: Iterable[Any], n: int) -> Iterator[tuple[Any, ...]]:
     >>> list(_batched("ABCDEFG", 3))
     [('A', 'B', 'C'), ('D', 'E', 'F'), ('G',)]
     """
-
     if n < 1:
         msg = "batch size must be at least one"
         raise ValueError(msg)
