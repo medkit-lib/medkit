@@ -155,12 +155,10 @@ def load_umls_entries(
             if lui in luis_seen:
                 continue
 
-            if semtypes_by_cui is not None and cui in semtypes_by_cui:
-                semtypes = semtypes_by_cui[cui]
-                semgroups = [semgroups_by_semtype[semtype] for semtype in semtypes]
-            else:
-                semtypes = None
-                semgroups = None
+            semtypes = semtypes_by_cui.get(cui) if semtypes_by_cui else None
+            semgroups = (
+                [semgroups_by_semtype[semtype] for semtype in semtypes] if semgroups_by_semtype and semtypes else None
+            )
 
             luis_seen.add(lui)
             yield UMLSEntry(cui, term, semtypes, semgroups)
@@ -198,7 +196,7 @@ def load_semtypes_by_cui(mrsty_file: str | Path) -> dict[str, list[str]]:
 # Source: UMLS project
 # https://lhncbc.nlm.nih.gov/semanticnetwork/download/sg_archive/SemGroups-v04.txt
 _UMLS_SEMGROUPS_FILE = Path(__file__).parent / "umls_semgroups_v04.txt"
-_SEMGROUPS_BY_SEMTYPE = None
+_SEMGROUPS_BY_SEMTYPE: dict[str, str] | None = None
 
 
 def load_semgroups_by_semtype() -> dict[str, str]:

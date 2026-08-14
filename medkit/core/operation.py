@@ -34,22 +34,15 @@ class Operation(abc.ABC):
     >>> super().__init__(**init_args)
     """
 
-    uid: str
-    _description: OperationDescription | None = None
     _prov_tracer: ProvTracer | None = None
 
     @abc.abstractmethod
     def __init__(self, uid: str | None = None, name: str | None = None, **kwargs):
-        if uid is None:
-            uid = generate_id()
-        if name is None:
-            name = self.__class__.__name__
-
-        self.uid = uid
+        self.uid = uid or generate_id()
         self._description = OperationDescription(
             uid=self.uid,
             class_name=self.__class__.__name__,
-            name=name,
+            name=name or self.__class__.__name__,
             config=kwargs,
         )
 
@@ -68,9 +61,9 @@ class Operation(abc.ABC):
         """Contains all the operation init parameters."""
         return self._description
 
-    def check_sanity(self) -> bool:  # noqa: B027
+    def check_sanity(self) -> None:
         # TODO: add some checks
-        pass
+        return
 
 
 class DocOperation(Operation):
